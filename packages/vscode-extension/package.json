@@ -1,0 +1,45 @@
+{
+  "name": "native-mate",
+  "displayName": "native-mate",
+  "description": "Add and manage native-mate React Native components from VS Code",
+  "version": "0.1.0",
+  "publisher": "native-mate",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": ["Other"],
+  "activationEvents": ["workspaceContains:native-mate.json"],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "native-mate.addComponent",
+        "title": "native-mate: Add component"
+      },
+      {
+        "command": "native-mate.upgradeComponents",
+        "title": "native-mate: Upgrade components"
+      },
+      {
+        "command": "native-mate.openThemeStudio",
+        "title": "native-mate: Open Theme Studio"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        { "command": "native-mate.addComponent" },
+        { "command": "native-mate.upgradeComponents" },
+        { "command": "native-mate.openThemeStudio" }
+      ]
+    }
+  },
+  "scripts": {
+    "build": "tsc --project tsconfig.json",
+    "lint": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.4.0"
+  }
+}

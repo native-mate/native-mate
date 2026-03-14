@@ -1,0 +1,13 @@
+{
+  "name": "@native-mate/figma-plugin",
+  "version": "0.1.0",
+  "description": "Figma plugin for native-mate — inspect components, export tokens, sync styles",
+  "scripts": {
+    "build": "tsc --project tsconfig.json",
+    "lint": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@figma/plugin-typings": "^1.92.0",
+    "typescript": "^5.4.0"
+  }
+}

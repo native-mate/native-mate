@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["ES2017", "DOM"],
+    "strict": false,
+    "skipLibCheck": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "types": []
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules"]
+}

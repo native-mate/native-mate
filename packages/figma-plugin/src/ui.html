@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>native-mate</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #09090b;
+      --surface: #18181b;
+      --border: #27272a;
+      --fg: #fafafa;
+      --muted: #a1a1aa;
+      --primary: #fafafa;
+      --primary-fg: #09090b;
+      --accent: #3f3f46;
+      --radius: 8px;
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font);
+      font-size: 13px;
+      line-height: 1.5;
+      padding: 0;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: -0.02em;
+    }
+
+    .version {
+      font-size: 10px;
+      color: var(--muted);
+      background: var(--surface);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tab {
+      flex: 1;
+      padding: 10px 12px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+      cursor: pointer;
+      border: none;
+      background: none;
+      border-bottom: 2px solid transparent;
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    .tab.active {
+      color: var(--fg);
+      border-bottom-color: var(--fg);
+    }
+
+    .panel { display: none; padding: 16px; }
+    .panel.active { display: block; }
+
+    .search {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--fg);
+      font-size: 12px;
+      padding: 8px 10px;
+      margin-bottom: 12px;
+      outline: none;
+    }
+
+    .search:focus { border-color: var(--muted); }
+    .search::placeholder { color: var(--muted); }
+
+    .component-list { display: flex; flex-direction: column; gap: 4px; max-height: 340px; overflow-y: auto; }
+
+    .component-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 10px;
+      background: var(--surface);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: background 0.1s;
+      border: 1px solid transparent;
+    }
+
+    .component-item:hover { border-color: var(--border); background: var(--accent); }
+
+    .component-name { font-size: 12px; font-weight: 500; }
+    .component-cat { font-size: 10px; color: var(--muted); background: var(--bg); padding: 2px 6px; border-radius: 4px; }
+
+    .copy-btn {
+      background: var(--primary);
+      color: var(--primary-fg);
+      border: none;
+      border-radius: var(--radius);
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 8px;
+    }
+
+    .preset-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+
+    .preset-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px;
+      cursor: pointer;
+      transition: border-color 0.1s;
+    }
+
+    .preset-card.selected { border-color: var(--fg); }
+    .preset-card-name { font-size: 12px; font-weight: 600; margin-bottom: 2px; }
+    .preset-swatch { height: 6px; border-radius: 3px; margin-bottom: 6px; }
+
+    .inspect-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px;
+      font-size: 11px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      line-height: 1.8;
+      color: var(--muted);
+    }
+
+    .detected-badge {
+      display: inline-block;
+      background: #166534;
+      color: #bbf7d0;
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-top: 6px;
+    }
+
+    .status { font-size: 11px; color: var(--muted); text-align: center; padding: 20px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <span class="logo">native-mate</span>
+  <span class="version">v0.1.0</span>
+</header>
+
+<div class="tabs">
+  <button class="tab active" data-tab="components">Components</button>
+  <button class="tab" data-tab="tokens">Tokens</button>
+  <button class="tab" data-tab="inspect">Inspect</button>
+</div>
+
+<!-- Components panel -->
+<div class="panel active" id="panel-components">
+  <input class="search" id="search" placeholder="Search components…" />
+  <div class="component-list" id="component-list">
+    <div class="status">Loading…</div>
+  </div>
+</div>
+
+<!-- Tokens panel -->
+<div class="panel" id="panel-tokens">
+  <p style="font-size:11px;color:var(--muted);margin-bottom:10px">
+    Export native-mate design tokens as Figma local styles.
+  </p>
+  <div class="preset-grid">
+    <div class="preset-card selected" data-preset="zinc">
+      <div class="preset-swatch" style="background:linear-gradient(90deg,#18181b,#fafafa)"></div>
+      <div class="preset-card-name">Zinc</div>
+    </div>
+    <div class="preset-card" data-preset="slate">
+      <div class="preset-swatch" style="background:linear-gradient(90deg,#0f172a,#f8fafc)"></div>
+      <div class="preset-card-name">Slate</div>
+    </div>
+    <div class="preset-card" data-preset="rose">
+      <div class="preset-swatch" style="background:linear-gradient(90deg,#e11d48,#fb7185)"></div>
+      <div class="preset-card-name">Rose</div>
+    </div>
+    <div class="preset-card" data-preset="midnight">
+      <div class="preset-swatch" style="background:linear-gradient(90deg,#030303,#a78bfa)"></div>
+      <div class="preset-card-name">Midnight</div>
+    </div>
+  </div>
+  <button class="copy-btn" id="export-tokens-btn">Export tokens to Figma styles</button>
+  <div id="token-status" class="status" style="display:none"></div>
+</div>
+
+<!-- Inspect panel -->
+<div class="panel" id="panel-inspect">
+  <div class="inspect-box" id="inspect-box">
+    Select a layer to inspect it.
+  </div>
+  <button class="copy-btn" id="inspect-btn" style="margin-top:12px">Inspect selection</button>
+</div>
+
+<script>
+  let allComponents = []
+  let selectedPreset = 'zinc'
+
+  // Tab switching
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'))
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'))
+      tab.classList.add('active')
+      document.getElementById('panel-' + tab.dataset.tab).classList.add('active')
+    })
+  })
+
+  // Preset selection
+  document.querySelectorAll('.preset-card').forEach(card => {
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.preset-card').forEach(c => c.classList.remove('selected'))
+      card.classList.add('selected')
+      selectedPreset = card.dataset.preset
+    })
+  })
+
+  // Export tokens
+  document.getElementById('export-tokens-btn').addEventListener('click', () => {
+    parent.postMessage({ pluginMessage: { type: 'EXPORT_TOKENS', payload: selectedPreset } }, '*')
+  })
+
+  // Inspect
+  document.getElementById('inspect-btn').addEventListener('click', () => {
+    parent.postMessage({ pluginMessage: { type: 'INSPECT_SELECTION' } }, '*')
+  })
+
+  // Search
+  document.getElementById('search').addEventListener('input', (e) => {
+    const q = e.target.value.toLowerCase()
+    renderComponents(q ? allComponents.filter(c =>
+      c.name.includes(q) || c.description.toLowerCase().includes(q) || c.category.includes(q)
+    ) : allComponents)
+  })
+
+  function renderComponents(list) {
+    const el = document.getElementById('component-list')
+    if (!list.length) { el.innerHTML = '<div class="status">No results</div>'; return }
+    el.innerHTML = list.map(c => `
+      <div class="component-item" data-name="${c.name}">
+        <span class="component-name">${c.name}</span>
+        <span class="component-cat">${c.category}</span>
+      </div>
+    `).join('')
+    el.querySelectorAll('.component-item').forEach(item => {
+      item.addEventListener('click', () => {
+        parent.postMessage({ pluginMessage: { type: 'COPY_COMPONENT_CODE', payload: item.dataset.name } }, '*')
+      })
+    })
+  }
+
+  // Messages from plugin code
+  window.onmessage = (event) => {
+    const msg = event.data.pluginMessage
+    if (!msg) return
+
+    if (msg.type === 'INDEX_LOADED') {
+      allComponents = msg.data.components || []
+      renderComponents(allComponents)
+    }
+
+    if (msg.type === 'INDEX_ERROR') {
+      document.getElementById('component-list').innerHTML =
+        '<div class="status">Could not load registry. Check your connection.</div>'
+    }
+
+    if (msg.type === 'TOKENS_EXPORTED') {
+      const statusEl = document.getElementById('token-status')
+      statusEl.style.display = 'block'
+      statusEl.textContent = `Exported ${msg.tokens.length} tokens for ${msg.preset} preset.`
+    }
+
+    if (msg.type === 'SELECTION_INFO') {
+      const info = msg.info
+      const box = document.getElementById('inspect-box')
+      let html = Object.entries(info)
+        .filter(([k]) => k !== 'detectedComponent')
+        .map(([k, v]) => `<div><b>${k}:</b> ${v}</div>`)
+        .join('')
+      if (info.detectedComponent) {
+        html += `<div class="detected-badge">native-mate: ${info.detectedComponent}</div>`
+      }
+      box.innerHTML = html
+    }
+
+    if (msg.type === 'SELECTION_EMPTY') {
+      document.getElementById('inspect-box').textContent = 'No selection. Select a layer first.'
+    }
+
+    if (msg.type === 'COMPONENT_CODE') {
+      const files = msg.data.files || []
+      const text = files.map(f => f.content).join('\n\n')
+      navigator.clipboard.writeText(text).then(() => {
+        alert(`${msg.data.name} code copied to clipboard!`)
+      })
+    }
+
+    if (msg.type === 'ERROR') {
+      alert('Error: ' + msg.error)
+    }
+  }
+
+  // Load on start
+  parent.postMessage({ pluginMessage: { type: 'FETCH_INDEX' } }, '*')
+</script>
+</body>
+</html>

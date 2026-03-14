@@ -1,0 +1,12 @@
+{
+  "name": "native-mate",
+  "id": "native-mate-plugin",
+  "api": "1.0.0",
+  "main": "dist/code.js",
+  "ui": "dist/ui.html",
+  "editorType": ["figma"],
+  "documentAccess": "dynamic-page",
+  "networkAccess": {
+    "allowedDomains": ["https://registry.native-mate.dev", "https://raw.githubusercontent.com"]
+  }
+}
