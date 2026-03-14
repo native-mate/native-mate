@@ -1,7 +1,12 @@
 {
   "name": "native-mate",
   "private": true,
-  "workspaces": ["packages/*", "apps/*", "docs"],
+  "packageManager": "npm@10.0.0",
+  "workspaces": [
+    "packages/*",
+    "apps/*",
+    "docs"
+  ],
   "scripts": {
     "build": "turbo run build",
     "test": "turbo run test",
@@ -9,6 +14,9 @@
     "dev": "turbo run dev --parallel"
   },
   "devDependencies": {
+    "@types/node": "^25.5.0",
+    "@types/react": "^19.2.14",
+    "@types/react-native": "^0.72.8",
     "turbo": "^2.0.0",
     "typescript": "^5.4.0"
   }

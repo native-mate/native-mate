@@ -629,7 +629,7 @@ export function TextareaExample() {
         onChangeText={setMessage}
         minRows={4}
         maxRows={10}
-        hint={`${message.length} / 500`}
+        hint={\`\${message.length} / 500\`}
       />
       <Button disabled={message.trim().length === 0}>Send</Button>
     </View>

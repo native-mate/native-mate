@@ -5,8 +5,11 @@
     "moduleResolution": "node",
     "lib": ["ES2020"],
     "strict": true,
+    "skipLibCheck": true,
     "outDir": "./dist",
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "typeRoots": ["../../node_modules/@types", "./node_modules/@types"],
+    "types": ["node", "vscode"]
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist"]

@@ -3,7 +3,9 @@
   "compilerOptions": {
     "module": "CommonJS",
     "moduleResolution": "node",
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "typeRoots": ["../../node_modules/@types"],
+    "types": ["node"]
   },
   "include": ["scripts"],
   "exclude": ["node_modules"]
