@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "native-mate": {
+      "command": "npx",
+      "args": ["-y", "@native-mate/mcp"]
+    }
+  }
+}
