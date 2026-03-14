@@ -1,0 +1,14 @@
+{
+  "expo": {
+    "name": "native-mate storybook",
+    "slug": "native-mate-storybook",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "scheme": "native-mate-storybook",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": { "supportsTablet": true },
+    "android": { "adaptiveIcon": { "backgroundColor": "#09090b" } },
+    "plugins": ["expo-router", "react-native-reanimated/plugin"]
+  }
+}
