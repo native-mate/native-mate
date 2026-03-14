@@ -1,7 +1,7 @@
 {
   "name": "native-mate",
   "private": true,
-  "workspaces": ["packages/*", "apps/*"],
+  "workspaces": ["packages/*", "apps/*", "docs"],
   "scripts": {
     "build": "turbo run build",
     "test": "turbo run test",
