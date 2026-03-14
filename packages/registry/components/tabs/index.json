@@ -1,0 +1,1 @@
+{ "name": "tabs", "version": "0.1.0", "description": "Horizontal tabs with animated underline indicator", "files": [{"path": "tabs.tsx", "hash": ""}, {"path": "tabs.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }

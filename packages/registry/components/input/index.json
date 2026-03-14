@@ -1,0 +1,1 @@
+{ "name": "input", "version": "0.1.0", "description": "Text input with label, error, hint and focus state", "files": [{"path": "input.tsx", "hash": ""}, {"path": "input.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }

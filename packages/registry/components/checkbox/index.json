@@ -1,0 +1,1 @@
+{ "name": "checkbox", "version": "0.1.0", "description": "Animated checkbox with label", "files": [{"path": "checkbox.tsx", "hash": ""}, {"path": "checkbox.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }

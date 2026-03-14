@@ -1,0 +1,10 @@
+{
+  "name": "button",
+  "version": "0.1.0",
+  "description": "Pressable button with variants, sizes, loading state and spring animation",
+  "files": [
+    { "path": "button.tsx", "hash": "" },
+    { "path": "button.types.ts", "hash": "" }
+  ],
+  "dependencies": { "npm": [], "components": [] }
+}

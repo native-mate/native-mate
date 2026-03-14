@@ -1,0 +1,1 @@
+{ "name": "radio", "version": "0.1.0", "description": "Radio button and RadioGroup with animated selection", "files": [{"path": "radio.tsx", "hash": ""}, {"path": "radio.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }

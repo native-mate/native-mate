@@ -1,0 +1,1 @@
+{ "name": "toast", "version": "0.1.0", "description": "Floating toast notification with auto-dismiss and position", "files": [{"path": "toast.tsx", "hash": ""}, {"path": "toast.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }

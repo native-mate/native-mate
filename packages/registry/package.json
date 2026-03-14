@@ -1,0 +1,14 @@
+{
+  "name": "@native-mate/registry",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Internal — component source and registry build scripts",
+  "scripts": {
+    "build": "ts-node scripts/build-registry.ts",
+    "lint": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.0",
+    "typescript": "^5.4.0"
+  }
+}

@@ -1,0 +1,1 @@
+{ "name": "otp-input", "version": "0.1.0", "description": "OTP/PIN code input with individual digit boxes", "files": [{"path": "otp-input.tsx", "hash": ""}, {"path": "otp-input.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }
