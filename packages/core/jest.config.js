@@ -6,4 +6,7 @@ module.exports = {
     '^.+\\.tsx?$': ['ts-jest', { diagnostics: false, tsconfig: { jsx: 'react', esModuleInterop: true } }],
   },
   globals: {},
+  moduleNameMapper: {
+    '^react-native$': '<rootDir>/__mocks__/react-native.js',
+  },
 }
