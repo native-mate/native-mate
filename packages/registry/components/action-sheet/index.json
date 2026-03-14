@@ -1,0 +1,1 @@
+{ "name": "action-sheet", "version": "0.1.0", "description": "iOS-style action sheet with animated slide-up, destructive variants, and cancel button", "files": [{"path": "action-sheet.tsx", "hash": ""}, {"path": "action-sheet.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }
