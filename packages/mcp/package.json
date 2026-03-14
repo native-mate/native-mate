@@ -1,0 +1,22 @@
+{
+  "name": "@native-mate/mcp",
+  "version": "0.1.0",
+  "description": "MCP server for native-mate — list, add, and search components from Claude or Cursor",
+  "bin": {
+    "native-mate-mcp": "./dist/index.js"
+  },
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsc --project tsconfig.json",
+    "dev": "ts-node src/index.ts",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.4.0"
+  }
+}
