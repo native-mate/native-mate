@@ -9,6 +9,6 @@
     "newArchEnabled": true,
     "ios": { "supportsTablet": true },
     "android": { "adaptiveIcon": { "backgroundColor": "#09090b" } },
-    "plugins": ["expo-router", "react-native-reanimated/plugin"]
+    "plugins": []
   }
 }

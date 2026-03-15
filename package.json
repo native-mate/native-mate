@@ -4,7 +4,7 @@
   "packageManager": "npm@10.0.0",
   "workspaces": [
     "packages/*",
-    "apps/*",
+    "apps/storybook",
     "docs"
   ],
   "scripts": {
@@ -18,6 +18,6 @@
     "@types/react": "^19.2.14",
     "@types/react-native": "^0.72.8",
     "turbo": "^2.0.0",
-    "typescript": "^5.4.0"
+    "typescript": "~5.3.3"
   }
 }
