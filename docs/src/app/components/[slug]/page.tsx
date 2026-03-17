@@ -8,6 +8,7 @@ import dynamic from 'next/dynamic'
 const componentPreviews: Record<string, React.ComponentType> = {
   button: dynamic(() => import('@/components/previews/ButtonPreview'), { ssr: false }),
   input: dynamic(() => import('@/components/previews/InputPreview'), { ssr: false }),
+  textarea: dynamic(() => import('@/components/previews/TextareaPreview'), { ssr: false }),
 }
 
 interface ComponentDoc {
@@ -290,6 +291,95 @@ export function InputExamples() {
       <Input label="Search" placeholder="Type..." clearable />
       <Input label="Username" error="Already taken" />
       <Input label="Company" disabled value="Acme Inc." />
+    </View>
+  )
+}`,
+  },
+  textarea: {
+    name: 'Textarea',
+    slug: 'textarea',
+    description: 'Auto-growing multi-line input with min/max rows, character count with warning threshold, floating label, submit-on-Enter, mention detection, voice input slot, read-only, shake on error, and haptic focus.',
+    category: 'Forms',
+    npmDeps: [],
+    componentDeps: [],
+    addCommand: 'npx native-mate add textarea',
+    accessibility: [
+      { feature: 'Label', detail: 'accessibilityLabel is auto-set from the label prop.' },
+      { feature: 'Disabled state', detail: 'accessibilityState={{ disabled }} is set when disabled.' },
+      { feature: 'Read-only', detail: 'editable={false} prevents editing while keeping content selectable.' },
+      { feature: 'Keyboard', detail: 'Fully focusable via assistive technology.' },
+    ],
+    props: [
+      { name: 'label', type: 'string', description: 'Label above or floating inside the textarea.' },
+      { name: 'error', type: 'string', description: 'Error message. Turns border red and triggers shake.' },
+      { name: 'hint', type: 'string', description: 'Helper text below the textarea.' },
+      { name: 'required', type: 'boolean', default: 'false', description: 'Shows a red asterisk after the label.' },
+      { name: 'disabled', type: 'boolean', default: 'false', description: 'Dims and prevents editing.' },
+      { name: 'readOnly', type: 'boolean', default: 'false', description: 'Prevents editing but keeps content selectable.' },
+      { name: 'minRows', type: 'number', default: '3', description: 'Minimum visible rows before content shrinks.' },
+      { name: 'maxRows', type: 'number', default: '10', description: 'Maximum rows before scroll activates.' },
+      { name: 'showCount', type: 'boolean', default: 'false', description: 'Shows character count. Pair with maxLength.' },
+      { name: 'countWarnAt', type: 'number', default: '0.8', description: 'Fraction of maxLength at which count turns amber (0–1).' },
+      { name: 'floatingLabel', type: 'boolean', default: 'false', description: 'Label animates from inside to above border on focus.' },
+      { name: 'submitOnEnter', type: 'boolean', default: 'false', description: 'Pressing Enter calls onSubmit instead of inserting a newline.' },
+      { name: 'onSubmit', type: '(value: string) => void', description: 'Called when Enter is pressed with submitOnEnter enabled.' },
+      { name: 'onMention', type: '(query: string) => void', description: 'Called when user types @ followed by text. Passes the query string.' },
+      { name: 'voiceInput', type: 'boolean', default: 'false', description: 'Shows a microphone button inside the textarea.' },
+      { name: 'onVoicePress', type: '() => void', description: 'Called when the microphone button is pressed.' },
+      { name: '...TextInputProps', type: 'TextInputProps', description: 'All standard React Native TextInput props are forwarded.' },
+    ],
+    usageCode: `import { Textarea } from '~/components/ui/textarea'
+
+// Basic
+<Textarea label="Bio" placeholder="Tell us about yourself..." />
+
+// Min/max rows (auto-grow)
+<Textarea label="Message" minRows={2} maxRows={6} />
+
+// Character count with warning
+<Textarea label="Tweet" showCount maxLength={280} countWarnAt={0.8} />
+
+// Floating label
+<Textarea floatingLabel label="Notes" />
+
+// Submit on Enter (Slack-style chat)
+<Textarea
+  label="Message"
+  submitOnEnter
+  onSubmit={(text) => sendMessage(text)}
+  minRows={1}
+  maxRows={4}
+/>
+
+// Mention detection
+<Textarea onMention={(query) => fetchSuggestions(query)} />
+
+// Voice input
+<Textarea voiceInput onVoicePress={() => startSpeechToText()} />
+
+// Read-only
+<Textarea label="Terms" value={termsText} readOnly />
+
+// Error state
+<Textarea label="Review" error="Review cannot be empty" />`,
+    exampleCode: `import { useState } from 'react'
+import { Textarea } from '~/components/ui/textarea'
+import { View } from 'react-native'
+
+export function TextareaExamples() {
+  const [bio, setBio] = useState('')
+  const [msg, setMsg] = useState('')
+
+  return (
+    <View style={{ gap: 16, padding: 16 }}>
+      <Textarea label="Bio" placeholder="Tell us about yourself..." showCount maxLength={160} value={bio} onChangeText={setBio} />
+      <Textarea label="Message" minRows={2} maxRows={6} value={msg} onChangeText={setMsg} />
+      <Textarea floatingLabel label="Notes" placeholder="Add notes..." />
+      <Textarea label="Tweet" showCount maxLength={280} countWarnAt={0.8} />
+      <Textarea label="Message" submitOnEnter onSubmit={(t) => console.log(t)} minRows={1} maxRows={4} />
+      <Textarea label="Terms" value="By using this app you agree to our terms." readOnly />
+      <Textarea label="Review" error="Review cannot be empty" />
+      <Textarea label="Disabled" value="Cannot edit." disabled />
     </View>
   )
 }`,
