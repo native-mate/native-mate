@@ -7,6 +7,7 @@ import dynamic from 'next/dynamic'
 
 const componentPreviews: Record<string, React.ComponentType> = {
   button: dynamic(() => import('@/components/previews/ButtonPreview'), { ssr: false }),
+  input: dynamic(() => import('@/components/previews/InputPreview'), { ssr: false }),
 }
 
 interface ComponentDoc {
@@ -211,47 +212,84 @@ export function CardExample() {
   input: {
     name: 'Input',
     slug: 'input',
-    description: 'A text input with label, error message, prefix/suffix slots, and animated focus ring.',
+    description: 'Feature-rich text input with 3 sizes, prefix/suffix slots, floating label, password toggle, clearable, character count, shake on error, and haptic on focus.',
     category: 'Forms',
     npmDeps: [],
     componentDeps: [],
     addCommand: 'npx native-mate add input',
+    accessibility: [
+      { feature: 'Label', detail: 'accessibilityLabel is auto-set from the label prop.' },
+      { feature: 'Disabled state', detail: 'accessibilityState={{ disabled }} is set when disabled.' },
+      { feature: 'Keyboard', detail: 'Fully focusable and editable via assistive technology.' },
+    ],
     props: [
-      { name: 'label', type: 'string', description: 'Label shown above the input.' },
-      { name: 'error', type: 'string', description: 'Error message shown below. Turns border red.' },
+      { name: 'label', type: 'string', description: 'Label shown above the input (or floating inside when floatingLabel is true).' },
+      { name: 'error', type: 'string', description: 'Error message shown below. Turns border red and triggers shake animation.' },
       { name: 'hint', type: 'string', description: 'Helper text shown below the input.' },
-      { name: 'prefix', type: 'React.ReactNode', description: 'Element rendered before the text field.' },
-      { name: 'suffix', type: 'React.ReactNode', description: 'Element rendered after the text field.' },
-      { name: '...TextInputProps', type: 'TextInputProps', description: 'All standard RN TextInput props are forwarded.' },
+      { name: 'size', type: '"sm" | "md" | "lg"', default: '"md"', description: 'Controls height, font size, and padding.' },
+      { name: 'required', type: 'boolean', default: 'false', description: 'Shows a red asterisk (*) after the label.' },
+      { name: 'disabled', type: 'boolean', default: 'false', description: 'Dims input and prevents editing.' },
+      { name: 'prefix', type: 'React.ReactNode', description: 'Icon or element rendered inside the input, before the text.' },
+      { name: 'suffix', type: 'React.ReactNode', description: 'Icon or element rendered inside the input, after the text.' },
+      { name: 'prefixText', type: 'string', description: 'Text addon attached to the left (e.g. "$", "https://"). Has a border separator.' },
+      { name: 'suffixText', type: 'string', description: 'Text addon attached to the right (e.g. "USD", ".com"). Has a border separator.' },
+      { name: 'clearable', type: 'boolean', default: 'false', description: 'Shows a clear (×) button when input has a value.' },
+      { name: 'onClear', type: '() => void', description: 'Called when the clear button is pressed.' },
+      { name: 'showPasswordToggle', type: 'boolean', default: 'false', description: 'Shows a Show/Hide toggle for password inputs. Use with secureTextEntry.' },
+      { name: 'showCount', type: 'boolean', default: 'false', description: 'Shows character count below the input. Pair with maxLength.' },
+      { name: 'maxLength', type: 'number', description: 'Maximum character limit. Shown as x/max when showCount is true.' },
+      { name: 'floatingLabel', type: 'boolean', default: 'false', description: 'Label animates from placeholder position to top of border on focus (Material Design style).' },
+      { name: 'hapticOnFocus', type: 'boolean', default: 'false', description: 'Triggers a light haptic tap when input is focused. Requires expo-haptics (optional).' },
+      { name: '...TextInputProps', type: 'TextInputProps', description: 'All standard React Native TextInput props are forwarded.' },
     ],
     usageCode: `import { Input } from '~/components/ui/input'
 
 // Basic
 <Input label="Email" placeholder="you@example.com" />
 
-// With error
-<Input
-  label="Password"
-  secureTextEntry
-  error="Password must be at least 8 characters"
-/>
+// Sizes
+<Input size="sm" placeholder="Small" />
+<Input size="lg" placeholder="Large" />
 
-// With hint
-<Input
-  label="Username"
-  hint="Only letters, numbers, and underscores"
-  autoCapitalize="none"
-/>`,
+// Required
+<Input label="Name" required />
+
+// Prefix & suffix text
+<Input label="Price" prefixText="$" suffixText="USD" />
+<Input label="Website" prefixText="https://" />
+
+// Prefix & suffix icons
+<Input prefix={<SearchIcon />} placeholder="Search..." clearable />
+<Input suffix={<CheckIcon />} label="Email" />
+
+// Password with toggle
+<Input label="Password" secureTextEntry showPasswordToggle />
+
+// Character count
+<Input label="Bio" showCount maxLength={160} />
+
+// Floating label (Material Design style)
+<Input floatingLabel label="Email Address" />
+
+// Error (triggers shake animation)
+<Input label="Username" error="Already taken" />
+
+// Haptic on focus
+<Input label="Name" hapticOnFocus />`,
     exampleCode: `import { Input } from '~/components/ui/input'
 import { View } from 'react-native'
 
 export function InputExamples() {
   return (
     <View style={{ gap: 16, padding: 16 }}>
-      <Input label="Email" placeholder="you@example.com" keyboardType="email-address" />
-      <Input label="Password" secureTextEntry placeholder="••••••••" />
-      <Input label="Bio" hint="Up to 160 characters" multiline />
-      <Input label="Username" error="This username is taken" />
+      <Input label="Email" placeholder="you@example.com" />
+      <Input label="Price" prefixText="$" suffixText="USD" />
+      <Input label="Password" secureTextEntry showPasswordToggle />
+      <Input label="Bio" showCount maxLength={160} />
+      <Input floatingLabel label="Floating Label" />
+      <Input label="Search" placeholder="Type..." clearable />
+      <Input label="Username" error="Already taken" />
+      <Input label="Company" disabled value="Acme Inc." />
     </View>
   )
 }`,

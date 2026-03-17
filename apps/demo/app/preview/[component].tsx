@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { ScrollView, View, StyleSheet } from 'react-native'
+import { ScrollView, View, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native'
 import { useLocalSearchParams, Stack } from 'expo-router'
 import { useTheme, Text } from '@native-mate/core'
 
@@ -141,16 +141,72 @@ function ButtonPreview() {
 
 function InputPreview() {
   const [val, setVal] = useState('')
+  const [pw, setPw] = useState('')
+  const [bio, setBio] = useState('')
+  const [search, setSearch] = useState('')
+  const [amount, setAmount] = useState('')
+  const [url, setUrl] = useState('')
+  const [floatVal, setFloatVal] = useState('')
   return (
     <>
       <Section title="Default">
         <Input label="Email" placeholder="you@example.com" value={val} onChangeText={setVal} />
       </Section>
-      <Section title="With hint">
+      <Section title="Sizes">
+        <View style={{ gap: 12 }}>
+          <Input size="sm" placeholder="Small input" />
+          <Input size="md" placeholder="Medium input (default)" />
+          <Input size="lg" placeholder="Large input" />
+        </View>
+      </Section>
+      <Section title="Required">
+        <Input label="Full Name" placeholder="John Doe" required />
+      </Section>
+      <Section title="Prefix & Suffix Text">
+        <View style={{ gap: 12 }}>
+          <Input label="Price" placeholder="0.00" prefixText="$" suffixText="USD" value={amount} onChangeText={setAmount} keyboardType="decimal-pad" />
+          <Input label="Website" placeholder="example.com" prefixText="https://" value={url} onChangeText={setUrl} />
+        </View>
+      </Section>
+      <Section title="Prefix & Suffix Icons">
+        <View style={{ gap: 12 }}>
+          <Input
+            placeholder="Search..."
+            prefix={<Text style={{ fontSize: 14 }}>🔎</Text>}
+            clearable
+            value={search}
+            onChangeText={setSearch}
+          />
+          <Input
+            label="Email"
+            placeholder="you@example.com"
+            suffix={<Text style={{ color: '#4ade80', fontSize: 14 }}>✓</Text>}
+          />
+        </View>
+      </Section>
+      <Section title="Clearable">
+        <Input label="Search" placeholder="Type to search..." clearable value={search} onChangeText={setSearch} />
+      </Section>
+      <Section title="Password with Toggle">
+        <Input label="Password" placeholder="••••••••" secureTextEntry showPasswordToggle value={pw} onChangeText={setPw} />
+      </Section>
+      <Section title="Character Count">
+        <Input label="Bio" placeholder="Write something..." showCount maxLength={100} value={bio} onChangeText={setBio} />
+      </Section>
+      <Section title="Floating Label">
+        <View style={{ gap: 12 }}>
+          <Input floatingLabel label="Email Address" placeholder="you@example.com" value={floatVal} onChangeText={setFloatVal} />
+          <Input floatingLabel label="Required Field" placeholder="..." required />
+        </View>
+      </Section>
+      <Section title="Error with Shake">
+        <Input label="Username" placeholder="johndoe" error="Username is already taken" />
+      </Section>
+      <Section title="With Hint">
         <Input label="Username" placeholder="johndoe" hint="Must be at least 3 characters" />
       </Section>
-      <Section title="Error state">
-        <Input label="Password" placeholder="••••••••" error="Password is too short" secureTextEntry />
+      <Section title="Haptic on Focus">
+        <Input label="Tap me" placeholder="Feel the tap..." hapticOnFocus />
       </Section>
       <Section title="Disabled">
         <Input label="Company" value="Acme Inc." disabled />
@@ -544,16 +600,27 @@ export default function PreviewScreen() {
   return (
     <>
       <Stack.Screen options={{ title }} />
-      <ScrollView style={s.container} contentContainerStyle={s.content}>
-        {Preview ? <Preview /> : <Text variant="body" muted>No preview for "{component}"</Text>}
-      </ScrollView>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 20}
+      >
+        <ScrollView
+          style={s.container}
+          contentContainerStyle={s.content}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          {Preview ? <Preview /> : <Text variant="body" muted>No preview for "{component}"</Text>}
+        </ScrollView>
+      </KeyboardAvoidingView>
     </>
   )
 }
 
 const s = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#09090b' },
-  content: { padding: 20, paddingBottom: 60 },
+  content: { padding: 20, paddingBottom: 120 },
   section: { marginBottom: 28 },
   sectionTitle: { textTransform: 'uppercase', letterSpacing: 1, marginBottom: 12, fontSize: 11 },
   row: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 10 },

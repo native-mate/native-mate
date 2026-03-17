@@ -56,7 +56,7 @@ const STATIC_INDEX: ComponentIndex[] = [
   { name: 'icon', version: '0.1.0', description: 'SVG icon wrapper with size and color from tokens.', category: 'primitives' },
   { name: 'spinner', version: '0.1.0', description: 'Animated loading indicator in three sizes.', category: 'primitives' },
   { name: 'separator', version: '0.1.0', description: 'Horizontal or vertical divider line.', category: 'primitives' },
-  { name: 'input', version: '0.1.0', description: 'Text input with label, error state, and prefix/suffix.', category: 'forms' },
+  { name: 'input', version: '0.3.0', description: '3 sizes, prefix/suffix icons+text, floating label, password toggle with keyboard-keep, clearable, char count, shake on error, haptic on focus.', category: 'forms' },
   { name: 'textarea', version: '0.1.0', description: 'Auto-growing multi-line text input.', category: 'forms' },
   { name: 'checkbox', version: '0.1.0', description: 'Animated checkbox with indeterminate state.', category: 'forms' },
   { name: 'switch', version: '0.1.0', description: 'Toggle switch with smooth Reanimated transition.', category: 'forms' },

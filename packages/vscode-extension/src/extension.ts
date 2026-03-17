@@ -188,7 +188,7 @@ function getThemeStudioHtml(): string {
 
 const FALLBACK_COMPONENTS: ComponentMeta[] = [
   { name: 'button', category: 'primitives', description: '6 variants, 3 sizes, icon support, full-width, loading state' },
-  { name: 'input', category: 'forms', description: 'Text input with label, error, prefix/suffix' },
+  { name: 'input', category: 'forms', description: '3 sizes, prefix/suffix icons+text, floating label, password toggle with keyboard-keep, clearable, char count, shake on error, haptic on focus' },
   { name: 'card', category: 'layout', description: 'Container with header, content, footer slots' },
   { name: 'badge', category: 'display', description: '5 semantic variants + dot indicator' },
   { name: 'avatar', category: 'display', description: 'Image, initials, status dot, group stack' },
