@@ -146,10 +146,13 @@ function Preview({ title, code, children }: {
 
 // --- Full Button Preview ---
 
-export default function ButtonPreview() {
+export default function ButtonPreview({ part = 'all' }: { part?: 'first' | 'rest' | 'all' } = {}) {
+  const first = part === 'all' || part === 'first'
+  const rest = part === 'all' || part === 'rest'
   return (
     <div className="space-y-10">
 
+      {first && (
       <Preview
         title="Default"
         code={`import { Button } from "~/components/ui/button"
@@ -160,7 +163,9 @@ export function ButtonDefault() {
       >
         <Btn>Button</Btn>
       </Preview>
+      )}
 
+      {rest && (
       <Preview
         title="Variants"
         code={`import { Button } from "~/components/ui/button"
@@ -187,7 +192,9 @@ export function ButtonVariants() {
           <Btn variant="link">Link</Btn>
         </div>
       </Preview>
+      )}
 
+      {rest && (
       <Preview
         title="Sizes"
         code={`import { Button } from "~/components/ui/button"
@@ -208,7 +215,9 @@ export function ButtonSizes() {
           <Btn size="lg">Large</Btn>
         </div>
       </Preview>
+      )}
 
+      {rest && (
       <Preview
         title="Rounded"
         code={`import { Button } from "~/components/ui/button"
@@ -229,7 +238,9 @@ export function ButtonRounded() {
           <Btn rounded variant="destructive">Pill Delete</Btn>
         </div>
       </Preview>
+      )}
 
+      {rest && (
       <Preview
         title="Icon Only"
         code={`import { Button } from "~/components/ui/button"
@@ -252,7 +263,9 @@ export function ButtonIconOnly() {
           <Btn iconOnly rounded variant="destructive" iconLeft={<span>♥</span>} />
         </div>
       </Preview>
+      )}
 
+      {rest && (
       <Preview
         title="With Icons"
         code={`import { Button } from "~/components/ui/button"
@@ -271,7 +284,9 @@ export function ButtonWithIcons() {
           <Btn variant="outline" iconRight={<span>→</span>}>Next</Btn>
         </div>
       </Preview>
+      )}
 
+      {rest && (
       <Preview
         title="Custom Colors"
         code={`import { Button } from "~/components/ui/button"
@@ -292,7 +307,9 @@ export function ButtonCustomColors() {
           <Btn color="#f59e0b" variant="outline">Amber</Btn>
         </div>
       </Preview>
+      )}
 
+      {rest && (
       <Preview
         title="Button Group"
         code={`import { Button, ButtonGroup } from "~/components/ui/button"
@@ -327,7 +344,9 @@ export function ButtonGroupExample() {
           </BtnGroup>
         </div>
       </Preview>
+      )}
 
+      {rest && (
       <Preview
         title="Full Width"
         code={`import { Button } from "~/components/ui/button"
@@ -346,7 +365,9 @@ export function ButtonFullWidth() {
           <Btn fullWidth variant="outline">Full Width Outline</Btn>
         </div>
       </Preview>
+      )}
 
+      {rest && (
       <Preview
         title="Haptic Feedback"
         code={`import { Button } from "~/components/ui/button"
@@ -364,7 +385,9 @@ export function ButtonFullWidth() {
           <Btn variant="ghost">None</Btn>
         </div>
       </Preview>
+      )}
 
+      {rest && (
       <Preview
         title="Loading"
         code={`import { Button } from "~/components/ui/button"
@@ -375,7 +398,9 @@ export function ButtonLoading() {
       >
         <Btn loading>Saving...</Btn>
       </Preview>
+      )}
 
+      {rest && (
       <Preview
         title="Disabled"
         code={`import { Button } from "~/components/ui/button"
@@ -386,6 +411,7 @@ export function ButtonDisabled() {
       >
         <Btn disabled>Disabled</Btn>
       </Preview>
+      )}
 
     </div>
   )

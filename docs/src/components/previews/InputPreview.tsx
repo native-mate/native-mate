@@ -184,10 +184,13 @@ function Preview({ title, code, children }: {
 
 // --- Full Input Preview ---
 
-export default function InputPreview() {
+export default function InputPreview({ part = 'all' }: { part?: 'first' | 'rest' | 'all' } = {}) {
+  const first = part === 'all' || part === 'first'
+  const rest = part === 'all' || part === 'rest'
   return (
     <div className="space-y-10">
 
+      {first && (
       <Preview
         title="Default"
         code={`import { Input } from "~/components/ui/input"
@@ -198,7 +201,9 @@ export function InputDefault() {
       >
         <Inp label="Email" placeholder="you@example.com" />
       </Preview>
+      )}
 
+      {rest && (
       <Preview
         title="Sizes"
         code={`import { Input } from "~/components/ui/input"
@@ -219,7 +224,9 @@ export function InputSizes() {
           <Inp size="lg" placeholder="Large input" />
         </div>
       </Preview>
+      )}
 
+      {rest && (
       <Preview
         title="Required"
         code={`import { Input } from "~/components/ui/input"
@@ -230,7 +237,9 @@ export function InputRequired() {
       >
         <Inp label="Full Name" placeholder="John Doe" required />
       </Preview>
+      )}
 
+      {rest && (
       <Preview
         title="Prefix & Suffix Text"
         code={`import { Input } from "~/components/ui/input"
@@ -249,7 +258,9 @@ export function InputAddons() {
           <Inp label="Website" prefixText="https://" placeholder="example.com" />
         </div>
       </Preview>
+      )}
 
+      {rest && (
       <Preview
         title="Prefix & Suffix Icons"
         code={`import { Input } from "~/components/ui/input"
@@ -277,7 +288,9 @@ export function InputIcons() {
           <Inp label="Email" suffix={<span className="text-green-400">✓</span>} placeholder="you@example.com" />
         </div>
       </Preview>
+      )}
 
+      {rest && (
       <Preview
         title="Clearable"
         code={`import { Input } from "~/components/ui/input"
@@ -288,7 +301,9 @@ export function InputClearable() {
       >
         <Inp label="Search" placeholder="Type to search..." clearable />
       </Preview>
+      )}
 
+      {rest && (
       <Preview
         title="Password with Toggle"
         code={`import { Input } from "~/components/ui/input"
@@ -306,7 +321,9 @@ export function InputPassword() {
       >
         <Inp label="Password" placeholder="••••••••" type="password" showPasswordToggle />
       </Preview>
+      )}
 
+      {rest && (
       <Preview
         title="Character Count"
         code={`import { Input } from "~/components/ui/input"
@@ -317,7 +334,9 @@ export function InputCount() {
       >
         <Inp label="Bio" placeholder="Write something..." showCount maxLength={100} />
       </Preview>
+      )}
 
+      {rest && (
       <Preview
         title="Floating Label"
         code={`import { Input } from "~/components/ui/input"
@@ -336,7 +355,9 @@ export function InputFloating() {
           <Inp floatingLabel label="Required Field" required />
         </div>
       </Preview>
+      )}
 
+      {rest && (
       <Preview
         title="Error (with shake)"
         code={`import { Input } from "~/components/ui/input"
@@ -347,7 +368,9 @@ export function InputError() {
       >
         <Inp label="Username" error="Username is already taken" />
       </Preview>
+      )}
 
+      {rest && (
       <Preview
         title="With Hint"
         code={`import { Input } from "~/components/ui/input"
@@ -364,7 +387,9 @@ export function InputHint() {
       >
         <Inp label="Username" placeholder="johndoe" hint="Only letters, numbers, and underscores" />
       </Preview>
+      )}
 
+      {rest && (
       <Preview
         title="Haptic on Focus"
         code={`import { Input } from "~/components/ui/input"
@@ -376,7 +401,9 @@ export function InputHaptic() {
       >
         <Inp label="Tap me" placeholder="Feel the tap on device..." />
       </Preview>
+      )}
 
+      {rest && (
       <Preview
         title="Disabled"
         code={`import { Input } from "~/components/ui/input"
@@ -387,6 +414,7 @@ export function InputDisabled() {
       >
         <Inp label="Company" value="Acme Inc." disabled />
       </Preview>
+      )}
 
     </div>
   )
