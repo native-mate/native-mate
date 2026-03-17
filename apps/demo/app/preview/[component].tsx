@@ -1,21 +1,25 @@
 import React, { useState } from 'react'
 import { ScrollView, View, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native'
 import { useLocalSearchParams, Stack } from 'expo-router'
+import { Ionicons } from '@expo/vector-icons'
 import { useTheme, Text } from '@native-mate/core'
 
 // Components
 import { Button, ButtonGroup } from '../../../../packages/registry/components/button/button'
 import { Input } from '../../../../packages/registry/components/input/input'
+import { CheckboxGroup } from '../../../../packages/registry/components/checkbox/checkbox'
+import { MultiSelect } from '../../../../packages/registry/components/select/select'
+import { RangeSlider } from '../../../../packages/registry/components/slider/slider'
 import { Textarea } from '../../../../packages/registry/components/textarea/textarea'
 import { Checkbox } from '../../../../packages/registry/components/checkbox/checkbox'
 import { Radio, RadioGroup } from '../../../../packages/registry/components/radio/radio'
 import { Switch } from '../../../../packages/registry/components/switch/switch'
 import { Slider } from '../../../../packages/registry/components/slider/slider'
 import { Badge } from '../../../../packages/registry/components/badge/badge'
-import { Avatar } from '../../../../packages/registry/components/avatar/avatar'
-import { Tag } from '../../../../packages/registry/components/tag/tag'
+import { Avatar, AvatarGroup } from '../../../../packages/registry/components/avatar/avatar'
+import { Tag, TagGroup } from '../../../../packages/registry/components/tag/tag'
 import { Progress } from '../../../../packages/registry/components/progress/progress'
-import { Skeleton } from '../../../../packages/registry/components/skeleton/skeleton'
+import { Skeleton, SkeletonText, SkeletonAvatar, SkeletonCard } from '../../../../packages/registry/components/skeleton/skeleton'
 import { Alert } from '../../../../packages/registry/components/alert/alert'
 import { Card } from '../../../../packages/registry/components/card/card'
 import { Tabs } from '../../../../packages/registry/components/tabs/tabs'
@@ -26,7 +30,7 @@ import { Modal } from '../../../../packages/registry/components/modal/modal'
 import { ActionSheet } from '../../../../packages/registry/components/action-sheet/action-sheet'
 import { Toast } from '../../../../packages/registry/components/toast/toast'
 import { Tooltip } from '../../../../packages/registry/components/tooltip/tooltip'
-import { OtpInput } from '../../../../packages/registry/components/otp-input/otp-input'
+import { OTPInput } from '../../../../packages/registry/components/otp-input/otp-input'
 import { Select } from '../../../../packages/registry/components/select/select'
 
 const labels: Record<string, string> = {
@@ -77,16 +81,16 @@ function ButtonPreview() {
       </Section>
       <Section title="Icon Only">
         <View style={{ flexDirection: 'row', gap: 12 }}>
-          <Button iconOnly iconLeft={<Text style={{ color: '#000', fontSize: 20, fontWeight: '700' }}>+</Text>} />
-          <Button iconOnly variant="outline" iconLeft={<Text style={{ color: '#fafafa', fontSize: 18 }}>✕</Text>} />
-          <Button iconOnly rounded iconLeft={<Text style={{ color: '#000', fontSize: 18 }}>♥</Text>} />
-          <Button iconOnly rounded variant="destructive" iconLeft={<Text style={{ color: '#fff', fontSize: 18 }}>♥</Text>} />
+          <Button iconOnly iconLeft={<Ionicons name="add" size={20} color="#000" />} />
+          <Button iconOnly variant="outline" iconLeft={<Ionicons name="close" size={18} color="#fafafa" />} />
+          <Button iconOnly rounded iconLeft={<Ionicons name="heart" size={18} color="#000" />} />
+          <Button iconOnly rounded variant="destructive" iconLeft={<Ionicons name="heart" size={18} color="#fff" />} />
         </View>
       </Section>
       <Section title="With Icons">
         <View style={{ gap: 12, alignItems: 'flex-start' }}>
-          <Button iconLeft={<Text style={{ color: '#000', fontSize: 18, fontWeight: '700' }}>+</Text>}>Add Item</Button>
-          <Button variant="outline" iconRight={<Text style={{ color: '#fafafa', fontSize: 16 }}>→</Text>}>Next</Button>
+          <Button iconLeft={<Ionicons name="add" size={18} color="#000" />}>Add Item</Button>
+          <Button variant="outline" iconRight={<Ionicons name="arrow-forward" size={16} color="#fafafa" />}>Next</Button>
         </View>
       </Section>
       <Section title="Custom Colors">
@@ -172,7 +176,7 @@ function InputPreview() {
         <View style={{ gap: 12 }}>
           <Input
             placeholder="Search..."
-            prefix={<Text style={{ fontSize: 14 }}>🔎</Text>}
+            prefix={<Ionicons name="search" size={16} color="#71717a" />}
             clearable
             value={search}
             onChangeText={setSearch}
@@ -222,6 +226,8 @@ function TextareaPreview() {
   const [mention, setMention] = useState('')
   const [chat, setChat] = useState('')
   const [chatMessages, setChatMessages] = useState<string[]>([])
+  const [voiceTranscript, setVoiceTranscript] = useState('')
+  const [voiceRecording, setVoiceRecording] = useState(false)
   return (
     <>
       <Section title="Default">
@@ -275,9 +281,24 @@ function TextareaPreview() {
       <Section title="Voice Input">
         <Textarea
           label="Voice note"
-          placeholder="Tap 🎙 to dictate..."
+          placeholder="Tap microphone icon to dictate..."
           voiceInput
-          onVoicePress={() => { /* wire to expo-speech or your STT lib */ }}
+          value={voiceTranscript}
+          onChangeText={setVoiceTranscript}
+          hint={voiceRecording ? '🔴 Recording… (simulated)' : 'Tap mic — wire to expo-av or expo-speech for real STT'}
+          onVoicePress={() => {
+            // Demo: simulate recording toggle + fake transcript
+            if (voiceRecording) {
+              setVoiceRecording(false)
+              setVoiceTranscript((v) => v + (v ? ' ' : '') + 'Hello from voice input')
+            } else {
+              setVoiceRecording(true)
+              setTimeout(() => {
+                setVoiceRecording(false)
+                setVoiceTranscript((v) => v + (v ? ' ' : '') + 'Hello from voice input')
+              }, 2000)
+            }
+          }}
         />
       </Section>
       <Section title="Read-only">
@@ -296,145 +317,526 @@ function TextareaPreview() {
 function CheckboxPreview() {
   const [a, setA] = useState(true)
   const [b, setB] = useState(false)
-  const [c, setC] = useState(false)
+  const [indeterminate, setIndeterminate] = useState(false)
+  const [groupVal, setGroupVal] = useState(['ts'])
+  const [leftVal, setLeftVal] = useState(false)
   return (
-    <Section title="Options">
-      <View style={s.gap}>
-        <Checkbox checked={a} onChange={setA} label="Accept terms" />
-        <Checkbox checked={b} onChange={setB} label="Subscribe to newsletter" />
-        <Checkbox checked={c} onChange={setC} label="Disabled option" disabled />
-      </View>
-    </Section>
+    <>
+      <Section title="Default">
+        <View style={s.gap}>
+          <Checkbox checked={a} onChange={setA} label="Accept terms & conditions" />
+          <Checkbox checked={b} onChange={setB} label="Subscribe to newsletter" description="Get weekly updates about new components." />
+          <Checkbox checked={false} onChange={() => {}} label="Disabled option" disabled />
+          <Checkbox checked={true} onChange={() => {}} label="Disabled checked" disabled />
+        </View>
+      </Section>
+      <Section title="Indeterminate">
+        <Checkbox
+          checked={false}
+          indeterminate={true}
+          onChange={() => {}}
+          label="Select all (partial)"
+          description="Some items are selected"
+        />
+      </Section>
+      <Section title="Sizes">
+        <View style={s.gap}>
+          <Checkbox checked={true} onChange={() => {}} label="Small" size="sm" />
+          <Checkbox checked={true} onChange={() => {}} label="Medium (default)" size="md" />
+          <Checkbox checked={true} onChange={() => {}} label="Large" size="lg" />
+        </View>
+      </Section>
+      <Section title="Custom Color">
+        <View style={s.gap}>
+          <Checkbox checked={true} onChange={() => {}} label="Emerald" color="#10b981" />
+          <Checkbox checked={true} onChange={() => {}} label="Rose" color="#f43f5e" />
+          <Checkbox checked={true} onChange={() => {}} label="Violet" color="#8b5cf6" />
+        </View>
+      </Section>
+      <Section title="Label on Left">
+        <Checkbox checked={leftVal} onChange={setLeftVal} label="Dark mode" labelPosition="left" />
+      </Section>
+      <Section title="Error State">
+        <Checkbox checked={false} onChange={() => {}} label="Accept terms" error="You must accept the terms to continue." />
+      </Section>
+      <Section title="CheckboxGroup">
+        <CheckboxGroup
+          label="Technologies"
+          options={[
+            { label: 'TypeScript', value: 'ts', description: 'Typed superset of JavaScript' },
+            { label: 'React Native', value: 'rn' },
+            { label: 'Expo', value: 'expo' },
+            { label: 'GraphQL', value: 'gql', disabled: true },
+          ]}
+          value={groupVal}
+          onChange={setGroupVal}
+        />
+        <Text variant="caption" muted style={{ marginTop: 8 }}>Selected: {groupVal.join(', ') || 'none'}</Text>
+      </Section>
+      <Section title="Horizontal Group">
+        <CheckboxGroup
+          options={[
+            { label: 'Mon', value: 'mon' },
+            { label: 'Tue', value: 'tue' },
+            { label: 'Wed', value: 'wed' },
+            { label: 'Thu', value: 'thu' },
+            { label: 'Fri', value: 'fri' },
+          ]}
+          value={groupVal}
+          onChange={setGroupVal}
+          horizontal
+        />
+      </Section>
+    </>
   )
 }
 
 function RadioPreview() {
-  const [val, setVal] = useState('react-native')
+  const [fw, setFw] = useState('rn')
+  const [plan, setPlan] = useState('pro')
+  const [size, setSize] = useState('md')
+  const [dir, setDir] = useState('ltr')
   return (
-    <Section title="Framework">
-      <RadioGroup
-        options={[
-          { label: 'React Native', value: 'react-native' },
-          { label: 'Flutter', value: 'flutter' },
-          { label: 'SwiftUI', value: 'swiftui' },
-        ]}
-        value={val}
-        onChange={setVal}
-      />
-    </Section>
+    <>
+      <Section title="Default">
+        <RadioGroup
+          label="Framework"
+          options={[
+            { label: 'React Native', value: 'rn', description: 'Cross-platform mobile' },
+            { label: 'Flutter', value: 'flutter', description: 'Google UI toolkit' },
+            { label: 'SwiftUI', value: 'swiftui', description: 'iOS & macOS only', disabled: true },
+          ]}
+          value={fw}
+          onChange={setFw}
+        />
+      </Section>
+      <Section title="Card Style">
+        <RadioGroup
+          label="Choose a plan"
+          card
+          options={[
+            { label: 'Free', value: 'free', description: '5 components, community support' },
+            { label: 'Pro', value: 'pro', description: 'Unlimited components, priority support' },
+            { label: 'Team', value: 'team', description: 'Everything in Pro + team management' },
+          ]}
+          value={plan}
+          onChange={setPlan}
+        />
+        <Text variant="caption" muted style={{ marginTop: 8 }}>Selected: {plan}</Text>
+      </Section>
+      <Section title="Sizes">
+        <RadioGroup
+          options={[
+            { label: 'Small', value: 'sm' },
+            { label: 'Medium (default)', value: 'md' },
+            { label: 'Large', value: 'lg' },
+          ]}
+          value={size}
+          onChange={setSize}
+          size={size as any}
+        />
+      </Section>
+      <Section title="Horizontal">
+        <RadioGroup
+          options={[
+            { label: 'LTR', value: 'ltr' },
+            { label: 'RTL', value: 'rtl' },
+            { label: 'Auto', value: 'auto' },
+          ]}
+          value={dir}
+          onChange={setDir}
+          horizontal
+        />
+      </Section>
+      <Section title="Error State">
+        <RadioGroup
+          label="Preferred contact"
+          options={[
+            { label: 'Email', value: 'email' },
+            { label: 'SMS', value: 'sms' },
+          ]}
+          value=""
+          onChange={() => {}}
+          error="Please select a contact method."
+        />
+      </Section>
+      <Section title="Disabled Group">
+        <RadioGroup
+          options={[
+            { label: 'Option A', value: 'a' },
+            { label: 'Option B', value: 'b' },
+          ]}
+          value="a"
+          onChange={() => {}}
+          disabled
+        />
+      </Section>
+    </>
   )
 }
 
 function SwitchPreview() {
-  const [a, setA] = useState(true)
-  const [b, setB] = useState(false)
+  const [darkMode, setDarkMode] = useState(true)
+  const [notifs, setNotifs] = useState(false)
+  const [email, setEmail] = useState(true)
+  const [marketing, setMarketing] = useState(true)
+  const [sizeSm, setSizeSm] = useState(true)
+  const [sizeMd, setSizeMd] = useState(true)
+  const [sizeLg, setSizeLg] = useState(true)
+  const [loading, setLoading] = useState(false)
+  const [loadingValue, setLoadingValue] = useState(false)
   return (
-    <Section title="Toggles">
-      <View style={s.gap}>
-        <View style={s.switchRow}>
-          <Text variant="body">Dark mode</Text>
-          <Switch value={a} onValueChange={setA} />
+    <>
+      <Section title="With Label & Description">
+        <View style={s.gap}>
+          <Switch
+            value={darkMode}
+            onValueChange={setDarkMode}
+            label="Dark mode"
+            description="Switch between light and dark themes"
+          />
+          <Switch
+            value={notifs}
+            onValueChange={setNotifs}
+            label="Push notifications"
+            description="Receive alerts on your device"
+          />
         </View>
-        <View style={s.switchRow}>
-          <Text variant="body">Notifications</Text>
-          <Switch value={b} onValueChange={setB} />
+      </Section>
+      <Section title="Sizes">
+        <View style={s.gap}>
+          <Switch value={sizeSm} onValueChange={setSizeSm} size="sm" label="Small" />
+          <Switch value={sizeMd} onValueChange={setSizeMd} size="md" label="Medium" />
+          <Switch value={sizeLg} onValueChange={setSizeLg} size="lg" label="Large" />
         </View>
-        <View style={s.switchRow}>
-          <Text variant="body" muted>Disabled</Text>
-          <Switch value={false} onValueChange={() => {}} disabled />
+      </Section>
+      <Section title="Custom Color">
+        <View style={s.gap}>
+          <Switch value={email} onValueChange={setEmail} label="Email alerts" color="#10b981" />
+          <Switch value={marketing} onValueChange={setMarketing} label="Marketing" color="#f59e0b" />
         </View>
-      </View>
-    </Section>
+      </Section>
+      <Section title="Label Left">
+        <Switch
+          value={darkMode}
+          onValueChange={setDarkMode}
+          label="Dark mode"
+          labelPosition="left"
+        />
+      </Section>
+      <Section title="Loading & Disabled">
+        <View style={s.gap}>
+          <Switch
+            value={loadingValue}
+            onValueChange={(v) => { setLoading(true); setTimeout(() => { setLoading(false); setLoadingValue(v) }, 1500) }}
+            label={loading ? 'Saving to server…' : 'Auto-save'}
+            description="Tap to see loading state"
+            loading={loading}
+          />
+          <Switch value={false} onValueChange={() => {}} label="Disabled toggle" disabled />
+        </View>
+      </Section>
+    </>
   )
 }
 
 function SliderPreview() {
-  const [val, setVal] = useState(40)
+  const [vol, setVol] = useState(40)
+  const [bright, setBright] = useState(70)
+  const [stepped, setStepped] = useState(3)
+  const [rangeLow, setRangeLow] = useState(20)
+  const [rangeHigh, setRangeHigh] = useState(75)
+  const [price, setPriceLow] = useState(100)
+  const [priceHigh, setPriceHigh] = useState(500)
   return (
-    <Section title="Volume">
-      <Slider value={val} onChange={setVal} min={0} max={100} step={1} />
-      <Text variant="caption" muted style={{ marginTop: 8 }}>Value: {Math.round(val)}</Text>
-    </Section>
+    <>
+      <Section title="Default (with value)">
+        <Slider value={vol} onChange={setVol} min={0} max={100} showValue />
+      </Section>
+      <Section title="Custom Color">
+        <Slider value={bright} onChange={setBright} min={0} max={100} showValue fillColor="#f59e0b" />
+      </Section>
+      <Section title="Step + Marks">
+        <Slider value={stepped} onChange={setStepped} min={1} max={10} step={1} marks showValue />
+      </Section>
+      <Section title="Disabled">
+        <Slider value={60} onChange={() => {}} min={0} max={100} disabled showValue />
+      </Section>
+      <Section title="Range Slider">
+        <RangeSlider
+          low={rangeLow}
+          high={rangeHigh}
+          min={0}
+          max={100}
+          onChange={(l, h) => { setRangeLow(l); setRangeHigh(h) }}
+          showValue
+        />
+      </Section>
+      <Section title="Range Slider (Price Filter)">
+        <RangeSlider
+          low={price}
+          high={priceHigh}
+          min={0}
+          max={1000}
+          step={10}
+          onChange={(l, h) => { setPriceLow(l); setPriceHigh(h) }}
+          showValue
+          fillColor="#10b981"
+          marks
+        />
+      </Section>
+    </>
   )
 }
 
 function BadgePreview() {
+  const [dismissed, setDismissed] = useState(false)
   return (
-    <Section title="Variants">
-      <View style={s.row}>
-        <Badge variant="default">Default</Badge>
-        <Badge variant="secondary">Secondary</Badge>
-        <Badge variant="destructive">Error</Badge>
-      </View>
-      <View style={[s.row, { marginTop: 10 }]}>
-        <Badge variant="outline">Outline</Badge>
-        <Badge variant="success">Success</Badge>
-      </View>
-    </Section>
+    <>
+      <Section title="Solid">
+        <View style={s.row}>
+          <Badge variant="default">Default</Badge>
+          <Badge variant="secondary">Secondary</Badge>
+          <Badge variant="success">Success</Badge>
+          <Badge variant="destructive">Error</Badge>
+          <Badge variant="warning">Warning</Badge>
+          <Badge variant="info">Info</Badge>
+        </View>
+      </Section>
+      <Section title="Soft">
+        <View style={s.row}>
+          <Badge variant="default" appearance="soft">Default</Badge>
+          <Badge variant="success" appearance="soft">Success</Badge>
+          <Badge variant="destructive" appearance="soft">Error</Badge>
+          <Badge variant="warning" appearance="soft">Warning</Badge>
+          <Badge variant="info" appearance="soft">Info</Badge>
+        </View>
+      </Section>
+      <Section title="Outline">
+        <View style={s.row}>
+          <Badge variant="default" appearance="outline">Default</Badge>
+          <Badge variant="success" appearance="outline">Success</Badge>
+          <Badge variant="destructive" appearance="outline">Error</Badge>
+          <Badge variant="warning" appearance="outline">Warning</Badge>
+          <Badge variant="info" appearance="outline">Info</Badge>
+        </View>
+      </Section>
+      <Section title="Sizes">
+        <View style={s.row}>
+          <Badge variant="default" size="sm">Small</Badge>
+          <Badge variant="default" size="md">Medium</Badge>
+          <Badge variant="default" size="lg">Large</Badge>
+        </View>
+      </Section>
+      <Section title="Live indicator (pulse)">
+        <View style={s.row}>
+          <Badge variant="success" appearance="soft" pulse>Live</Badge>
+          <Badge variant="destructive" appearance="soft" pulse>Recording</Badge>
+          <Badge variant="info" appearance="soft" dot>Online</Badge>
+          <Badge variant="warning" appearance="soft" dot>Away</Badge>
+        </View>
+      </Section>
+      <Section title="Count / Notification">
+        <View style={s.row}>
+          <Badge variant="destructive" count={3} />
+          <Badge variant="default" count={12} />
+          <Badge variant="secondary" count={150} maxCount={99} />
+        </View>
+      </Section>
+      <Section title="Dismissible">
+        <View style={s.row}>
+          {!dismissed
+            ? <Badge variant="info" appearance="soft" onDismiss={() => setDismissed(true)}>New Feature</Badge>
+            : <Text variant="caption" muted>Dismissed</Text>}
+          <Badge variant="success" appearance="soft" onDismiss={() => {}}>Beta</Badge>
+        </View>
+      </Section>
+    </>
   )
+}
+
+// Professional headshots from randomuser.me
+const PHOTOS = {
+  sarah:   'https://randomuser.me/api/portraits/women/44.jpg',
+  james:   'https://randomuser.me/api/portraits/men/32.jpg',
+  priya:   'https://randomuser.me/api/portraits/women/68.jpg',
+  marcus:  'https://randomuser.me/api/portraits/men/75.jpg',
+  elena:   'https://randomuser.me/api/portraits/women/17.jpg',
+  tom:     'https://randomuser.me/api/portraits/men/91.jpg',
 }
 
 function AvatarPreview() {
   return (
-    <Section title="Sizes & Fallbacks">
-      <View style={s.row}>
-        <Avatar size="sm" fallback="SM" />
-        <Avatar size="md" fallback="MD" />
-        <Avatar size="lg" fallback="LG" />
-        <Avatar size="xl" fallback="XL" />
-      </View>
-      <View style={[s.row, { marginTop: 12 }]}>
-        <Avatar size="lg" src="https://i.pravatar.cc/100?img=1" />
-        <Avatar size="lg" src="https://i.pravatar.cc/100?img=2" />
-        <Avatar size="lg" src="https://i.pravatar.cc/100?img=3" />
-      </View>
-    </Section>
+    <>
+      <Section title="With image">
+        <View style={s.row}>
+          <Avatar size="lg" src={PHOTOS.sarah}  name="Sarah K" status="online" />
+          <Avatar size="lg" src={PHOTOS.james}  name="James M" status="busy" />
+          <Avatar size="lg" src={PHOTOS.priya}  name="Priya S" status="away" />
+          <Avatar size="lg" src={PHOTOS.marcus} name="Marcus T" status="offline" />
+        </View>
+      </Section>
+      <Section title="Sizes">
+        <View style={[s.row, { alignItems: 'flex-end' }]}>
+          <Avatar size="xs" src={PHOTOS.elena} name="Elena V" />
+          <Avatar size="sm" src={PHOTOS.elena} name="Elena V" />
+          <Avatar size="md" src={PHOTOS.elena} name="Elena V" />
+          <Avatar size="lg" src={PHOTOS.elena} name="Elena V" />
+          <Avatar size="xl" src={PHOTOS.elena} name="Elena V" />
+        </View>
+      </Section>
+      <Section title="Initials fallback">
+        <View style={s.row}>
+          <Avatar size="md" name="Sarah Kim" />
+          <Avatar size="md" name="Marcus T" />
+          <Avatar size="md" name="Priya Singh" />
+          <Avatar size="md" src="https://broken.xyz/img.jpg" name="Broken Image" />
+        </View>
+      </Section>
+      <Section title="Square shape">
+        <View style={s.row}>
+          <Avatar size="md" src={PHOTOS.tom}   name="Tom R" shape="square" />
+          <Avatar size="md" src={PHOTOS.priya} name="Priya S" shape="square" status="online" />
+          <Avatar size="lg" name="Marcus T" shape="square" />
+        </View>
+      </Section>
+      <Section title="Avatar group">
+        <AvatarGroup
+          size="md"
+          max={4}
+          avatars={[
+            { src: PHOTOS.sarah,  name: 'Sarah K' },
+            { src: PHOTOS.james,  name: 'James M' },
+            { src: PHOTOS.priya,  name: 'Priya S' },
+            { src: PHOTOS.marcus, name: 'Marcus T' },
+            { src: PHOTOS.elena,  name: 'Elena V' },
+            { src: PHOTOS.tom,    name: 'Tom R' },
+          ]}
+        />
+      </Section>
+    </>
   )
 }
 
 function TagPreview() {
-  const [tags, setTags] = useState(['React Native', 'TypeScript', 'Expo', 'Reanimated'])
+  const [chips, setChips] = useState(['React Native', 'TypeScript', 'Expo', 'Reanimated', 'Redux'])
+  const [filters, setFilters] = useState<string[]>(['Design'])
+  const [topics, setTopics] = useState<string[]>([])
+
   return (
-    <Section title="Dismissible tags">
-      <View style={s.row}>
-        {tags.map((t) => (
-          <Tag key={t} label={t} onRemove={() => setTags((p) => p.filter((x) => x !== t))} />
-        ))}
-      </View>
-    </Section>
+    <>
+      <Section title="Filter chips (single select)">
+        <TagGroup
+          tags={[
+            { label: 'All' },
+            { label: 'Design' },
+            { label: 'Engineering' },
+            { label: 'Marketing' },
+          ]}
+          selected={filters}
+          onChange={setFilters}
+        />
+      </Section>
+      <Section title="Multi select">
+        <TagGroup
+          multiSelect
+          tags={[
+            { label: 'React Native', variant: 'primary' },
+            { label: 'Swift', variant: 'info' },
+            { label: 'Kotlin', variant: 'success' },
+            { label: 'Flutter', variant: 'warning' },
+            { label: 'Expo', variant: 'primary' },
+          ]}
+          selected={topics}
+          onChange={setTopics}
+        />
+        {topics.length > 0 && (
+          <Text variant="caption" muted style={{ marginTop: 8 }}>Selected: {topics.join(', ')}</Text>
+        )}
+      </Section>
+      <Section title="Removable tags">
+        <View style={s.row}>
+          {chips.map((t) => (
+            <Tag key={t} label={t} onRemove={() => setChips((p) => p.filter((x) => x !== t))} />
+          ))}
+        </View>
+      </Section>
+      <Section title="Variants">
+        <View style={s.row}>
+          <Tag label="Primary" variant="primary" selected />
+          <Tag label="Success" variant="success" selected />
+          <Tag label="Warning" variant="warning" selected />
+          <Tag label="Error" variant="destructive" selected />
+          <Tag label="Info" variant="info" selected />
+        </View>
+      </Section>
+    </>
   )
 }
 
 function ProgressPreview() {
   const [val, setVal] = useState(65)
   return (
-    <Section title="Progress bar">
-      <Progress value={val} animated />
-      <Text variant="caption" muted style={{ marginTop: 8 }}>{val}%</Text>
-      <View style={[s.row, { marginTop: 12 }]}>
-        <Button size="sm" variant="outline" onPress={() => setVal((v) => Math.max(0, v - 10))}>-10</Button>
-        <Button size="sm" variant="outline" onPress={() => setVal((v) => Math.min(100, v + 10))}>+10</Button>
-      </View>
-    </Section>
+    <>
+      <Section title="Linear (with label + value)">
+        <Progress value={val} animated showValue label="Upload progress" />
+        <View style={[s.row, { marginTop: 12 }]}>
+          <Button size="sm" variant="outline" onPress={() => setVal((v) => Math.max(0, v - 10))}>-10%</Button>
+          <Button size="sm" variant="outline" onPress={() => setVal((v) => Math.min(100, v + 10))}>+10%</Button>
+        </View>
+      </Section>
+      <Section title="Sizes">
+        <View style={s.gap}>
+          <Progress value={val} size="sm" animated />
+          <Progress value={val} size="md" animated />
+          <Progress value={val} size="lg" animated />
+        </View>
+      </Section>
+      <Section title="Custom Colors">
+        <View style={s.gap}>
+          <Progress value={80} color="#10b981" animated showValue label="Storage used" />
+          <Progress value={45} color="#f59e0b" animated showValue label="CPU usage" />
+          <Progress value={92} color="#ef4444" animated showValue label="Memory" />
+        </View>
+      </Section>
+      <Section title="Indeterminate">
+        <Progress value={0} indeterminate color="#6366f1" />
+      </Section>
+      <Section title="Circular">
+        <View style={s.row}>
+          <Progress value={val} variant="circular" size="sm" showValue />
+          <Progress value={val} variant="circular" size="md" showValue />
+          <Progress value={val} variant="circular" size="lg" showValue />
+          <Progress value={val} variant="circular" size="lg" color="#10b981" showValue />
+        </View>
+      </Section>
+    </>
   )
 }
 
 function SkeletonPreview() {
   return (
-    <Section title="Loading placeholders">
-      <View style={s.gap}>
-        <View style={s.row}>
-          <Skeleton width={48} height={48} borderRadius={24} />
-          <View style={{ flex: 1, gap: 8 }}>
-            <Skeleton width="70%" height={16} />
-            <Skeleton width="40%" height={12} />
-          </View>
+    <>
+      <Section title="Shimmer (default)">
+        <View style={s.gap}>
+          <SkeletonAvatar size={44} variant="shimmer" />
+          <SkeletonAvatar size={44} variant="shimmer" />
+          <SkeletonAvatar size={44} variant="shimmer" />
         </View>
-        <Skeleton width="100%" height={120} borderRadius={10} />
-        <Skeleton width="100%" height={16} />
-        <Skeleton width="60%" height={16} />
-      </View>
-    </Section>
+      </Section>
+      <Section title="Card skeleton">
+        <SkeletonCard imageHeight={140} lines={3} variant="shimmer" />
+      </Section>
+      <Section title="Text lines">
+        <SkeletonText lines={4} lastLineWidth="45%" variant="shimmer" />
+      </Section>
+      <Section title="Pulse variant">
+        <View style={s.gap}>
+          <SkeletonAvatar size={44} variant="pulse" />
+          <SkeletonText lines={3} variant="pulse" />
+        </View>
+      </Section>
+    </>
   )
 }
 
@@ -565,23 +967,90 @@ function ActionSheetPreview() {
 }
 
 function ToastPreview() {
+  const [config, setConfig] = useState<any>(null)
   const [show, setShow] = useState(false)
-  const [variant, setVariant] = useState<'default' | 'success' | 'destructive' | 'warning'>('success')
+
+  const fire = (cfg: any) => {
+    setConfig(cfg)
+    setShow(false)
+    setTimeout(() => setShow(true), 50)
+  }
+
   return (
-    <Section title="Notifications">
-      <View style={s.row}>
-        <Button size="sm" onPress={() => { setVariant('success'); setShow(true) }}>Success</Button>
-        <Button size="sm" variant="destructive" onPress={() => { setVariant('destructive'); setShow(true) }}>Error</Button>
-        <Button size="sm" variant="outline" onPress={() => { setVariant('warning'); setShow(true) }}>Warning</Button>
-      </View>
-      <Toast
-        visible={show}
-        onHide={() => setShow(false)}
-        message={variant === 'success' ? 'Saved!' : variant === 'destructive' ? 'Failed!' : 'Careful!'}
-        variant={variant}
-        duration={2000}
-      />
-    </Section>
+    <>
+      <Section title="Variants">
+        <View style={s.row}>
+          <Button size="sm" onPress={() => fire({ variant: 'success', message: 'Changes saved' })}>
+            Success
+          </Button>
+          <Button size="sm" variant="destructive" onPress={() => fire({ variant: 'destructive', message: 'Something went wrong', description: 'Please try again.' })}>
+            Error
+          </Button>
+          <Button size="sm" variant="outline" onPress={() => fire({ variant: 'warning', message: 'Unsaved changes' })}>
+            Warning
+          </Button>
+          <Button size="sm" variant="secondary" onPress={() => fire({ variant: 'default', message: 'Update available' })}>
+            Info
+          </Button>
+        </View>
+      </Section>
+      <Section title="Notification with avatar">
+        <View style={s.gap}>
+          <Button size="sm" variant="outline" onPress={() => fire({
+            variant: 'default',
+            message: 'Sarah liked your post',
+            description: '"Building with native-mate is 🔥"',
+            avatar: { uri: PHOTOS.sarah },
+            actions: [{ label: 'View', onPress: () => setShow(false), variant: 'primary' }],
+            duration: 5000,
+          })}>
+            Like notification
+          </Button>
+          <Button size="sm" variant="outline" onPress={() => fire({
+            variant: 'default',
+            message: 'James sent you a message',
+            description: 'Hey! Are you free this weekend?',
+            avatar: { uri: PHOTOS.james },
+            actions: [
+              { label: 'Reply', onPress: () => setShow(false), variant: 'primary' },
+              { label: 'Dismiss', onPress: () => setShow(false) },
+            ],
+            duration: 6000,
+          })}>
+            Message notification
+          </Button>
+        </View>
+      </Section>
+      <Section title="With action + progress">
+        <View style={s.row}>
+          <Button size="sm" variant="outline" onPress={() => fire({
+            variant: 'default', message: 'Email sent', showProgress: true,
+            action: { label: 'Undo', onPress: () => setShow(false) },
+          })}>
+            Undo action
+          </Button>
+          <Button size="sm" variant="outline" onPress={() => fire({
+            variant: 'success', message: 'File uploaded!', showProgress: true,
+          })}>
+            Progress bar
+          </Button>
+        </View>
+      </Section>
+      <Section title="Position">
+        <View style={s.row}>
+          <Button size="sm" variant="outline" onPress={() => fire({ variant: 'success', message: 'Appears at top', position: 'top' })}>Top</Button>
+          <Button size="sm" variant="outline" onPress={() => fire({ variant: 'success', message: 'Appears at bottom' })}>Bottom</Button>
+        </View>
+      </Section>
+      {config && (
+        <Toast
+          visible={show}
+          onHide={() => setShow(false)}
+          duration={config.duration ?? 3000}
+          {...config}
+        />
+      )}
+    </>
   )
 }
 
@@ -601,32 +1070,192 @@ function TooltipPreview() {
 }
 
 function OtpInputPreview() {
-  const [val, setVal] = useState('')
+  const [v6, setV6] = useState('')
+  const [v4, setV4] = useState('')
+  const [secure, setSecure] = useState('')
+  const [under, setUnder] = useState('')
+  const [round, setRound] = useState('')
+  const [alpha, setAlpha] = useState('')
+  const [err, setErr] = useState('')
+  const [done, setDone] = useState(false)
   return (
-    <Section title="Verification code">
-      <OtpInput value={val} onChange={setVal} length={6} />
-      <Text variant="caption" muted style={{ marginTop: 8 }}>Entered: {val || '—'}</Text>
-    </Section>
+    <>
+      <Section title="Default (6-digit)">
+        <OTPInput value={v6} onChange={setV6} onComplete={() => {}} length={6} hint="Enter the code sent to your email" resend onResend={() => {}} resendCooldown={30} />
+      </Section>
+      <Section title="4-digit PIN">
+        <OTPInput value={v4} onChange={setV4} length={4} hint="Enter your 4-digit PIN" />
+      </Section>
+      <Section title="Secure (masked)">
+        <OTPInput value={secure} onChange={setSecure} length={6} secure hint="Digits are hidden as you type" />
+      </Section>
+      <Section title="Underline variant">
+        <OTPInput value={under} onChange={setUnder} length={6} variant="underline" />
+      </Section>
+      <Section title="Rounded variant">
+        <OTPInput value={round} onChange={setRound} length={6} variant="rounded" />
+      </Section>
+      <Section title="Alphanumeric">
+        <OTPInput value={alpha} onChange={setAlpha} length={5} type="alphanumeric" hint="Letters and numbers" />
+      </Section>
+      <Section title="Error state (shake)">
+        <OTPInput value={err} onChange={setErr} length={6} error errorMessage="Invalid code. Please try again." />
+      </Section>
+      <Section title="Success state">
+        <OTPInput value="123456" onChange={() => {}} length={6} success hint="Code verified successfully!" />
+      </Section>
+      <Section title="Disabled">
+        <OTPInput value="1234" onChange={() => {}} length={6} disabled />
+      </Section>
+    </>
   )
 }
 
+const COUNTRIES = [
+  { label: 'India', value: 'in', description: 'South Asia' },
+  { label: 'United States', value: 'us', description: 'North America' },
+  { label: 'United Kingdom', value: 'uk', description: 'Europe' },
+  { label: 'Germany', value: 'de', description: 'Europe' },
+  { label: 'Japan', value: 'jp', description: 'East Asia' },
+  { label: 'Canada', value: 'ca', description: 'North America' },
+  { label: 'Australia', value: 'au', description: 'Oceania' },
+  { label: 'Brazil', value: 'br', description: 'South America' },
+  { label: 'France', value: 'fr', description: 'Europe' },
+  { label: 'South Korea', value: 'kr', description: 'East Asia' },
+]
+
+const GROUPED_OPTIONS = [
+  {
+    label: 'Frontend',
+    options: [
+      { label: 'React', value: 'react' },
+      { label: 'Vue', value: 'vue' },
+      { label: 'Angular', value: 'angular' },
+    ],
+  },
+  {
+    label: 'Mobile',
+    options: [
+      { label: 'React Native', value: 'rn' },
+      { label: 'Flutter', value: 'flutter' },
+      { label: 'Swift', value: 'swift', disabled: true },
+    ],
+  },
+]
+
 function SelectPreview() {
-  const [val, setVal] = useState<string | undefined>()
+  const [country, setCountry] = useState('')
+  const [searchable, setSearchable] = useState('')
+  const [clearable, setClearable] = useState('us')
+  const [grouped, setGrouped] = useState('')
+  const [multi, setMulti] = useState<string[]>([])
+  const [multiCapped, setMultiCapped] = useState<string[]>([])
   return (
-    <Section title="Dropdown">
-      <Select
-        label="Country"
-        placeholder="Select country"
-        options={[
-          { label: 'India', value: 'in' },
-          { label: 'United States', value: 'us' },
-          { label: 'United Kingdom', value: 'uk' },
-          { label: 'Germany', value: 'de' },
-        ]}
-        value={val}
-        onChange={setVal}
-      />
-    </Section>
+    <>
+      <Section title="Default">
+        <Select
+          label="Country"
+          placeholder="Select country"
+          options={COUNTRIES}
+          value={country}
+          onChange={setCountry}
+          required
+        />
+      </Section>
+      <Section title="Searchable">
+        <Select
+          label="Search countries"
+          placeholder="Select country"
+          options={COUNTRIES}
+          value={searchable}
+          onChange={setSearchable}
+          searchable
+          searchPlaceholder="Type to search..."
+        />
+      </Section>
+      <Section title="Clearable">
+        <Select
+          label="Region"
+          options={COUNTRIES}
+          value={clearable}
+          onChange={setClearable}
+          clearable
+        />
+      </Section>
+      <Section title="Option Descriptions">
+        <Select
+          label="Country"
+          placeholder="Pick one"
+          options={COUNTRIES}
+          value={country}
+          onChange={setCountry}
+        />
+      </Section>
+      <Section title="Grouped Options">
+        <Select
+          label="Tech stack"
+          placeholder="Choose technology"
+          options={[]}
+          groups={GROUPED_OPTIONS}
+          value={grouped}
+          onChange={setGrouped}
+        />
+      </Section>
+      <Section title="Multi-select">
+        <MultiSelect
+          label="Skills"
+          placeholder="Select skills"
+          options={[
+            { label: 'TypeScript', value: 'ts' },
+            { label: 'React Native', value: 'rn' },
+            { label: 'GraphQL', value: 'gql' },
+            { label: 'Node.js', value: 'node' },
+            { label: 'Python', value: 'py' },
+          ]}
+          value={multi}
+          onChange={setMulti}
+          searchable
+          clearable
+        />
+        <Text variant="caption" muted style={{ marginTop: 6 }}>Selected: {multi.join(', ') || 'none'}</Text>
+      </Section>
+      <Section title="Multi-select (max 3)">
+        <MultiSelect
+          label="Hobbies (max 3)"
+          placeholder="Select up to 3"
+          options={[
+            { label: 'Reading', value: 'reading' },
+            { label: 'Gaming', value: 'gaming' },
+            { label: 'Cooking', value: 'cooking' },
+            { label: 'Travel', value: 'travel' },
+            { label: 'Music', value: 'music' },
+          ]}
+          value={multiCapped}
+          onChange={setMultiCapped}
+          maxSelections={3}
+        />
+      </Section>
+      <Section title="Error State">
+        <Select
+          label="Country"
+          placeholder="Select country"
+          options={COUNTRIES}
+          value=""
+          onChange={() => {}}
+          error="Please select a country to continue."
+          required
+        />
+      </Section>
+      <Section title="Disabled">
+        <Select
+          label="Region (locked)"
+          options={COUNTRIES}
+          value="in"
+          onChange={() => {}}
+          disabled
+        />
+      </Section>
+    </>
   )
 }
 
