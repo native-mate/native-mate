@@ -2,6 +2,7 @@
 import React, { useState } from 'react'
 import { View, Pressable } from 'react-native'
 import Animated, { useSharedValue, useAnimatedStyle, withSpring, withTiming } from 'react-native-reanimated'
+import { Ionicons } from '@expo/vector-icons'
 import { useTheme, Text, Separator, makeStyles } from '@native-mate/core'
 import type { AccordionProps } from './accordion.types'
 
@@ -30,7 +31,9 @@ const AccordionItemComponent: React.FC<{ item: AccordionProps['items'][0]; isOpe
     <View style={styles.item}>
       <Pressable style={styles.header} onPress={onToggle} accessibilityRole="button" accessibilityState={{ expanded: isOpen }}>
         <Text variant="label">{item.title}</Text>
-        <Animated.Text style={[{ color: theme.colors.muted, fontSize: 12 }, chevronStyle]}>▼</Animated.Text>
+        <Animated.View style={chevronStyle}>
+          <Ionicons name="chevron-down" size={16} color={theme.colors.muted} />
+        </Animated.View>
       </Pressable>
       <Separator />
       <Animated.View style={contentStyle}>

@@ -8,6 +8,7 @@ import Animated, {
   withSequence,
   interpolateColor,
 } from 'react-native-reanimated'
+import { Ionicons } from '@expo/vector-icons'
 import { useTheme, Text, makeStyles } from '@native-mate/core'
 import type { TextareaProps } from './textarea.types'
 
@@ -251,7 +252,7 @@ export const Textarea: React.FC<TextareaProps> = ({
                 { backgroundColor: focused ? theme.colors.primary + '22' : theme.colors.surface },
               ]}
             >
-              <Text style={{ fontSize: 14 }}>🎤</Text>
+              <Ionicons name="mic" size={16} color={focused ? theme.colors.primary : theme.colors.muted} />
             </Pressable>
           )}
         </View>

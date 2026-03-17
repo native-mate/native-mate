@@ -10,6 +10,7 @@ import Animated, {
   interpolate,
   interpolateColor,
 } from 'react-native-reanimated'
+import { Ionicons } from '@expo/vector-icons'
 import { useTheme, Text, makeStyles } from '@native-mate/core'
 import type { InputProps } from './input.types'
 
@@ -239,7 +240,7 @@ export const Input: React.FC<InputProps> = ({
         {clearable && currentValue ? (
           <Pressable onPress={handleClear} style={{ paddingRight: config.paddingH }}>
             <View style={styles.clearBtn}>
-              <Text style={{ color: theme.colors.background, fontSize: 12, fontWeight: '700', lineHeight: 14 }}>×</Text>
+              <Ionicons name="close" size={11} color={theme.colors.background} />
             </View>
           </Pressable>
         ) : null}
