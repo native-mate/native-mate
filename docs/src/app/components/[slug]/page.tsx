@@ -1,7 +1,13 @@
+import React from 'react'
 import { notFound } from 'next/navigation'
 import { Nav } from '@/components/Nav'
 import { CodeBlock } from '@/components/CodeBlock'
 import Link from 'next/link'
+import dynamic from 'next/dynamic'
+
+const componentPreviews: Record<string, React.ComponentType> = {
+  button: dynamic(() => import('@/components/previews/ButtonPreview'), { ssr: false }),
+}
 
 interface ComponentDoc {
   name: string
@@ -14,6 +20,7 @@ interface ComponentDoc {
   addCommand: string
   usageCode: string
   exampleCode: string
+  accessibility?: Array<{ feature: string; detail: string }>
 }
 
 const COMPONENT_DOCS: Record<string, ComponentDoc> = {
@@ -25,6 +32,13 @@ const COMPONENT_DOCS: Record<string, ComponentDoc> = {
     npmDeps: [],
     componentDeps: [],
     addCommand: 'npx native-mate add button',
+    accessibility: [
+      { feature: 'Role', detail: 'accessibilityRole="button" is set automatically.' },
+      { feature: 'Label', detail: 'accessibilityLabel is auto-derived from text children, or pass a custom one.' },
+      { feature: 'Disabled state', detail: 'accessibilityState={{ disabled }} is set when disabled or loading.' },
+      { feature: 'Busy state', detail: 'accessibilityState={{ busy: true }} is set when loading.' },
+      { feature: 'Keyboard', detail: 'Fully pressable via assistive technology. Disabled buttons prevent interaction.' },
+    ],
     props: [
       { name: 'variant', type: '"default" | "outline" | "ghost" | "destructive" | "secondary" | "link"', default: '"default"', description: 'Visual style of the button.' },
       { name: 'size', type: '"sm" | "md" | "lg"', default: '"md"', description: 'Controls height and padding.' },
@@ -1364,6 +1378,14 @@ export default function ComponentPage({ params }: { params: { slug: string } }) 
           <p className="text-zinc-400">{doc.description}</p>
         </div>
 
+        {/* Preview */}
+        {componentPreviews[doc.slug] && (
+          <section className="mb-10">
+            <h2 className="mb-3 text-sm font-semibold uppercase tracking-widest text-zinc-500">Preview</h2>
+            {React.createElement(componentPreviews[doc.slug])}
+          </section>
+        )}
+
         {/* Install */}
         <section className="mb-10">
           <h2 className="mb-3 text-sm font-semibold uppercase tracking-widest text-zinc-500">Installation</h2>
@@ -1413,6 +1435,31 @@ export default function ComponentPage({ params }: { params: { slug: string } }) 
           <h2 className="mb-3 text-sm font-semibold uppercase tracking-widest text-zinc-500">Example</h2>
           <CodeBlock language="tsx" code={doc.exampleCode} />
         </section>
+
+        {/* Accessibility */}
+        {doc.accessibility && doc.accessibility.length > 0 && (
+          <section className="mb-10">
+            <h2 className="mb-3 text-sm font-semibold uppercase tracking-widest text-zinc-500">Accessibility</h2>
+            <div className="overflow-hidden rounded-xl border border-zinc-800">
+              <table className="w-full text-sm">
+                <thead className="border-b border-zinc-800 bg-zinc-900">
+                  <tr>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-400">Feature</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-400">Detail</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {doc.accessibility.map((item, i) => (
+                    <tr key={item.feature} className={i % 2 === 0 ? 'bg-zinc-950' : 'bg-zinc-900/50'}>
+                      <td className="px-4 py-3 font-mono text-xs text-blue-400">{item.feature}</td>
+                      <td className="px-4 py-3 text-xs text-zinc-400">{item.detail}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        )}
       </main>
     </div>
   )
