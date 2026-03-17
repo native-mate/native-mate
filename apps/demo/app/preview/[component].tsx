@@ -72,7 +72,7 @@ function ButtonPreview() {
         <View style={{ gap: 12, alignItems: 'flex-start' }}>
           <Button rounded>Rounded Default</Button>
           <Button rounded variant="outline">Rounded Outline</Button>
-          <Button rounded variant="gradient" gradientColors={['#6366f1', '#a855f7']}>Rounded Gradient</Button>
+          <Button rounded variant="destructive">Rounded Destructive</Button>
         </View>
       </Section>
       <Section title="Icon Only">
@@ -80,7 +80,7 @@ function ButtonPreview() {
           <Button iconOnly iconLeft={<Text style={{ color: '#000', fontSize: 20, fontWeight: '700' }}>+</Text>} />
           <Button iconOnly variant="outline" iconLeft={<Text style={{ color: '#fafafa', fontSize: 18 }}>✕</Text>} />
           <Button iconOnly rounded iconLeft={<Text style={{ color: '#000', fontSize: 18 }}>♥</Text>} />
-          <Button iconOnly rounded variant="destructive" iconLeft={<Text style={{ color: '#fff', fontSize: 18, fontWeight: '700' }}>×</Text>} />
+          <Button iconOnly rounded variant="destructive" iconLeft={<Text style={{ color: '#fff', fontSize: 18 }}>♥</Text>} />
         </View>
       </Section>
       <Section title="With Icons">
@@ -98,19 +98,19 @@ function ButtonPreview() {
       </Section>
       <Section title="Button Group">
         <View style={{ gap: 16 }}>
-          <ButtonGroup>
+          <ButtonGroup fullWidth>
             <Button>Left</Button>
             <Button>Center</Button>
             <Button>Right</Button>
           </ButtonGroup>
-          <ButtonGroup variant="outline">
+          <ButtonGroup fullWidth variant="outline">
             <Button>Day</Button>
             <Button>Week</Button>
             <Button>Month</Button>
             <Button>Year</Button>
           </ButtonGroup>
           <ButtonGroup fullWidth>
-            <Button>Cancel</Button>
+            <Button variant="outline">Cancel</Button>
             <Button variant="default">Confirm</Button>
           </ButtonGroup>
         </View>

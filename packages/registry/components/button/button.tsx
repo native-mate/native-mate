@@ -52,7 +52,7 @@ const labelColorMap: Record<ButtonVariant, keyof ReturnType<typeof useTheme>['co
   link: 'primary',
 }
 
-export const Button: React.FC<ButtonProps> = ({
+export const Button: React.FC<ButtonProps & { _groupStyle?: any }> = ({
   variant = 'default',
   size = 'md',
   loading = false,
@@ -67,6 +67,7 @@ export const Button: React.FC<ButtonProps> = ({
   children,
   accessibilityLabel,
   onPress,
+  _groupStyle,
   ...rest
 }) => {
   const theme = useTheme()
@@ -156,6 +157,7 @@ export const Button: React.FC<ButtonProps> = ({
           iconOnlyStyle,
           roundedStyle,
           colorOverride,
+          _groupStyle,
           animatedStyle,
         ]}
       >
@@ -199,27 +201,34 @@ export const ButtonGroup: React.FC<ButtonGroupProps> = ({
     <View style={{
       flexDirection: 'row',
       width: fullWidth ? '100%' : undefined,
+      overflow: 'hidden',
+      borderRadius: theme.radius.md,
+      borderWidth: 1,
+      borderColor: theme.colors.border,
     }}>
       {items.map((child, i) => {
         if (!React.isValidElement(child)) return child
         const isFirst = i === 0
         const isLast = i === items.length - 1
 
-        return React.cloneElement(child as React.ReactElement<any>, {
-          key: i,
-          size: size || child.props.size,
-          variant: variant || child.props.variant || 'outline',
-          fullWidth: fullWidth,
-          rounded: false,
-          style: {
-            borderRadius: 0,
-            borderTopLeftRadius: isFirst ? theme.radius.md : 0,
-            borderBottomLeftRadius: isFirst ? theme.radius.md : 0,
-            borderTopRightRadius: isLast ? theme.radius.md : 0,
-            borderBottomRightRadius: isLast ? theme.radius.md : 0,
-            marginLeft: !isFirst ? -1 : 0,
-          },
-        })
+        return (
+          <View key={i} style={{
+            flex: fullWidth ? 1 : undefined,
+            borderLeftWidth: !isFirst ? 1 : 0,
+            borderLeftColor: theme.colors.border,
+          }}>
+            {React.cloneElement(child as React.ReactElement<any>, {
+              size: size || child.props.size,
+              variant: variant || child.props.variant || 'outline',
+              fullWidth: true,
+              rounded: false,
+              _groupStyle: {
+                borderRadius: 0,
+                borderWidth: 0,
+              },
+            })}
+          </View>
+        )
       })}
     </View>
   )
