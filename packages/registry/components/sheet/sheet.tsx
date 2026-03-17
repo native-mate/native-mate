@@ -1,7 +1,7 @@
 // native-mate: sheet@0.1.0 | hash:PLACEHOLDER
 import React, { useEffect } from 'react'
-import { Modal, View, Pressable, StyleSheet } from 'react-native'
-import Animated, { useSharedValue, useAnimatedStyle, withSpring, withTiming, runOnJS } from 'react-native-reanimated'
+import { Modal, View, Pressable, StyleSheet, Keyboard, Platform } from 'react-native'
+import Animated, { useSharedValue, useAnimatedStyle, withTiming, runOnJS, Easing } from 'react-native-reanimated'
 import { useTheme, Text, Separator, makeStyles } from '@native-mate/core'
 import type { SheetProps } from './sheet.types'
 
@@ -9,7 +9,7 @@ const useStyles = makeStyles((theme) => ({
   backdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.5)' },
   sheet: {
     position: 'absolute', bottom: 0, left: 0, right: 0,
-    backgroundColor: theme.colors.surfaceRaised,
+    backgroundColor: theme.colors.surfaceRaised ?? theme.colors.surface ?? '#1c1c1e',
     borderTopLeftRadius: theme.radius.xl, borderTopRightRadius: theme.radius.xl,
     paddingBottom: 32,
   },
@@ -22,12 +22,42 @@ export const Sheet: React.FC<SheetProps> = ({ visible, onClose, snapPoints = [40
   const theme = useTheme()
   const styles = useStyles()
   const translateY = useSharedValue(snapPoints[0])
+  const bottomOffset = useSharedValue(0)
 
+  // Slide in/out animation
   useEffect(() => {
-    translateY.value = withSpring(visible ? 0 : snapPoints[0], theme.animation.easing.spring)
+    if (visible) {
+      translateY.value = withTiming(0, { duration: 380, easing: Easing.out(Easing.cubic) })
+    } else {
+      translateY.value = withTiming(snapPoints[0], { duration: 280, easing: Easing.in(Easing.cubic) })
+    }
   }, [visible])
 
-  const animatedStyle = useAnimatedStyle(() => ({ transform: [{ translateY: translateY.value }] }))
+  // Lift sheet above keyboard — works inside a Modal because we directly move the view
+  useEffect(() => {
+    const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow'
+    const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide'
+
+    const onShow = Keyboard.addListener(showEvent, (e) => {
+      const kbHeight = e.endCoordinates.height
+      const duration = (e as any).duration ?? 250
+      bottomOffset.value = withTiming(kbHeight, { duration })
+    })
+    const onHide = Keyboard.addListener(hideEvent, (e) => {
+      const duration = (e as any).duration ?? 250
+      bottomOffset.value = withTiming(0, { duration })
+    })
+
+    return () => {
+      onShow.remove()
+      onHide.remove()
+    }
+  }, [])
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: translateY.value }],
+    bottom: bottomOffset.value,
+  }))
 
   return (
     <Modal visible={visible} transparent animationType="none" onRequestClose={onClose}>
