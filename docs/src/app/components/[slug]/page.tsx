@@ -26,12 +26,13 @@ const COMPONENT_DOCS: Record<string, ComponentDoc> = {
     componentDeps: [],
     addCommand: 'npx native-mate add button',
     props: [
-      { name: 'variant', type: '"default" | "outline" | "ghost" | "destructive"', default: '"default"', description: 'Visual style of the button.' },
+      { name: 'variant', type: '"default" | "outline" | "ghost" | "destructive" | "secondary" | "link"', default: '"default"', description: 'Visual style of the button.' },
       { name: 'size', type: '"sm" | "md" | "lg"', default: '"md"', description: 'Controls height and padding.' },
       { name: 'loading', type: 'boolean', default: 'false', description: 'Shows an ActivityIndicator and disables press.' },
       { name: 'disabled', type: 'boolean', default: 'false', description: 'Reduces opacity and disables press.' },
-      { name: 'leftIcon', type: 'React.ReactNode', description: 'Element rendered before the label.' },
-      { name: 'rightIcon', type: 'React.ReactNode', description: 'Element rendered after the label.' },
+      { name: 'fullWidth', type: 'boolean', default: 'false', description: 'Stretches button to fill container width.' },
+      { name: 'iconLeft', type: 'React.ReactNode', description: 'Element rendered before the label.' },
+      { name: 'iconRight', type: 'React.ReactNode', description: 'Element rendered after the label.' },
       { name: 'onPress', type: '() => void', description: 'Press handler.' },
     ],
     usageCode: `import { Button } from '~/components/ui/button'
@@ -42,11 +43,18 @@ const COMPONENT_DOCS: Record<string, ComponentDoc> = {
 // Outline variant
 <Button variant="outline" onPress={handleCancel}>Cancel</Button>
 
-// Loading state
-<Button loading onPress={handleSave}>Save</Button>
+// Link variant
+<Button variant="link">Learn more</Button>
 
-// Small destructive
-<Button variant="destructive" size="sm" onPress={handleDelete}>Delete</Button>`,
+// Full width
+<Button fullWidth onPress={handleSave}>Save Changes</Button>
+
+// With icons
+<Button iconLeft={<PlusIcon />}>Add Item</Button>
+<Button iconRight={<ArrowIcon />} variant="outline">Next</Button>
+
+// Loading state
+<Button loading onPress={handleSave}>Save</Button>`,
     exampleCode: `import { Button } from '~/components/ui/button'
 import { View } from 'react-native'
 
@@ -57,6 +65,10 @@ export function ButtonExamples() {
       <Button variant="outline">Outline</Button>
       <Button variant="ghost">Ghost</Button>
       <Button variant="destructive">Destructive</Button>
+      <Button variant="secondary">Secondary</Button>
+      <Button variant="link">Link</Button>
+      <Button fullWidth>Full Width</Button>
+      <Button iconLeft={<PlusIcon />}>With Icon</Button>
       <Button loading>Loading…</Button>
       <Button disabled>Disabled</Button>
     </View>

@@ -51,7 +51,7 @@ export async function fetchComponent(name: string): Promise<RegistryComponent> {
 
 // Static index used as fallback before the registry goes live
 const STATIC_INDEX: ComponentIndex[] = [
-  { name: 'button', version: '0.1.0', description: 'Tap interactions with variants, loading state, and icons.', category: 'primitives' },
+  { name: 'button', version: '0.2.0', description: '6 variants, 3 sizes, icon support, full-width, loading state, and spring animation.', category: 'primitives' },
   { name: 'text', version: '0.1.0', description: 'Typed typography with size, weight, and color tokens.', category: 'primitives' },
   { name: 'icon', version: '0.1.0', description: 'SVG icon wrapper with size and color from tokens.', category: 'primitives' },
   { name: 'spinner', version: '0.1.0', description: 'Animated loading indicator in three sizes.', category: 'primitives' },

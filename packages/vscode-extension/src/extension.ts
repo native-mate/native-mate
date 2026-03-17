@@ -187,7 +187,7 @@ function getThemeStudioHtml(): string {
 }
 
 const FALLBACK_COMPONENTS: ComponentMeta[] = [
-  { name: 'button', category: 'primitives', description: 'Tap interactions with variants and loading state' },
+  { name: 'button', category: 'primitives', description: '6 variants, 3 sizes, icon support, full-width, loading state' },
   { name: 'input', category: 'forms', description: 'Text input with label, error, prefix/suffix' },
   { name: 'card', category: 'layout', description: 'Container with header, content, footer slots' },
   { name: 'badge', category: 'display', description: '5 semantic variants + dot indicator' },

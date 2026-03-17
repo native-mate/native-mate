@@ -4,7 +4,7 @@ import { useLocalSearchParams, Stack } from 'expo-router'
 import { useTheme, Text } from '@native-mate/core'
 
 // Components
-import { Button } from '../../../../packages/registry/components/button/button'
+import { Button, ButtonGroup } from '../../../../packages/registry/components/button/button'
 import { Input } from '../../../../packages/registry/components/input/input'
 import { Textarea } from '../../../../packages/registry/components/textarea/textarea'
 import { Checkbox } from '../../../../packages/registry/components/checkbox/checkbox'
@@ -52,29 +52,96 @@ function ButtonPreview() {
   return (
     <>
       <Section title="Variants">
-        <View style={s.row}>
+        <View style={{ gap: 12 }}>
           <Button variant="default">Default</Button>
           <Button variant="outline">Outline</Button>
-        </View>
-        <View style={s.row}>
           <Button variant="ghost">Ghost</Button>
           <Button variant="destructive">Delete</Button>
-        </View>
-        <View style={s.row}>
           <Button variant="secondary">Secondary</Button>
+          <Button variant="link">Link</Button>
+          <Button variant="gradient">Gradient</Button>
+        </View>
+      </Section>
+      <Section title="Gradient Custom Colors">
+        <View style={{ gap: 12 }}>
+          <Button variant="gradient" gradientColors={['#6366f1', '#a855f7']}>Purple Gradient</Button>
+          <Button variant="gradient" gradientColors={['#f43f5e', '#fb923c']}>Sunset Gradient</Button>
+          <Button variant="gradient" gradientColors={['#06b6d4', '#3b82f6']}>Ocean Gradient</Button>
         </View>
       </Section>
       <Section title="Sizes">
-        <View style={s.row}>
+        <View style={{ gap: 12, alignItems: 'flex-start' }}>
           <Button size="sm">Small</Button>
           <Button size="md">Medium</Button>
           <Button size="lg">Large</Button>
         </View>
       </Section>
+      <Section title="Rounded Pill">
+        <View style={{ gap: 12, alignItems: 'flex-start' }}>
+          <Button rounded>Rounded Default</Button>
+          <Button rounded variant="outline">Rounded Outline</Button>
+          <Button rounded variant="gradient" gradientColors={['#6366f1', '#a855f7']}>Rounded Gradient</Button>
+        </View>
+      </Section>
+      <Section title="Icon Only">
+        <View style={{ flexDirection: 'row', gap: 12 }}>
+          <Button iconOnly iconLeft={<Text style={{ color: '#000', fontSize: 20, fontWeight: '700' }}>+</Text>} />
+          <Button iconOnly variant="outline" iconLeft={<Text style={{ color: '#fafafa', fontSize: 18 }}>✕</Text>} />
+          <Button iconOnly rounded iconLeft={<Text style={{ color: '#000', fontSize: 18 }}>♥</Text>} />
+          <Button iconOnly rounded variant="destructive" iconLeft={<Text style={{ color: '#fff', fontSize: 18 }}>🗑</Text>} />
+        </View>
+      </Section>
+      <Section title="With Icons">
+        <View style={{ gap: 12, alignItems: 'flex-start' }}>
+          <Button iconLeft={<Text style={{ color: '#000', fontSize: 18, fontWeight: '700' }}>+</Text>}>Add Item</Button>
+          <Button variant="outline" iconRight={<Text style={{ color: '#fafafa', fontSize: 16 }}>→</Text>}>Next</Button>
+        </View>
+      </Section>
+      <Section title="Custom Colors">
+        <View style={{ gap: 12, alignItems: 'flex-start' }}>
+          <Button color="#6366f1">Indigo</Button>
+          <Button color="#10b981">Emerald</Button>
+          <Button color="#f59e0b" variant="outline">Amber Outline</Button>
+        </View>
+      </Section>
+      <Section title="Button Group">
+        <View style={{ gap: 16 }}>
+          <ButtonGroup>
+            <Button>Left</Button>
+            <Button>Center</Button>
+            <Button>Right</Button>
+          </ButtonGroup>
+          <ButtonGroup variant="outline">
+            <Button>Day</Button>
+            <Button>Week</Button>
+            <Button>Month</Button>
+            <Button>Year</Button>
+          </ButtonGroup>
+          <ButtonGroup fullWidth>
+            <Button>Cancel</Button>
+            <Button variant="default">Confirm</Button>
+          </ButtonGroup>
+        </View>
+      </Section>
+      <Section title="Full Width">
+        <View style={{ gap: 12 }}>
+          <Button fullWidth>Full Width Button</Button>
+          <Button fullWidth variant="outline">Full Width Outline</Button>
+        </View>
+      </Section>
+      <Section title="Haptic Feedback">
+        <View style={{ gap: 12 }}>
+          <Button haptic="light">Light Haptic</Button>
+          <Button haptic="medium" variant="outline">Medium Haptic</Button>
+          <Button haptic="heavy" variant="secondary">Heavy Haptic</Button>
+          <Button haptic="none" variant="ghost">No Haptic</Button>
+        </View>
+      </Section>
       <Section title="States">
-        <Button loading>Saving...</Button>
-        <View style={{ height: 10 }} />
-        <Button disabled>Disabled</Button>
+        <View style={{ gap: 12 }}>
+          <Button loading>Saving...</Button>
+          <Button disabled>Disabled</Button>
+        </View>
       </Section>
     </>
   )

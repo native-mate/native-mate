@@ -1,7 +1,7 @@
 {
   "name": "button",
-  "version": "0.1.0",
-  "description": "Pressable button with variants, sizes, loading state and spring animation",
+  "version": "0.3.0",
+  "description": "Feature-rich button with 7 variants including gradient, icon-only mode, button group, rounded pill shape, custom colors, haptic feedback, and spring animation",
   "files": [
     { "path": "button.tsx", "hash": "" },
     { "path": "button.types.ts", "hash": "" }
