@@ -1,6 +1,6 @@
 import type { PressableProps } from 'react-native'
 
-export type ButtonVariant = 'default' | 'destructive' | 'outline' | 'ghost' | 'secondary' | 'link' | 'gradient'
+export type ButtonVariant = 'default' | 'destructive' | 'outline' | 'ghost' | 'secondary' | 'link'
 export type ButtonSize = 'sm' | 'md' | 'lg'
 export type HapticStyle = 'light' | 'medium' | 'heavy' | 'none'
 
@@ -14,7 +14,6 @@ export interface ButtonProps extends Omit<PressableProps, 'style'> {
   iconOnly?: boolean
   haptic?: HapticStyle
   color?: string
-  gradientColors?: [string, string]
   iconLeft?: React.ReactNode
   iconRight?: React.ReactNode
   children?: React.ReactNode

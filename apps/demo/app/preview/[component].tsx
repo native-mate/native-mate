@@ -59,14 +59,6 @@ function ButtonPreview() {
           <Button variant="destructive">Delete</Button>
           <Button variant="secondary">Secondary</Button>
           <Button variant="link">Link</Button>
-          <Button variant="gradient">Gradient</Button>
-        </View>
-      </Section>
-      <Section title="Gradient Custom Colors">
-        <View style={{ gap: 12 }}>
-          <Button variant="gradient" gradientColors={['#6366f1', '#a855f7']}>Purple Gradient</Button>
-          <Button variant="gradient" gradientColors={['#f43f5e', '#fb923c']}>Sunset Gradient</Button>
-          <Button variant="gradient" gradientColors={['#06b6d4', '#3b82f6']}>Ocean Gradient</Button>
         </View>
       </Section>
       <Section title="Sizes">
@@ -88,7 +80,7 @@ function ButtonPreview() {
           <Button iconOnly iconLeft={<Text style={{ color: '#000', fontSize: 20, fontWeight: '700' }}>+</Text>} />
           <Button iconOnly variant="outline" iconLeft={<Text style={{ color: '#fafafa', fontSize: 18 }}>✕</Text>} />
           <Button iconOnly rounded iconLeft={<Text style={{ color: '#000', fontSize: 18 }}>♥</Text>} />
-          <Button iconOnly rounded variant="destructive" iconLeft={<Text style={{ color: '#fff', fontSize: 18 }}>🗑</Text>} />
+          <Button iconOnly rounded variant="destructive" iconLeft={<Text style={{ color: '#fff', fontSize: 18, fontWeight: '700' }}>×</Text>} />
         </View>
       </Section>
       <Section title="With Icons">

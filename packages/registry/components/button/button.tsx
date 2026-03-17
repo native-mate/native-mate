@@ -6,7 +6,6 @@ import Animated, {
   useAnimatedStyle,
   withSpring,
   withTiming,
-  interpolateColor,
 } from 'react-native-reanimated'
 import { useTheme, Text, makeStyles } from '@native-mate/core'
 import type { ButtonProps, ButtonVariant, ButtonGroupProps, HapticStyle } from './button.types'
@@ -35,7 +34,6 @@ const useStyles = makeStyles((theme) => ({
   ghost:       { backgroundColor: 'transparent' },
   secondary:   { backgroundColor: theme.colors.surface },
   link:        { backgroundColor: 'transparent' },
-  gradient:    { backgroundColor: theme.colors.primary },
   sm: { paddingVertical: theme.spacing.xs, paddingHorizontal: theme.spacing.sm, minHeight: 32 },
   md: { paddingVertical: theme.spacing.sm, paddingHorizontal: theme.spacing.lg, minHeight: 44 },
   lg: { paddingVertical: theme.spacing.md, paddingHorizontal: theme.spacing.xl, minHeight: 52 },
@@ -52,7 +50,6 @@ const labelColorMap: Record<ButtonVariant, keyof ReturnType<typeof useTheme>['co
   ghost: 'foreground',
   secondary: 'onSurface',
   link: 'primary',
-  gradient: 'onPrimary',
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -65,7 +62,6 @@ export const Button: React.FC<ButtonProps> = ({
   iconOnly = false,
   haptic = 'light',
   color,
-  gradientColors,
   iconLeft,
   iconRight,
   children,
@@ -133,13 +129,10 @@ export const Button: React.FC<ButtonProps> = ({
 
   // Custom color overrides
   const colorOverride = color ? (() => {
-    if (variant === 'default' || variant === 'gradient') return { backgroundColor: color }
+    if (variant === 'default') return { backgroundColor: color }
     if (variant === 'outline') return { borderColor: color }
     return undefined
   })() : undefined
-
-  // Gradient background (simulated with two overlapping layers)
-  const gColors = gradientColors || [theme.colors.primary, theme.colors.primary + 'aa']
 
   return (
     <Pressable
@@ -166,17 +159,6 @@ export const Button: React.FC<ButtonProps> = ({
           animatedStyle,
         ]}
       >
-        {/* Gradient layer */}
-        {variant === 'gradient' && (
-          <View style={{
-            position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-            flexDirection: 'row',
-          }}>
-            <View style={{ flex: 1, backgroundColor: gColors[0] }} />
-            <View style={{ flex: 1, backgroundColor: gColors[1] }} />
-          </View>
-        )}
-
         {/* Android ripple */}
         {Platform.OS === 'android' && <Animated.View style={rippleStyle} />}
 
