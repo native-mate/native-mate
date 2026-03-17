@@ -20,7 +20,7 @@ const COMPONENT_DOCS: Record<string, ComponentDoc> = {
   button: {
     name: 'Button',
     slug: 'button',
-    description: 'A pressable button with multiple variants, loading state, optional icon support, and spring animations on press.',
+    description: 'Feature-rich button with 6 variants, icon-only mode, button groups, rounded pill shape, custom colors, haptic feedback, and spring animation.',
     category: 'Primitives',
     npmDeps: [],
     componentDeps: [],
@@ -31,44 +31,115 @@ const COMPONENT_DOCS: Record<string, ComponentDoc> = {
       { name: 'loading', type: 'boolean', default: 'false', description: 'Shows an ActivityIndicator and disables press.' },
       { name: 'disabled', type: 'boolean', default: 'false', description: 'Reduces opacity and disables press.' },
       { name: 'fullWidth', type: 'boolean', default: 'false', description: 'Stretches button to fill container width.' },
+      { name: 'rounded', type: 'boolean', default: 'false', description: 'Applies fully rounded pill shape (borderRadius: 9999).' },
+      { name: 'iconOnly', type: 'boolean', default: 'false', description: 'Square/circle button with only an icon, no text.' },
+      { name: 'haptic', type: '"light" | "medium" | "heavy" | "none"', default: '"light"', description: 'Haptic feedback intensity on press. Requires expo-haptics (optional).' },
+      { name: 'color', type: 'string', description: 'Custom color override. Sets background for default, border for outline.' },
       { name: 'iconLeft', type: 'React.ReactNode', description: 'Element rendered before the label.' },
       { name: 'iconRight', type: 'React.ReactNode', description: 'Element rendered after the label.' },
       { name: 'onPress', type: '() => void', description: 'Press handler.' },
     ],
-    usageCode: `import { Button } from '~/components/ui/button'
+    usageCode: `import { Button, ButtonGroup } from '~/components/ui/button'
 
-// Default
-<Button onPress={handleSubmit}>Submit</Button>
-
-// Outline variant
-<Button variant="outline" onPress={handleCancel}>Cancel</Button>
-
-// Link variant
+// Variants
+<Button variant="default">Default</Button>
+<Button variant="outline">Outline</Button>
+<Button variant="ghost">Ghost</Button>
+<Button variant="destructive">Delete</Button>
+<Button variant="secondary">Secondary</Button>
 <Button variant="link">Learn more</Button>
 
-// Full width
-<Button fullWidth onPress={handleSave}>Save Changes</Button>
+// Sizes
+<Button size="sm">Small</Button>
+<Button size="md">Medium</Button>
+<Button size="lg">Large</Button>
+
+// Rounded pill
+<Button rounded>Rounded</Button>
+
+// Icon only (square or circle)
+<Button iconOnly iconLeft={<PlusIcon />} />
+<Button iconOnly rounded iconLeft={<HeartIcon />} />
 
 // With icons
 <Button iconLeft={<PlusIcon />}>Add Item</Button>
 <Button iconRight={<ArrowIcon />} variant="outline">Next</Button>
 
-// Loading state
-<Button loading onPress={handleSave}>Save</Button>`,
-    exampleCode: `import { Button } from '~/components/ui/button'
+// Custom color
+<Button color="#6366f1">Indigo</Button>
+<Button color="#10b981" variant="outline">Emerald</Button>
+
+// Full width
+<Button fullWidth>Save Changes</Button>
+
+// Haptic feedback
+<Button haptic="light">Light tap</Button>
+<Button haptic="heavy">Strong tap</Button>
+<Button haptic="none">No haptic</Button>
+
+// Button group (segmented control)
+<ButtonGroup fullWidth>
+  <Button>Day</Button>
+  <Button>Week</Button>
+  <Button>Month</Button>
+</ButtonGroup>
+
+<ButtonGroup fullWidth>
+  <Button variant="outline">Cancel</Button>
+  <Button variant="default">Confirm</Button>
+</ButtonGroup>
+
+// Loading & disabled
+<Button loading>Saving…</Button>
+<Button disabled>Disabled</Button>`,
+    exampleCode: `import { Button, ButtonGroup } from '~/components/ui/button'
 import { View } from 'react-native'
 
 export function ButtonExamples() {
   return (
-    <View style={{ gap: 12, padding: 16 }}>
+    <View style={{ gap: 16, padding: 16 }}>
+      {/* All variants */}
       <Button variant="default">Default</Button>
       <Button variant="outline">Outline</Button>
       <Button variant="ghost">Ghost</Button>
       <Button variant="destructive">Destructive</Button>
       <Button variant="secondary">Secondary</Button>
       <Button variant="link">Link</Button>
+
+      {/* Rounded pill */}
+      <Button rounded>Rounded</Button>
+      <Button rounded variant="outline">Pill Outline</Button>
+
+      {/* Icon only */}
+      <View style={{ flexDirection: 'row', gap: 12 }}>
+        <Button iconOnly iconLeft={<PlusIcon />} />
+        <Button iconOnly rounded iconLeft={<HeartIcon />} />
+      </View>
+
+      {/* With icons */}
+      <Button iconLeft={<PlusIcon />}>Add Item</Button>
+
+      {/* Custom colors */}
+      <Button color="#6366f1">Indigo</Button>
+      <Button color="#10b981">Emerald</Button>
+
+      {/* Button group */}
+      <ButtonGroup fullWidth variant="outline">
+        <Button>Day</Button>
+        <Button>Week</Button>
+        <Button>Month</Button>
+        <Button>Year</Button>
+      </ButtonGroup>
+
+      <ButtonGroup fullWidth>
+        <Button variant="outline">Cancel</Button>
+        <Button variant="default">Confirm</Button>
+      </ButtonGroup>
+
+      {/* Full width */}
       <Button fullWidth>Full Width</Button>
-      <Button iconLeft={<PlusIcon />}>With Icon</Button>
+
+      {/* States */}
       <Button loading>Loading…</Button>
       <Button disabled>Disabled</Button>
     </View>
