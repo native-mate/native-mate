@@ -3,31 +3,7 @@ import { notFound } from 'next/navigation'
 import { Nav } from '@/components/Nav'
 import { CodeBlock } from '@/components/CodeBlock'
 import Link from 'next/link'
-import dynamic from 'next/dynamic'
-
-const componentPreviews: Record<string, React.ComponentType> = {
-  button: dynamic(() => import('@/components/previews/ButtonPreview'), { ssr: false }),
-  input: dynamic(() => import('@/components/previews/InputPreview'), { ssr: false }),
-  textarea: dynamic(() => import('@/components/previews/TextareaPreview'), { ssr: false }),
-  checkbox: dynamic(() => import('@/components/previews/CheckboxPreview'), { ssr: false }),
-  radio: dynamic(() => import('@/components/previews/RadioPreview'), { ssr: false }),
-  slider: dynamic(() => import('@/components/previews/SliderPreview'), { ssr: false }),
-  select: dynamic(() => import('@/components/previews/SelectPreview'), { ssr: false }),
-  'otp-input': dynamic(() => import('@/components/previews/OtpInputPreview'), { ssr: false }),
-  switch: dynamic(() => import('@/components/previews/SwitchPreview'), { ssr: false }),
-  badge: dynamic(() => import('@/components/previews/BadgePreview'), { ssr: false }),
-  avatar: dynamic(() => import('@/components/previews/AvatarPreview'), { ssr: false }),
-  progress: dynamic(() => import('@/components/previews/ProgressPreview'), { ssr: false }),
-  toast: dynamic(() => import('@/components/previews/ToastPreview'), { ssr: false }),
-  tag: dynamic(() => import('@/components/previews/TagPreview'), { ssr: false }),
-  skeleton: dynamic(() => import('@/components/previews/SkeletonPreview'), { ssr: false }),
-  card: dynamic(() => import('@/components/previews/CardPreview'), { ssr: false }),
-  alert: dynamic(() => import('@/components/previews/AlertPreview'), { ssr: false }),
-  modal: dynamic(() => import('@/components/previews/ModalPreview'), { ssr: false }),
-  'action-sheet': dynamic(() => import('@/components/previews/ActionSheetPreview'), { ssr: false }),
-  tooltip: dynamic(() => import('@/components/previews/TooltipPreview'), { ssr: false }),
-  popover: dynamic(() => import('@/components/previews/PopoverPreview'), { ssr: false }),
-}
+import { ComponentPreview } from './ComponentPreview'
 
 interface ComponentDoc {
   name: string
@@ -2150,8 +2126,9 @@ export function generateStaticParams() {
   ]
 }
 
-export default function ComponentPage({ params }: { params: { slug: string } }) {
-  const doc = COMPONENT_DOCS[params.slug]
+export default async function ComponentPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
+  const doc = COMPONENT_DOCS[slug]
   if (!doc) notFound()
 
   return (
@@ -2177,11 +2154,9 @@ export default function ComponentPage({ params }: { params: { slug: string } }) 
         </div>
 
         {/* First preview (default/simplest variant) */}
-        {componentPreviews[doc.slug] && (
-          <section className="mb-10">
-            {React.createElement(componentPreviews[doc.slug], { part: 'first' })}
-          </section>
-        )}
+        <section className="mb-10">
+          <ComponentPreview slug={doc.slug} part="first" />
+        </section>
 
         {/* Install */}
         <section className="mb-10">
@@ -2196,12 +2171,10 @@ export default function ComponentPage({ params }: { params: { slug: string } }) 
         </section>
 
         {/* Rest of previews (all variants) */}
-        {componentPreviews[doc.slug] && (
-          <section className="mb-10">
-            <h2 className="mb-3 text-sm font-semibold uppercase tracking-widest text-zinc-500">Examples</h2>
-            {React.createElement(componentPreviews[doc.slug], { part: 'rest' })}
-          </section>
-        )}
+        <section className="mb-10">
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-widest text-zinc-500">Examples</h2>
+          <ComponentPreview slug={doc.slug} part="rest" />
+        </section>
 
         {/* Usage */}
         <section className="mb-10">
