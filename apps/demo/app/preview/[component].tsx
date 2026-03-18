@@ -32,6 +32,7 @@ import { Toast } from '../../../../packages/registry/components/toast/toast'
 import { Tooltip } from '../../../../packages/registry/components/tooltip/tooltip'
 import { OTPInput } from '../../../../packages/registry/components/otp-input/otp-input'
 import { Select } from '../../../../packages/registry/components/select/select'
+import { Popover } from '../../../../packages/registry/components/popover/popover'
 
 const labels: Record<string, string> = {
   button: 'Button', input: 'Input', textarea: 'Textarea', checkbox: 'Checkbox',
@@ -40,7 +41,7 @@ const labels: Record<string, string> = {
   alert: 'Alert', card: 'Card', tabs: 'Tabs', accordion: 'Accordion',
   'empty-state': 'Empty State', sheet: 'Sheet', modal: 'Modal',
   'action-sheet': 'Action Sheet', toast: 'Toast', tooltip: 'Tooltip',
-  'otp-input': 'OTP Input', select: 'Select',
+  'otp-input': 'OTP Input', select: 'Select', popover: 'Popover',
 }
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
@@ -1056,16 +1057,80 @@ function ToastPreview() {
 
 function TooltipPreview() {
   return (
-    <Section title="Tooltips">
-      <View style={s.row}>
-        <Tooltip content="Top tooltip" placement="top">
-          <Button size="sm" variant="outline">Top</Button>
-        </Tooltip>
-        <Tooltip content="Bottom tooltip" placement="bottom">
-          <Button size="sm" variant="outline">Bottom</Button>
-        </Tooltip>
-      </View>
-    </Section>
+    <>
+      <Section title="Placements">
+        <View style={s.row}>
+          <Tooltip content="Top tooltip" placement="top">
+            <Button size="sm" variant="outline">Top</Button>
+          </Tooltip>
+          <Tooltip content="Bottom tooltip" placement="bottom">
+            <Button size="sm" variant="outline">Bottom</Button>
+          </Tooltip>
+          <Tooltip content="Left tooltip" placement="left">
+            <Button size="sm" variant="outline">Left</Button>
+          </Tooltip>
+          <Tooltip content="Right tooltip" placement="right">
+            <Button size="sm" variant="outline">Right</Button>
+          </Tooltip>
+        </View>
+      </Section>
+      <Section title="Custom delay">
+        <View style={s.row}>
+          <Tooltip content="Hold longer" delay={800} placement="top">
+            <Button size="sm" variant="outline">Slow (800ms)</Button>
+          </Tooltip>
+          <Tooltip content="Instant!" delay={0} placement="bottom">
+            <Button size="sm" variant="outline">Instant</Button>
+          </Tooltip>
+        </View>
+      </Section>
+    </>
+  )
+}
+
+function PopoverPreview() {
+  const MENU = [
+    { label: 'Edit', destructive: false },
+    { label: 'Duplicate', destructive: false },
+    { label: 'Delete', destructive: true },
+  ]
+  return (
+    <>
+      <Section title="Context menu">
+        <View style={s.row}>
+          <Popover
+            placement="bottom"
+            content={
+              <View style={{ paddingVertical: 4 }}>
+                {MENU.map((item, i) => (
+                  <View key={item.label}>
+                    {i > 0 && <View style={{ height: 1, backgroundColor: '#27272a' }} />}
+                    <View style={{ paddingVertical: 12, paddingHorizontal: 16 }}>
+                      <Text style={{ fontSize: 15, color: item.destructive ? '#ef4444' : '#fafafa' }}>{item.label}</Text>
+                    </View>
+                  </View>
+                ))}
+              </View>
+            }
+          >
+            <Button size="sm" variant="outline">Options</Button>
+          </Popover>
+        </View>
+      </Section>
+      <Section title="Placements">
+        <View style={s.row}>
+          {(['top', 'bottom', 'left', 'right'] as const).map(p => (
+            <Popover
+              key={p}
+              placement={p}
+              content={<View style={{ padding: 12 }}><Text style={{ color: '#fafafa', fontSize: 13 }}>{p}</Text></View>}
+            >
+              <Button size="sm" variant="outline">{p.charAt(0).toUpperCase() + p.slice(1)}</Button>
+            </Popover>
+          ))}
+        </View>
+      </Section>
+    </>
   )
 }
 
@@ -1282,6 +1347,7 @@ const previews: Record<string, React.FC> = {
   'action-sheet': ActionSheetPreview,
   toast: ToastPreview,
   tooltip: TooltipPreview,
+  popover: PopoverPreview,
   'otp-input': OtpInputPreview,
   select: SelectPreview,
 }
