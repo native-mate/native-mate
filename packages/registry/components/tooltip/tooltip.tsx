@@ -1,58 +1,97 @@
-// native-mate: tooltip@0.2.0 | hash:PLACEHOLDER
+// native-mate: tooltip@0.3.0 | hash:PLACEHOLDER
 import React, { useRef, useState } from 'react'
-import { View, Pressable, Modal, StyleSheet } from 'react-native'
+import { View, Pressable, Modal, StyleSheet, Platform } from 'react-native'
 import Animated, {
   useSharedValue, useAnimatedStyle, withSpring, withTiming, runOnJS,
 } from 'react-native-reanimated'
 import { useTheme, Text } from '@native-mate/core'
-import type { TooltipProps, TooltipPlacement } from './tooltip.types'
+import type { TooltipProps } from './tooltip.types'
 
-const OFFSET = 10
-const ARROW = 7
+const OFFSET = 8
+const ARROW = 6
+
+// ─── Web version: inline absolute positioning, no measureInWindow ─────────────
+
+function TooltipWeb({ content, placement = 'top', children, style }: TooltipProps) {
+  const theme = useTheme()
+  const [open, setOpen] = useState(false)
+  const opacity = useSharedValue(0)
+  const scale = useSharedValue(0.9)
+
+  const animStyle = useAnimatedStyle(() => ({
+    opacity: opacity.value,
+    transform: [{ scale: scale.value }],
+  }))
+
+  const show = () => {
+    setOpen(true)
+    opacity.value = withTiming(1, { duration: 130 })
+    scale.value = withSpring(1, { damping: 14, stiffness: 280 })
+  }
+
+  const hide = () => {
+    opacity.value = withTiming(0, { duration: 90 }, () => runOnJS(setOpen)(false))
+    scale.value = withTiming(0.9, { duration: 90 })
+  }
+
+  const bg = theme.colors.foreground
+  const textColor = theme.colors.background
+
+  const bubblePosition: any = {
+    top:    { bottom: '100%', left: '50%', marginBottom: OFFSET, transform: [{ translateX: '-50%' as any }] },
+    bottom: { top: '100%', left: '50%', marginTop: OFFSET, transform: [{ translateX: '-50%' as any }] },
+    left:   { right: '100%', top: '50%', marginRight: OFFSET, transform: [{ translateY: '-50%' as any }] },
+    right:  { left: '100%', top: '50%', marginLeft: OFFSET, transform: [{ translateY: '-50%' as any }] },
+  }[placement]
+
+  return (
+    <View style={[{ position: 'relative' as any }, style]}>
+      <Pressable
+        // @ts-ignore web events
+        onMouseEnter={show}
+        onMouseLeave={hide}
+        onPress={() => open ? hide() : show()}
+      >
+        {children}
+      </Pressable>
+
+      {open && (
+        <Animated.View
+          style={[
+            {
+              position: 'absolute',
+              backgroundColor: bg,
+              borderRadius: 7,
+              paddingVertical: 6,
+              paddingHorizontal: 10,
+              maxWidth: 220,
+              zIndex: 999,
+              ...bubblePosition,
+            },
+            animStyle,
+          ]}
+          // @ts-ignore web
+          pointerEvents="none"
+        >
+          <Text style={{ fontSize: 12, color: textColor, fontWeight: '500', whiteSpace: 'nowrap' as any }}>
+            {content}
+          </Text>
+        </Animated.View>
+      )}
+    </View>
+  )
+}
+
+// ─── Native version: Modal + measureInWindow ──────────────────────────────────
 
 interface AnchorRect { x: number; y: number; width: number; height: number }
 
-/** Returns absolute position and origin for the bubble + arrow */
-function getPositionStyle(placement: TooltipPlacement, anchor: AnchorRect) {
-  const cx = anchor.x + anchor.width / 2
-  const cy = anchor.y + anchor.height / 2
-
-  switch (placement) {
-    case 'top':
-      return {
-        bubble: { bottom: undefined, top: undefined, left: cx, translateX: '-50%' as any, top2: anchor.y - OFFSET },
-        arrow: { top: '100%' as any, left: '50%' as any, marginLeft: -(ARROW / 2), marginTop: -(ARROW / 2), rotate: '45deg' },
-      }
-    case 'bottom':
-      return {
-        bubble: { top2: anchor.y + anchor.height + OFFSET, left: cx, translateX: '-50%' as any },
-        arrow: { bottom: '100%' as any, left: '50%' as any, marginLeft: -(ARROW / 2), marginTop: ARROW / 2, rotate: '45deg' },
-      }
-    case 'left':
-      return {
-        bubble: { top2: cy, left: anchor.x - OFFSET, translateY: '-50%' as any, translateX: '-100%' as any },
-        arrow: { top: '50%' as any, left: '100%' as any, marginTop: -(ARROW / 2), rotate: '45deg' },
-      }
-    case 'right':
-      return {
-        bubble: { top2: cy, left: anchor.x + anchor.width + OFFSET, translateY: '-50%' as any },
-        arrow: { top: '50%' as any, right: '100%' as any, marginTop: -(ARROW / 2), rotate: '45deg' },
-      }
-  }
-}
-
-export const Tooltip: React.FC<TooltipProps> = ({
-  content,
-  placement = 'top',
-  children,
-  delay = 300,
-  style,
-}) => {
+function TooltipNative({ content, placement = 'top', children, delay = 500, style }: TooltipProps) {
   const theme = useTheme()
-  const [modalOpen, setModalOpen] = useState(false)
+  const [open, setOpen] = useState(false)
   const [anchor, setAnchor] = useState<AnchorRect>({ x: 0, y: 0, width: 0, height: 0 })
   const anchorRef = useRef<View>(null)
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const opacity = useSharedValue(0)
   const scale = useSharedValue(0.88)
@@ -65,7 +104,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
   const show = () => {
     anchorRef.current?.measureInWindow((x, y, width, height) => {
       setAnchor({ x, y, width, height })
-      setModalOpen(true)
+      setOpen(true)
       opacity.value = withTiming(1, { duration: 140 })
       scale.value = withSpring(1, { damping: 14, stiffness: 260 })
     })
@@ -74,39 +113,38 @@ export const Tooltip: React.FC<TooltipProps> = ({
   const hide = () => {
     opacity.value = withTiming(0, { duration: 100 })
     scale.value = withTiming(0.88, { duration: 100 }, () => {
-      runOnJS(setModalOpen)(false)
+      runOnJS(setOpen)(false)
     })
-  }
-
-  const onPressIn = () => {
-    timerRef.current = setTimeout(show, delay)
-  }
-
-  const onPressOut = () => {
-    if (timerRef.current) clearTimeout(timerRef.current)
-    if (modalOpen) hide()
   }
 
   const bg = theme.colors.foreground
   const textColor = theme.colors.background
 
-  const pos = getPositionStyle(placement, anchor)
+  const cx = anchor.x + anchor.width / 2
+  const cy = anchor.y + anchor.height / 2
+
+  const bubbleStyle = {
+    top:    { top: anchor.y - OFFSET - 32, left: cx - 60 },
+    bottom: { top: anchor.y + anchor.height + OFFSET, left: cx - 60 },
+    left:   { top: cy - 16, left: anchor.x - OFFSET - 120 },
+    right:  { top: cy - 16, left: anchor.x + anchor.width + OFFSET },
+  }[placement]
 
   return (
     <>
       <Pressable
         ref={anchorRef as React.RefObject<View>}
-        onPressIn={onPressIn}
-        onPressOut={onPressOut}
         onLongPress={show}
+        delayLongPress={delay}
         style={style}
       >
         {children}
       </Pressable>
 
-      {modalOpen && (
+      {open && (
         <Modal visible transparent animationType="none" onRequestClose={hide} statusBarTranslucent>
-          <Pressable style={StyleSheet.absoluteFill} onPress={hide}>
+          {/* Full-screen tap-to-dismiss — pointerEvents as prop, not style */}
+          <Pressable pointerEvents="box-none" style={StyleSheet.absoluteFill} onPress={hide}>
             <Animated.View
               style={[
                 {
@@ -116,32 +154,12 @@ export const Tooltip: React.FC<TooltipProps> = ({
                   paddingVertical: 6,
                   paddingHorizontal: 10,
                   maxWidth: 220,
-                  top: pos.bubble.top2,
-                  left: pos.bubble.left,
-                  transform: [
-                    { translateX: pos.bubble.translateX ?? 0 },
-                    ...(pos.bubble.translateY ? [{ translateY: pos.bubble.translateY }] : []),
-                  ],
+                  minWidth: 60,
+                  ...bubbleStyle,
                 },
                 animStyle,
               ]}
             >
-              {/* Arrow */}
-              <View
-                style={{
-                  position: 'absolute',
-                  width: ARROW,
-                  height: ARROW,
-                  backgroundColor: bg,
-                  transform: [{ rotate: pos.arrow.rotate }],
-                  ...(pos.arrow.top !== undefined ? { top: pos.arrow.top } : {}),
-                  ...(pos.arrow.bottom !== undefined ? { bottom: pos.arrow.bottom } : {}),
-                  ...(pos.arrow.left !== undefined ? { left: pos.arrow.left } : {}),
-                  ...(pos.arrow.right !== undefined ? { right: pos.arrow.right } : {}),
-                  ...(pos.arrow.marginLeft !== undefined ? { marginLeft: pos.arrow.marginLeft } : {}),
-                  ...(pos.arrow.marginTop !== undefined ? { marginTop: pos.arrow.marginTop } : {}),
-                }}
-              />
               <Text style={{ fontSize: 12, color: textColor, fontWeight: '500' }}>
                 {content}
               </Text>
@@ -151,4 +169,11 @@ export const Tooltip: React.FC<TooltipProps> = ({
       )}
     </>
   )
+}
+
+// ─── Unified export ────────────────────────────────────────────────────────────
+
+export const Tooltip: React.FC<TooltipProps> = (props) => {
+  if (Platform.OS === 'web') return <TooltipWeb {...props} />
+  return <TooltipNative {...props} />
 }

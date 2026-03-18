@@ -1,6 +1,6 @@
 // native-mate: progress@0.2.0 | hash:PLACEHOLDER
 import React from 'react'
-import { View } from 'react-native'
+import { View, Platform } from 'react-native'
 import Animated, {
   useAnimatedStyle,
   withTiming,
@@ -186,7 +186,8 @@ export const Progress: React.FC<ProgressProps> = ({
   const h = linearHeights[size]
 
   const fillStyle = useAnimatedStyle(() => ({
-    width: animated && !indeterminate
+    // withTiming with percentage strings doesn't interpolate correctly in React Native Web
+    width: (animated && !indeterminate && Platform.OS !== 'web')
       ? withTiming(`${clampedValue}%` as any, { duration: 500, easing: Easing.out(Easing.ease) })
       : (indeterminate ? '35%' : `${clampedValue}%` as any),
     transform: indeterminate

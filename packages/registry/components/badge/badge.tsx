@@ -25,11 +25,12 @@ function getColors(variant: BadgeVariant, appearance: BadgeAppearance, theme: an
     case 'solid':
       return { bg: baseColor, text: onColor, border: 'transparent' }
     case 'soft':
-      return { bg: baseColor + '18', text: baseColor, border: 'transparent' }
+      // Mirror Alert's style: tinted bg + subtle border + full-color text
+      return { bg: baseColor + '18', text: baseColor, border: baseColor + '40' }
     case 'outline':
       return { bg: 'transparent', text: baseColor, border: baseColor }
     default:
-      return { bg: baseColor, text: onColor, border: 'transparent' }
+      return { bg: baseColor + '18', text: baseColor, border: baseColor + '40' }
   }
 }
 
@@ -71,7 +72,7 @@ function PulseDot({ color, size }: { color: string; size: number }) {
 export const Badge: React.FC<BadgeProps> = ({
   variant = 'default',
   size = 'md',
-  appearance = 'solid',
+  appearance = 'soft',
   dot = false,
   pulse = false,
   icon,
@@ -97,8 +98,8 @@ export const Badge: React.FC<BadgeProps> = ({
       paddingVertical: sz.py,
       paddingHorizontal: sz.px,
       backgroundColor: colors.bg,
-      borderWidth: colors.border !== 'transparent' ? 1 : 0,
-      borderColor: colors.border,
+      borderWidth: 1,
+      borderColor: colors.border !== 'transparent' ? colors.border : 'transparent',
       gap: sz.gap,
     }}>
       {icon && <View>{icon}</View>}

@@ -1,1 +1,0 @@
-{ "name": "tooltip", "version": "0.1.0", "description": "Contextual bubble anchored to any element, with top/bottom/left/right placement", "files": [{"path": "tooltip.tsx", "hash": ""}, {"path": "tooltip.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }
