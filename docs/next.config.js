@@ -14,6 +14,11 @@ const nextConfig = {
       '.web.js', '.web.jsx', '.web.ts', '.web.tsx',
       ...config.resolve.extensions,
     ]
+    // Handle font files from @expo/vector-icons and react-native-vector-icons
+    config.module.rules.push({
+      test: /\.(ttf|otf|woff|woff2|eot)$/,
+      type: 'asset/resource',
+    })
     return config
   },
   transpilePackages: [
