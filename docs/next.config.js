@@ -25,6 +25,7 @@ const nextConfig = {
     'react-native',
     'react-native-web',
     'react-native-reanimated',
+    '@react-native/assets-registry',
     '@native-mate/core',
     '@expo/vector-icons',
   ],
