@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import { View } from 'react-native'
 import { Preview } from './shared/Preview'
-import { Switch } from '../../../../../packages/registry/components/switch/switch'
+import { Switch } from '../../../../packages/registry/components/switch/switch'
 
 export default function SwitchPreview() {
   const [a, setA] = useState(true)

@@ -4,7 +4,7 @@ import { View } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { Text } from '@native-mate/core'
 import { Preview } from './shared/Preview'
-import { Input } from '../../../../../packages/registry/components/input/input'
+import { Input } from '../../../../packages/registry/components/input/input'
 
 export default function InputPreview() {
   const [val, setVal] = useState('')

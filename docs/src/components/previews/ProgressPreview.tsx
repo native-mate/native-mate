@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import { View } from 'react-native'
 import { Preview } from './shared/Preview'
-import { Progress } from '../../../../../packages/registry/components/progress/progress'
+import { Progress } from '../../../../packages/registry/components/progress/progress'
 
 export default function ProgressPreview() {
   const [animated, setAnimated] = useState(0)

@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { View, Pressable } from 'react-native'
 import { Text } from '@native-mate/core'
 import { Preview } from './shared/Preview'
-import { Toast } from '../../../../../packages/registry/components/toast/toast'
+import { Toast } from '../../../../packages/registry/components/toast/toast'
 
 function FireBtn({ label, onPress, color = '#6366f1' }: { label: string; onPress: () => void; color?: string }) {
   return (

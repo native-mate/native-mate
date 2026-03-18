@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import { View } from 'react-native'
 import { Preview } from './shared/Preview'
-import { Alert } from '../../../../../packages/registry/components/alert/alert'
+import { Alert } from '../../../../packages/registry/components/alert/alert'
 
 export default function AlertPreview() {
   const [showWarning, setShowWarning] = useState(true)

@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { View } from 'react-native'
 import { Text } from '@native-mate/core'
 import { Preview } from './shared/Preview'
-import { Slider, RangeSlider } from '../../../../../packages/registry/components/slider/slider'
+import { Slider, RangeSlider } from '../../../../packages/registry/components/slider/slider'
 
 export default function SliderPreview() {
   const [vol, setVol] = useState(60)

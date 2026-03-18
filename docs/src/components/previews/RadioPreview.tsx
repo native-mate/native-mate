@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import { View } from 'react-native'
 import { Preview } from './shared/Preview'
-import { Radio, RadioGroup } from '../../../../../packages/registry/components/radio/radio'
+import { Radio, RadioGroup } from '../../../../packages/registry/components/radio/radio'
 
 export default function RadioPreview() {
   const [fw, setFw] = useState('rn')

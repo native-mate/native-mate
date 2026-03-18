@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import { View, Pressable } from 'react-native'
 import { Preview } from './shared/Preview'
-import { ActionSheet } from '../../../../../packages/registry/components/action-sheet/action-sheet'
+import { ActionSheet } from '../../../../packages/registry/components/action-sheet/action-sheet'
 import { Text } from '@native-mate/core'
 
 function TriggerBtn({ onPress, label }: { onPress: () => void; label: string }) {

@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import { View } from 'react-native'
 import { Preview } from './shared/Preview'
-import { Modal } from '../../../../../packages/registry/components/modal/modal'
+import { Modal } from '../../../../packages/registry/components/modal/modal'
 import { Text } from '@native-mate/core'
 
 function TriggerBtn({ onPress, label }: { onPress: () => void; label: string }) {

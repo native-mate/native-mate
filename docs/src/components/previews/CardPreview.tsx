@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import { View } from 'react-native'
 import { Preview } from './shared/Preview'
-import { Card, CardHeader, CardContent, CardFooter } from '../../../../../packages/registry/components/card/card'
+import { Card, CardHeader, CardContent, CardFooter } from '../../../../packages/registry/components/card/card'
 import { Text } from '@native-mate/core'
 
 function Btn({ children, variant = 'default' }: { children: React.ReactNode; variant?: 'default' | 'ghost' }) {

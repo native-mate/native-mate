@@ -2,7 +2,7 @@
 import React from 'react'
 import { View } from 'react-native'
 import { Preview } from './shared/Preview'
-import { Tooltip } from '../../../../../packages/registry/components/tooltip/tooltip'
+import { Tooltip } from '../../../../packages/registry/components/tooltip/tooltip'
 import { Text } from '@native-mate/core'
 
 function PillBtn({ label }: { label: string }) {

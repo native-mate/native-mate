@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { View } from 'react-native'
 import { Text } from '@native-mate/core'
 import { Preview } from './shared/Preview'
-import { Textarea } from '../../../../../packages/registry/components/textarea/textarea'
+import { Textarea } from '../../../../packages/registry/components/textarea/textarea'
 
 export default function TextareaPreview() {
   const [bio, setBio] = useState('')

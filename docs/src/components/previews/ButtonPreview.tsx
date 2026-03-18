@@ -3,7 +3,7 @@ import React from 'react'
 import { View } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { Preview } from './shared/Preview'
-import { Button, ButtonGroup } from '../../../../../packages/registry/components/button/button'
+import { Button, ButtonGroup } from '../../../../packages/registry/components/button/button'
 
 export default function ButtonPreview() {
   return (

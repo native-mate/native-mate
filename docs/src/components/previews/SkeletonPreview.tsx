@@ -2,7 +2,7 @@
 import React from 'react'
 import { View } from 'react-native'
 import { Preview } from './shared/Preview'
-import { Skeleton, SkeletonText, SkeletonAvatar, SkeletonCard } from '../../../../../packages/registry/components/skeleton/skeleton'
+import { Skeleton, SkeletonText, SkeletonAvatar, SkeletonCard } from '../../../../packages/registry/components/skeleton/skeleton'
 
 export default function SkeletonPreview() {
   return (

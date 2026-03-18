@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import { View } from 'react-native'
 import { Preview } from './shared/Preview'
-import { Tag, TagGroup } from '../../../../../packages/registry/components/tag/tag'
+import { Tag, TagGroup } from '../../../../packages/registry/components/tag/tag'
 
 const CATEGORIES = [
   { label: 'All', variant: 'default' as const },

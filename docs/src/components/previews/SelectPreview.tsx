@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { View } from 'react-native'
 import { Text } from '@native-mate/core'
 import { Preview } from './shared/Preview'
-import { Select, MultiSelect } from '../../../../../packages/registry/components/select/select'
+import { Select, MultiSelect } from '../../../../packages/registry/components/select/select'
 
 const COUNTRIES = [
   { label: 'India', value: 'in', description: 'South Asia' },

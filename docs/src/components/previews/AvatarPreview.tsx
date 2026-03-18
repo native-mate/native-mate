@@ -3,7 +3,7 @@ import React from 'react'
 import { View } from 'react-native'
 import { Text } from '@native-mate/core'
 import { Preview } from './shared/Preview'
-import { Avatar, AvatarGroup } from '../../../../../packages/registry/components/avatar/avatar'
+import { Avatar, AvatarGroup } from '../../../../packages/registry/components/avatar/avatar'
 
 export default function AvatarPreview() {
   return (

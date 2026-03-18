@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import { View } from 'react-native'
 import { Preview } from './shared/Preview'
-import { Badge } from '../../../../../packages/registry/components/badge/badge'
+import { Badge } from '../../../../packages/registry/components/badge/badge'
 
 export default function BadgePreview() {
   const [tags, setTags] = useState(['React Native', 'TypeScript', 'Expo'])

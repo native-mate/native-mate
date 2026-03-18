@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import { View } from 'react-native'
 import { Preview } from './shared/Preview'
-import { OTPInput } from '../../../../../packages/registry/components/otp-input/otp-input'
+import { OTPInput } from '../../../../packages/registry/components/otp-input/otp-input'
 
 export default function OtpInputPreview() {
   const [v6, setV6] = useState('')

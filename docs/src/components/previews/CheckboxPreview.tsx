@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { View } from 'react-native'
 import { Text } from '@native-mate/core'
 import { Preview } from './shared/Preview'
-import { Checkbox, CheckboxGroup } from '../../../../../packages/registry/components/checkbox/checkbox'
+import { Checkbox, CheckboxGroup } from '../../../../packages/registry/components/checkbox/checkbox'
 
 export default function CheckboxPreview() {
   const [a, setA] = useState(true)

@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import { View, Pressable } from 'react-native'
 import { Preview } from './shared/Preview'
-import { Popover } from '../../../../../packages/registry/components/popover/popover'
+import { Popover } from '../../../../packages/registry/components/popover/popover'
 import { Text } from '@native-mate/core'
 
 const MENU_ITEMS = [
