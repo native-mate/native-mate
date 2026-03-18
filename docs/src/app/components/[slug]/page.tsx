@@ -19,6 +19,14 @@ const componentPreviews: Record<string, React.ComponentType> = {
   avatar: dynamic(() => import('@/components/previews/AvatarPreview'), { ssr: false }),
   progress: dynamic(() => import('@/components/previews/ProgressPreview'), { ssr: false }),
   toast: dynamic(() => import('@/components/previews/ToastPreview'), { ssr: false }),
+  tag: dynamic(() => import('@/components/previews/TagPreview'), { ssr: false }),
+  skeleton: dynamic(() => import('@/components/previews/SkeletonPreview'), { ssr: false }),
+  card: dynamic(() => import('@/components/previews/CardPreview'), { ssr: false }),
+  alert: dynamic(() => import('@/components/previews/AlertPreview'), { ssr: false }),
+  modal: dynamic(() => import('@/components/previews/ModalPreview'), { ssr: false }),
+  'action-sheet': dynamic(() => import('@/components/previews/ActionSheetPreview'), { ssr: false }),
+  tooltip: dynamic(() => import('@/components/previews/TooltipPreview'), { ssr: false }),
+  popover: dynamic(() => import('@/components/previews/PopoverPreview'), { ssr: false }),
 }
 
 interface ComponentDoc {
@@ -175,48 +183,82 @@ export function ButtonExamples() {
   card: {
     name: 'Card',
     slug: 'card',
-    description: 'A surface container with optional header, content, and footer slots. Supports shadows via the platform utility.',
+    description: 'Surface container with CardHeader, CardContent, CardFooter sub-components, built-in loading skeleton, cover image, 3 variants (elevated/outline/flat), and pressable mode.',
     category: 'Layout',
     npmDeps: [],
-    componentDeps: [],
+    componentDeps: ['skeleton'],
     addCommand: 'npx native-mate add card',
     props: [
-      { name: 'children', type: 'React.ReactNode', description: 'Card content. Use CardHeader, CardContent, CardFooter sub-components.' },
-      { name: 'style', type: 'ViewStyle', description: 'Additional styles for the card container.' },
+      { name: 'variant', type: '"elevated" | "outline" | "flat"', default: '"elevated"', description: 'Card surface style. Elevated has a shadow, outline has a border, flat is minimal.' },
+      { name: 'padding', type: '"none" | "sm" | "md" | "lg"', default: '"none"', description: 'Padding applied to the card container. Set to "none" when using CardHeader/CardContent/CardFooter.' },
+      { name: 'loading', type: 'boolean', default: 'false', description: 'Replaces children with an animated skeleton placeholder. Great for loading states.' },
+      { name: 'onPress', type: '() => void', description: 'Makes the card pressable. Adds ripple on Android and opacity feedback on iOS.' },
+      { name: 'image', type: 'ImageSourcePropType', description: 'Cover image rendered edge-to-edge at the top of the card.' },
+      { name: 'imageHeight', type: 'number', default: '180', description: 'Height of the cover image in pixels.' },
+      { name: 'children', type: 'React.ReactNode', description: 'Card content. Use CardHeader, CardContent, CardFooter for structured layouts.' },
     ],
     usageCode: `import { Card, CardHeader, CardContent, CardFooter } from '~/components/ui/card'
+import { Button } from '~/components/ui/button'
 import { Text } from '@native-mate/core'
 
+// Structured card with sub-components
 <Card>
-  <CardHeader>
-    <Text weight="semibold" size="lg">Card Title</Text>
-    <Text color="muted">Card subtitle</Text>
-  </CardHeader>
+  <CardHeader title="Invitation" subtitle="You've been invited to Acme Corp" />
   <CardContent>
-    <Text>Your content here.</Text>
+    <Text>Accept the invitation to start collaborating with your team.</Text>
   </CardContent>
-  <CardFooter>
-    <Button variant="outline">Cancel</Button>
-    <Button>Confirm</Button>
+  <CardFooter separated>
+    <Button variant="outline" style={{ flex: 1 }}>Decline</Button>
+    <Button style={{ flex: 1 }}>Accept</Button>
   </CardFooter>
+</Card>
+
+// Pressable card
+<Card onPress={() => router.push('/detail')}>
+  <CardHeader title="Settings" subtitle="Manage your account" trailing={<ChevronRight />} />
+</Card>
+
+// Loading skeleton
+<Card loading />
+
+// Cover image
+<Card image={{ uri: 'https://...' }} imageHeight={200}>
+  <CardHeader title="Mountain Retreat" subtitle="3 nights · $240" />
 </Card>`,
-    exampleCode: `import { Card, CardHeader, CardContent, CardFooter } from '~/components/ui/card'
+    exampleCode: `import { useState } from 'react'
+import { Card, CardHeader, CardContent, CardFooter } from '~/components/ui/card'
+import { Button } from '~/components/ui/button'
+import { View } from 'react-native'
+import { Text } from '@native-mate/core'
 
 export function CardExample() {
+  const [loading, setLoading] = useState(true)
+
   return (
-    <Card style={{ margin: 16 }}>
-      <CardHeader>
-        <Text weight="semibold" size="lg">Invitation</Text>
-        <Text color="muted">You have been invited to join Acme Corp</Text>
-      </CardHeader>
-      <CardContent>
-        <Text>Accept the invitation to start collaborating with your team.</Text>
-      </CardContent>
-      <CardFooter>
-        <Button variant="outline" style={{ flex: 1 }}>Decline</Button>
-        <Button style={{ flex: 1 }}>Accept</Button>
-      </CardFooter>
-    </Card>
+    <View style={{ gap: 16, padding: 16 }}>
+      {/* Loading state */}
+      <Card loading={loading} />
+
+      {/* Structured card */}
+      <Card variant="outline">
+        <CardHeader
+          title="Workspace plan"
+          subtitle="Up to 10 team members"
+          trailing={<Button size="sm" variant="ghost">Edit</Button>}
+        />
+        <CardContent>
+          <Text muted>Your workspace is on the Pro plan. Renews on March 1, 2026.</Text>
+        </CardContent>
+        <CardFooter separated>
+          <Button variant="ghost" style={{ flex: 1 }}>Cancel plan</Button>
+          <Button style={{ flex: 1 }}>Upgrade</Button>
+        </CardFooter>
+      </Card>
+
+      <Button variant="outline" onPress={() => setLoading(l => !l)}>
+        Toggle loading
+      </Button>
+    </View>
   )
 }`,
   },
@@ -1645,7 +1687,7 @@ export function OtpInputExample() {
   'action-sheet': {
     name: 'Action Sheet',
     slug: 'action-sheet',
-    description: 'A bottom action sheet that presents a list of actions. Supports a destructive action, a cancel button, and an optional title.',
+    description: 'iOS-style bottom sheet with drag handle, title/message header, action list with icon support, destructive variant, lifecycle-safe spring animation, and separate cancel button.',
     category: 'Overlay',
     npmDeps: [],
     componentDeps: [],
@@ -1653,8 +1695,9 @@ export function OtpInputExample() {
     props: [
       { name: 'isOpen', type: 'boolean', description: 'Controls visibility of the action sheet.' },
       { name: 'onClose', type: '() => void', description: 'Called when the sheet is dismissed.' },
-      { name: 'actions', type: 'Array<{ label: string; onPress: () => void; destructive?: boolean; disabled?: boolean }>', description: 'List of action items to display.' },
-      { name: 'title', type: 'string', description: 'Optional descriptive title shown at the top of the sheet.' },
+      { name: 'actions', type: 'Array<ActionSheetAction>', description: 'List of action items. Each action has label, onPress, optional variant ("destructive"), icon, and disabled.' },
+      { name: 'title', type: 'string', description: 'Short title shown at the top of the sheet.' },
+      { name: 'message', type: 'string', description: 'Secondary message shown below the title.' },
       { name: 'cancelLabel', type: 'string', default: '"Cancel"', description: 'Label for the cancel button.' },
     ],
     usageCode: `import { ActionSheet } from '~/components/ui/action-sheet'
@@ -1704,16 +1747,16 @@ export function ActionSheetExample() {
   tooltip: {
     name: 'Tooltip',
     slug: 'tooltip',
-    description: 'A contextual bubble that appears near a trigger element after a long-press or focus. Supports four placement positions.',
+    description: 'Contextual text bubble that appears near a trigger on press-and-hold. 4 placement positions, animated arrow indicator, delay, and Modal-based screen-level positioning.',
     category: 'Overlay',
     npmDeps: [],
     componentDeps: [],
     addCommand: 'npx native-mate add tooltip',
     props: [
-      { name: 'content', type: 'string', description: 'Text content shown inside the tooltip bubble.' },
-      { name: 'placement', type: '"top" | "bottom" | "left" | "right"', default: '"top"', description: 'Preferred side relative to the trigger.' },
-      { name: 'children', type: 'React.ReactElement', description: 'The trigger element that activates the tooltip.' },
-      { name: 'delay', type: 'number', default: '300', description: 'Milliseconds before the tooltip appears after activation.' },
+      { name: 'content', type: 'string', description: 'Text shown inside the tooltip bubble.' },
+      { name: 'placement', type: '"top" | "bottom" | "left" | "right"', default: '"top"', description: 'Preferred side relative to the trigger. Arrow points toward the trigger.' },
+      { name: 'children', type: 'React.ReactElement', description: 'The trigger element. Tooltip shows on press-and-hold or long press.' },
+      { name: 'delay', type: 'number', default: '300', description: 'Milliseconds before the tooltip appears after press-in.' },
     ],
     usageCode: `import { Tooltip } from '~/components/ui/tooltip'
 import { Button } from '~/components/ui/button'
@@ -1750,44 +1793,74 @@ export function TooltipExample() {
   tag: {
     name: 'Tag',
     slug: 'tag',
-    description: 'A dismissible label chip for displaying categories, filters, or selected items. Renders an optional remove button.',
+    description: 'Selectable chip with animated color transitions, 5 semantic variants, icon slot, 3 sizes, removable mode, and TagGroup for single/multi-select filter groups.',
     category: 'Display',
     npmDeps: [],
     componentDeps: [],
     addCommand: 'npx native-mate add tag',
     props: [
       { name: 'label', type: 'string', description: 'Text content of the tag.' },
-      { name: 'onRemove', type: '() => void', description: 'When provided, shows an × button that calls this handler.' },
-      { name: 'variant', type: '"default" | "outline" | "solid"', default: '"default"', description: 'Visual style of the tag.' },
-      { name: 'color', type: 'string', description: 'Custom background colour. Overrides the variant colour.' },
-      { name: 'size', type: '"sm" | "md"', default: '"md"', description: 'Controls padding and font size.' },
+      { name: 'selected', type: 'boolean', default: 'false', description: 'Highlights the tag with the variant accent color.' },
+      { name: 'onPress', type: '() => void', description: 'Makes the tag pressable with a spring scale animation and haptic.' },
+      { name: 'onRemove', type: '() => void', description: 'Shows a close (×) button. When pressed, calls this handler.' },
+      { name: 'variant', type: '"default" | "primary" | "success" | "warning" | "destructive" | "info"', default: '"default"', description: 'Color accent applied in selected state.' },
+      { name: 'icon', type: 'React.ReactNode', description: 'Element rendered before the label (e.g. an Ionicon).' },
+      { name: 'size', type: '"sm" | "md" | "lg"', default: '"md"', description: 'Controls padding and font size.' },
+      { name: 'disabled', type: 'boolean', default: 'false', description: 'Reduces opacity and prevents interaction.' },
     ],
-    usageCode: `import { Tag } from '~/components/ui/tag'
+    usageCode: `import { Tag, TagGroup } from '~/components/ui/tag'
+import { useState } from 'react'
 
 // Static tag
 <Tag label="React Native" />
 
-// Dismissible tag
+// Dismissible
 <Tag label="TypeScript" onRemove={() => removeTag('typescript')} />
 
-// Coloured tag
-<Tag label="Design" color="#8b5cf6" onRemove={handleRemove} />`,
-    exampleCode: `import { useState } from 'react'
-import { Tag } from '~/components/ui/tag'
-import { View } from 'react-native'
+// Selectable single tag
+<Tag label="Design" selected={active} onPress={() => setActive(v => !v)} variant="primary" />
 
-const INITIAL_TAGS = ['React Native', 'TypeScript', 'Expo', 'Reanimated', 'Design System']
+// Filter group (single select)
+<TagGroup
+  tags={[
+    { label: 'All' },
+    { label: 'Design', variant: 'primary' },
+    { label: 'Engineering', variant: 'success' },
+  ]}
+  selected={filters}
+  onChange={setFilters}
+/>
+
+// Filter group (multi select)
+<TagGroup tags={categories} selected={selected} onChange={setSelected} multiSelect />`,
+    exampleCode: `import { useState } from 'react'
+import { Tag, TagGroup } from '~/components/ui/tag'
+import { View } from 'react-native'
+import { Text } from '@native-mate/core'
+
+const CATEGORIES = [
+  { label: 'All', variant: 'default' as const },
+  { label: 'Design', variant: 'primary' as const },
+  { label: 'Engineering', variant: 'success' as const },
+  { label: 'Marketing', variant: 'warning' as const },
+  { label: 'Support', variant: 'info' as const },
+]
 
 export function TagExample() {
-  const [tags, setTags] = useState(INITIAL_TAGS)
-
-  const remove = (tag: string) => setTags(prev => prev.filter(t => t !== tag))
+  const [filter, setFilter] = useState(['All'])
+  const [skills, setSkills] = useState(['React Native', 'TypeScript'])
 
   return (
-    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, padding: 16 }}>
-      {tags.map(tag => (
-        <Tag key={tag} label={tag} onRemove={() => remove(tag)} />
-      ))}
+    <View style={{ gap: 20, padding: 16 }}>
+      <Text variant="label">Category filter</Text>
+      <TagGroup tags={CATEGORIES} selected={filter} onChange={setFilter} />
+
+      <Text variant="label">Skills</Text>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+        {skills.map(s => (
+          <Tag key={s} label={s} onRemove={() => setSkills(prev => prev.filter(x => x !== s))} />
+        ))}
+      </View>
     </View>
   )
 }`,
@@ -1838,40 +1911,160 @@ export function EmptyStateExample() {
   alert: {
     name: 'Alert',
     slug: 'alert',
-    description: 'An inline alert banner for displaying contextual feedback. Supports informational, success, warning, and error variants.',
-    category: 'Display',
+    description: 'Inline alert banner with 5 semantic variants (+ info), Ionicons auto-icon, dismissible mode, action button, and custom icon slot.',
+    category: 'Overlay',
     npmDeps: [],
     componentDeps: [],
     addCommand: 'npx native-mate add alert',
     props: [
-      { name: 'variant', type: '"info" | "success" | "warning" | "error"', default: '"info"', description: 'Determines the icon and colour scheme.' },
+      { name: 'variant', type: '"default" | "info" | "success" | "warning" | "destructive"', default: '"default"', description: 'Determines the icon and color scheme.' },
       { name: 'title', type: 'string', description: 'Bold heading of the alert.' },
-      { name: 'description', type: 'string', description: 'Secondary message text below the title.' },
-      { name: 'onClose', type: '() => void', description: 'When provided, renders a dismiss button.' },
+      { name: 'description', type: 'string', description: 'Secondary body text below the title.' },
+      { name: 'icon', type: 'React.ReactNode', description: 'Custom icon overriding the automatic Ionicons variant icon.' },
+      { name: 'onDismiss', type: '() => void', description: 'When provided, shows a close (×) button.' },
+      { name: 'action', type: '{ label: string; onPress: () => void }', description: 'Optional action button rendered below the description.' },
     ],
     usageCode: `import { Alert } from '~/components/ui/alert'
 
-// Info (default)
-<Alert title="Scheduled maintenance" description="The service will be unavailable on Sunday at 2 AM UTC." />
+// Default (primary)
+<Alert title="Scheduled maintenance" description="Service unavailable Sunday at 2 AM UTC." />
+
+// Info
+<Alert variant="info" title="Pro tip" description="Drag to reorder items in your list." />
 
 // Success
 <Alert variant="success" title="Payment received" description="Your invoice has been paid." />
 
-// Warning
-<Alert variant="warning" title="Trial ending soon" description="Your trial expires in 3 days." onClose={handleClose} />
+// Warning with dismiss
+<Alert variant="warning" title="Trial ending soon" description="3 days left." onDismiss={handleClose} />
 
-// Error
-<Alert variant="error" title="Upload failed" description="The file size exceeds the 10 MB limit." />`,
-    exampleCode: `import { Alert } from '~/components/ui/alert'
+// Destructive with action
+<Alert
+  variant="destructive"
+  title="Upload failed"
+  description="The file exceeds the 10 MB limit."
+  action={{ label: 'Try again', onPress: handleRetry }}
+/>`,
+    exampleCode: `import { useState } from 'react'
+import { Alert } from '~/components/ui/alert'
 import { View } from 'react-native'
 
 export function AlertExamples() {
+  const [showWarning, setShowWarning] = useState(true)
+
   return (
     <View style={{ gap: 12, padding: 16 }}>
       <Alert variant="info" title="New version available" description="Update to v2.4 for the latest features." />
       <Alert variant="success" title="Account verified" description="Your email address has been confirmed." />
-      <Alert variant="warning" title="Low disk space" description="You have less than 500 MB remaining." onClose={() => {}} />
-      <Alert variant="error" title="Sync failed" description="Check your internet connection and try again." />
+      {showWarning && (
+        <Alert
+          variant="warning"
+          title="Low disk space"
+          description="Less than 500 MB remaining."
+          onDismiss={() => setShowWarning(false)}
+        />
+      )}
+      <Alert
+        variant="destructive"
+        title="Sync failed"
+        description="Check your internet connection."
+        action={{ label: 'Retry', onPress: () => {} }}
+      />
+    </View>
+  )
+}`,
+  },
+  popover: {
+    name: 'Popover',
+    slug: 'popover',
+    description: 'Interactive content bubble anchored to any trigger element. Supports 4 placements, arrow indicator, scrollable content, backdrop dismiss, and both controlled and uncontrolled modes.',
+    category: 'Overlay',
+    npmDeps: [],
+    componentDeps: [],
+    addCommand: 'npx native-mate add popover',
+    props: [
+      { name: 'children', type: 'React.ReactElement', description: 'The trigger element. Tapping opens/closes the popover.' },
+      { name: 'content', type: 'React.ReactNode', description: 'Any content rendered inside the popover bubble. Can include buttons, lists, inputs, etc.' },
+      { name: 'placement', type: '"top" | "bottom" | "left" | "right"', default: '"bottom"', description: 'Preferred side relative to the trigger. Arrow points toward the trigger.' },
+      { name: 'maxWidth', type: 'number', default: '260', description: 'Maximum width of the popover bubble in pixels.' },
+      { name: 'dismissible', type: 'boolean', default: 'true', description: 'Whether tapping outside the popover closes it.' },
+      { name: 'open', type: 'boolean', description: 'Controlled open state. Use with onOpenChange for full control.' },
+      { name: 'onOpenChange', type: '(open: boolean) => void', description: 'Called when the popover opens or closes.' },
+    ],
+    usageCode: `import { Popover } from '~/components/ui/popover'
+import { Button } from '~/components/ui/button'
+import { View } from 'react-native'
+import { Text } from '@native-mate/core'
+
+// Simple text popover
+<Popover content={<Text style={{ padding: 12 }}>More info here</Text>} placement="top">
+  <Button variant="outline">Info</Button>
+</Popover>
+
+// Popover menu
+<Popover
+  placement="bottom"
+  content={
+    <View style={{ paddingVertical: 4 }}>
+      {['Edit', 'Duplicate', 'Delete'].map(item => (
+        <Pressable key={item} style={{ paddingVertical: 10, paddingHorizontal: 16 }}>
+          <Text>{item}</Text>
+        </Pressable>
+      ))}
+    </View>
+  }
+>
+  <Button variant="ghost" iconOnly>
+    <Ionicons name="ellipsis-horizontal" size={20} />
+  </Button>
+</Popover>
+
+// Controlled
+<Popover open={open} onOpenChange={setOpen} content={<DatePicker />}>
+  <Button>Pick date</Button>
+</Popover>`,
+    exampleCode: `import { useState } from 'react'
+import { Popover } from '~/components/ui/popover'
+import { Button } from '~/components/ui/button'
+import { View, Pressable } from 'react-native'
+import { Text } from '@native-mate/core'
+import { Ionicons } from '@expo/vector-icons'
+
+const MENU = [
+  { label: 'Edit', icon: 'create-outline' },
+  { label: 'Duplicate', icon: 'copy-outline' },
+  { label: 'Move to folder', icon: 'folder-outline' },
+  { label: 'Delete', icon: 'trash-outline', destructive: true },
+] as const
+
+export function PopoverExample() {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <View style={{ padding: 32, alignItems: 'center' }}>
+      <Popover
+        open={open}
+        onOpenChange={setOpen}
+        placement="bottom"
+        content={
+          <View style={{ paddingVertical: 4 }}>
+            {MENU.map(item => (
+              <Pressable
+                key={item.label}
+                style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 10, paddingHorizontal: 16 }}
+                onPress={() => setOpen(false)}
+              >
+                <Ionicons name={item.icon} size={17} color={item.destructive ? '#ef4444' : '#a1a1aa'} />
+                <Text style={{ color: item.destructive ? '#ef4444' : undefined }}>{item.label}</Text>
+              </Pressable>
+            ))}
+          </View>
+        }
+      >
+        <Button variant="outline" iconOnly>
+          <Ionicons name="ellipsis-horizontal" size={18} />
+        </Button>
+      </Popover>
     </View>
   )
 }`,
@@ -1952,6 +2145,7 @@ export function generateStaticParams() {
     { slug: 'tag' },
     { slug: 'empty-state' },
     { slug: 'alert' },
+    { slug: 'popover' },
     { slug: 'screen' },
   ]
 }
