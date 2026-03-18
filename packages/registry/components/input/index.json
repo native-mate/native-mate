@@ -1,1 +1,1 @@
-{ "name": "input", "version": "0.1.0", "description": "Text input with label, error, hint and focus state", "files": [{"path": "input.tsx", "hash": ""}, {"path": "input.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }
+{ "name": "input", "version": "0.2.0", "description": "Feature-rich text input with 3 sizes, prefix/suffix, floating label, password toggle, clearable, character count, shake on error, haptic on focus", "files": [{"path": "input.tsx", "hash": ""}, {"path": "input.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }

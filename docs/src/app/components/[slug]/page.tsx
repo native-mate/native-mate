@@ -1,7 +1,9 @@
+import React from 'react'
 import { notFound } from 'next/navigation'
 import { Nav } from '@/components/Nav'
 import { CodeBlock } from '@/components/CodeBlock'
 import Link from 'next/link'
+import { ComponentPreview } from './ComponentPreview'
 
 interface ComponentDoc {
   name: string
@@ -14,49 +16,140 @@ interface ComponentDoc {
   addCommand: string
   usageCode: string
   exampleCode: string
+  accessibility?: Array<{ feature: string; detail: string }>
 }
 
 const COMPONENT_DOCS: Record<string, ComponentDoc> = {
   button: {
     name: 'Button',
     slug: 'button',
-    description: 'A pressable button with multiple variants, loading state, optional icon support, and spring animations on press.',
+    description: 'Feature-rich button with 6 variants, icon-only mode, button groups, rounded pill shape, custom colors, haptic feedback, and spring animation.',
     category: 'Primitives',
     npmDeps: [],
     componentDeps: [],
     addCommand: 'npx native-mate add button',
+    accessibility: [
+      { feature: 'Role', detail: 'accessibilityRole="button" is set automatically.' },
+      { feature: 'Label', detail: 'accessibilityLabel is auto-derived from text children, or pass a custom one.' },
+      { feature: 'Disabled state', detail: 'accessibilityState={{ disabled }} is set when disabled or loading.' },
+      { feature: 'Busy state', detail: 'accessibilityState={{ busy: true }} is set when loading.' },
+      { feature: 'Keyboard', detail: 'Fully pressable via assistive technology. Disabled buttons prevent interaction.' },
+    ],
     props: [
-      { name: 'variant', type: '"default" | "outline" | "ghost" | "destructive"', default: '"default"', description: 'Visual style of the button.' },
+      { name: 'variant', type: '"default" | "outline" | "ghost" | "destructive" | "secondary" | "link"', default: '"default"', description: 'Visual style of the button.' },
       { name: 'size', type: '"sm" | "md" | "lg"', default: '"md"', description: 'Controls height and padding.' },
       { name: 'loading', type: 'boolean', default: 'false', description: 'Shows an ActivityIndicator and disables press.' },
       { name: 'disabled', type: 'boolean', default: 'false', description: 'Reduces opacity and disables press.' },
-      { name: 'leftIcon', type: 'React.ReactNode', description: 'Element rendered before the label.' },
-      { name: 'rightIcon', type: 'React.ReactNode', description: 'Element rendered after the label.' },
+      { name: 'fullWidth', type: 'boolean', default: 'false', description: 'Stretches button to fill container width.' },
+      { name: 'rounded', type: 'boolean', default: 'false', description: 'Applies fully rounded pill shape (borderRadius: 9999).' },
+      { name: 'iconOnly', type: 'boolean', default: 'false', description: 'Square/circle button with only an icon, no text.' },
+      { name: 'haptic', type: '"light" | "medium" | "heavy" | "none"', default: '"light"', description: 'Haptic feedback intensity on press. Requires expo-haptics (optional).' },
+      { name: 'color', type: 'string', description: 'Custom color override. Sets background for default, border for outline.' },
+      { name: 'iconLeft', type: 'React.ReactNode', description: 'Element rendered before the label.' },
+      { name: 'iconRight', type: 'React.ReactNode', description: 'Element rendered after the label.' },
       { name: 'onPress', type: '() => void', description: 'Press handler.' },
     ],
-    usageCode: `import { Button } from '~/components/ui/button'
+    usageCode: `import { Button, ButtonGroup } from '~/components/ui/button'
 
-// Default
-<Button onPress={handleSubmit}>Submit</Button>
+// Variants
+<Button variant="default">Default</Button>
+<Button variant="outline">Outline</Button>
+<Button variant="ghost">Ghost</Button>
+<Button variant="destructive">Delete</Button>
+<Button variant="secondary">Secondary</Button>
+<Button variant="link">Learn more</Button>
 
-// Outline variant
-<Button variant="outline" onPress={handleCancel}>Cancel</Button>
+// Sizes
+<Button size="sm">Small</Button>
+<Button size="md">Medium</Button>
+<Button size="lg">Large</Button>
 
-// Loading state
-<Button loading onPress={handleSave}>Save</Button>
+// Rounded pill
+<Button rounded>Rounded</Button>
 
-// Small destructive
-<Button variant="destructive" size="sm" onPress={handleDelete}>Delete</Button>`,
-    exampleCode: `import { Button } from '~/components/ui/button'
+// Icon only (square or circle)
+<Button iconOnly iconLeft={<PlusIcon />} />
+<Button iconOnly rounded iconLeft={<HeartIcon />} />
+
+// With icons
+<Button iconLeft={<PlusIcon />}>Add Item</Button>
+<Button iconRight={<ArrowIcon />} variant="outline">Next</Button>
+
+// Custom color
+<Button color="#6366f1">Indigo</Button>
+<Button color="#10b981" variant="outline">Emerald</Button>
+
+// Full width
+<Button fullWidth>Save Changes</Button>
+
+// Haptic feedback
+<Button haptic="light">Light tap</Button>
+<Button haptic="heavy">Strong tap</Button>
+<Button haptic="none">No haptic</Button>
+
+// Button group (segmented control)
+<ButtonGroup fullWidth>
+  <Button>Day</Button>
+  <Button>Week</Button>
+  <Button>Month</Button>
+</ButtonGroup>
+
+<ButtonGroup fullWidth>
+  <Button variant="outline">Cancel</Button>
+  <Button variant="default">Confirm</Button>
+</ButtonGroup>
+
+// Loading & disabled
+<Button loading>Saving…</Button>
+<Button disabled>Disabled</Button>`,
+    exampleCode: `import { Button, ButtonGroup } from '~/components/ui/button'
 import { View } from 'react-native'
 
 export function ButtonExamples() {
   return (
-    <View style={{ gap: 12, padding: 16 }}>
+    <View style={{ gap: 16, padding: 16 }}>
+      {/* All variants */}
       <Button variant="default">Default</Button>
       <Button variant="outline">Outline</Button>
       <Button variant="ghost">Ghost</Button>
       <Button variant="destructive">Destructive</Button>
+      <Button variant="secondary">Secondary</Button>
+      <Button variant="link">Link</Button>
+
+      {/* Rounded pill */}
+      <Button rounded>Rounded</Button>
+      <Button rounded variant="outline">Pill Outline</Button>
+
+      {/* Icon only */}
+      <View style={{ flexDirection: 'row', gap: 12 }}>
+        <Button iconOnly iconLeft={<PlusIcon />} />
+        <Button iconOnly rounded iconLeft={<HeartIcon />} />
+      </View>
+
+      {/* With icons */}
+      <Button iconLeft={<PlusIcon />}>Add Item</Button>
+
+      {/* Custom colors */}
+      <Button color="#6366f1">Indigo</Button>
+      <Button color="#10b981">Emerald</Button>
+
+      {/* Button group */}
+      <ButtonGroup fullWidth variant="outline">
+        <Button>Day</Button>
+        <Button>Week</Button>
+        <Button>Month</Button>
+        <Button>Year</Button>
+      </ButtonGroup>
+
+      <ButtonGroup fullWidth>
+        <Button variant="outline">Cancel</Button>
+        <Button variant="default">Confirm</Button>
+      </ButtonGroup>
+
+      {/* Full width */}
+      <Button fullWidth>Full Width</Button>
+
+      {/* States */}
       <Button loading>Loading…</Button>
       <Button disabled>Disabled</Button>
     </View>
@@ -66,95 +159,684 @@ export function ButtonExamples() {
   card: {
     name: 'Card',
     slug: 'card',
-    description: 'A surface container with optional header, content, and footer slots. Supports shadows via the platform utility.',
+    description: 'Surface container with CardHeader, CardContent, CardFooter sub-components, built-in loading skeleton, cover image, 3 variants (elevated/outline/flat), and pressable mode.',
     category: 'Layout',
     npmDeps: [],
-    componentDeps: [],
+    componentDeps: ['skeleton'],
     addCommand: 'npx native-mate add card',
     props: [
-      { name: 'children', type: 'React.ReactNode', description: 'Card content. Use CardHeader, CardContent, CardFooter sub-components.' },
-      { name: 'style', type: 'ViewStyle', description: 'Additional styles for the card container.' },
+      { name: 'variant', type: '"elevated" | "outline" | "flat"', default: '"elevated"', description: 'Card surface style. Elevated has a shadow, outline has a border, flat is minimal.' },
+      { name: 'padding', type: '"none" | "sm" | "md" | "lg"', default: '"none"', description: 'Padding applied to the card container. Set to "none" when using CardHeader/CardContent/CardFooter.' },
+      { name: 'loading', type: 'boolean', default: 'false', description: 'Replaces children with an animated skeleton placeholder. Great for loading states.' },
+      { name: 'onPress', type: '() => void', description: 'Makes the card pressable. Adds ripple on Android and opacity feedback on iOS.' },
+      { name: 'image', type: 'ImageSourcePropType', description: 'Cover image rendered edge-to-edge at the top of the card.' },
+      { name: 'imageHeight', type: 'number', default: '180', description: 'Height of the cover image in pixels.' },
+      { name: 'children', type: 'React.ReactNode', description: 'Card content. Use CardHeader, CardContent, CardFooter for structured layouts.' },
     ],
     usageCode: `import { Card, CardHeader, CardContent, CardFooter } from '~/components/ui/card'
+import { Button } from '~/components/ui/button'
 import { Text } from '@native-mate/core'
 
+// Structured card with sub-components
 <Card>
-  <CardHeader>
-    <Text weight="semibold" size="lg">Card Title</Text>
-    <Text color="muted">Card subtitle</Text>
-  </CardHeader>
+  <CardHeader title="Invitation" subtitle="You've been invited to Acme Corp" />
   <CardContent>
-    <Text>Your content here.</Text>
+    <Text>Accept the invitation to start collaborating with your team.</Text>
   </CardContent>
-  <CardFooter>
-    <Button variant="outline">Cancel</Button>
-    <Button>Confirm</Button>
+  <CardFooter separated>
+    <Button variant="outline" style={{ flex: 1 }}>Decline</Button>
+    <Button style={{ flex: 1 }}>Accept</Button>
   </CardFooter>
+</Card>
+
+// Pressable card
+<Card onPress={() => router.push('/detail')}>
+  <CardHeader title="Settings" subtitle="Manage your account" trailing={<ChevronRight />} />
+</Card>
+
+// Loading skeleton
+<Card loading />
+
+// Cover image
+<Card image={{ uri: 'https://...' }} imageHeight={200}>
+  <CardHeader title="Mountain Retreat" subtitle="3 nights · $240" />
 </Card>`,
-    exampleCode: `import { Card, CardHeader, CardContent, CardFooter } from '~/components/ui/card'
+    exampleCode: `import { useState } from 'react'
+import { Card, CardHeader, CardContent, CardFooter } from '~/components/ui/card'
+import { Button } from '~/components/ui/button'
+import { View } from 'react-native'
+import { Text } from '@native-mate/core'
 
 export function CardExample() {
+  const [loading, setLoading] = useState(true)
+
   return (
-    <Card style={{ margin: 16 }}>
-      <CardHeader>
-        <Text weight="semibold" size="lg">Invitation</Text>
-        <Text color="muted">You have been invited to join Acme Corp</Text>
-      </CardHeader>
-      <CardContent>
-        <Text>Accept the invitation to start collaborating with your team.</Text>
-      </CardContent>
-      <CardFooter>
-        <Button variant="outline" style={{ flex: 1 }}>Decline</Button>
-        <Button style={{ flex: 1 }}>Accept</Button>
-      </CardFooter>
-    </Card>
+    <View style={{ gap: 16, padding: 16 }}>
+      {/* Loading state */}
+      <Card loading={loading} />
+
+      {/* Structured card */}
+      <Card variant="outline">
+        <CardHeader
+          title="Workspace plan"
+          subtitle="Up to 10 team members"
+          trailing={<Button size="sm" variant="ghost">Edit</Button>}
+        />
+        <CardContent>
+          <Text muted>Your workspace is on the Pro plan. Renews on March 1, 2026.</Text>
+        </CardContent>
+        <CardFooter separated>
+          <Button variant="ghost" style={{ flex: 1 }}>Cancel plan</Button>
+          <Button style={{ flex: 1 }}>Upgrade</Button>
+        </CardFooter>
+      </Card>
+
+      <Button variant="outline" onPress={() => setLoading(l => !l)}>
+        Toggle loading
+      </Button>
+    </View>
   )
 }`,
   },
   input: {
     name: 'Input',
     slug: 'input',
-    description: 'A text input with label, error message, prefix/suffix slots, and animated focus ring.',
+    description: 'Feature-rich text input with 3 sizes, prefix/suffix slots, floating label, password toggle, clearable, character count, shake on error, and haptic on focus.',
     category: 'Forms',
     npmDeps: [],
     componentDeps: [],
     addCommand: 'npx native-mate add input',
+    accessibility: [
+      { feature: 'Label', detail: 'accessibilityLabel is auto-set from the label prop.' },
+      { feature: 'Disabled state', detail: 'accessibilityState={{ disabled }} is set when disabled.' },
+      { feature: 'Keyboard', detail: 'Fully focusable and editable via assistive technology.' },
+    ],
     props: [
-      { name: 'label', type: 'string', description: 'Label shown above the input.' },
-      { name: 'error', type: 'string', description: 'Error message shown below. Turns border red.' },
+      { name: 'label', type: 'string', description: 'Label shown above the input (or floating inside when floatingLabel is true).' },
+      { name: 'error', type: 'string', description: 'Error message shown below. Turns border red and triggers shake animation.' },
       { name: 'hint', type: 'string', description: 'Helper text shown below the input.' },
-      { name: 'prefix', type: 'React.ReactNode', description: 'Element rendered before the text field.' },
-      { name: 'suffix', type: 'React.ReactNode', description: 'Element rendered after the text field.' },
-      { name: '...TextInputProps', type: 'TextInputProps', description: 'All standard RN TextInput props are forwarded.' },
+      { name: 'size', type: '"sm" | "md" | "lg"', default: '"md"', description: 'Controls height, font size, and padding.' },
+      { name: 'required', type: 'boolean', default: 'false', description: 'Shows a red asterisk (*) after the label.' },
+      { name: 'disabled', type: 'boolean', default: 'false', description: 'Dims input and prevents editing.' },
+      { name: 'prefix', type: 'React.ReactNode', description: 'Icon or element rendered inside the input, before the text.' },
+      { name: 'suffix', type: 'React.ReactNode', description: 'Icon or element rendered inside the input, after the text.' },
+      { name: 'prefixText', type: 'string', description: 'Text addon attached to the left (e.g. "$", "https://"). Has a border separator.' },
+      { name: 'suffixText', type: 'string', description: 'Text addon attached to the right (e.g. "USD", ".com"). Has a border separator.' },
+      { name: 'clearable', type: 'boolean', default: 'false', description: 'Shows a clear (×) button when input has a value.' },
+      { name: 'onClear', type: '() => void', description: 'Called when the clear button is pressed.' },
+      { name: 'showPasswordToggle', type: 'boolean', default: 'false', description: 'Shows a Show/Hide toggle for password inputs. Use with secureTextEntry.' },
+      { name: 'showCount', type: 'boolean', default: 'false', description: 'Shows character count below the input. Pair with maxLength.' },
+      { name: 'maxLength', type: 'number', description: 'Maximum character limit. Shown as x/max when showCount is true.' },
+      { name: 'floatingLabel', type: 'boolean', default: 'false', description: 'Label animates from placeholder position to top of border on focus (Material Design style).' },
+      { name: 'hapticOnFocus', type: 'boolean', default: 'false', description: 'Triggers a light haptic tap when input is focused. Requires expo-haptics (optional).' },
+      { name: '...TextInputProps', type: 'TextInputProps', description: 'All standard React Native TextInput props are forwarded.' },
     ],
     usageCode: `import { Input } from '~/components/ui/input'
 
 // Basic
 <Input label="Email" placeholder="you@example.com" />
 
-// With error
-<Input
-  label="Password"
-  secureTextEntry
-  error="Password must be at least 8 characters"
-/>
+// Sizes
+<Input size="sm" placeholder="Small" />
+<Input size="lg" placeholder="Large" />
 
-// With hint
-<Input
-  label="Username"
-  hint="Only letters, numbers, and underscores"
-  autoCapitalize="none"
-/>`,
+// Required
+<Input label="Name" required />
+
+// Prefix & suffix text
+<Input label="Price" prefixText="$" suffixText="USD" />
+<Input label="Website" prefixText="https://" />
+
+// Prefix & suffix icons
+<Input prefix={<SearchIcon />} placeholder="Search..." clearable />
+<Input suffix={<CheckIcon />} label="Email" />
+
+// Password with toggle
+<Input label="Password" secureTextEntry showPasswordToggle />
+
+// Character count
+<Input label="Bio" showCount maxLength={160} />
+
+// Floating label (Material Design style)
+<Input floatingLabel label="Email Address" />
+
+// Error (triggers shake animation)
+<Input label="Username" error="Already taken" />
+
+// Haptic on focus
+<Input label="Name" hapticOnFocus />`,
     exampleCode: `import { Input } from '~/components/ui/input'
 import { View } from 'react-native'
 
 export function InputExamples() {
   return (
     <View style={{ gap: 16, padding: 16 }}>
-      <Input label="Email" placeholder="you@example.com" keyboardType="email-address" />
-      <Input label="Password" secureTextEntry placeholder="••••••••" />
-      <Input label="Bio" hint="Up to 160 characters" multiline />
-      <Input label="Username" error="This username is taken" />
+      <Input label="Email" placeholder="you@example.com" />
+      <Input label="Price" prefixText="$" suffixText="USD" />
+      <Input label="Password" secureTextEntry showPasswordToggle />
+      <Input label="Bio" showCount maxLength={160} />
+      <Input floatingLabel label="Floating Label" />
+      <Input label="Search" placeholder="Type..." clearable />
+      <Input label="Username" error="Already taken" />
+      <Input label="Company" disabled value="Acme Inc." />
+    </View>
+  )
+}`,
+  },
+  textarea: {
+    name: 'Textarea',
+    slug: 'textarea',
+    description: 'Auto-growing multi-line input with min/max rows, character count with warning threshold, floating label, submit-on-Enter, mention detection, voice input slot, read-only, shake on error, and haptic focus.',
+    category: 'Forms',
+    npmDeps: [],
+    componentDeps: [],
+    addCommand: 'npx native-mate add textarea',
+    accessibility: [
+      { feature: 'Label', detail: 'accessibilityLabel is auto-set from the label prop.' },
+      { feature: 'Disabled state', detail: 'accessibilityState={{ disabled }} is set when disabled.' },
+      { feature: 'Read-only', detail: 'editable={false} prevents editing while keeping content selectable.' },
+      { feature: 'Keyboard', detail: 'Fully focusable via assistive technology.' },
+    ],
+    props: [
+      { name: 'label', type: 'string', description: 'Label above or floating inside the textarea.' },
+      { name: 'error', type: 'string', description: 'Error message. Turns border red and triggers shake.' },
+      { name: 'hint', type: 'string', description: 'Helper text below the textarea.' },
+      { name: 'required', type: 'boolean', default: 'false', description: 'Shows a red asterisk after the label.' },
+      { name: 'disabled', type: 'boolean', default: 'false', description: 'Dims and prevents editing.' },
+      { name: 'readOnly', type: 'boolean', default: 'false', description: 'Prevents editing but keeps content selectable.' },
+      { name: 'minRows', type: 'number', default: '3', description: 'Minimum visible rows before content shrinks.' },
+      { name: 'maxRows', type: 'number', default: '10', description: 'Maximum rows before scroll activates.' },
+      { name: 'showCount', type: 'boolean', default: 'false', description: 'Shows character count. Pair with maxLength.' },
+      { name: 'countWarnAt', type: 'number', default: '0.8', description: 'Fraction of maxLength at which count turns amber (0–1).' },
+      { name: 'floatingLabel', type: 'boolean', default: 'false', description: 'Label animates from inside to above border on focus.' },
+      { name: 'submitOnEnter', type: 'boolean', default: 'false', description: 'Pressing Enter calls onSubmit instead of inserting a newline.' },
+      { name: 'onSubmit', type: '(value: string) => void', description: 'Called when Enter is pressed with submitOnEnter enabled.' },
+      { name: 'onMention', type: '(query: string) => void', description: 'Called when user types @ followed by text. Passes the query string.' },
+      { name: 'voiceInput', type: 'boolean', default: 'false', description: 'Shows a microphone button inside the textarea.' },
+      { name: 'onVoicePress', type: '() => void', description: 'Called when the microphone button is pressed.' },
+      { name: '...TextInputProps', type: 'TextInputProps', description: 'All standard React Native TextInput props are forwarded.' },
+    ],
+    usageCode: `import { Textarea } from '~/components/ui/textarea'
+
+// Basic
+<Textarea label="Bio" placeholder="Tell us about yourself..." />
+
+// Min/max rows (auto-grow)
+<Textarea label="Message" minRows={2} maxRows={6} />
+
+// Character count with warning
+<Textarea label="Tweet" showCount maxLength={280} countWarnAt={0.8} />
+
+// Floating label
+<Textarea floatingLabel label="Notes" />
+
+// Submit on Enter (Slack-style chat)
+<Textarea
+  label="Message"
+  submitOnEnter
+  onSubmit={(text) => sendMessage(text)}
+  minRows={1}
+  maxRows={4}
+/>
+
+// Mention detection
+<Textarea onMention={(query) => fetchSuggestions(query)} />
+
+// Voice input
+<Textarea voiceInput onVoicePress={() => startSpeechToText()} />
+
+// Read-only
+<Textarea label="Terms" value={termsText} readOnly />
+
+// Error state
+<Textarea label="Review" error="Review cannot be empty" />`,
+    exampleCode: `import { useState } from 'react'
+import { Textarea } from '~/components/ui/textarea'
+import { View } from 'react-native'
+
+export function TextareaExamples() {
+  const [bio, setBio] = useState('')
+  const [msg, setMsg] = useState('')
+
+  return (
+    <View style={{ gap: 16, padding: 16 }}>
+      <Textarea label="Bio" placeholder="Tell us about yourself..." showCount maxLength={160} value={bio} onChangeText={setBio} />
+      <Textarea label="Message" minRows={2} maxRows={6} value={msg} onChangeText={setMsg} />
+      <Textarea floatingLabel label="Notes" placeholder="Add notes..." />
+      <Textarea label="Tweet" showCount maxLength={280} countWarnAt={0.8} />
+      <Textarea label="Message" submitOnEnter onSubmit={(t) => console.log(t)} minRows={1} maxRows={4} />
+      <Textarea label="Terms" value="By using this app you agree to our terms." readOnly />
+      <Textarea label="Review" error="Review cannot be empty" />
+      <Textarea label="Disabled" value="Cannot edit." disabled />
+    </View>
+  )
+}`,
+  },
+  checkbox: {
+    name: 'Checkbox',
+    slug: 'checkbox',
+    description: 'Animated checkbox with indeterminate state, descriptions, 3 sizes, custom color, label-left, error state, CheckboxGroup with horizontal layout, and haptic feedback.',
+    category: 'Forms',
+    npmDeps: [],
+    componentDeps: [],
+    addCommand: 'npx native-mate add checkbox',
+    accessibility: [
+      { feature: 'Role', detail: 'accessibilityRole="checkbox" on each item.' },
+      { feature: 'State', detail: 'accessibilityState={{ checked, disabled }} — supports "mixed" for indeterminate.' },
+      { feature: 'Label', detail: 'accessibilityLabel defaults to the label prop.' },
+    ],
+    props: [
+      { name: 'checked', type: 'boolean', description: 'Checked state.' },
+      { name: 'onChange', type: '(checked: boolean) => void', description: 'Called when the checkbox is toggled.' },
+      { name: 'indeterminate', type: 'boolean', default: 'false', description: 'Shows a dash (─) instead of a checkmark. Used for parent "select all" patterns.' },
+      { name: 'label', type: 'string', description: 'Label text next to the checkbox.' },
+      { name: 'description', type: 'string', description: 'Secondary helper text below the label.' },
+      { name: 'size', type: '"sm" | "md" | "lg"', default: '"md"', description: 'Box size — 16/20/24px.' },
+      { name: 'color', type: 'string', description: 'Custom fill color when checked.' },
+      { name: 'labelPosition', type: '"right" | "left"', default: '"right"', description: 'Which side the label appears on.' },
+      { name: 'error', type: 'string', description: 'Error message shown below. Turns box red.' },
+      { name: 'disabled', type: 'boolean', default: 'false', description: 'Dims and prevents interaction.' },
+      { name: 'haptic', type: 'boolean', default: 'true', description: 'Light haptic on toggle. Requires expo-haptics (optional).' },
+    ],
+    usageCode: `import { Checkbox, CheckboxGroup } from '~/components/ui/checkbox'
+
+<Checkbox checked={checked} onChange={setChecked} label="Accept terms" />
+
+// With description
+<Checkbox checked={v} onChange={setV} label="Subscribe" description="Weekly updates" />
+
+// Indeterminate (select-all parent)
+<Checkbox checked={false} indeterminate onChange={handleParent} label="Select all" />
+
+// Sizes
+<Checkbox size="sm" checked onChange={() => {}} label="Small" />
+<Checkbox size="lg" checked onChange={() => {}} label="Large" />
+
+// Custom color
+<Checkbox checked onChange={() => {}} label="Emerald" color="#10b981" />
+
+// Label on left
+<Checkbox checked={v} onChange={setV} label="Dark mode" labelPosition="left" />
+
+// Error
+<Checkbox checked={false} onChange={() => {}} label="Accept" error="Required" />
+
+// Group
+<CheckboxGroup
+  label="Skills"
+  options={[
+    { label: 'TypeScript', value: 'ts' },
+    { label: 'React Native', value: 'rn' },
+    { label: 'GraphQL', value: 'gql', disabled: true },
+  ]}
+  value={selected}
+  onChange={setSelected}
+/>
+
+// Horizontal group
+<CheckboxGroup options={days} value={selected} onChange={setSelected} horizontal />`,
+    exampleCode: `import { Checkbox, CheckboxGroup } from '~/components/ui/checkbox'
+import { View } from 'react-native'
+
+export function CheckboxExamples() {
+  const [terms, setTerms] = useState(false)
+  const [skills, setSkills] = useState(['ts'])
+
+  return (
+    <View style={{ gap: 20, padding: 16 }}>
+      <Checkbox checked={terms} onChange={setTerms} label="Accept terms" description="By checking this you agree to our ToS" />
+      <Checkbox checked={false} indeterminate onChange={() => {}} label="Select all items" />
+      <CheckboxGroup
+        label="Your stack"
+        options={[
+          { label: 'TypeScript', value: 'ts', description: 'Typed JavaScript' },
+          { label: 'React Native', value: 'rn' },
+          { label: 'Expo', value: 'expo' },
+        ]}
+        value={skills}
+        onChange={setSkills}
+      />
+    </View>
+  )
+}`,
+  },
+  radio: {
+    name: 'Radio',
+    slug: 'radio',
+    description: 'Animated radio button with card-style variant, descriptions, horizontal layout, sizes, error state, disabled options, and haptic feedback.',
+    category: 'Forms',
+    npmDeps: [],
+    componentDeps: [],
+    addCommand: 'npx native-mate add radio',
+    accessibility: [
+      { feature: 'Role', detail: 'accessibilityRole="radio" on each item.' },
+      { feature: 'State', detail: 'accessibilityState={{ checked: selected, disabled }}.' },
+      { feature: 'Label', detail: 'accessibilityLabel defaults to the label prop.' },
+    ],
+    props: [
+      { name: 'selected', type: 'boolean', description: 'Whether this radio is selected.' },
+      { name: 'onSelect', type: '() => void', description: 'Called when this radio is pressed.' },
+      { name: 'label', type: 'string', description: 'Option label.' },
+      { name: 'description', type: 'string', description: 'Helper text below the label.' },
+      { name: 'size', type: '"sm" | "md" | "lg"', default: '"md"', description: 'Outer circle size — 16/20/24px.' },
+      { name: 'card', type: 'boolean', default: 'false', description: 'Renders as a full bordered card. Active card gets highlighted border + tinted background.' },
+      { name: 'color', type: 'string', description: 'Custom accent color.' },
+      { name: 'disabled', type: 'boolean', default: 'false', description: 'Dims and prevents selection.' },
+      { name: 'haptic', type: 'boolean', default: 'true', description: 'Light haptic on select. Requires expo-haptics (optional).' },
+    ],
+    usageCode: `import { Radio, RadioGroup } from '~/components/ui/radio'
+
+// Basic group
+<RadioGroup
+  label="Framework"
+  options={[
+    { label: 'React Native', value: 'rn', description: 'Cross-platform mobile' },
+    { label: 'Flutter', value: 'flutter' },
+    { label: 'SwiftUI', value: 'swiftui', disabled: true },
+  ]}
+  value={fw}
+  onChange={setFw}
+/>
+
+// Card style (plan picker)
+<RadioGroup
+  card
+  options={[
+    { label: 'Free', value: 'free', description: '5 components' },
+    { label: 'Pro', value: 'pro', description: 'Unlimited' },
+  ]}
+  value={plan}
+  onChange={setPlan}
+/>
+
+// Horizontal
+<RadioGroup options={directions} value={dir} onChange={setDir} horizontal />
+
+// Error
+<RadioGroup options={opts} value="" onChange={() => {}} error="Please select an option." />`,
+    exampleCode: `import { RadioGroup } from '~/components/ui/radio'
+import { View } from 'react-native'
+
+export function RadioExamples() {
+  const [plan, setPlan] = useState('pro')
+  const [fw, setFw] = useState('rn')
+
+  return (
+    <View style={{ gap: 24, padding: 16 }}>
+      <RadioGroup
+        label="Framework"
+        options={[
+          { label: 'React Native', value: 'rn', description: 'Cross-platform mobile' },
+          { label: 'Flutter', value: 'flutter', description: 'Google UI toolkit' },
+        ]}
+        value={fw}
+        onChange={setFw}
+      />
+      <RadioGroup
+        label="Plan"
+        card
+        options={[
+          { label: 'Free', value: 'free', description: '5 components, community' },
+          { label: 'Pro', value: 'pro', description: 'Unlimited + priority support' },
+        ]}
+        value={plan}
+        onChange={setPlan}
+      />
+    </View>
+  )
+}`,
+  },
+  slider: {
+    name: 'Slider',
+    slug: 'slider',
+    description: 'Single and range slider with value display, step marks, custom colors, disabled state, spring thumb animation, and haptic feedback at each step.',
+    category: 'Forms',
+    npmDeps: [],
+    componentDeps: [],
+    addCommand: 'npx native-mate add slider',
+    accessibility: [
+      { feature: 'Role', detail: 'accessibilityRole="adjustable" on the track.' },
+      { feature: 'Value', detail: 'accessibilityValue={{ min, max, now: value }} is set.' },
+      { feature: 'Label', detail: 'Pass accessibilityLabel for screen reader announcement.' },
+    ],
+    props: [
+      { name: 'value', type: 'number', description: 'Current value.' },
+      { name: 'min', type: 'number', default: '0', description: 'Minimum value.' },
+      { name: 'max', type: 'number', default: '100', description: 'Maximum value.' },
+      { name: 'step', type: 'number', default: '1', description: 'Snap increment.' },
+      { name: 'onChange', type: '(value: number) => void', description: 'Called continuously while dragging.' },
+      { name: 'onChangeEnd', type: '(value: number) => void', description: 'Called once when the thumb is released.' },
+      { name: 'showValue', type: 'boolean', default: 'false', description: 'Shows min, current, and max value labels above the track.' },
+      { name: 'marks', type: 'boolean', default: 'false', description: 'Renders tick marks below the track at each step.' },
+      { name: 'fillColor', type: 'string', description: 'Custom fill and thumb color.' },
+      { name: 'trackColor', type: 'string', description: 'Custom unfilled track color.' },
+      { name: 'disabled', type: 'boolean', default: 'false', description: 'Dims and prevents dragging.' },
+      { name: 'haptic', type: 'boolean', default: 'true', description: 'Light haptic at each step. Requires expo-haptics (optional).' },
+    ],
+    usageCode: `import { Slider, RangeSlider } from '~/components/ui/slider'
+
+// Basic
+<Slider value={vol} onChange={setVol} />
+
+// With value display
+<Slider value={vol} onChange={setVol} showValue />
+
+// Step + marks
+<Slider value={rating} onChange={setRating} min={1} max={5} step={1} marks showValue />
+
+// Custom color
+<Slider value={bright} onChange={setBright} fillColor="#f59e0b" />
+
+// Disabled
+<Slider value={60} onChange={() => {}} disabled />
+
+// Range slider
+<RangeSlider
+  low={low}
+  high={high}
+  min={0}
+  max={1000}
+  step={10}
+  onChange={(l, h) => { setLow(l); setHigh(h) }}
+  showValue
+  fillColor="#10b981"
+  marks
+/>`,
+    exampleCode: `import { Slider, RangeSlider } from '~/components/ui/slider'
+import { View } from 'react-native'
+
+export function SliderExamples() {
+  const [vol, setVol] = useState(50)
+  const [low, setLow] = useState(100)
+  const [high, setHigh] = useState(500)
+
+  return (
+    <View style={{ gap: 24, padding: 16 }}>
+      <Slider value={vol} onChange={setVol} showValue />
+      <Slider value={vol} onChange={setVol} fillColor="#f59e0b" showValue />
+      <RangeSlider
+        low={low} high={high} min={0} max={1000} step={10}
+        onChange={(l, h) => { setLow(l); setHigh(h) }}
+        showValue fillColor="#10b981" marks
+      />
+    </View>
+  )
+}`,
+  },
+  select: {
+    name: 'Select',
+    slug: 'select',
+    description: 'Bottom-sheet select with search, multi-select with chips, option groups, descriptions, clearable, required, error, disabled options, and animated chevron.',
+    category: 'Forms',
+    npmDeps: [],
+    componentDeps: ['sheet'],
+    addCommand: 'npx native-mate add select',
+    accessibility: [
+      { feature: 'Role', detail: 'accessibilityRole="combobox" on the trigger.' },
+      { feature: 'Expanded state', detail: 'accessibilityState={{ expanded: open }} is set.' },
+      { feature: 'Option role', detail: 'accessibilityRole="option" and accessibilityState={{ selected }} on each row.' },
+    ],
+    props: [
+      { name: 'options', type: 'SelectOption[]', description: 'Array of { label, value, description?, icon?, disabled? }.' },
+      { name: 'groups', type: 'SelectGroup[]', description: 'Grouped options: [{ label, options[] }]. Use instead of options for sectioned lists.' },
+      { name: 'value', type: 'string', description: 'Selected value.' },
+      { name: 'onChange', type: '(value: string) => void', description: 'Called when selection changes.' },
+      { name: 'placeholder', type: 'string', default: '"Select..."', description: 'Placeholder text when nothing is selected.' },
+      { name: 'label', type: 'string', description: 'Label shown above the trigger.' },
+      { name: 'error', type: 'string', description: 'Error message below trigger.' },
+      { name: 'hint', type: 'string', description: 'Helper text below trigger.' },
+      { name: 'required', type: 'boolean', default: 'false', description: 'Shows red asterisk next to label.' },
+      { name: 'clearable', type: 'boolean', default: 'false', description: 'Shows × button to clear selection.' },
+      { name: 'searchable', type: 'boolean', default: 'false', description: 'Shows a search input at the top of the sheet.' },
+      { name: 'disabled', type: 'boolean', default: 'false', description: 'Dims trigger and prevents opening.' },
+      { name: 'size', type: '"sm" | "md" | "lg"', default: '"md"', description: 'Trigger height.' },
+    ],
+    usageCode: `import { Select, MultiSelect } from '~/components/ui/select'
+
+// Basic
+<Select label="Country" options={countries} value={val} onChange={setVal} />
+
+// Searchable
+<Select label="Country" options={countries} value={val} onChange={setVal} searchable />
+
+// Clearable
+<Select options={opts} value={val} onChange={setVal} clearable />
+
+// Option groups
+<Select
+  label="Stack"
+  options={[]}
+  groups={[
+    { label: 'Frontend', options: [{ label: 'React', value: 'react' }] },
+    { label: 'Mobile', options: [{ label: 'React Native', value: 'rn' }] },
+  ]}
+  value={val}
+  onChange={setVal}
+/>
+
+// Multi-select
+<MultiSelect
+  label="Skills"
+  options={skills}
+  value={selected}
+  onChange={setSelected}
+  searchable
+  clearable
+/>
+
+// Multi-select with max
+<MultiSelect options={opts} value={sel} onChange={setSel} maxSelections={3} />
+
+// Error
+<Select options={opts} value="" onChange={() => {}} error="Required" required />`,
+    exampleCode: `import { Select, MultiSelect } from '~/components/ui/select'
+import { View } from 'react-native'
+
+export function SelectExamples() {
+  const [country, setCountry] = useState('')
+  const [skills, setSkills] = useState<string[]>([])
+
+  return (
+    <View style={{ gap: 16, padding: 16 }}>
+      <Select label="Country" placeholder="Select country" options={COUNTRIES} value={country} onChange={setCountry} searchable clearable required />
+      <MultiSelect label="Skills" placeholder="Select skills" options={SKILLS} value={skills} onChange={setSkills} searchable maxSelections={5} />
+    </View>
+  )
+}`,
+  },
+  'otp-input': {
+    name: 'OTP Input',
+    slug: 'otp-input',
+    description: '3 variants (box, underline, rounded), secure/masked mode, alphanumeric, blinking cursor animation, shake on error, success state, resend cooldown timer, and haptic feedback.',
+    category: 'Forms',
+    npmDeps: [],
+    componentDeps: [],
+    addCommand: 'npx native-mate add otp-input',
+    accessibility: [
+      { feature: 'Label', detail: 'accessibilityLabel is set to "N-digit verification code".' },
+      { feature: 'Auto-fill', detail: 'textContentType="oneTimeCode" and autoComplete="one-time-code" enable iOS/Android SMS auto-fill.' },
+      { feature: 'Keyboard', detail: 'keyboardType="number-pad" for numeric, "default" for alphanumeric.' },
+    ],
+    props: [
+      { name: 'length', type: 'number', default: '6', description: 'Number of cells.' },
+      { name: 'value', type: 'string', description: 'Current value string.' },
+      { name: 'onChange', type: '(value: string) => void', description: 'Called on every keystroke.' },
+      { name: 'onComplete', type: '(value: string) => void', description: 'Called when all cells are filled.' },
+      { name: 'variant', type: '"box" | "underline" | "rounded"', default: '"box"', description: 'Visual style of each cell.' },
+      { name: 'type', type: '"numeric" | "alphanumeric"', default: '"numeric"', description: 'Allowed characters.' },
+      { name: 'secure', type: 'boolean', default: 'false', description: 'Shows ● instead of the digit.' },
+      { name: 'error', type: 'boolean', default: 'false', description: 'Turns cells red and triggers shake animation.' },
+      { name: 'errorMessage', type: 'string', description: 'Error text shown below the cells.' },
+      { name: 'success', type: 'boolean', default: 'false', description: 'Turns cells green.' },
+      { name: 'disabled', type: 'boolean', default: 'false', description: 'Prevents input.' },
+      { name: 'hint', type: 'string', description: 'Helper text below the cells.' },
+      { name: 'resend', type: 'boolean', default: 'false', description: 'Shows "Resend" link with cooldown timer.' },
+      { name: 'resendCooldown', type: 'number', default: '30', description: 'Seconds before resend is available again.' },
+      { name: 'onResend', type: '() => void', description: 'Called when resend is pressed.' },
+      { name: 'haptic', type: 'boolean', default: 'true', description: 'Error haptic on shake, success haptic on complete.' },
+    ],
+    usageCode: `import { OTPInput } from '~/components/ui/otp-input'
+
+// Basic
+<OTPInput value={val} onChange={setVal} onComplete={verify} length={6} />
+
+// 4-digit PIN
+<OTPInput value={pin} onChange={setPin} length={4} hint="Enter your PIN" />
+
+// Secure
+<OTPInput value={val} onChange={setVal} secure />
+
+// Variants
+<OTPInput value={val} onChange={setVal} variant="underline" />
+<OTPInput value={val} onChange={setVal} variant="rounded" />
+
+// Alphanumeric
+<OTPInput value={val} onChange={setVal} type="alphanumeric" length={5} />
+
+// Error
+<OTPInput value={val} onChange={setVal} error errorMessage="Invalid code" />
+
+// Success
+<OTPInput value={val} onChange={setVal} success hint="Verified!" />
+
+// With resend
+<OTPInput
+  value={val}
+  onChange={setVal}
+  resend
+  resendCooldown={30}
+  onResend={handleResend}
+  hint="Code sent to +91 98765 43210"
+/>`,
+    exampleCode: `import { useState } from 'react'
+import { OTPInput } from '~/components/ui/otp-input'
+import { View } from 'react-native'
+
+export function OTPExample() {
+  const [val, setVal] = useState('')
+  const [status, setStatus] = useState<'idle' | 'error' | 'success'>('idle')
+
+  const verify = (code: string) => {
+    // Simulate API call
+    if (code === '123456') setStatus('success')
+    else setStatus('error')
+  }
+
+  return (
+    <View style={{ padding: 16 }}>
+      <OTPInput
+        value={val}
+        onChange={(v) => { setVal(v); setStatus('idle') }}
+        onComplete={verify}
+        length={6}
+        error={status === 'error'}
+        success={status === 'success'}
+        errorMessage="Wrong code. Try again."
+        hint={status === 'success' ? 'Verified!' : 'Enter the code sent to your email'}
+        resend
+        resendCooldown={30}
+        onResend={() => console.log('Resend tapped')}
+      />
     </View>
   )
 }`,
@@ -162,34 +844,44 @@ export function InputExamples() {
   badge: {
     name: 'Badge',
     slug: 'badge',
-    description: 'A compact inline label with semantic variants and an optional dot indicator.',
+    description: 'A compact inline label with 6 semantic variants, 3 sizes, dot indicator, count overflow, and a dismissible variant.',
     category: 'Display',
     npmDeps: [],
     componentDeps: [],
     addCommand: 'npx native-mate add badge',
     props: [
-      { name: 'variant', type: '"default" | "secondary" | "outline" | "success" | "destructive"', default: '"default"', description: 'Visual variant.' },
+      { name: 'variant', type: '"default" | "secondary" | "outline" | "success" | "destructive" | "warning"', default: '"default"', description: 'Visual variant.' },
+      { name: 'size', type: '"sm" | "md" | "lg"', default: '"md"', description: 'Controls padding and font size.' },
       { name: 'dot', type: 'boolean', default: 'false', description: 'Shows a coloured dot before the label.' },
-      { name: 'children', type: 'string', description: 'Badge label text.' },
+      { name: 'count', type: 'number', description: 'Numeric count to display instead of children.' },
+      { name: 'maxCount', type: 'number', default: '99', description: 'When count exceeds this, shows "{maxCount}+".' },
+      { name: 'onDismiss', type: '() => void', description: 'When provided, shows a × button to dismiss the badge.' },
+      { name: 'children', type: 'React.ReactNode', description: 'Badge label content.' },
     ],
     usageCode: `import { Badge } from '~/components/ui/badge'
 
 <Badge>Default</Badge>
-<Badge variant="secondary">Secondary</Badge>
-<Badge variant="outline">Outline</Badge>
 <Badge variant="success" dot>Active</Badge>
-<Badge variant="destructive">Error</Badge>`,
+<Badge variant="destructive" count={5} />
+<Badge variant="secondary" onDismiss={() => {}} size="lg">Dismissible</Badge>`,
     exampleCode: `import { Badge } from '~/components/ui/badge'
 import { View } from 'react-native'
 
 export function BadgeExamples() {
   return (
-    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, padding: 16 }}>
-      <Badge>Default</Badge>
-      <Badge variant="secondary">Secondary</Badge>
-      <Badge variant="outline">Outline</Badge>
-      <Badge variant="success" dot>Active</Badge>
-      <Badge variant="destructive" dot>Failed</Badge>
+    <View style={{ gap: 12, padding: 16 }}>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+        <Badge>Default</Badge>
+        <Badge variant="secondary">Secondary</Badge>
+        <Badge variant="outline">Outline</Badge>
+        <Badge variant="success" dot>Active</Badge>
+        <Badge variant="destructive" dot>Failed</Badge>
+        <Badge variant="warning">Warning</Badge>
+      </View>
+      <View style={{ flexDirection: 'row', gap: 8 }}>
+        <Badge variant="destructive" count={3} />
+        <Badge variant="default" count={150} maxCount={99} />
+      </View>
     </View>
   )
 }`,
@@ -337,39 +1029,47 @@ export function TabsExample() {
   avatar: {
     name: 'Avatar',
     slug: 'avatar',
-    description: 'Displays a user image with an initials fallback. Supports multiple size presets and an optional status indicator dot.',
+    description: 'Displays a user image with auto-generated initials + color fallback. Supports status indicators, square shape, and an AvatarGroup stack.',
     category: 'Display',
     npmDeps: [],
     componentDeps: [],
     addCommand: 'npx native-mate add avatar',
     props: [
       { name: 'src', type: 'string', description: 'URI of the avatar image.' },
-      { name: 'name', type: 'string', description: 'Full name used to generate initials when no image is available.' },
+      { name: 'name', type: 'string', description: 'Full name used to auto-generate initials and a consistent background color.' },
+      { name: 'fallback', type: 'string', description: 'Override initials text (max 2 chars).' },
       { name: 'size', type: '"xs" | "sm" | "md" | "lg" | "xl"', default: '"md"', description: 'Controls the width, height, and font size.' },
-      { name: 'status', type: '"online" | "offline" | "busy" | "away"', description: 'Shows a coloured dot in the bottom-right corner.' },
-      { name: 'style', type: 'ViewStyle', description: 'Additional styles for the avatar container.' },
+      { name: 'status', type: '"online" | "offline" | "busy" | "away"', description: 'Shows a coloured status dot in the bottom-right corner.' },
+      { name: 'shape', type: '"circle" | "square"', default: '"circle"', description: 'Circle or rounded-square shape.' },
+      { name: 'color', type: 'string', description: 'Override the auto-generated background color.' },
     ],
-    usageCode: `import { Avatar } from '~/components/ui/avatar'
+    usageCode: `import { Avatar, AvatarGroup } from '~/components/ui/avatar'
 
-// Image avatar
-<Avatar src="https://example.com/alice.jpg" name="Alice Smith" size="md" />
+// Auto-color from name
+<Avatar name="Alice Smith" size="md" />
 
-// Initials fallback
-<Avatar name="Bob Jones" size="lg" />
+// With image + status
+<Avatar src="https://example.com/alice.jpg" name="Alice" status="online" />
 
-// With status dot
-<Avatar src="https://example.com/carol.jpg" name="Carol" status="online" />`,
-    exampleCode: `import { Avatar } from '~/components/ui/avatar'
+// Avatar group stack
+<AvatarGroup avatars={[{ name: 'Alice' }, { name: 'Bob' }, { name: 'Carol' }]} max={3} />`,
+    exampleCode: `import { Avatar, AvatarGroup } from '~/components/ui/avatar'
 import { View } from 'react-native'
 
 export function AvatarExamples() {
   return (
-    <View style={{ flexDirection: 'row', gap: 12, padding: 16, alignItems: 'center' }}>
-      <Avatar size="xs" name="XS" />
-      <Avatar size="sm" name="Small" />
-      <Avatar size="md" name="Medium" status="online" />
-      <Avatar size="lg" src="https://i.pravatar.cc/150?img=5" name="Large" status="busy" />
-      <Avatar size="xl" name="Extra" status="offline" />
+    <View style={{ gap: 20, padding: 16 }}>
+      <View style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}>
+        <Avatar size="xs" name="John Doe" />
+        <Avatar size="sm" name="Jane Smith" status="online" />
+        <Avatar size="md" src="https://i.pravatar.cc/100?img=1" name="Alice" status="busy" />
+        <Avatar size="lg" name="Sam Lee" status="away" />
+        <Avatar size="xl" name="Chris Park" />
+      </View>
+      <AvatarGroup
+        avatars={[{ name: 'Alice B' }, { name: 'Bob C' }, { name: 'Carol D' }, { name: 'Dave E' }, { name: 'Eve F' }]}
+        max={4}
+      />
     </View>
   )
 }`,
@@ -428,15 +1128,21 @@ export function CheckboxExample() {
   switch: {
     name: 'Switch',
     slug: 'switch',
-    description: 'A toggle switch that animates the thumb between on and off positions using a spring animation.',
+    description: 'A toggle switch with label, description, 3 sizes, custom color, loading state, left/right label position, and haptic feedback.',
     category: 'Forms',
     npmDeps: [],
     componentDeps: [],
     addCommand: 'npx native-mate add switch',
     props: [
-      { name: 'value', type: 'boolean', default: 'false', description: 'The current on/off state of the switch.' },
-      { name: 'onValueChange', type: '(value: boolean) => void', description: 'Callback fired when the user toggles the switch.' },
-      { name: 'label', type: 'string', description: 'Optional text label rendered beside the switch.' },
+      { name: 'value', type: 'boolean', description: 'The current on/off state.' },
+      { name: 'onValueChange', type: '(value: boolean) => void', description: 'Callback fired when toggled.' },
+      { name: 'label', type: 'string', description: 'Text label rendered beside the switch.' },
+      { name: 'description', type: 'string', description: 'Secondary description text below the label.' },
+      { name: 'size', type: '"sm" | "md" | "lg"', default: '"md"', description: 'Controls track and thumb dimensions.' },
+      { name: 'color', type: 'string', description: 'Custom active track color. Defaults to theme primary.' },
+      { name: 'loading', type: 'boolean', default: 'false', description: 'Shows a spinner inside the thumb, prevents toggling.' },
+      { name: 'haptic', type: 'boolean', default: 'true', description: 'Fires a light haptic when toggled (requires expo-haptics).' },
+      { name: 'labelPosition', type: '"left" | "right"', default: '"right"', description: 'Which side the label appears on.' },
       { name: 'disabled', type: 'boolean', default: 'false', description: 'Prevents toggling and reduces opacity.' },
     ],
     usageCode: `import { Switch } from '~/components/ui/switch'
@@ -639,46 +1345,45 @@ export function TextareaExample() {
   progress: {
     name: 'Progress',
     slug: 'progress',
-    description: 'A progress indicator available in linear (bar) and circular (ring) variants. Animates smoothly when the value changes.',
+    description: 'A progress indicator in linear or circular variants. Supports label, percentage display, indeterminate animation, custom colors, and 3 sizes.',
     category: 'Display',
     npmDeps: [],
     componentDeps: [],
     addCommand: 'npx native-mate add progress',
     props: [
-      { name: 'value', type: 'number', description: 'Current progress value between 0 and 100.' },
-      { name: 'variant', type: '"linear" | "circular"', default: '"linear"', description: 'Display style — a bar or a ring.' },
-      { name: 'size', type: '"sm" | "md" | "lg"', default: '"md"', description: 'Controls track thickness and (for circular) diameter.' },
-      { name: 'showLabel', type: 'boolean', default: 'false', description: 'Renders the percentage value inside the circular variant.' },
-      { name: 'color', type: 'string', description: 'Custom fill colour. Defaults to the theme primary.' },
+      { name: 'value', type: 'number', description: 'Progress 0–100.' },
+      { name: 'variant', type: '"linear" | "circular"', default: '"linear"', description: 'Bar or ring.' },
+      { name: 'size', type: '"sm" | "md" | "lg"', default: '"md"', description: 'Track thickness / ring diameter.' },
+      { name: 'color', type: 'string', description: 'Fill color. Defaults to theme primary.' },
+      { name: 'trackColor', type: 'string', description: 'Background track color.' },
+      { name: 'showValue', type: 'boolean', default: 'false', description: 'Renders percentage text (inside ring for circular).' },
+      { name: 'label', type: 'string', description: 'Text label shown above the bar (linear only).' },
+      { name: 'indeterminate', type: 'boolean', default: 'false', description: 'Shows an animated shimmer instead of a fixed value.' },
+      { name: 'animated', type: 'boolean', default: 'true', description: 'Animate value transitions.' },
     ],
     usageCode: `import { Progress } from '~/components/ui/progress'
 
-// Linear bar
-<Progress value={65} />
+// Linear with label
+<Progress value={65} showValue label="Upload progress" />
 
-// Circular ring with label
-<Progress variant="circular" value={42} showLabel size="lg" />
+// Circular
+<Progress variant="circular" value={42} showValue size="lg" />
 
-// Custom colour
-<Progress value={80} color="#22c55e" />`,
+// Indeterminate
+<Progress value={0} indeterminate />`,
     exampleCode: `import { Progress } from '~/components/ui/progress'
-import { Text } from '@native-mate/core'
 import { View } from 'react-native'
 
 export function ProgressExample() {
   return (
     <View style={{ gap: 20, padding: 16 }}>
-      <View style={{ gap: 6 }}>
-        <Text size="sm" color="muted">Upload progress</Text>
-        <Progress value={72} />
-      </View>
-      <View style={{ gap: 6 }}>
-        <Text size="sm" color="muted">Profile completion</Text>
-        <Progress value={45} size="sm" color="#f59e0b" />
-      </View>
-      <View style={{ flexDirection: 'row', gap: 16 }}>
-        <Progress variant="circular" value={72} showLabel size="lg" />
-        <Progress variant="circular" value={45} showLabel size="md" color="#f59e0b" />
+      <Progress value={72} showValue label="Storage used" color="#10b981" />
+      <Progress value={45} showValue label="CPU" color="#f59e0b" size="sm" />
+      <Progress value={0} indeterminate />
+      <View style={{ flexDirection: 'row', gap: 20, alignItems: 'center' }}>
+        <Progress variant="circular" value={72} showValue size="lg" />
+        <Progress variant="circular" value={45} showValue size="md" color="#f59e0b" />
+        <Progress variant="circular" value={90} showValue size="sm" color="#ef4444" />
       </View>
     </View>
   )
@@ -732,29 +1437,36 @@ export function SkeletonExample() {
   toast: {
     name: 'Toast',
     slug: 'toast',
-    description: 'An auto-dismissing notification that slides in from the top or bottom of the screen. Supports multiple variants and a manual dismiss action.',
+    description: 'An auto-dismissing notification with swipe-to-dismiss, action button, progress bar countdown, persistent mode, and a useToast hook.',
     category: 'Overlay',
     npmDeps: [],
     componentDeps: [],
     addCommand: 'npx native-mate add toast',
     props: [
-      { name: 'message', type: 'string', description: 'The notification message text.' },
-      { name: 'variant', type: '"default" | "success" | "error" | "warning"', default: '"default"', description: 'Sets the icon and colour scheme.' },
-      { name: 'duration', type: 'number', default: '3000', description: 'Time in milliseconds before the toast auto-dismisses.' },
-      { name: 'position', type: '"top" | "bottom"', default: '"bottom"', description: 'Edge of the screen where the toast appears.' },
-      { name: 'onDismiss', type: '() => void', description: 'Called when the toast is dismissed (auto or manual).' },
+      { name: 'message', type: 'string', description: 'Primary notification text.' },
+      { name: 'description', type: 'string', description: 'Secondary text below the message.' },
+      { name: 'variant', type: '"default" | "success" | "destructive" | "warning"', default: '"default"', description: 'Sets the icon and color scheme.' },
+      { name: 'duration', type: 'number', default: '3000', description: 'Auto-dismiss delay in milliseconds.' },
+      { name: 'position', type: '"top" | "bottom"', default: '"bottom"', description: 'Screen edge.' },
+      { name: 'action', type: '{ label: string; onPress: () => void }', description: 'Optional action button shown in the toast.' },
+      { name: 'showProgress', type: 'boolean', default: 'false', description: 'Shows a countdown progress bar at the bottom.' },
+      { name: 'persistent', type: 'boolean', default: 'false', description: 'Disables auto-dismiss. Shows a close × button.' },
+      { name: 'visible', type: 'boolean', description: 'Controls visibility.' },
+      { name: 'onHide', type: '() => void', description: 'Called when dismissed.' },
     ],
-    usageCode: `import { useToast } from '~/components/ui/toast'
+    usageCode: `import { useToast, ToastProvider } from '~/components/ui/toast'
 
+// Wrap your app
+<ToastProvider>
+  <App />
+</ToastProvider>
+
+// Inside any component
 const { show } = useToast()
 
-// Basic
-show({ message: 'Saved successfully' })
-
-// Variants
-show({ message: 'Profile updated', variant: 'success' })
-show({ message: 'Failed to connect', variant: 'error', duration: 5000 })
-show({ message: 'Low storage space', variant: 'warning', position: 'top' })`,
+show({ message: 'Saved!', variant: 'success' })
+show({ message: 'Deleted', action: { label: 'Undo', onPress: handleUndo } })
+show({ message: 'No internet', variant: 'warning', persistent: true })`,
     exampleCode: `import { useToast } from '~/components/ui/toast'
 import { Button } from '~/components/ui/button'
 import { View } from 'react-native'
@@ -764,14 +1476,21 @@ export function ToastExample() {
 
   return (
     <View style={{ gap: 12, padding: 16 }}>
-      <Button onPress={() => show({ message: 'Changes saved', variant: 'success' })}>
-        Success toast
+      <Button onPress={() => show({ message: 'Changes saved', variant: 'success', showProgress: true })}>
+        Success (with progress)
       </Button>
-      <Button variant="destructive" onPress={() => show({ message: 'Action failed', variant: 'error' })}>
+      <Button variant="destructive" onPress={() => show({ message: 'Upload failed', variant: 'destructive' })}>
         Error toast
       </Button>
-      <Button variant="outline" onPress={() => show({ message: 'Update available', variant: 'warning', position: 'top' })}>
-        Warning toast (top)
+      <Button variant="outline" onPress={() =>
+        show({ message: 'Item deleted', action: { label: 'Undo', onPress: () => {} }, duration: 4000 })
+      }>
+        With undo action
+      </Button>
+      <Button variant="outline" onPress={() =>
+        show({ message: 'No internet connection', variant: 'warning', persistent: true })
+      }>
+        Persistent
       </Button>
     </View>
   )
@@ -944,7 +1663,7 @@ export function OtpInputExample() {
   'action-sheet': {
     name: 'Action Sheet',
     slug: 'action-sheet',
-    description: 'A bottom action sheet that presents a list of actions. Supports a destructive action, a cancel button, and an optional title.',
+    description: 'iOS-style bottom sheet with drag handle, title/message header, action list with icon support, destructive variant, lifecycle-safe spring animation, and separate cancel button.',
     category: 'Overlay',
     npmDeps: [],
     componentDeps: [],
@@ -952,8 +1671,9 @@ export function OtpInputExample() {
     props: [
       { name: 'isOpen', type: 'boolean', description: 'Controls visibility of the action sheet.' },
       { name: 'onClose', type: '() => void', description: 'Called when the sheet is dismissed.' },
-      { name: 'actions', type: 'Array<{ label: string; onPress: () => void; destructive?: boolean; disabled?: boolean }>', description: 'List of action items to display.' },
-      { name: 'title', type: 'string', description: 'Optional descriptive title shown at the top of the sheet.' },
+      { name: 'actions', type: 'Array<ActionSheetAction>', description: 'List of action items. Each action has label, onPress, optional variant ("destructive"), icon, and disabled.' },
+      { name: 'title', type: 'string', description: 'Short title shown at the top of the sheet.' },
+      { name: 'message', type: 'string', description: 'Secondary message shown below the title.' },
       { name: 'cancelLabel', type: 'string', default: '"Cancel"', description: 'Label for the cancel button.' },
     ],
     usageCode: `import { ActionSheet } from '~/components/ui/action-sheet'
@@ -1003,16 +1723,16 @@ export function ActionSheetExample() {
   tooltip: {
     name: 'Tooltip',
     slug: 'tooltip',
-    description: 'A contextual bubble that appears near a trigger element after a long-press or focus. Supports four placement positions.',
+    description: 'Contextual text bubble that appears near a trigger on press-and-hold. 4 placement positions, animated arrow indicator, delay, and Modal-based screen-level positioning.',
     category: 'Overlay',
     npmDeps: [],
     componentDeps: [],
     addCommand: 'npx native-mate add tooltip',
     props: [
-      { name: 'content', type: 'string', description: 'Text content shown inside the tooltip bubble.' },
-      { name: 'placement', type: '"top" | "bottom" | "left" | "right"', default: '"top"', description: 'Preferred side relative to the trigger.' },
-      { name: 'children', type: 'React.ReactElement', description: 'The trigger element that activates the tooltip.' },
-      { name: 'delay', type: 'number', default: '300', description: 'Milliseconds before the tooltip appears after activation.' },
+      { name: 'content', type: 'string', description: 'Text shown inside the tooltip bubble.' },
+      { name: 'placement', type: '"top" | "bottom" | "left" | "right"', default: '"top"', description: 'Preferred side relative to the trigger. Arrow points toward the trigger.' },
+      { name: 'children', type: 'React.ReactElement', description: 'The trigger element. Tooltip shows on press-and-hold or long press.' },
+      { name: 'delay', type: 'number', default: '300', description: 'Milliseconds before the tooltip appears after press-in.' },
     ],
     usageCode: `import { Tooltip } from '~/components/ui/tooltip'
 import { Button } from '~/components/ui/button'
@@ -1049,44 +1769,74 @@ export function TooltipExample() {
   tag: {
     name: 'Tag',
     slug: 'tag',
-    description: 'A dismissible label chip for displaying categories, filters, or selected items. Renders an optional remove button.',
+    description: 'Selectable chip with animated color transitions, 5 semantic variants, icon slot, 3 sizes, removable mode, and TagGroup for single/multi-select filter groups.',
     category: 'Display',
     npmDeps: [],
     componentDeps: [],
     addCommand: 'npx native-mate add tag',
     props: [
       { name: 'label', type: 'string', description: 'Text content of the tag.' },
-      { name: 'onRemove', type: '() => void', description: 'When provided, shows an × button that calls this handler.' },
-      { name: 'variant', type: '"default" | "outline" | "solid"', default: '"default"', description: 'Visual style of the tag.' },
-      { name: 'color', type: 'string', description: 'Custom background colour. Overrides the variant colour.' },
-      { name: 'size', type: '"sm" | "md"', default: '"md"', description: 'Controls padding and font size.' },
+      { name: 'selected', type: 'boolean', default: 'false', description: 'Highlights the tag with the variant accent color.' },
+      { name: 'onPress', type: '() => void', description: 'Makes the tag pressable with a spring scale animation and haptic.' },
+      { name: 'onRemove', type: '() => void', description: 'Shows a close (×) button. When pressed, calls this handler.' },
+      { name: 'variant', type: '"default" | "primary" | "success" | "warning" | "destructive" | "info"', default: '"default"', description: 'Color accent applied in selected state.' },
+      { name: 'icon', type: 'React.ReactNode', description: 'Element rendered before the label (e.g. an Ionicon).' },
+      { name: 'size', type: '"sm" | "md" | "lg"', default: '"md"', description: 'Controls padding and font size.' },
+      { name: 'disabled', type: 'boolean', default: 'false', description: 'Reduces opacity and prevents interaction.' },
     ],
-    usageCode: `import { Tag } from '~/components/ui/tag'
+    usageCode: `import { Tag, TagGroup } from '~/components/ui/tag'
+import { useState } from 'react'
 
 // Static tag
 <Tag label="React Native" />
 
-// Dismissible tag
+// Dismissible
 <Tag label="TypeScript" onRemove={() => removeTag('typescript')} />
 
-// Coloured tag
-<Tag label="Design" color="#8b5cf6" onRemove={handleRemove} />`,
-    exampleCode: `import { useState } from 'react'
-import { Tag } from '~/components/ui/tag'
-import { View } from 'react-native'
+// Selectable single tag
+<Tag label="Design" selected={active} onPress={() => setActive(v => !v)} variant="primary" />
 
-const INITIAL_TAGS = ['React Native', 'TypeScript', 'Expo', 'Reanimated', 'Design System']
+// Filter group (single select)
+<TagGroup
+  tags={[
+    { label: 'All' },
+    { label: 'Design', variant: 'primary' },
+    { label: 'Engineering', variant: 'success' },
+  ]}
+  selected={filters}
+  onChange={setFilters}
+/>
+
+// Filter group (multi select)
+<TagGroup tags={categories} selected={selected} onChange={setSelected} multiSelect />`,
+    exampleCode: `import { useState } from 'react'
+import { Tag, TagGroup } from '~/components/ui/tag'
+import { View } from 'react-native'
+import { Text } from '@native-mate/core'
+
+const CATEGORIES = [
+  { label: 'All', variant: 'default' as const },
+  { label: 'Design', variant: 'primary' as const },
+  { label: 'Engineering', variant: 'success' as const },
+  { label: 'Marketing', variant: 'warning' as const },
+  { label: 'Support', variant: 'info' as const },
+]
 
 export function TagExample() {
-  const [tags, setTags] = useState(INITIAL_TAGS)
-
-  const remove = (tag: string) => setTags(prev => prev.filter(t => t !== tag))
+  const [filter, setFilter] = useState(['All'])
+  const [skills, setSkills] = useState(['React Native', 'TypeScript'])
 
   return (
-    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, padding: 16 }}>
-      {tags.map(tag => (
-        <Tag key={tag} label={tag} onRemove={() => remove(tag)} />
-      ))}
+    <View style={{ gap: 20, padding: 16 }}>
+      <Text variant="label">Category filter</Text>
+      <TagGroup tags={CATEGORIES} selected={filter} onChange={setFilter} />
+
+      <Text variant="label">Skills</Text>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+        {skills.map(s => (
+          <Tag key={s} label={s} onRemove={() => setSkills(prev => prev.filter(x => x !== s))} />
+        ))}
+      </View>
     </View>
   )
 }`,
@@ -1137,40 +1887,160 @@ export function EmptyStateExample() {
   alert: {
     name: 'Alert',
     slug: 'alert',
-    description: 'An inline alert banner for displaying contextual feedback. Supports informational, success, warning, and error variants.',
-    category: 'Display',
+    description: 'Inline alert banner with 5 semantic variants (+ info), Ionicons auto-icon, dismissible mode, action button, and custom icon slot.',
+    category: 'Overlay',
     npmDeps: [],
     componentDeps: [],
     addCommand: 'npx native-mate add alert',
     props: [
-      { name: 'variant', type: '"info" | "success" | "warning" | "error"', default: '"info"', description: 'Determines the icon and colour scheme.' },
+      { name: 'variant', type: '"default" | "info" | "success" | "warning" | "destructive"', default: '"default"', description: 'Determines the icon and color scheme.' },
       { name: 'title', type: 'string', description: 'Bold heading of the alert.' },
-      { name: 'description', type: 'string', description: 'Secondary message text below the title.' },
-      { name: 'onClose', type: '() => void', description: 'When provided, renders a dismiss button.' },
+      { name: 'description', type: 'string', description: 'Secondary body text below the title.' },
+      { name: 'icon', type: 'React.ReactNode', description: 'Custom icon overriding the automatic Ionicons variant icon.' },
+      { name: 'onDismiss', type: '() => void', description: 'When provided, shows a close (×) button.' },
+      { name: 'action', type: '{ label: string; onPress: () => void }', description: 'Optional action button rendered below the description.' },
     ],
     usageCode: `import { Alert } from '~/components/ui/alert'
 
-// Info (default)
-<Alert title="Scheduled maintenance" description="The service will be unavailable on Sunday at 2 AM UTC." />
+// Default (primary)
+<Alert title="Scheduled maintenance" description="Service unavailable Sunday at 2 AM UTC." />
+
+// Info
+<Alert variant="info" title="Pro tip" description="Drag to reorder items in your list." />
 
 // Success
 <Alert variant="success" title="Payment received" description="Your invoice has been paid." />
 
-// Warning
-<Alert variant="warning" title="Trial ending soon" description="Your trial expires in 3 days." onClose={handleClose} />
+// Warning with dismiss
+<Alert variant="warning" title="Trial ending soon" description="3 days left." onDismiss={handleClose} />
 
-// Error
-<Alert variant="error" title="Upload failed" description="The file size exceeds the 10 MB limit." />`,
-    exampleCode: `import { Alert } from '~/components/ui/alert'
+// Destructive with action
+<Alert
+  variant="destructive"
+  title="Upload failed"
+  description="The file exceeds the 10 MB limit."
+  action={{ label: 'Try again', onPress: handleRetry }}
+/>`,
+    exampleCode: `import { useState } from 'react'
+import { Alert } from '~/components/ui/alert'
 import { View } from 'react-native'
 
 export function AlertExamples() {
+  const [showWarning, setShowWarning] = useState(true)
+
   return (
     <View style={{ gap: 12, padding: 16 }}>
       <Alert variant="info" title="New version available" description="Update to v2.4 for the latest features." />
       <Alert variant="success" title="Account verified" description="Your email address has been confirmed." />
-      <Alert variant="warning" title="Low disk space" description="You have less than 500 MB remaining." onClose={() => {}} />
-      <Alert variant="error" title="Sync failed" description="Check your internet connection and try again." />
+      {showWarning && (
+        <Alert
+          variant="warning"
+          title="Low disk space"
+          description="Less than 500 MB remaining."
+          onDismiss={() => setShowWarning(false)}
+        />
+      )}
+      <Alert
+        variant="destructive"
+        title="Sync failed"
+        description="Check your internet connection."
+        action={{ label: 'Retry', onPress: () => {} }}
+      />
+    </View>
+  )
+}`,
+  },
+  popover: {
+    name: 'Popover',
+    slug: 'popover',
+    description: 'Interactive content bubble anchored to any trigger element. Supports 4 placements, arrow indicator, scrollable content, backdrop dismiss, and both controlled and uncontrolled modes.',
+    category: 'Overlay',
+    npmDeps: [],
+    componentDeps: [],
+    addCommand: 'npx native-mate add popover',
+    props: [
+      { name: 'children', type: 'React.ReactElement', description: 'The trigger element. Tapping opens/closes the popover.' },
+      { name: 'content', type: 'React.ReactNode', description: 'Any content rendered inside the popover bubble. Can include buttons, lists, inputs, etc.' },
+      { name: 'placement', type: '"top" | "bottom" | "left" | "right"', default: '"bottom"', description: 'Preferred side relative to the trigger. Arrow points toward the trigger.' },
+      { name: 'maxWidth', type: 'number', default: '260', description: 'Maximum width of the popover bubble in pixels.' },
+      { name: 'dismissible', type: 'boolean', default: 'true', description: 'Whether tapping outside the popover closes it.' },
+      { name: 'open', type: 'boolean', description: 'Controlled open state. Use with onOpenChange for full control.' },
+      { name: 'onOpenChange', type: '(open: boolean) => void', description: 'Called when the popover opens or closes.' },
+    ],
+    usageCode: `import { Popover } from '~/components/ui/popover'
+import { Button } from '~/components/ui/button'
+import { View } from 'react-native'
+import { Text } from '@native-mate/core'
+
+// Simple text popover
+<Popover content={<Text style={{ padding: 12 }}>More info here</Text>} placement="top">
+  <Button variant="outline">Info</Button>
+</Popover>
+
+// Popover menu
+<Popover
+  placement="bottom"
+  content={
+    <View style={{ paddingVertical: 4 }}>
+      {['Edit', 'Duplicate', 'Delete'].map(item => (
+        <Pressable key={item} style={{ paddingVertical: 10, paddingHorizontal: 16 }}>
+          <Text>{item}</Text>
+        </Pressable>
+      ))}
+    </View>
+  }
+>
+  <Button variant="ghost" iconOnly>
+    <Ionicons name="ellipsis-horizontal" size={20} />
+  </Button>
+</Popover>
+
+// Controlled
+<Popover open={open} onOpenChange={setOpen} content={<DatePicker />}>
+  <Button>Pick date</Button>
+</Popover>`,
+    exampleCode: `import { useState } from 'react'
+import { Popover } from '~/components/ui/popover'
+import { Button } from '~/components/ui/button'
+import { View, Pressable } from 'react-native'
+import { Text } from '@native-mate/core'
+import { Ionicons } from '@expo/vector-icons'
+
+const MENU = [
+  { label: 'Edit', icon: 'create-outline' },
+  { label: 'Duplicate', icon: 'copy-outline' },
+  { label: 'Move to folder', icon: 'folder-outline' },
+  { label: 'Delete', icon: 'trash-outline', destructive: true },
+] as const
+
+export function PopoverExample() {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <View style={{ padding: 32, alignItems: 'center' }}>
+      <Popover
+        open={open}
+        onOpenChange={setOpen}
+        placement="bottom"
+        content={
+          <View style={{ paddingVertical: 4 }}>
+            {MENU.map(item => (
+              <Pressable
+                key={item.label}
+                style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 10, paddingHorizontal: 16 }}
+                onPress={() => setOpen(false)}
+              >
+                <Ionicons name={item.icon} size={17} color={item.destructive ? '#ef4444' : '#a1a1aa'} />
+                <Text style={{ color: item.destructive ? '#ef4444' : undefined }}>{item.label}</Text>
+              </Pressable>
+            ))}
+          </View>
+        }
+      >
+        <Button variant="outline" iconOnly>
+          <Ionicons name="ellipsis-horizontal" size={18} />
+        </Button>
+      </Popover>
     </View>
   )
 }`,
@@ -1251,12 +2121,14 @@ export function generateStaticParams() {
     { slug: 'tag' },
     { slug: 'empty-state' },
     { slug: 'alert' },
+    { slug: 'popover' },
     { slug: 'screen' },
   ]
 }
 
-export default function ComponentPage({ params }: { params: { slug: string } }) {
-  const doc = COMPONENT_DOCS[params.slug]
+export default async function ComponentPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
+  const doc = COMPONENT_DOCS[slug]
   if (!doc) notFound()
 
   return (
@@ -1281,6 +2153,11 @@ export default function ComponentPage({ params }: { params: { slug: string } }) 
           <p className="text-zinc-400">{doc.description}</p>
         </div>
 
+        {/* First preview (default/simplest variant) */}
+        <section className="mb-10">
+          <ComponentPreview slug={doc.slug} part="first" />
+        </section>
+
         {/* Install */}
         <section className="mb-10">
           <h2 className="mb-3 text-sm font-semibold uppercase tracking-widest text-zinc-500">Installation</h2>
@@ -1291,6 +2168,12 @@ export default function ComponentPage({ params }: { params: { slug: string } }) 
               {doc.componentDeps.length > 0 && <span>component deps: {doc.componentDeps.join(', ')}</span>}
             </div>
           )}
+        </section>
+
+        {/* Rest of previews (all variants) */}
+        <section className="mb-10">
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-widest text-zinc-500">Examples</h2>
+          <ComponentPreview slug={doc.slug} part="rest" />
         </section>
 
         {/* Usage */}
@@ -1330,6 +2213,31 @@ export default function ComponentPage({ params }: { params: { slug: string } }) 
           <h2 className="mb-3 text-sm font-semibold uppercase tracking-widest text-zinc-500">Example</h2>
           <CodeBlock language="tsx" code={doc.exampleCode} />
         </section>
+
+        {/* Accessibility */}
+        {doc.accessibility && doc.accessibility.length > 0 && (
+          <section className="mb-10">
+            <h2 className="mb-3 text-sm font-semibold uppercase tracking-widest text-zinc-500">Accessibility</h2>
+            <div className="overflow-hidden rounded-xl border border-zinc-800">
+              <table className="w-full text-sm">
+                <thead className="border-b border-zinc-800 bg-zinc-900">
+                  <tr>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-400">Feature</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-400">Detail</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {doc.accessibility.map((item, i) => (
+                    <tr key={item.feature} className={i % 2 === 0 ? 'bg-zinc-950' : 'bg-zinc-900/50'}>
+                      <td className="px-4 py-3 font-mono text-xs text-blue-400">{item.feature}</td>
+                      <td className="px-4 py-3 text-xs text-zinc-400">{item.detail}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        )}
       </main>
     </div>
   )

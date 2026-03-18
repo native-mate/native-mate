@@ -1,32 +1,109 @@
-// native-mate: alert@0.1.0 | hash:PLACEHOLDER
+// native-mate: alert@0.2.0 | hash:PLACEHOLDER
 import React from 'react'
-import { View } from 'react-native'
+import { View, Pressable } from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
 import { useTheme, Text, makeStyles } from '@native-mate/core'
 import type { AlertProps, AlertVariant } from './alert.types'
 
-const useStyles = makeStyles((theme) => ({
-  base: { borderRadius: theme.radius.md, padding: theme.spacing.md, flexDirection: 'row', gap: theme.spacing.sm },
-  leftBorder: { width: 4, borderRadius: theme.radius.sm, position: 'absolute', left: 0, top: 0, bottom: 0 },
-  content: { flex: 1, paddingLeft: theme.spacing.sm, gap: 4 },
-}))
+type IconName = React.ComponentProps<typeof Ionicons>['name']
 
-const variantColor: Record<AlertVariant, string> = {
-  default: 'primary', destructive: 'destructive', success: 'success', warning: 'warning',
+const variantMeta: Record<AlertVariant, { colorKey: string; icon: IconName; hardColor?: string }> = {
+  default:     { colorKey: 'primary',     icon: 'information-circle' },
+  info:        { colorKey: '',            icon: 'information-circle', hardColor: '#3b82f6' },
+  success:     { colorKey: 'success',     icon: 'checkmark-circle' },
+  warning:     { colorKey: 'warning',     icon: 'warning' },
+  destructive: { colorKey: 'destructive', icon: 'close-circle' },
 }
 
-export const Alert: React.FC<AlertProps> = ({ variant = 'default', title, description, children }) => {
+const useStyles = makeStyles((theme) => ({
+  container: {
+    borderRadius: theme.radius.md,
+    overflow: 'hidden',
+  },
+  inner: {
+    flexDirection: 'row',
+    padding: theme.spacing.md,
+    gap: theme.spacing.sm,
+    borderWidth: 1,
+    borderRadius: theme.radius.md,
+  },
+  body: {
+    flex: 1,
+    gap: 4,
+  },
+  footer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    marginTop: 8,
+  },
+  actionBtn: {
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    borderRadius: 6,
+    borderWidth: 1,
+  },
+}))
+
+export const Alert: React.FC<AlertProps> = ({
+  variant = 'default',
+  title,
+  description,
+  icon,
+  onDismiss,
+  action,
+  children,
+}) => {
   const theme = useTheme()
   const styles = useStyles()
-  const accentColor = theme.colors[variantColor[variant] as keyof typeof theme.colors]
+  const meta = variantMeta[variant]
+  const accentColor = meta.hardColor ?? (theme.colors[meta.colorKey as keyof typeof theme.colors] as string)
 
   return (
-    <View style={[styles.base, { backgroundColor: accentColor + '18', borderWidth: 1, borderColor: accentColor + '40' }]} accessibilityRole="alert">
-      <View style={[styles.leftBorder, { backgroundColor: accentColor }]} />
-      <View style={styles.content}>
-        <Text variant="label" color={accentColor}>{title}</Text>
-        {description && <Text variant="body" muted>{description}</Text>}
-        {children}
+    <View
+      style={[
+        styles.inner,
+        {
+          backgroundColor: accentColor + '14',
+          borderColor: accentColor + '45',
+        },
+      ]}
+      accessibilityRole="alert"
+    >
+      {/* Icon column */}
+      <View style={{ paddingTop: 1 }}>
+        {icon ?? <Ionicons name={meta.icon} size={18} color={accentColor} />}
       </View>
+
+      {/* Content */}
+      <View style={styles.body}>
+        <Text variant="label" style={{ color: accentColor }}>{title}</Text>
+        {description != null && (
+          <Text variant="body" style={{ color: accentColor, opacity: 0.8, fontSize: 13 }}>
+            {description}
+          </Text>
+        )}
+        {children}
+        {action != null && (
+          <View style={styles.footer}>
+            <Pressable
+              onPress={action.onPress}
+              style={[styles.actionBtn, { borderColor: accentColor + '60' }]}
+            >
+              <Text style={{ color: accentColor, fontSize: 12, fontWeight: '600' }}>
+                {action.label}
+              </Text>
+            </Pressable>
+          </View>
+        )}
+      </View>
+
+      {/* Dismiss */}
+      {onDismiss != null && (
+        <Pressable onPress={onDismiss} hitSlop={8} style={{ paddingTop: 1 }}>
+          <Ionicons name="close" size={16} color={accentColor} style={{ opacity: 0.7 }} />
+        </Pressable>
+      )}
     </View>
   )
 }
