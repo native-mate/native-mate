@@ -56,6 +56,29 @@ code, pre {
   background-clip: text;
 }
 
+/* ── Shimmer text (subtle highlight sweep) ────────────────────────────────── */
+.shimmer-text {
+  color: #e4e4e7;
+  background: linear-gradient(
+    110deg,
+    #e4e4e7 0%,
+    #e4e4e7 40%,
+    #ffffff 50%,
+    #e4e4e7 60%,
+    #e4e4e7 100%
+  );
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer-sweep 4s ease-in-out infinite;
+}
+
+@keyframes shimmer-sweep {
+  0%, 100% { background-position: 100% 0; }
+  50% { background-position: 0% 0; }
+}
+
 /* ── Glow utilities ────────────────────────────────────────────────────────── */
 .glow-indigo {
   box-shadow: 0 0 40px rgba(99, 102, 241, 0.2), 0 0 80px rgba(99, 102, 241, 0.1);
@@ -150,6 +173,16 @@ code, pre {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #3f3f46;
+}
+
+/* ── Reduced motion ───────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* Prism token colors live in styles/prism-dark.css */
