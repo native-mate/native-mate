@@ -1,61 +1,83 @@
+'use client'
+
+import { useState } from 'react'
 import { CodeBlock } from '../CodeBlock'
 
 const steps = [
   {
-    step: '01',
-    title: 'Run init',
-    description: 'Sets up native-mate.json, installs @native-mate/core, and updates .cursorrules.',
+    n: '01',
+    title: 'Initialize',
+    description: 'Sets up native-mate.json, installs @native-mate/core, and configures your AI editor rules.',
     code: 'npx native-mate init',
-    language: 'bash',
+    lang: 'bash',
   },
   {
-    step: '02',
+    n: '02',
     title: 'Add components',
-    description: 'Fetches the component source, resolves dependencies, and writes it to your project.',
-    code: 'npx native-mate add button card input badge',
-    language: 'bash',
+    description: 'Fetches component source, resolves dependencies, and writes it directly to your project.',
+    code: 'npx native-mate add button card input badge avatar',
+    lang: 'bash',
   },
   {
-    step: '03',
-    title: 'Use it',
-    description: 'Import directly from your components directory. Fork anything you need.',
+    n: '03',
+    title: 'Import and ship',
+    description: 'The code is yours. Import from your components directory, fork anything you need.',
     code: `import { Button } from '~/components/ui/button'
+import { Card, CardHeader, CardContent } from '~/components/ui/card'
 
 export function MyScreen() {
   return (
-    <Button variant="default" onPress={() => {}}>
-      Get started
-    </Button>
+    <Card variant="elevated">
+      <CardHeader title="Welcome" subtitle="Get building" />
+      <CardContent>
+        <Button onPress={() => {}}>Let's go</Button>
+      </CardContent>
+    </Card>
   )
 }`,
-    language: 'tsx',
+    lang: 'tsx',
   },
 ]
 
 export function InstallBlock() {
   return (
-    <section className="border-t border-zinc-800 px-4 py-20">
-      <div className="mx-auto max-w-3xl">
-        <h2 className="mb-3 text-center text-3xl font-bold text-zinc-50">
-          Up in three steps
-        </h2>
-        <p className="mb-12 text-center text-zinc-400">
-          From zero to production components in under 60 seconds.
-        </p>
+    <section className="relative px-5 py-28">
+      <div className="section-divider mb-0" />
 
-        <div className="space-y-8">
-          {steps.map((s) => (
-            <div key={s.step} className="flex gap-6">
-              <div className="flex-shrink-0 pt-1">
-                <span className="text-xs font-mono font-bold text-zinc-600">{s.step}</span>
+      <div className="mx-auto max-w-3xl pt-28">
+        <div className="text-center mb-16">
+          <p className="text-xs text-indigo-400 font-semibold uppercase tracking-[0.2em] mb-4">Quick start</p>
+          <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-zinc-50 mb-4">
+            Up in
+            <span className="gradient-text"> three steps</span>
+          </h2>
+          <p className="text-zinc-400 leading-relaxed">
+            From zero to production components in under 60 seconds.
+          </p>
+        </div>
+
+        <div className="relative">
+          {/* Vertical line */}
+          <div className="absolute left-[18px] top-8 bottom-8 w-px bg-gradient-to-b from-indigo-500/40 via-purple-500/20 to-transparent hidden sm:block" />
+
+          <div className="space-y-10">
+            {steps.map((s, i) => (
+              <div key={s.n} className="flex gap-6 sm:gap-8">
+                {/* Step number */}
+                <div className="flex-shrink-0">
+                  <div className="relative w-9 h-9 rounded-full border border-indigo-500/30 bg-indigo-500/10 flex items-center justify-center">
+                    <span className="text-[10px] font-bold text-indigo-400 font-mono">{s.n}</span>
+                  </div>
+                </div>
+
+                <div className="flex-1 pb-2">
+                  <h3 className="font-semibold text-zinc-100 mb-1">{s.title}</h3>
+                  <p className="text-sm text-zinc-500 mb-4 leading-relaxed">{s.description}</p>
+                  <CodeBlock code={s.code} language={s.lang} />
+                </div>
               </div>
-              <div className="flex-1">
-                <h3 className="mb-1 font-semibold text-zinc-50">{s.title}</h3>
-                <p className="mb-3 text-sm text-zinc-400">{s.description}</p>
-                <CodeBlock code={s.code} language={s.language} />
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>
