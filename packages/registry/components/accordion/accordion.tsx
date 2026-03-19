@@ -1,11 +1,14 @@
 // native-mate: accordion@0.2.0 | hash:PLACEHOLDER
-import React, { useState, useRef } from 'react'
+import React, { useState, useCallback } from 'react'
 import { View, Pressable } from 'react-native'
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
-  withSpring,
   withTiming,
+  Easing,
+  FadeIn,
+  FadeOut,
+  LinearTransition,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
 import { useTheme, Text, Separator } from '@native-mate/core'
@@ -17,6 +20,8 @@ const sizeMap = {
   lg: { py: 18, px: 20, fontSize: 17, iconSize: 18, chevronSize: 18 },
 }
 
+const TIMING_CONFIG = { duration: 250, easing: Easing.out(Easing.cubic) }
+
 // ── Single accordion item ─────────────────────────────────────────────────────
 
 interface AccordionItemComponentProps {
@@ -27,7 +32,6 @@ interface AccordionItemComponentProps {
   variant: NonNullable<AccordionProps['variant']>
   isFirst: boolean
   isLast: boolean
-  contentHeight: number
 }
 
 const AccordionItemComponent: React.FC<AccordionItemComponentProps> = ({
@@ -38,39 +42,16 @@ const AccordionItemComponent: React.FC<AccordionItemComponentProps> = ({
   variant,
   isFirst,
   isLast,
-  contentHeight,
 }) => {
   const theme = useTheme()
   const sz = sizeMap[size]
 
-  // Start open items at a large value so content is visible before measurement
-  const heightAnim = useSharedValue(isOpen ? 9999 : 0)
-  const opacityAnim = useSharedValue(isOpen ? 1 : 0)
+  // Only chevron rotation needs manual animation
   const rotation = useSharedValue(isOpen ? 180 : 0)
 
-  const contentHeightRef = useRef(contentHeight)
-  contentHeightRef.current = contentHeight
-
-  // Animate when user toggles open/close
   React.useEffect(() => {
-    const h = contentHeightRef.current
-    heightAnim.value = withSpring(isOpen ? (h > 0 ? h : 9999) : 0, theme.animation.easing.spring)
-    opacityAnim.value = withTiming(isOpen ? 1 : 0, { duration: 200 })
-    rotation.value = withSpring(isOpen ? 180 : 0, theme.animation.easing.spring)
-  }, [isOpen])
-
-  // When measurement arrives for an already-open item, snap height (no animation flicker)
-  React.useEffect(() => {
-    if (isOpen && contentHeight > 0) {
-      heightAnim.value = contentHeight
-    }
-  }, [contentHeight])
-
-  const contentStyle = useAnimatedStyle(() => ({
-    height: heightAnim.value,
-    opacity: opacityAnim.value,
-    overflow: 'hidden',
-  }))
+    rotation.value = withTiming(isOpen ? 180 : 0, TIMING_CONFIG)
+  }, [isOpen, rotation])
 
   const chevronStyle = useAnimatedStyle(() => ({
     transform: [{ rotate: `${rotation.value}deg` }],
@@ -98,12 +79,19 @@ const AccordionItemComponent: React.FC<AccordionItemComponentProps> = ({
           shadowOpacity: 0.06,
           shadowRadius: 4,
           elevation: 2,
-          overflow: 'hidden' as const,
         }
       : {}
 
   return (
-    <View style={[{ opacity: item.disabled ? 0.45 : 1 }, itemBg, itemBorder, cardItemRadius]}>
+    <Animated.View
+      layout={LinearTransition.duration(250).easing(Easing.out(Easing.cubic))}
+      style={[
+        { opacity: item.disabled ? 0.45 : 1, overflow: 'hidden' as const },
+        itemBg,
+        itemBorder,
+        cardItemRadius,
+      ]}
+    >
       <Pressable
         style={{
           flexDirection: 'row',
@@ -135,22 +123,18 @@ const AccordionItemComponent: React.FC<AccordionItemComponentProps> = ({
         </Animated.View>
       </Pressable>
 
-      {/* Animated content area */}
-      <Animated.View style={contentStyle}>
-        <View
-          style={{ paddingHorizontal: sz.px, paddingBottom: sz.py }}
-          onLayout={(e) => {
-            const h = e.nativeEvent.layout.height
-            if (h > 0) {
-              // Bubble measured height up via callback in item
-              ;(item as any).__onMeasure?.(h)
-            }
-          }}
+      {/* Content — conditionally rendered; Reanimated Layout handles height animation */}
+      {isOpen && (
+        <Animated.View
+          entering={FadeIn.duration(200).delay(50)}
+          exiting={FadeOut.duration(100)}
         >
-          {item.content}
-        </View>
-      </Animated.View>
-    </View>
+          <View style={{ paddingHorizontal: sz.px, paddingBottom: sz.py }}>
+            {item.content}
+          </View>
+        </Animated.View>
+      )}
+    </Animated.View>
   )
 }
 
@@ -168,9 +152,8 @@ export const Accordion: React.FC<AccordionProps> = ({
   const [openKeys, setOpenKeys] = useState<Set<string>>(
     () => new Set(defaultOpen ?? [])
   )
-  const [heights, setHeights] = useState<Record<string, number>>({})
 
-  const toggle = (key: string) => {
+  const toggle = useCallback((key: string) => {
     setOpenKeys((prev) => {
       const next = new Set(prev)
       if (next.has(key)) {
@@ -181,7 +164,7 @@ export const Accordion: React.FC<AccordionProps> = ({
       }
       return next
     })
-  }
+  }, [allowMultiple])
 
   const borderedContainer =
     variant === 'bordered'
@@ -193,20 +176,9 @@ export const Accordion: React.FC<AccordionProps> = ({
         }
       : {}
 
-  // Inject measurement callback onto items so the inner onLayout can report back
-  const enrichedItems = items.map((item) => ({
-    ...item,
-    __onMeasure: (h: number) => {
-      setHeights((prev) => {
-        if (prev[item.key] === h) return prev
-        return { ...prev, [item.key]: h }
-      })
-    },
-  }))
-
   return (
     <View style={[borderedContainer, style]}>
-      {enrichedItems.map((item, i) => (
+      {items.map((item, i) => (
         <React.Fragment key={item.key}>
           <AccordionItemComponent
             item={item}
@@ -216,7 +188,6 @@ export const Accordion: React.FC<AccordionProps> = ({
             variant={variant}
             isFirst={i === 0}
             isLast={i === items.length - 1}
-            contentHeight={heights[item.key] ?? 0}
           />
           {i < items.length - 1 && (
             variant === 'card'
