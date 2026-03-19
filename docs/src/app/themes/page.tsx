@@ -354,7 +354,7 @@ function Showcase() {
                     <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
                       <Tag label="design" />
                       <Tag label="react-native" onRemove={() => {}} />
-                      <Tag label="v0.2" />
+                      <Tag label="v1.0" />
                     </View>
                     <Progress value={78} showValue label="Profile completeness" />
                     <View style={{ flexDirection: 'row', gap: 8 }}>

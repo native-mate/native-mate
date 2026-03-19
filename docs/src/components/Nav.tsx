@@ -50,7 +50,7 @@ export function Nav() {
               native-mate
             </span>
             <span className="hidden sm:inline rounded-md bg-zinc-800 border border-zinc-700 px-1.5 py-0.5 text-[10px] font-semibold text-zinc-400 leading-none">
-              v0.2
+              v1.0
             </span>
           </Link>
 
