@@ -314,7 +314,7 @@ function Showcase() {
               <Card variant="outline" style={{ flex: 1 }}>
                 <CardHeader title="Sign in" subtitle="Welcome back! Enter your details." />
                 <CardContent>
-                  <View style={{ gap: 10 }}>
+                  <View style={{ gap: 12 }}>
                     <Input
                       label="Email"
                       placeholder="you@example.com"
@@ -331,11 +331,11 @@ function Showcase() {
                       onChange={setRemember}
                       label="Remember me for 30 days"
                     />
+                    <View style={{ marginTop: 4 }}>
+                      <Button fullWidth>Sign in</Button>
+                    </View>
                   </View>
                 </CardContent>
-                <CardFooter>
-                  <Button fullWidth>Sign in</Button>
-                </CardFooter>
               </Card>
             </View>
 
@@ -387,9 +387,9 @@ function Showcase() {
           </View>
 
           {/* ── Row 2: Activity Feed ── */}
-          <View style={{ flexDirection: 'row', gap: 12, flex: 1 }}>
+          <View style={{ flexDirection: 'row', gap: 12 }}>
             <View style={{ flex: 1 }}>
-              <Card variant="outline" style={{ flex: 1 }}>
+              <Card variant="outline">
                 <CardHeader title="Recent Activity" subtitle="Latest updates" />
                 <CardContent>
                   <View style={{ gap: 14 }}>
