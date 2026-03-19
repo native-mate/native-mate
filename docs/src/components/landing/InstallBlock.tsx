@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef } from 'react'
+import { motion, useInView } from 'framer-motion'
 import { CodeBlock } from '../CodeBlock'
 
 const steps = [
@@ -39,22 +40,39 @@ export function MyScreen() {
   },
 ]
 
+const stepVariant = {
+  hidden: { opacity: 0, x: -20 },
+  visible: (i: number) => ({
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.5, delay: i * 0.15, ease: [0.25, 0.4, 0.25, 1] },
+  }),
+}
+
 export function InstallBlock() {
+  const ref = useRef(null)
+  const inView = useInView(ref, { once: true, margin: '-80px' })
+
   return (
     <section className="relative px-4 sm:px-5 py-16 sm:py-28">
       <div className="section-divider mb-0" />
 
-      <div className="mx-auto max-w-3xl pt-14 sm:pt-28">
-        <div className="text-center mb-10 sm:mb-16">
+      <div className="mx-auto max-w-3xl pt-14 sm:pt-28" ref={ref}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, ease: [0.25, 0.4, 0.25, 1] }}
+          className="text-center mb-10 sm:mb-16"
+        >
           <p className="text-xs text-indigo-400 font-semibold uppercase tracking-[0.2em] mb-4">Quick start</p>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-zinc-50 mb-4">
             Up in
             <span className="gradient-text"> three steps</span>
           </h2>
-          <p className="text-zinc-400 leading-relaxed">
+          <p className="text-zinc-500 leading-relaxed">
             From zero to production components in under 60 seconds.
           </p>
-        </div>
+        </motion.div>
 
         <div className="relative">
           {/* Vertical line */}
@@ -62,7 +80,14 @@ export function InstallBlock() {
 
           <div className="space-y-10">
             {steps.map((s, i) => (
-              <div key={s.n} className="flex gap-6 sm:gap-8">
+              <motion.div
+                key={s.n}
+                custom={i}
+                variants={stepVariant}
+                initial="hidden"
+                animate={inView ? 'visible' : 'hidden'}
+                className="flex gap-6 sm:gap-8"
+              >
                 {/* Step number */}
                 <div className="flex-shrink-0">
                   <div className="relative w-9 h-9 rounded-full border border-indigo-500/30 bg-indigo-500/10 flex items-center justify-center">
@@ -75,7 +100,7 @@ export function InstallBlock() {
                   <p className="text-sm text-zinc-500 mb-4 leading-relaxed">{s.description}</p>
                   <CodeBlock code={s.code} language={s.lang} />
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
