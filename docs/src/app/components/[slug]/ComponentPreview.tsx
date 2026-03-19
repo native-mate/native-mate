@@ -29,6 +29,8 @@ const componentPreviews: Record<string, React.ComponentType<{ part?: string }>> 
   accordion: dynamic(() => import('@/components/previews/AccordionPreview'), { ssr: false }),
   tabs: dynamic(() => import('@/components/previews/TabsPreview'), { ssr: false }),
   'empty-state': dynamic(() => import('@/components/previews/EmptyStatePreview'), { ssr: false }),
+  sheet: dynamic(() => import('@/components/previews/SheetPreview'), { ssr: false }),
+  screen: dynamic(() => import('@/components/previews/ScreenPreview'), { ssr: false }),
 }
 
 export function ComponentPreview({ slug, part }: { slug: string; part?: string }) {
