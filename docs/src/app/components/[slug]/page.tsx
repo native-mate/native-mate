@@ -2331,7 +2331,7 @@ export default async function ComponentPage({ params }: { params: Promise<{ slug
         <ComponentSidebar />
 
         {/* Main content */}
-        <main className="min-w-0 flex-1 px-6 py-10 lg:px-10">
+        <main className="min-w-0 flex-1 px-4 sm:px-6 py-8 sm:py-10 lg:px-10">
           <div className="mx-auto max-w-3xl">
 
             {/* Header bar */}
