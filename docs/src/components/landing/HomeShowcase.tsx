@@ -265,13 +265,36 @@ function TeamContent() {
   )
 }
 
-function TeamPanel() {
+function TeamStatsStrip() {
   const theme = useTheme()
   const stats = [
     { label: 'Commits', value: '124' },
     { label: 'PRs',     value: '18'  },
     { label: 'Issues',  value: '7'   },
   ]
+  return (
+    <View style={{
+      flexDirection: 'row',
+      borderTopWidth: 1,
+      borderTopColor: theme.colors.border,
+      paddingVertical: 14,
+      paddingHorizontal: 8,
+    }}>
+      {stats.map((s, i) => (
+        <View key={s.label} style={{
+          flex: 1, alignItems: 'center',
+          borderLeftWidth: i > 0 ? 1 : 0,
+          borderLeftColor: theme.colors.border,
+        }}>
+          <RNText style={{ fontSize: 16, fontWeight: '700', color: theme.colors.foreground }}>{s.value}</RNText>
+          <RNText style={{ fontSize: 10, color: theme.colors.muted, marginTop: 2 }}>{s.label}</RNText>
+        </View>
+      ))}
+    </View>
+  )
+}
+
+function TeamPanel() {
   return (
     <PreviewWrapper>
       <View style={{ flex: 1, width: '100%' }}>
@@ -281,26 +304,7 @@ function TeamPanel() {
           <CardFooter>
             <Button size="sm" style={{ flex: 1 }}>+ Invite Members</Button>
           </CardFooter>
-          {/* Stats strip */}
-          <View style={{
-            flexDirection: 'row',
-            borderTopWidth: 1,
-            borderTopColor: '#27272a',
-            paddingVertical: 14,
-            paddingHorizontal: 8,
-          }}>
-            {stats.map((s, i) => (
-              <View key={s.label} style={{
-                flex: 1,
-                alignItems: 'center',
-                borderLeftWidth: i > 0 ? 1 : 0,
-                borderLeftColor: '#27272a',
-              }}>
-                <RNText style={{ fontSize: 16, fontWeight: '700', color: '#f4f4f5' }}>{s.value}</RNText>
-                <RNText style={{ fontSize: 10, color: '#71717a', marginTop: 2 }}>{s.label}</RNText>
-              </View>
-            ))}
-          </View>
+          <TeamStatsStrip />
         </Card>
       </View>
     </PreviewWrapper>
@@ -340,29 +344,33 @@ function ProfileContent() {
         <Button variant="outline" size="sm" style={{ flex: 1 }}>Message</Button>
         <Button size="sm" style={{ flex: 1 }}>Follow</Button>
       </View>
-      {/* Stat row */}
-      <View style={{
-        flexDirection: 'row',
-        borderTopWidth: 1,
-        borderTopColor: '#27272a',
-        paddingTop: 14,
-      }}>
-        {[
-          { label: 'Followers', value: '2.4k' },
-          { label: 'Commits',   value: '891'  },
-          { label: 'Repos',     value: '34'   },
-        ].map((s, i) => (
-          <View key={s.label} style={{
-            flex: 1,
-            alignItems: 'center',
-            borderLeftWidth: i > 0 ? 1 : 0,
-            borderLeftColor: '#27272a',
-          }}>
-            <RNText style={{ fontSize: 15, fontWeight: '700', color: '#f4f4f5' }}>{s.value}</RNText>
-            <RNText style={{ fontSize: 10, color: '#71717a', marginTop: 2 }}>{s.label}</RNText>
-          </View>
-        ))}
-      </View>
+    </View>
+  )
+}
+
+function ProfileStatsStrip() {
+  const theme = useTheme()
+  return (
+    <View style={{
+      flexDirection: 'row',
+      borderTopWidth: 1,
+      borderTopColor: theme.colors.border,
+      paddingTop: 14,
+    }}>
+      {[
+        { label: 'Followers', value: '2.4k' },
+        { label: 'Commits',   value: '891'  },
+        { label: 'Repos',     value: '34'   },
+      ].map((s, i) => (
+        <View key={s.label} style={{
+          flex: 1, alignItems: 'center',
+          borderLeftWidth: i > 0 ? 1 : 0,
+          borderLeftColor: theme.colors.border,
+        }}>
+          <RNText style={{ fontSize: 15, fontWeight: '700', color: theme.colors.foreground }}>{s.value}</RNText>
+          <RNText style={{ fontSize: 10, color: theme.colors.muted, marginTop: 2 }}>{s.label}</RNText>
+        </View>
+      ))}
     </View>
   )
 }
@@ -374,6 +382,7 @@ function ProfilePanel() {
         <Card variant="outline" style={{ flex: 1 }}>
           <CardHeader title="Thomas Miller" subtitle="Senior Engineer · native-mate" />
           <CardContent><ProfileContent /></CardContent>
+          <ProfileStatsStrip />
         </Card>
       </View>
     </PreviewWrapper>
@@ -803,7 +812,7 @@ function FilterPanel() {
 
 function BlockPanel({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex flex-col overflow-hidden rounded-xl border border-zinc-800/60 bg-[#111111] p-4">
+    <div className="flex flex-col overflow-hidden rounded-xl border border-zinc-800/60 bg-[#0d0d0f] p-4">
       {children}
     </div>
   )
@@ -819,7 +828,7 @@ function ExamplesGrid() {
         <BlockPanel><TeamPanel /></BlockPanel>
         <BlockPanel><ProfilePanel /></BlockPanel>
       </div>
-      <div className="overflow-hidden rounded-xl border border-zinc-800/60 bg-[#111111] p-4">
+      <div className="overflow-hidden rounded-xl border border-zinc-800/60 bg-[#0d0d0f] p-4">
         <ActivityPanel />
       </div>
     </>
@@ -834,7 +843,7 @@ function FormsGrid() {
         <BlockPanel><PaymentPanel /></BlockPanel>
         <BlockPanel><SurveyPanel /></BlockPanel>
       </div>
-      <div className="overflow-hidden rounded-xl border border-zinc-800/60 bg-[#111111] p-4">
+      <div className="overflow-hidden rounded-xl border border-zinc-800/60 bg-[#0d0d0f] p-4">
         <NotificationsPanel />
       </div>
     </>
@@ -859,7 +868,7 @@ function DashboardGrid() {
         <BlockPanel><StoragePanel /></BlockPanel>
         <BlockPanel><FilterPanel /></BlockPanel>
       </div>
-      <div className="overflow-hidden rounded-xl border border-zinc-800/60 bg-[#111111] p-4">
+      <div className="overflow-hidden rounded-xl border border-zinc-800/60 bg-[#0d0d0f] p-4">
         <ActivityPanel />
       </div>
     </>
