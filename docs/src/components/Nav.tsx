@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { SearchDialog } from './SearchDialog'
 
@@ -44,14 +45,7 @@ export function Nav() {
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 h-14">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-7 h-7 rounded-lg bg-zinc-900 border border-zinc-700 flex items-center justify-center flex-shrink-0">
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                <rect x="1" y="1" width="5" height="5" rx="1.2" fill="white" opacity="0.9"/>
-                <rect x="8" y="1" width="5" height="5" rx="1.2" fill="white" opacity="0.4"/>
-                <rect x="1" y="8" width="5" height="5" rx="1.2" fill="white" opacity="0.4"/>
-                <rect x="8" y="8" width="5" height="5" rx="1.2" fill="white" opacity="0.9"/>
-              </svg>
-            </div>
+            <Image src="/logo.png" alt="native-mate" width={22} height={22} className="flex-shrink-0 invert" />
             <span className="text-[15px] font-semibold tracking-tight text-zinc-100 group-hover:text-white transition-colors">
               native-mate
             </span>
@@ -95,7 +89,7 @@ export function Nav() {
                 <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
               </svg>
               <span className="flex-1 text-left text-xs">Search...</span>
-              <div className="flex items-center gap-0.5">
+              <div className="flex items-center gap-1.5">
                 <kbd className="rounded border border-zinc-700 bg-zinc-800 px-1.5 py-0.5 text-[10px] text-zinc-600">⌘</kbd>
                 <kbd className="rounded border border-zinc-700 bg-zinc-800 px-1.5 py-0.5 text-[10px] text-zinc-600">K</kbd>
               </div>
