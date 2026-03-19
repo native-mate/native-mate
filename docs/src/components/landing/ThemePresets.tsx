@@ -1,3 +1,8 @@
+'use client'
+
+import { useRef } from 'react'
+import { motion, useInView } from 'framer-motion'
+
 const presets = [
   {
     name: 'Zinc',
@@ -89,27 +94,51 @@ function PhoneMockup({ preset }: { preset: typeof presets[0] }) {
   )
 }
 
+const presetVariant = {
+  hidden: { opacity: 0, y: 24 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, delay: i * 0.1, ease: [0.25, 0.4, 0.25, 1] },
+  }),
+}
+
 export function ThemePresets() {
+  const ref = useRef(null)
+  const inView = useInView(ref, { once: true, margin: '-80px' })
+
   return (
     <section className="relative px-4 sm:px-5 py-16 sm:py-28">
       <div className="section-divider mb-0" />
 
-      <div className="mx-auto max-w-6xl pt-14 sm:pt-28">
-        <div className="text-center mb-10 sm:mb-16">
+      <div className="mx-auto max-w-6xl pt-14 sm:pt-28" ref={ref}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, ease: [0.25, 0.4, 0.25, 1] }}
+          className="text-center mb-10 sm:mb-16"
+        >
           <p className="text-xs text-indigo-400 font-semibold uppercase tracking-[0.2em] mb-4">Design tokens</p>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-zinc-50 mb-4">
             Four presets.
             <br />
             <span className="gradient-text">Fully yours.</span>
           </h2>
-          <p className="text-zinc-400 max-w-md mx-auto leading-relaxed">
+          <p className="text-zinc-500 max-w-md mx-auto leading-relaxed">
             Pick a preset on init. Override any token in native-mate.json. Hot-swap at runtime.
           </p>
-        </div>
+        </motion.div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {presets.map((p) => (
-            <div key={p.name} className="group hover-glow rounded-2xl overflow-hidden border border-zinc-800 cursor-pointer">
+          {presets.map((p, i) => (
+            <motion.div
+              key={p.name}
+              custom={i}
+              variants={presetVariant}
+              initial="hidden"
+              animate={inView ? 'visible' : 'hidden'}
+              className="group hover-glow rounded-2xl overflow-hidden border border-zinc-800/80 cursor-pointer"
+            >
               <div className="p-4">
                 <PhoneMockup preset={p} />
               </div>
@@ -117,14 +146,19 @@ export function ThemePresets() {
                 <p className="text-sm font-semibold text-zinc-100 mb-0.5">{p.name}</p>
                 <p className="text-xs text-zinc-600">{p.description}</p>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
 
-        <p className="text-center text-xs text-zinc-600 mt-8">
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={inView ? { opacity: 1 } : {}}
+          transition={{ duration: 0.5, delay: 0.5 }}
+          className="text-center text-xs text-zinc-600 mt-8"
+        >
           All tokens are fully customizable ·{' '}
-          <a href="/docs/tokens" className="text-indigo-400 hover:text-indigo-300 transition-colors">Read the theming docs →</a>
-        </p>
+          <a href="/docs/tokens" className="text-indigo-400 hover:text-indigo-300 transition-colors cursor-pointer">Read the theming docs →</a>
+        </motion.p>
       </div>
     </section>
   )
