@@ -8,21 +8,25 @@ import { Button, ButtonGroup } from '../../../../packages/registry/components/bu
 export default function ButtonPreview() {
   return (
     <div className="space-y-10">
-      <Preview title="Variants" code={`import { Button } from '~/components/ui/button'
+      <Preview title="Default" code={`<Button>Save changes</Button>`}>
+        <Button variant="default">Save changes</Button>
+      </Preview>
 
-<Button variant="default">Default</Button>
-<Button variant="outline">Outline</Button>
-<Button variant="ghost">Ghost</Button>
-<Button variant="destructive">Destructive</Button>
-<Button variant="secondary">Secondary</Button>
-<Button variant="link">Link</Button>`}>
+      <Preview title="Outline" code={`<Button variant="outline">Cancel</Button>`}>
+        <Button variant="outline">Cancel</Button>
+      </Preview>
+
+      <Preview title="Destructive" code={`<Button variant="destructive">Delete account</Button>`}>
+        <Button variant="destructive">Delete account</Button>
+      </Preview>
+
+      <Preview title="Ghost & Secondary" code={`<Button variant="ghost">Dismiss</Button>
+<Button variant="secondary">Learn more</Button>
+<Button variant="link">View details →</Button>`}>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
-          <Button variant="default">Default</Button>
-          <Button variant="outline">Outline</Button>
-          <Button variant="ghost">Ghost</Button>
-          <Button variant="destructive">Destructive</Button>
-          <Button variant="secondary">Secondary</Button>
-          <Button variant="link">Link</Button>
+          <Button variant="ghost">Dismiss</Button>
+          <Button variant="secondary">Learn more</Button>
+          <Button variant="link">View details →</Button>
         </View>
       </Preview>
 
