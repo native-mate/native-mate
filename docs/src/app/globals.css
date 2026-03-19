@@ -13,7 +13,7 @@
 }
 
 :root {
-  --background: #0a0a0a;
+  --background: #070709;
   --foreground: #fafafa;
   --accent: #6366f1;
   --accent-glow: rgba(99, 102, 241, 0.25);
@@ -144,7 +144,7 @@ code, pre {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #27272a;
+  background: #1e1e21;
   border-radius: 3px;
 }
 
