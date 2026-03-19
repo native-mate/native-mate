@@ -1,10 +1,11 @@
-/* Prism.js dark theme — matches native-mate zinc */
+/* ─── GitHub Dark inspired Prism theme ───────────────────────────────────── */
+
 code[class*="language-"],
 pre[class*="language-"] {
-  color: #e4e4e7;
-  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  color: #e6edf3;
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
   font-size: 13px;
-  line-height: 1.6;
+  line-height: 1.7;
   direction: ltr;
   text-align: left;
   white-space: pre;
@@ -15,88 +16,114 @@ pre[class*="language-"] {
   background: transparent;
 }
 
+/* ── Comments ──────────────────────────────────────────── */
 .token.comment,
 .token.prolog,
 .token.doctype,
 .token.cdata {
-  color: #52525b;
+  color: #8b949e;
   font-style: italic;
 }
 
+/* ── Punctuation ───────────────────────────────────────── */
 .token.punctuation {
-  color: #71717a;
+  color: #c9d1d9;
 }
 
-.token.property,
-.token.tag,
-.token.boolean,
-.token.number,
-.token.constant,
-.token.symbol,
-.token.deleted {
-  color: #f87171;
+/* ── Keywords: const, let, var, export, import, return, function, from, default, if, else ── */
+.token.keyword,
+.token.atrule {
+  color: #ff7b72;
 }
 
-.token.selector,
-.token.attr-name,
+/* ── Strings ───────────────────────────────────────────── */
 .token.string,
 .token.char,
-.token.builtin,
 .token.inserted {
-  color: #4ade80;
+  color: #a5d6ff;
 }
 
+.token.attr-value,
+.token.attr-value .token.punctuation {
+  color: #a5d6ff;
+}
+
+/* ── Numbers, booleans, null ───────────────────────────── */
+.token.number,
+.token.boolean,
+.token.constant,
+.token.symbol {
+  color: #79c0ff;
+}
+
+/* ── Functions & class names ───────────────────────────── */
+.token.function,
+.token.function-variable {
+  color: #d2a8ff;
+}
+
+.token.class-name {
+  color: #ffa657;
+}
+
+/* ── Variables & parameters ────────────────────────────── */
+.token.variable,
+.token.regex,
+.token.important {
+  color: #ffa657;
+}
+
+/* ── Operators ─────────────────────────────────────────── */
 .token.operator,
 .token.entity,
-.token.url,
-.language-css .token.string,
-.style .token.string {
-  color: #fbbf24;
+.token.url {
+  color: #c9d1d9;
 }
 
-.token.atrule,
-.token.attr-value,
-.token.keyword {
-  color: #818cf8;
+/* ── Deleted ───────────────────────────────────────────── */
+.token.deleted,
+.token.property {
+  color: #ff7b72;
 }
 
-.token.function,
-.token.class-name {
-  color: #60a5fa;
+/* ── JSX / HTML Tags ───────────────────────────────────── */
+.token.tag .token.tag {
+  color: #7ee787;
 }
 
-.token.regex,
-.token.important,
-.token.variable {
-  color: #fb923c;
-}
-
+.token.tag .token.tag .token.punctuation,
 .token.tag .token.punctuation {
-  color: #71717a;
+  color: #c9d1d9;
 }
 
-.token.tag .token.attr-name {
-  color: #818cf8;
+/* ── JSX Attribute names ───────────────────────────────── */
+.token.tag .token.attr-name,
+.token.attr-name {
+  color: #79c0ff;
 }
 
+/* ── JSX Attribute values ──────────────────────────────── */
 .token.tag .token.attr-value,
 .token.tag .token.attr-value .token.punctuation {
-  color: #4ade80;
+  color: #a5d6ff;
 }
 
-.token.tag .token.tag .token.punctuation {
-  color: #71717a;
-}
-
-.token.tag .token.tag {
-  color: #f87171;
-}
-
-/* JSX specific */
+/* ── Script/style blocks inside JSX ───────────────────── */
 .token.script .token.keyword {
-  color: #818cf8;
+  color: #ff7b72;
 }
 
 .token.script .token.string {
-  color: #4ade80;
+  color: #a5d6ff;
+}
+
+/* ── Imports ───────────────────────────────────────────── */
+.token.imports .token.punctuation {
+  color: #c9d1d9;
+}
+
+/* ── Selector ──────────────────────────────────────────── */
+.token.selector,
+.token.builtin {
+  color: #7ee787;
 }
