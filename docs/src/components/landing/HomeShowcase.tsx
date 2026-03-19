@@ -285,19 +285,19 @@ function TeamPanel() {
           <View style={{
             flexDirection: 'row',
             borderTopWidth: 1,
-            borderTopColor: theme.colors.border ?? '#27272a',
-            marginHorizontal: 16,
-            paddingVertical: 12,
+            borderTopColor: '#27272a',
+            paddingVertical: 14,
+            paddingHorizontal: 8,
           }}>
             {stats.map((s, i) => (
               <View key={s.label} style={{
                 flex: 1,
                 alignItems: 'center',
                 borderLeftWidth: i > 0 ? 1 : 0,
-                borderLeftColor: theme.colors.border ?? '#27272a',
+                borderLeftColor: '#27272a',
               }}>
-                <RNText style={{ fontSize: 16, fontWeight: '700', color: theme.colors.foreground }}>{s.value}</RNText>
-                <RNText style={{ fontSize: 10, color: theme.colors.muted, marginTop: 1 }}>{s.label}</RNText>
+                <RNText style={{ fontSize: 16, fontWeight: '700', color: '#f4f4f5' }}>{s.value}</RNText>
+                <RNText style={{ fontSize: 10, color: '#71717a', marginTop: 2 }}>{s.label}</RNText>
               </View>
             ))}
           </View>
@@ -344,9 +344,8 @@ function ProfileContent() {
       <View style={{
         flexDirection: 'row',
         borderTopWidth: 1,
-        borderTopColor: theme.colors.border ?? '#27272a',
-        paddingTop: 12,
-        gap: 0,
+        borderTopColor: '#27272a',
+        paddingTop: 14,
       }}>
         {[
           { label: 'Followers', value: '2.4k' },
@@ -357,10 +356,10 @@ function ProfileContent() {
             flex: 1,
             alignItems: 'center',
             borderLeftWidth: i > 0 ? 1 : 0,
-            borderLeftColor: theme.colors.border ?? '#27272a',
+            borderLeftColor: '#27272a',
           }}>
-            <RNText style={{ fontSize: 15, fontWeight: '700', color: theme.colors.foreground }}>{s.value}</RNText>
-            <RNText style={{ fontSize: 10, color: theme.colors.muted, marginTop: 1 }}>{s.label}</RNText>
+            <RNText style={{ fontSize: 15, fontWeight: '700', color: '#f4f4f5' }}>{s.value}</RNText>
+            <RNText style={{ fontSize: 10, color: '#71717a', marginTop: 2 }}>{s.label}</RNText>
           </View>
         ))}
       </View>
