@@ -3,9 +3,9 @@ import type { TokenSet } from '../types'
 export const zinc: TokenSet = {
   colors: {
     background:    { light: '#ffffff', dark: '#070709' },
-    surface:       { light: '#f4f4f5', dark: '#0f0f11' },
-    surfaceRaised: { light: '#ffffff', dark: '#161619' },
-    border:        { light: '#e4e4e7', dark: '#252529' },
+    surface:       { light: '#e4e4e7', dark: '#0f0f11' },
+    surfaceRaised: { light: '#f4f4f5', dark: '#161619' },
+    border:        { light: '#d4d4d8', dark: '#252529' },
     primary:       { light: '#18181b', dark: '#fafafa' },
     onPrimary:     { light: '#fafafa', dark: '#18181b' },
     foreground:    { light: '#09090b', dark: '#fafafa' },
