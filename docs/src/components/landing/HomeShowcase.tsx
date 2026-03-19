@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react'
+import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { View, Text as RNText } from 'react-native'
 import { ThemeCustomizerProvider, useThemeCustomizer } from '../ThemeCustomizerContext'
 import { PreviewWrapper } from '../PreviewWrapper'
@@ -905,24 +906,48 @@ function ShowcaseInner() {
         </div>
       </div>
 
-      {tab === 'Examples'       && <ExamplesGrid />}
-      {tab === 'Forms'          && <FormsGrid />}
-      {tab === 'Authentication' && <AuthGrid />}
-      {tab === 'Dashboard'      && <DashboardGrid />}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={tab}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.25, ease: [0.25, 0.4, 0.25, 1] }}
+        >
+          {tab === 'Examples'       && <ExamplesGrid />}
+          {tab === 'Forms'          && <FormsGrid />}
+          {tab === 'Authentication' && <AuthGrid />}
+          {tab === 'Dashboard'      && <DashboardGrid />}
+        </motion.div>
+      </AnimatePresence>
     </div>
   )
 }
 
 // ─── Public export ─────────────────────────────────────────────────────────────
 
+function ShowcaseHeader() {
+  const ref = useRef<HTMLDivElement>(null)
+  const inView = useInView(ref, { once: true, margin: '-40px' })
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 16 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.6, ease: [0.25, 0.4, 0.25, 1] }}
+      className="mb-6 sm:mb-8 text-center"
+    >
+      <p className="text-xs font-medium uppercase tracking-[0.18em] text-zinc-600 mb-2">Live preview</p>
+      <h2 className="text-xl sm:text-2xl font-semibold text-zinc-100">See it in action</h2>
+    </motion.div>
+  )
+}
+
 export function HomeShowcase() {
   return (
     <section className="px-4 sm:px-5 pb-16 sm:pb-24">
       <div className="mx-auto max-w-6xl">
-        <div className="mb-6 sm:mb-8 text-center">
-          <p className="text-xs font-medium uppercase tracking-[0.18em] text-zinc-600 mb-2">Live preview</p>
-          <h2 className="text-xl sm:text-2xl font-semibold text-zinc-100">See it in action</h2>
-        </div>
+        <ShowcaseHeader />
 
         <ThemeCustomizerProvider>
           <ShowcaseInner />
