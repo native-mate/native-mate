@@ -29,8 +29,6 @@ const componentPreviews: Record<string, React.ComponentType<{ part?: string }>> 
   accordion: dynamic(() => import('@/components/previews/AccordionPreview'), { ssr: false }),
   tabs: dynamic(() => import('@/components/previews/TabsPreview'), { ssr: false }),
   'empty-state': dynamic(() => import('@/components/previews/EmptyStatePreview'), { ssr: false }),
-  tooltip: dynamic(() => import('@/components/previews/TooltipPreview'), { ssr: false }),
-  popover: dynamic(() => import('@/components/previews/PopoverPreview'), { ssr: false }),
 }
 
 export function ComponentPreview({ slug, part }: { slug: string; part?: string }) {
