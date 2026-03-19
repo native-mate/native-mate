@@ -20,7 +20,7 @@ const ALL_COMPONENT_SLUGS = [
   'button', 'card', 'input', 'badge', 'sheet', 'accordion', 'tabs',
   'avatar', 'checkbox', 'switch', 'slider', 'select', 'textarea',
   'progress', 'skeleton', 'toast', 'radio', 'otp-input',
-  'action-sheet', 'tag', 'empty-state', 'alert',
+  'action-sheet', 'tag', 'empty-state', 'alert', 'modal',
 ]
 
 interface ComponentDoc {
@@ -722,7 +722,7 @@ export function TextareaExamples() {
       <Textarea label="Message" minRows={2} maxRows={6} value={msg} onChangeText={setMsg} />
       <Textarea floatingLabel label="Notes" placeholder="Add notes..." />
       <Textarea label="Tweet" showCount maxLength={280} countWarnAt={0.8} />
-      <Textarea label="Message" submitOnEnter onSubmit={(t) => console.log(t)} minRows={1} maxRows={4} />
+      <Textarea label="Message" submitOnEnter onSubmit={() => {}} minRows={1} maxRows={4} />
       <Textarea label="Terms" value="By using this app you agree to our terms." readOnly />
       <Textarea label="Review" error="Review cannot be empty" />
       <Textarea label="Disabled" value="Cannot edit." disabled />
@@ -1153,7 +1153,7 @@ export function OTPExample() {
         hint={status === 'success' ? 'Verified!' : 'Enter the code sent to your email'}
         resend
         resendCooldown={30}
-        onResend={() => console.log('Resend tapped')}
+        onResend={() => {}}
       />
     </View>
   )

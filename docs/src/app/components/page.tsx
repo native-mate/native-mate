@@ -12,9 +12,11 @@ const components = [
   { name: 'Input', slug: 'input', category: 'Forms', description: 'Text input with label, error state, and prefix/suffix.' },
   { name: 'Textarea', slug: 'textarea', category: 'Forms', description: 'Auto-growing multi-line text input.' },
   { name: 'Checkbox', slug: 'checkbox', category: 'Forms', description: 'Animated checkbox with indeterminate state.' },
+  { name: 'Radio', slug: 'radio', category: 'Forms', description: 'Radio group with animated selection indicator.' },
   { name: 'Switch', slug: 'switch', category: 'Forms', description: 'Toggle switch with smooth Reanimated transition.' },
   { name: 'Slider', slug: 'slider', category: 'Forms', description: 'Range slider with haptic feedback at extremes.' },
   { name: 'Select', slug: 'select', category: 'Forms', description: 'Bottom-sheet select built on Sheet. Searchable.' },
+  { name: 'OTP Input', slug: 'otp-input', category: 'Forms', description: 'Shake animation, haptic feedback, smooth focus transitions.' },
   // Layout
   { name: 'Card', slug: 'card', category: 'Layout', description: 'Container with header, content, and footer slots.' },
   { name: 'Accordion', slug: 'accordion', category: 'Layout', description: 'Animated height expansion, single or multi-open.' },
@@ -25,13 +27,14 @@ const components = [
   { name: 'Tag', slug: 'tag', category: 'Display', description: 'Compact dismissible label chip.' },
   { name: 'EmptyState', slug: 'empty-state', category: 'Display', description: 'Icon + heading + description + action.' },
   // Overlay
-  { name: 'Sheet', slug: 'sheet', category: 'Overlay', description: 'Bottom sheet with snap points and drag-to-close.' },
-  { name: 'Dialog', slug: 'dialog', category: 'Overlay', description: 'Modal dialog with accessible focus management.' },
+  { name: 'Modal', slug: 'modal', category: 'Overlay', description: 'Animated modal dialog with backdrop dismiss.' },
   { name: 'ActionSheet', slug: 'action-sheet', category: 'Overlay', description: 'iOS-style action sheet built on Sheet.' },
+  { name: 'Sheet', slug: 'sheet', category: 'Overlay', description: 'Bottom sheet with snap points and drag-to-close.' },
   // Feedback
   { name: 'Toast', slug: 'toast', category: 'Feedback', description: 'Auto-dismissing notification with success/error/warning.' },
   { name: 'Progress', slug: 'progress', category: 'Feedback', description: 'Linear bar and circular ring variants.' },
   { name: 'SkeletonLoader', slug: 'skeleton', category: 'Feedback', description: 'Shimmer placeholder for loading content.' },
+  { name: 'Alert', slug: 'alert', category: 'Feedback', description: 'Info, warning, and destructive alert banners.' },
 ]
 
 const categories = ['Primitives', 'Forms', 'Layout', 'Display', 'Overlay', 'Feedback']
