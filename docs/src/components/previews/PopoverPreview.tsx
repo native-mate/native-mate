@@ -33,7 +33,7 @@ function MenuItem({ icon, label, destructive, onPress }: { icon: string; label: 
 
 function TriggerBtn({ children }: { children: string }) {
   return (
-    <View style={{ paddingVertical: 9, paddingHorizontal: 16, borderRadius: 8, borderWidth: 1, borderColor: '#3f3f46', backgroundColor: '#27272a', alignItems: 'center' }}>
+    <View style={{ paddingVertical: 9, paddingHorizontal: 16, borderRadius: 8, borderWidth: 1, borderColor: '#252529', backgroundColor: '#1e1e21', alignItems: 'center' }}>
       <Text style={{ color: '#fafafa', fontSize: 13 }}>{children}</Text>
     </View>
   )
@@ -46,7 +46,7 @@ export default function PopoverPreview() {
     <View style={{ paddingVertical: 4 }}>
       {MENU_ITEMS.map((item, i) => (
         <View key={item.label}>
-          {i > 0 && <View style={{ height: 1, backgroundColor: '#27272a' }} />}
+          {i > 0 && <View style={{ height: 1, backgroundColor: '#1e1e21' }} />}
           <MenuItem
             icon={item.icon}
             label={item.label}
@@ -84,7 +84,7 @@ export default function PopoverPreview() {
               <View style={{ paddingVertical: 4 }}>
                 {MENU_ITEMS.map((item, i) => (
                   <View key={item.label}>
-                    {i > 0 && <View style={{ height: 1, backgroundColor: '#27272a' }} />}
+                    {i > 0 && <View style={{ height: 1, backgroundColor: '#1e1e21' }} />}
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 10, paddingHorizontal: 16 }}>
                       <Text style={{ fontSize: 15 }}>{item.icon}</Text>
                       <Text style={{ fontSize: 14, color: item.destructive ? '#ef4444' : '#fafafa' }}>{item.label}</Text>

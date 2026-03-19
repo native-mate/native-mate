@@ -16,7 +16,7 @@ function Chip({ label, color = '#6366f1' }: { label: string; color?: string }) {
 
 function ActionBtn({ children, primary }: { children: React.ReactNode; primary?: boolean }) {
   return (
-    <View style={{ flex: 1, paddingVertical: 9, borderRadius: 8, backgroundColor: primary ? '#6366f1' : '#27272a', borderWidth: primary ? 0 : 1, borderColor: '#3f3f46', alignItems: 'center' }}>
+    <View style={{ flex: 1, paddingVertical: 9, borderRadius: 8, backgroundColor: primary ? '#6366f1' : '#1e1e21', borderWidth: primary ? 0 : 1, borderColor: '#252529', alignItems: 'center' }}>
       <RNText style={{ color: primary ? '#fff' : '#e4e4e7', fontSize: 13, fontWeight: '600' }}>{children}</RNText>
     </View>
   )
@@ -174,7 +174,7 @@ export default function CardPreview() {
         <View style={{ width: '100%', maxWidth: 340, gap: 12 }}>
           <Card loading={loading} />
           <Pressable
-            style={{ padding: 10, borderRadius: 8, borderWidth: 1, borderColor: '#3f3f46', alignItems: 'center' }}
+            style={{ padding: 10, borderRadius: 8, borderWidth: 1, borderColor: '#252529', alignItems: 'center' }}
             onPress={() => setLoading(v => !v)}
           >
             <Text style={{ color: '#a1a1aa', fontSize: 12 }}>{loading ? 'Show content' : 'Show skeleton'}</Text>

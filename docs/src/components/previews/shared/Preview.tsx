@@ -19,7 +19,7 @@ interface PreviewProps {
 /** Returns an appropriate background + border for the preview area based on active theme */
 function usePreviewColors() {
   const customizer = useThemeCustomizer()
-  if (!customizer) return { bg: 'rgb(9 9 11 / 0.5)', border: '#27272a' }
+  if (!customizer) return { bg: 'rgb(9 9 11 / 0.5)', border: '#1e1e21' }
 
   const { resolvedTheme } = customizer
   const bg = resolvedTheme.colors.background
@@ -58,7 +58,7 @@ export function Preview({ title, code, minHeight = 120, children }: PreviewProps
         {/* Code block */}
         <div className="relative">
           <div className={`overflow-hidden transition-all duration-300 ${expanded ? '' : 'max-h-[100px]'}`}
-               style={{ background: '#111111' }}>
+               style={{ background: '#0d0d0f' }}>
             {/* Header strip with copy */}
             {expanded && (
               <div className="flex items-center justify-between border-b border-zinc-800 px-4 py-2"
@@ -93,7 +93,7 @@ export function Preview({ title, code, minHeight = 120, children }: PreviewProps
           )}
           {expanded && (
             <div className="flex justify-center py-2 border-t border-zinc-800/60"
-                 style={{ background: '#111111' }}>
+                 style={{ background: '#0d0d0f' }}>
               <button
                 onClick={() => setExpanded(false)}
                 className="px-3 py-1 rounded-md text-xs text-zinc-600 hover:text-zinc-400 cursor-pointer transition-colors"
