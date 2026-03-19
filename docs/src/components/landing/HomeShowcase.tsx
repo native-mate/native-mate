@@ -258,7 +258,7 @@ function TeamContent() {
             <RNText style={{ fontSize: 13, fontWeight: '500', color: theme.colors.foreground }}>{m.name}</RNText>
             <RNText style={{ fontSize: 11, color: theme.colors.muted }}>{m.role}</RNText>
           </View>
-          <Tag size="sm">{m.tag}</Tag>
+          <Tag label={m.tag} size="sm" />
         </View>
       ))}
     </View>
@@ -266,6 +266,12 @@ function TeamContent() {
 }
 
 function TeamPanel() {
+  const theme = useTheme()
+  const stats = [
+    { label: 'Commits', value: '124' },
+    { label: 'PRs',     value: '18'  },
+    { label: 'Issues',  value: '7'   },
+  ]
   return (
     <PreviewWrapper>
       <View style={{ flex: 1, width: '100%' }}>
@@ -273,8 +279,28 @@ function TeamPanel() {
           <CardHeader title="Team Members" subtitle="Collaborate on this project" />
           <CardContent><TeamContent /></CardContent>
           <CardFooter>
-            <Button size="sm">+ Invite Members</Button>
+            <Button size="sm" style={{ flex: 1 }}>+ Invite Members</Button>
           </CardFooter>
+          {/* Stats strip */}
+          <View style={{
+            flexDirection: 'row',
+            borderTopWidth: 1,
+            borderTopColor: theme.colors.border ?? '#27272a',
+            marginHorizontal: 16,
+            paddingVertical: 12,
+          }}>
+            {stats.map((s, i) => (
+              <View key={s.label} style={{
+                flex: 1,
+                alignItems: 'center',
+                borderLeftWidth: i > 0 ? 1 : 0,
+                borderLeftColor: theme.colors.border ?? '#27272a',
+              }}>
+                <RNText style={{ fontSize: 16, fontWeight: '700', color: theme.colors.foreground }}>{s.value}</RNText>
+                <RNText style={{ fontSize: 10, color: theme.colors.muted, marginTop: 1 }}>{s.label}</RNText>
+              </View>
+            ))}
+          </View>
         </Card>
       </View>
     </PreviewWrapper>
@@ -299,9 +325,9 @@ function ProfileContent() {
         <Badge variant="success" size="sm">Active</Badge>
       </View>
       <View style={{ flexDirection: 'row', gap: 6, flexWrap: 'wrap' }}>
-        <Tag size="sm">React Native</Tag>
-        <Tag size="sm">TypeScript</Tag>
-        <Tag size="sm">Expo</Tag>
+        <Tag label="React Native" size="sm" />
+        <Tag label="TypeScript" size="sm" />
+        <Tag label="Expo" size="sm" />
       </View>
       <View>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 6 }}>
@@ -313,6 +339,30 @@ function ProfileContent() {
       <View style={{ flexDirection: 'row', gap: 8 }}>
         <Button variant="outline" size="sm" style={{ flex: 1 }}>Message</Button>
         <Button size="sm" style={{ flex: 1 }}>Follow</Button>
+      </View>
+      {/* Stat row */}
+      <View style={{
+        flexDirection: 'row',
+        borderTopWidth: 1,
+        borderTopColor: theme.colors.border ?? '#27272a',
+        paddingTop: 12,
+        gap: 0,
+      }}>
+        {[
+          { label: 'Followers', value: '2.4k' },
+          { label: 'Commits',   value: '891'  },
+          { label: 'Repos',     value: '34'   },
+        ].map((s, i) => (
+          <View key={s.label} style={{
+            flex: 1,
+            alignItems: 'center',
+            borderLeftWidth: i > 0 ? 1 : 0,
+            borderLeftColor: theme.colors.border ?? '#27272a',
+          }}>
+            <RNText style={{ fontSize: 15, fontWeight: '700', color: theme.colors.foreground }}>{s.value}</RNText>
+            <RNText style={{ fontSize: 10, color: theme.colors.muted, marginTop: 1 }}>{s.label}</RNText>
+          </View>
+        ))}
       </View>
     </View>
   )
@@ -713,9 +763,9 @@ function FilterContent() {
           showValue
         />
         <View style={{ flexDirection: 'row', gap: 6, flexWrap: 'wrap' }}>
-          <Tag size="sm">Budget</Tag>
-          <Tag size="sm">Mid-range</Tag>
-          <Tag size="sm">Premium</Tag>
+          <Tag label="Budget" size="sm" />
+          <Tag label="Mid-range" size="sm" />
+          <Tag label="Premium" size="sm" />
         </View>
       </View>
 
