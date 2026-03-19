@@ -28,7 +28,6 @@ const components = [
   { name: 'Sheet', slug: 'sheet', category: 'Overlay', description: 'Bottom sheet with snap points and drag-to-close.' },
   { name: 'Dialog', slug: 'dialog', category: 'Overlay', description: 'Modal dialog with accessible focus management.' },
   { name: 'ActionSheet', slug: 'action-sheet', category: 'Overlay', description: 'iOS-style action sheet built on Sheet.' },
-  { name: 'Tooltip', slug: 'tooltip', category: 'Overlay', description: 'Contextual bubble anchored to any element.' },
   // Feedback
   { name: 'Toast', slug: 'toast', category: 'Feedback', description: 'Auto-dismissing notification with success/error/warning.' },
   { name: 'Progress', slug: 'progress', category: 'Feedback', description: 'Linear bar and circular ring variants.' },
