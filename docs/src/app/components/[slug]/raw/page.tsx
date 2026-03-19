@@ -87,7 +87,7 @@ export default async function RawPage({ params }: { params: Promise<{ slug: stri
   return (
     <pre
       style={{
-        background: '#0a0a0a',
+        background: '#070709',
         color: '#e4e4e7',
         fontFamily: "'Fira Code', 'Cascadia Code', ui-monospace, monospace",
         fontSize: 13,

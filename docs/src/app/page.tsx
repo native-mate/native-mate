@@ -6,7 +6,7 @@ import { Nav } from '@/components/Nav'
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen text-zinc-50" style={{ background: '#0a0a0a' }}>
+    <div className="min-h-screen text-zinc-50" style={{ background: '#070709' }}>
       <Nav />
       <main className="pt-14">
         <Hero />

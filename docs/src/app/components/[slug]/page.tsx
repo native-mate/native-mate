@@ -251,7 +251,7 @@ export function SpinnerExample() {
         <Spinner variant="pulse"  color="warning" />
       </View>
 
-      <View style={{ position: 'relative', height: 120, backgroundColor: '#18181b', borderRadius: 12 }}>
+      <View style={{ position: 'relative', height: 120, backgroundColor: '#0f0f11', borderRadius: 12 }}>
         {loading && <Spinner overlay label="Processing…" />}
         <Button onPress={() => setLoading(l => !l)} style={{ margin: 16 }}>
           {loading ? 'Hide overlay' : 'Show overlay'}
@@ -2323,7 +2323,7 @@ export default async function ComponentPage({ params }: { params: Promise<{ slug
   ]
 
   return (
-    <div className="min-h-screen text-zinc-50" style={{ background: '#0a0a0a' }}>
+    <div className="min-h-screen text-zinc-50" style={{ background: '#070709' }}>
       <Nav />
       <ScrollProgress />
       <div className="flex pt-14">

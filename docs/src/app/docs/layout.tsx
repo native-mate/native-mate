@@ -41,7 +41,7 @@ const sidebarItems = [
 
 export default function DocsLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen text-zinc-50" style={{ background: '#0a0a0a' }}>
+    <div className="min-h-screen text-zinc-50" style={{ background: '#070709' }}>
       <Nav />
       <ScrollProgress />
       <div className="mx-auto flex max-w-6xl pt-14">

@@ -9,9 +9,9 @@ const PRESETS = [
     title: 'Zinc',
     description: 'The default. Clean neutral grays that work in any app.',
     bg: '#0a0a0a',
-    surface: '#18181b',
+    surface: '#0f0f11',
     primary: '#fafafa',
-    accent: '#3f3f46',
+    accent: '#252529',
   },
   {
     name: 'slate',
@@ -27,9 +27,9 @@ const PRESETS = [
     title: 'Rose',
     description: 'Warm rose primary. Ideal for lifestyle, health, or social apps.',
     bg: '#0a0a0a',
-    surface: '#18181b',
+    surface: '#0f0f11',
     primary: '#fb7185',
-    accent: '#3f3f46',
+    accent: '#252529',
   },
   {
     name: 'midnight',
