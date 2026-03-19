@@ -5,3 +5,4 @@ dist/
 .expo/
 docs/.next/
 docs/tsconfig.tsbuildinfo
+.claude/settings.local.json
