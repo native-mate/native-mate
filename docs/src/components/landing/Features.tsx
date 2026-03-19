@@ -78,11 +78,11 @@ export function Features() {
     <section className="relative px-5 py-28">
       <div className="section-divider mb-0" />
 
-      <div className="mx-auto max-w-6xl pt-28">
+      <div className="mx-auto max-w-6xl pt-16 sm:pt-28">
         {/* Header */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-10 sm:mb-16">
           <p className="text-xs text-indigo-400 font-semibold uppercase tracking-[0.2em] mb-4">Why native-mate</p>
-          <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-zinc-50 mb-4">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-zinc-50 mb-4">
             Built the way
             <br />
             <span className="gradient-text">you'd build it</span>

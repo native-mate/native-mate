@@ -91,13 +91,13 @@ function PhoneMockup({ preset }: { preset: typeof presets[0] }) {
 
 export function ThemePresets() {
   return (
-    <section className="relative px-5 py-28">
+    <section className="relative px-4 sm:px-5 py-16 sm:py-28">
       <div className="section-divider mb-0" />
 
-      <div className="mx-auto max-w-6xl pt-28">
-        <div className="text-center mb-16">
+      <div className="mx-auto max-w-6xl pt-14 sm:pt-28">
+        <div className="text-center mb-10 sm:mb-16">
           <p className="text-xs text-indigo-400 font-semibold uppercase tracking-[0.2em] mb-4">Design tokens</p>
-          <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-zinc-50 mb-4">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-zinc-50 mb-4">
             Four presets.
             <br />
             <span className="gradient-text">Fully yours.</span>
@@ -107,7 +107,7 @@ export function ThemePresets() {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {presets.map((p) => (
             <div key={p.name} className="group hover-glow rounded-2xl overflow-hidden border border-zinc-800 cursor-pointer">
               <div className="p-4">

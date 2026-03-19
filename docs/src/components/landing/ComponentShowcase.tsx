@@ -52,14 +52,14 @@ export function ComponentShowcase() {
     : components.filter((c) => c.category === active.toLowerCase())
 
   return (
-    <section className="relative px-5 py-20">
+    <section className="relative px-4 sm:px-5 py-14 sm:py-20">
       <div className="section-divider mb-0" />
 
-      <div className="mx-auto max-w-6xl pt-16">
+      <div className="mx-auto max-w-6xl pt-10 sm:pt-16">
         {/* Header */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-8 sm:mb-12">
           <p className="text-xs text-zinc-600 font-medium uppercase tracking-[0.18em] mb-4">Component library</p>
-          <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-zinc-50 mb-4">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-zinc-50 mb-4">
             27 components.<br />Production ready.
           </h2>
           <p className="text-zinc-400 max-w-md mx-auto leading-relaxed">

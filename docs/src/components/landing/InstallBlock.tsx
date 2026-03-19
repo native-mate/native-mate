@@ -41,13 +41,13 @@ export function MyScreen() {
 
 export function InstallBlock() {
   return (
-    <section className="relative px-5 py-28">
+    <section className="relative px-4 sm:px-5 py-16 sm:py-28">
       <div className="section-divider mb-0" />
 
-      <div className="mx-auto max-w-3xl pt-28">
-        <div className="text-center mb-16">
+      <div className="mx-auto max-w-3xl pt-14 sm:pt-28">
+        <div className="text-center mb-10 sm:mb-16">
           <p className="text-xs text-indigo-400 font-semibold uppercase tracking-[0.2em] mb-4">Quick start</p>
-          <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-zinc-50 mb-4">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-zinc-50 mb-4">
             Up in
             <span className="gradient-text"> three steps</span>
           </h2>
