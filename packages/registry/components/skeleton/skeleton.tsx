@@ -153,8 +153,8 @@ export const Skeleton: React.FC<SkeletonProps> = ({
 }) => {
   const theme = useTheme()
   const br          = borderRadius ?? theme.radius.md
-  const baseColor   = theme.colors.surface ?? '#27272a'
-  const shimmerColor = (theme.colors.surfaceRaised ?? theme.colors.border ?? '#3f3f46') + '90'
+  const baseColor   = theme.colors.surfaceRaised ?? theme.colors.surface ?? '#27272a'
+  const shimmerColor = (theme.colors.border ?? '#3f3f46') + '90'
 
   if (Platform.OS === 'web') {
     return (
