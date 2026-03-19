@@ -53,10 +53,10 @@ export async function fetchComponent(name: string): Promise<RegistryComponent> {
 const STATIC_INDEX: ComponentIndex[] = [
   // Primitives
   { name: 'button',       version: '0.3.0', description: '6 variants, 3 sizes, ButtonGroup, icon-only, rounded pill, custom color, haptic, full-width, loading, spring animation.', category: 'primitives' },
-  { name: 'text',         version: '0.1.0', description: 'Typed typography with size, weight, and color tokens.', category: 'primitives' },
-  { name: 'icon',         version: '0.1.0', description: 'SVG icon wrapper with size and color from tokens.', category: 'primitives' },
-  { name: 'spinner',      version: '0.1.0', description: 'Animated loading indicator in three sizes.', category: 'primitives' },
-  { name: 'separator',    version: '0.1.0', description: 'Horizontal or vertical divider line.', category: 'primitives' },
+  { name: 'text',         version: '0.1.0', description: '13 variants (h1–h6, body, label, caption, overline, code), 6 weight presets, color tokens, align, transform, truncation, selectable.', category: 'primitives' },
+  { name: 'icon',         version: '0.1.0', description: 'Ionicons wrapper — xs/sm/md/lg/xl/2xl size presets, all theme color tokens, opacity, decorative a11y hiding.', category: 'primitives' },
+  { name: 'spinner',      version: '0.1.0', description: '3 variants (circle/dots/pulse), 4 size presets, all theme colors, speed control (slow/normal/fast/ms), label, overlay mode.', category: 'primitives' },
+  { name: 'separator',    version: '0.1.0', description: 'Horizontal/vertical divider — optional centered label, dashed style, custom thickness/color/spacing, decorative a11y.', category: 'primitives' },
 
   // Forms
   { name: 'input',        version: '0.3.0', description: '3 sizes, prefix/suffix icons+text, floating label, password toggle, clearable (Ionicons), char count, shake on error, haptic on focus.', category: 'forms' },

@@ -6,6 +6,10 @@ import { useTheme, Text } from '@native-mate/core'
 
 // Components
 import { Button, ButtonGroup } from '../../../../packages/registry/components/button/button'
+import { Text as NMText } from '../../../../packages/registry/components/text/text'
+import { Icon } from '../../../../packages/registry/components/icon/icon'
+import { Spinner } from '../../../../packages/registry/components/spinner/spinner'
+import { Separator } from '../../../../packages/registry/components/separator/separator'
 import { Input } from '../../../../packages/registry/components/input/input'
 import { CheckboxGroup } from '../../../../packages/registry/components/checkbox/checkbox'
 import { MultiSelect } from '../../../../packages/registry/components/select/select'
@@ -21,7 +25,7 @@ import { Tag, TagGroup } from '../../../../packages/registry/components/tag/tag'
 import { Progress } from '../../../../packages/registry/components/progress/progress'
 import { Skeleton, SkeletonText, SkeletonAvatar, SkeletonCard } from '../../../../packages/registry/components/skeleton/skeleton'
 import { Alert } from '../../../../packages/registry/components/alert/alert'
-import { Card } from '../../../../packages/registry/components/card/card'
+import { Card, CardHeader, CardContent, CardFooter, CardMedia } from '../../../../packages/registry/components/card/card'
 import { Tabs } from '../../../../packages/registry/components/tabs/tabs'
 import { Accordion } from '../../../../packages/registry/components/accordion/accordion'
 import { EmptyState } from '../../../../packages/registry/components/empty-state/empty-state'
@@ -35,6 +39,7 @@ import { Select } from '../../../../packages/registry/components/select/select'
 import { Popover } from '../../../../packages/registry/components/popover/popover'
 
 const labels: Record<string, string> = {
+  text: 'Text', icon: 'Icon', spinner: 'Spinner', separator: 'Separator',
   button: 'Button', input: 'Input', textarea: 'Textarea', checkbox: 'Checkbox',
   radio: 'Radio', switch: 'Switch', slider: 'Slider', badge: 'Badge',
   avatar: 'Avatar', tag: 'Tag', progress: 'Progress', skeleton: 'Skeleton',
@@ -855,63 +860,201 @@ function AlertPreview() {
 }
 
 function CardPreview() {
+  const theme = useTheme()
   return (
-    <Section title="Cards">
-      <View style={s.gap}>
-        <Card>
-          <Text variant="label">Default Card</Text>
-          <Text variant="body" muted>Some content inside a card.</Text>
+    <>
+      <Section title="Variants">
+        <View style={s.gap}>
+          {(['elevated', 'outline', 'flat'] as const).map(v => (
+            <Card key={v} variant={v}>
+              <CardHeader title={v.charAt(0).toUpperCase() + v.slice(1)} subtitle="variant prop" />
+              <CardContent>
+                <Text variant="body" muted>Card with {v} style.</Text>
+              </CardContent>
+            </Card>
+          ))}
+        </View>
+      </Section>
+
+      <Section title="With leading / trailing / description">
+        <Card variant="outline">
+          <CardHeader
+            title="Team workspace"
+            subtitle="Up to 10 members"
+            description="Manage members, billing, and settings for your team."
+            leading={
+              <View style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: theme.colors.primary + '33', alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{ color: theme.colors.primary, fontWeight: '700' }}>TW</Text>
+              </View>
+            }
+            trailing={
+              <View style={{ paddingVertical: 3, paddingHorizontal: 8, borderRadius: 99, backgroundColor: theme.colors.primary + '22' }}>
+                <Text style={{ color: theme.colors.primary, fontSize: 11, fontWeight: '600' }}>Pro</Text>
+              </View>
+            }
+          />
+          <CardFooter separated align="apart">
+            <Text variant="caption" muted>3 / 10 seats</Text>
+            <View style={{ paddingVertical: 6, paddingHorizontal: 12, borderRadius: 7, backgroundColor: theme.colors.primary }}>
+              <Text style={{ color: '#fff', fontSize: 12, fontWeight: '600' }}>Invite</Text>
+            </View>
+          </CardFooter>
         </Card>
-        <Card padding="lg">
-          <Text variant="label">Large Padding</Text>
-          <Text variant="body" muted>More spacious card layout.</Text>
-        </Card>
-      </View>
-    </Section>
+      </Section>
+
+      <Section title="Pressable + spring animation">
+        <View style={s.gap}>
+          <Card variant="outline" onPress={() => {}}>
+            <CardHeader
+              title="Open settings"
+              subtitle="Tap to navigate"
+              leading={<Ionicons name="settings-outline" size={22} color={theme.colors.primary} />}
+              trailing={<Ionicons name="chevron-forward" size={16} color={theme.colors.mutedForeground} />}
+            />
+          </Card>
+          <Card variant="elevated" onPress={() => {}}>
+            <CardHeader
+              title="Monthly Report"
+              subtitle="March 2026"
+              leading={<Ionicons name="bar-chart-outline" size={22} color={theme.colors.primary} />}
+            />
+            <CardContent>
+              <Text variant="body" muted>Revenue grew 14% this month.</Text>
+            </CardContent>
+          </Card>
+        </View>
+      </Section>
+
+      <Section title="Accent stripe">
+        <View style={s.gap}>
+          {[
+            { title: 'Deployment ready', sub: 'main · 2 min ago', color: '#22c55e' },
+            { title: 'Review required', sub: '2 approvals needed', color: '#f59e0b' },
+            { title: 'Build failed', sub: 'Step 4/6 failed', color: '#ef4444' },
+          ].map(item => (
+            <Card key={item.title} variant="outline" accent={item.color}>
+              <CardHeader
+                title={item.title}
+                subtitle={item.sub}
+                leading={<Ionicons name="git-branch-outline" size={18} color={item.color} />}
+              />
+            </Card>
+          ))}
+        </View>
+      </Section>
+
+      <Section title="Loading skeleton">
+        <Card loading />
+      </Section>
+    </>
   )
 }
 
 function TabsPreview() {
-  const [tab, setTab] = useState('overview')
+  const [tab1, setTab1] = useState('overview')
+  const [tab2, setTab2] = useState('overview')
+  const [tab3, setTab3] = useState('overview')
+  const theme = useTheme()
+  const items = [
+    { key: 'overview', label: 'Overview', icon: <Ionicons name="home-outline" size={14} color={tab1 === 'overview' ? theme.colors.primary : theme.colors.muted} /> },
+    { key: 'features', label: 'Features', badge: 3 },
+    { key: 'pricing', label: 'Pricing' },
+    { key: 'docs', label: 'Docs', disabled: true },
+  ]
   return (
-    <Section title="Navigation">
-      <Tabs
-        items={[
+    <>
+      <Section title="Underline (default)">
+        <Tabs items={items} activeKey={tab1} onChange={setTab1} />
+        <Text variant="body" muted style={{ marginTop: 12 }}>Active: {tab1}</Text>
+      </Section>
+      <Section title="Pill">
+        <Tabs items={[
           { key: 'overview', label: 'Overview' },
           { key: 'features', label: 'Features' },
           { key: 'pricing', label: 'Pricing' },
-        ]}
-        activeKey={tab}
-        onChange={setTab}
-      />
-      <Text variant="body" muted style={{ marginTop: 12 }}>Active: {tab}</Text>
-    </Section>
+        ]} activeKey={tab2} onChange={setTab2} variant="pill" />
+      </Section>
+      <Section title="Card / Segmented">
+        <Tabs items={[
+          { key: 'overview', label: 'Overview' },
+          { key: 'features', label: 'Features' },
+          { key: 'pricing', label: 'Pricing' },
+        ]} activeKey={tab3} onChange={setTab3} variant="card" />
+      </Section>
+    </>
   )
 }
 
 function AccordionPreview() {
+  const theme = useTheme()
+  const items = [
+    {
+      key: 'q1', title: 'What is native-mate?',
+      icon: <Ionicons name="information-circle-outline" size={16} color={theme.colors.primary} />,
+      content: <Text variant="body" muted>A copy-paste React Native component library with a CLI.</Text>,
+    },
+    {
+      key: 'q2', title: 'Is it free?',
+      icon: <Ionicons name="card-outline" size={16} color={theme.colors.primary} />,
+      content: <Text variant="body" muted>Yes, fully open source under MIT license.</Text>,
+    },
+    {
+      key: 'q3', title: 'Does it support dark mode?',
+      icon: <Ionicons name="moon-outline" size={16} color={theme.colors.primary} />,
+      content: <Text variant="body" muted>Yes, with built-in light and dark token sets.</Text>,
+    },
+    {
+      key: 'q4', title: 'Disabled item', disabled: true,
+      content: <Text variant="body" muted>You can't open this one.</Text>,
+    },
+  ]
   return (
-    <Section title="FAQ">
-      <Accordion
-        items={[
-          { title: 'What is native-mate?', content: 'A copy-paste React Native component library with a CLI.' },
-          { title: 'Is it free?', content: 'Yes, fully open source.' },
-          { title: 'Does it support dark mode?', content: 'Yes, with built-in light and dark token sets.' },
-        ]}
-      />
-    </Section>
+    <>
+      <Section title="Ghost (default)">
+        <Accordion items={items} defaultOpen={['q1']} />
+      </Section>
+      <Section title="Bordered">
+        <Accordion items={items} variant="bordered" />
+      </Section>
+      <Section title="Card">
+        <Accordion items={items} variant="card" allowMultiple />
+      </Section>
+    </>
   )
 }
 
 function EmptyStatePreview() {
+  const theme = useTheme()
   return (
-    <Section title="No content">
-      <EmptyState
-        title="No results found"
-        description="Try adjusting your search or filters."
-        action={{ label: 'Clear filters', onPress: () => {} }}
-      />
-    </Section>
+    <>
+      <Section title="Default">
+        <EmptyState
+          icon={<Ionicons name="search-outline" size={24} color={theme.colors.muted} />}
+          title="No results found"
+          description="Try adjusting your search or filters to find what you're looking for."
+          action={{ label: 'Clear filters', onPress: () => {} }}
+          secondaryAction={{ label: 'Browse all items', onPress: () => {} }}
+        />
+      </Section>
+      <Section title="Compact">
+        <EmptyState
+          variant="compact"
+          icon={<Ionicons name="mail-outline" size={20} color={theme.colors.muted} />}
+          title="No messages"
+          description="Your inbox is empty. Messages you receive will appear here."
+          action={{ label: 'Compose', onPress: () => {}, variant: 'outline' }}
+        />
+      </Section>
+      <Section title="Illustration">
+        <EmptyState
+          variant="illustration"
+          icon={<Ionicons name="cloud-offline-outline" size={36} color={theme.colors.primary} />}
+          title="You're offline"
+          description="Check your connection and try again."
+          action={{ label: 'Retry', onPress: () => {} }}
+        />
+      </Section>
+    </>
   )
 }
 
@@ -1324,7 +1467,244 @@ function SelectPreview() {
   )
 }
 
+// ─── Text preview ──────────────────────────────────────────────────────────────
+
+function TextPreview() {
+  return (
+    <>
+      <Section title="Variants">
+        <View style={s.gap}>
+          <NMText variant="h1">Heading 1</NMText>
+          <NMText variant="h2">Heading 2</NMText>
+          <NMText variant="h3">Heading 3</NMText>
+          <NMText variant="h4">Heading 4</NMText>
+          <NMText variant="h5">Heading 5</NMText>
+          <NMText variant="h6">Heading 6</NMText>
+          <NMText variant="bodyLarge">Body Large</NMText>
+          <NMText variant="body">Body (default)</NMText>
+          <NMText variant="bodySmall">Body Small</NMText>
+          <NMText variant="label">Label</NMText>
+          <NMText variant="caption">Caption</NMText>
+          <NMText variant="overline">Overline</NMText>
+          <NMText variant="code">{'const x = 42'}</NMText>
+        </View>
+      </Section>
+
+      <Section title="Weights">
+        <View style={s.gap}>
+          {(['light','regular','medium','semibold','bold','extrabold'] as const).map(w => (
+            <NMText key={w} weight={w} style={{ textTransform: 'capitalize' }}>{w}</NMText>
+          ))}
+        </View>
+      </Section>
+
+      <Section title="Colors">
+        <View style={s.gap}>
+          <NMText color="foreground">Foreground</NMText>
+          <NMText color="muted">Muted</NMText>
+          <NMText color="primary">Primary</NMText>
+          <NMText color="success">Success</NMText>
+          <NMText color="warning">Warning</NMText>
+          <NMText color="destructive">Destructive</NMText>
+          <NMText color="#a78bfa">Custom hex #a78bfa</NMText>
+          <NMText muted>Muted shorthand prop</NMText>
+        </View>
+      </Section>
+
+      <Section title="Alignment">
+        <View style={s.gap}>
+          <NMText align="left">Left aligned</NMText>
+          <NMText align="center">Center aligned</NMText>
+          <NMText align="right">Right aligned</NMText>
+        </View>
+      </Section>
+
+      <Section title="Transform">
+        <View style={s.gap}>
+          <NMText transform="uppercase">uppercase text</NMText>
+          <NMText transform="capitalize">capitalize each word</NMText>
+          <NMText transform="lowercase">LOWERCASE TEXT</NMText>
+        </View>
+      </Section>
+
+      <Section title="Truncation">
+        <NMText numberOfLines={2}>
+          This is a very long piece of text that will be clipped after two lines. Assistive technology will still read the full string.
+        </NMText>
+      </Section>
+    </>
+  )
+}
+
+// ─── Icon preview ──────────────────────────────────────────────────────────────
+
+function IconPreview() {
+  const icons = [
+    'home','person','settings','search','notifications',
+    'heart','star','bookmark','camera','mail',
+    'call','chatbubble','share','cloud','trash',
+  ]
+  return (
+    <>
+      <Section title="Icon grid">
+        <View style={[s.row, { justifyContent: 'flex-start' }]}>
+          {icons.map(n => <Icon key={n} name={n as any} size="lg" />)}
+        </View>
+      </Section>
+
+      <Section title="Sizes">
+        <View style={[s.row, { alignItems: 'flex-end' }]}>
+          {(['xs','sm','md','lg','xl','2xl'] as const).map(sz => (
+            <Icon key={sz} name="star" size={sz} color="primary" />
+          ))}
+          <Icon name="star" size={52} color="primary" />
+        </View>
+      </Section>
+
+      <Section title="Color tokens">
+        <View style={s.row}>
+          <Icon name="checkmark-circle"    color="success"     size="xl" />
+          <Icon name="alert-circle"        color="warning"     size="xl" />
+          <Icon name="close-circle"        color="destructive" size="xl" />
+          <Icon name="information-circle"  color="primary"     size="xl" />
+          <Icon name="person-circle"       color="foreground"  size="xl" />
+          <Icon name="help-circle"         color="muted"       size="xl" />
+        </View>
+      </Section>
+
+      <Section title="Custom color & opacity">
+        <View style={s.row}>
+          <Icon name="heart" size="xl" color="#f43f5e" />
+          <Icon name="heart" size="xl" color="#f43f5e" opacity={0.5} />
+          <Icon name="heart" size="xl" color="#f43f5e" opacity={0.2} />
+        </View>
+      </Section>
+
+      <Section title="Filled vs Outline">
+        <View style={s.row}>
+          <Icon name="heart"            size="lg" color="primary" />
+          <Icon name="heart-outline"    size="lg" color="primary" />
+          <Icon name="star"             size="lg" color="warning" />
+          <Icon name="star-outline"     size="lg" color="warning" />
+          <Icon name="bookmark"         size="lg" />
+          <Icon name="bookmark-outline" size="lg" />
+        </View>
+      </Section>
+    </>
+  )
+}
+
+// ─── Spinner preview ───────────────────────────────────────────────────────────
+
+function SpinnerPreview() {
+  return (
+    <>
+      <Section title="Variants">
+        <View style={[s.row, { gap: 28 }]}>
+          <Spinner variant="circle" />
+          <Spinner variant="dots" />
+          <Spinner variant="pulse" />
+        </View>
+      </Section>
+
+      <Section title="Sizes">
+        <View style={[s.row, { alignItems: 'center', gap: 24 }]}>
+          <Spinner size="sm" />
+          <Spinner size="md" />
+          <Spinner size="lg" />
+          <Spinner size={52} />
+        </View>
+      </Section>
+
+      <Section title="Colors">
+        <View style={[s.row, { gap: 20 }]}>
+          <Spinner color="primary" />
+          <Spinner color="success" />
+          <Spinner color="warning" />
+          <Spinner color="destructive" />
+          <Spinner color="foreground" />
+          <Spinner color="muted" />
+          <Spinner color="#a78bfa" />
+        </View>
+      </Section>
+
+      <Section title="Speed">
+        <View style={[s.row, { gap: 28 }]}>
+          <Spinner speed="slow" />
+          <Spinner speed="normal" />
+          <Spinner speed="fast" />
+        </View>
+      </Section>
+
+      <Section title="Dots — sizes">
+        <View style={[s.row, { gap: 28, alignItems: 'center' }]}>
+          <Spinner variant="dots" size="sm" color="muted" />
+          <Spinner variant="dots" size="md" color="primary" />
+          <Spinner variant="dots" size="lg" color="success" />
+        </View>
+      </Section>
+
+      <Section title="Pulse — sizes">
+        <View style={[s.row, { gap: 24, alignItems: 'center' }]}>
+          <Spinner variant="pulse" size="sm" color="primary" />
+          <Spinner variant="pulse" size="md" color="warning" />
+          <Spinner variant="pulse" size="lg" color="destructive" />
+        </View>
+      </Section>
+    </>
+  )
+}
+
+// ─── Separator preview ─────────────────────────────────────────────────────────
+
+function SeparatorPreview() {
+  return (
+    <>
+      <Section title="Default">
+        <Separator />
+      </Section>
+
+      <Section title="With label">
+        <Separator label="or" />
+        <Separator label="continue with email" />
+        <Separator label="today" />
+      </Section>
+
+      <Section title="Dashed">
+        <Separator dashed />
+        <Separator dashed label="or" />
+      </Section>
+
+      <Section title="Thickness & color">
+        <Separator thickness={1} />
+        <Separator thickness={2} color="#6366f1" />
+        <Separator thickness={4} color="#22c55e" />
+      </Section>
+
+      <Section title="Vertical (in toolbar row)">
+        <View style={[s.row, { height: 44 }]}>
+          <Button variant="ghost" size="sm">Cut</Button>
+          <Separator orientation="vertical" spacing={4} />
+          <Button variant="ghost" size="sm">Copy</Button>
+          <Separator orientation="vertical" spacing={4} />
+          <Button variant="ghost" size="sm">Paste</Button>
+        </View>
+      </Section>
+
+      <Section title="Spacing">
+        <Separator spacing={4}  label="tight (4dp)" />
+        <Separator spacing={16} label="normal (16dp)" />
+        <Separator spacing={24} label="loose (24dp)" />
+      </Section>
+    </>
+  )
+}
+
 const previews: Record<string, React.FC> = {
+  text: TextPreview,
+  icon: IconPreview,
+  spinner: SpinnerPreview,
+  separator: SeparatorPreview,
   button: ButtonPreview,
   input: InputPreview,
   textarea: TextareaPreview,
