@@ -1,6 +1,6 @@
 // native-mate: skeleton@0.2.0 | hash:PLACEHOLDER
 import React, { useEffect } from 'react'
-import { View, StyleSheet } from 'react-native'
+import { View, Platform, StyleSheet } from 'react-native'
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -9,58 +9,118 @@ import Animated, {
   withTiming,
   Easing,
 } from 'react-native-reanimated'
-import { useTheme, makeStyles } from '@native-mate/core'
+import { useTheme } from '@native-mate/core'
 import type { SkeletonProps, SkeletonTextProps, SkeletonAvatarProps, SkeletonCardProps } from './skeleton.types'
 
-// Base skeleton bone — handles both pulse and shimmer
-export const Skeleton: React.FC<SkeletonProps> = ({
-  width = '100%',
-  height = 16,
-  borderRadius,
-  variant = 'shimmer',
-  style,
-}) => {
-  const theme = useTheme()
-  const opacity = useSharedValue(1)
+// ─── CSS injection (web only) ──────────────────────────────────────────────────
+
+let cssInjected = false
+function injectSkeletonCSS() {
+  if (cssInjected || Platform.OS !== 'web') return
+  cssInjected = true
+  const el = document.createElement('style')
+  el.textContent = `
+    @keyframes nm-skeleton-shimmer {
+      0%   { transform: translateX(-100%); }
+      100% { transform: translateX(250%); }
+    }
+    @keyframes nm-skeleton-pulse {
+      0%, 100% { opacity: 0.85; }
+      50%       { opacity: 0.4;  }
+    }
+  `
+  document.head.appendChild(el)
+}
+
+// ─── Web bone ─────────────────────────────────────────────────────────────────
+
+function WebSkeleton({
+  width, height, borderRadius, variant, baseColor, shimmerColor,
+}: {
+  width: string | number
+  height: number
+  borderRadius: number
+  variant: 'shimmer' | 'pulse'
+  baseColor: string
+  shimmerColor: string
+}) {
+  useEffect(() => { injectSkeletonCSS() }, [])
+
+  const w = typeof width === 'number' ? `${width}px` : width
+
+  return React.createElement(
+    'div',
+    {
+      style: {
+        width: w, height, borderRadius,
+        backgroundColor: baseColor,
+        overflow: 'hidden',
+        position: 'relative',
+        flexShrink: 0,
+        animation: variant === 'pulse'
+          ? 'nm-skeleton-pulse 1.2s ease-in-out infinite'
+          : undefined,
+      } as React.CSSProperties,
+    },
+    variant === 'shimmer'
+      ? React.createElement('div', {
+          style: {
+            position: 'absolute', inset: 0,
+            background: `linear-gradient(90deg, transparent 0%, ${shimmerColor} 50%, transparent 100%)`,
+            animation: 'nm-skeleton-shimmer 1.6s ease-in-out infinite',
+          } as React.CSSProperties,
+        })
+      : null,
+  ) as unknown as React.ReactElement
+}
+
+// ─── Native bone (Reanimated) ─────────────────────────────────────────────────
+
+function NativeSkeleton({
+  width, height, borderRadius, variant, baseColor, shimmerColor, style,
+}: {
+  width: string | number
+  height: number
+  borderRadius: number
+  variant: 'shimmer' | 'pulse'
+  baseColor: string
+  shimmerColor: string
+  style?: any
+}) {
+  const opacity  = useSharedValue(1)
   const shimmerX = useSharedValue(-1)
 
   useEffect(() => {
     if (variant === 'pulse') {
       opacity.value = withRepeat(
         withSequence(
-          withTiming(0.5, { duration: 600, easing: Easing.inOut(Easing.ease) }),
+          withTiming(0.4,  { duration: 600, easing: Easing.inOut(Easing.ease) }),
           withTiming(0.85, { duration: 600, easing: Easing.inOut(Easing.ease) }),
         ),
-        -1,
-        false,
+        -1, false,
       )
     } else {
       shimmerX.value = withRepeat(
         withSequence(
           withTiming(-1, { duration: 0 }),
-          withTiming(1, { duration: 1200, easing: Easing.inOut(Easing.ease) }),
+          withTiming(1,  { duration: 1200, easing: Easing.inOut(Easing.ease) }),
         ),
-        -1,
-        false,
+        -1, false,
       )
     }
   }, [variant])
 
-  const pulseStyle = useAnimatedStyle(() => ({ opacity: opacity.value }))
+  const pulseStyle   = useAnimatedStyle(() => ({ opacity: opacity.value }))
   const shimmerStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: shimmerX.value * 300 }],
   }))
-
-  const br = borderRadius ?? theme.radius.md
 
   return (
     <Animated.View
       style={[
         {
-          width: width as any,
-          height,
-          borderRadius: br,
-          backgroundColor: theme.colors.surface ?? '#27272a',
+          width: width as any, height, borderRadius,
+          backgroundColor: baseColor,
           overflow: 'hidden',
         },
         variant === 'pulse' ? pulseStyle : undefined,
@@ -73,12 +133,7 @@ export const Skeleton: React.FC<SkeletonProps> = ({
         <Animated.View
           style={[
             StyleSheet.absoluteFill,
-            {
-              backgroundColor: (theme.colors.surfaceRaised ?? theme.colors.border ?? '#3f3f46') + '80',
-              // Extra wide so the shine covers fully at edges
-              left: '-50%' as any,
-              right: '-50%' as any,
-            },
+            { backgroundColor: shimmerColor, left: '-50%' as any, right: '-50%' as any },
             shimmerStyle,
           ]}
         />
@@ -87,7 +142,48 @@ export const Skeleton: React.FC<SkeletonProps> = ({
   )
 }
 
-// Multiple text lines
+// ─── Public Skeleton ───────────────────────────────────────────────────────────
+
+export const Skeleton: React.FC<SkeletonProps> = ({
+  width = '100%',
+  height = 16,
+  borderRadius,
+  variant = 'shimmer',
+  style,
+}) => {
+  const theme = useTheme()
+  const br          = borderRadius ?? theme.radius.md
+  const baseColor   = theme.colors.surface ?? '#27272a'
+  const shimmerColor = (theme.colors.surfaceRaised ?? theme.colors.border ?? '#3f3f46') + '90'
+
+  if (Platform.OS === 'web') {
+    return (
+      <WebSkeleton
+        width={width as string | number}
+        height={height}
+        borderRadius={br}
+        variant={variant}
+        baseColor={baseColor}
+        shimmerColor={shimmerColor}
+      />
+    )
+  }
+
+  return (
+    <NativeSkeleton
+      width={width as string | number}
+      height={height}
+      borderRadius={br}
+      variant={variant}
+      baseColor={baseColor}
+      shimmerColor={shimmerColor}
+      style={style}
+    />
+  )
+}
+
+// ─── Composites ────────────────────────────────────────────────────────────────
+
 export const SkeletonText: React.FC<SkeletonTextProps> = ({
   lines = 3,
   lastLineWidth = '65%',
@@ -106,28 +202,24 @@ export const SkeletonText: React.FC<SkeletonTextProps> = ({
   )
 }
 
-// Avatar circle + text lines beside it
 export const SkeletonAvatar: React.FC<SkeletonAvatarProps> = ({
   size = 44,
   showText = true,
   textLines = 2,
   variant = 'shimmer',
   style,
-}) => {
-  return (
-    <View style={[{ flexDirection: 'row', alignItems: 'center', gap: 12 }, style]}>
-      <Skeleton width={size} height={size} borderRadius={size / 2} variant={variant} />
-      {showText && (
-        <View style={{ flex: 1, gap: 8 }}>
-          <Skeleton width="55%" height={12} variant={variant} />
-          {textLines > 1 && <Skeleton width="80%" height={10} variant={variant} />}
-        </View>
-      )}
-    </View>
-  )
-}
+}) => (
+  <View style={[{ flexDirection: 'row', alignItems: 'center', gap: 12 }, style]}>
+    <Skeleton width={size} height={size} borderRadius={size / 2} variant={variant} />
+    {showText && (
+      <View style={{ flex: 1, gap: 8 }}>
+        <Skeleton width="55%" height={12} variant={variant} />
+        {textLines > 1 && <Skeleton width="80%" height={10} variant={variant} />}
+      </View>
+    )}
+  </View>
+)
 
-// Card with image + text
 export const SkeletonCard: React.FC<SkeletonCardProps> = ({
   imageHeight = 160,
   lines = 2,
