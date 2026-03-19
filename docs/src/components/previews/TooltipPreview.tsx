@@ -7,7 +7,7 @@ import { Text } from '@native-mate/core'
 
 function PillBtn({ label }: { label: string }) {
   return (
-    <View style={{ paddingVertical: 8, paddingHorizontal: 16, borderRadius: 8, borderWidth: 1, borderColor: '#3f3f46', backgroundColor: '#27272a' }}>
+    <View style={{ paddingVertical: 8, paddingHorizontal: 16, borderRadius: 8, borderWidth: 1, borderColor: '#252529', backgroundColor: '#1e1e21' }}>
       <Text style={{ color: '#fafafa', fontSize: 13 }}>{label}</Text>
     </View>
   )

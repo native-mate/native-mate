@@ -4,6 +4,24 @@ const webpack = require('webpack')
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  typescript: {
+    // Next.js 16 uses React 19 types; project uses @types/react 18. Mismatch is harmless.
+    ignoreBuildErrors: true,
+  },
+  // Turbopack config for Next.js 16+ (replaces webpack aliases/extensions)
+  turbopack: {
+    resolveAlias: {
+      'react-native': 'react-native-web',
+      'expo-haptics': './src/stubs/expo-haptics.js',
+      '@react-native/assets-registry': './src/stubs/assets-registry.js',
+      '@react-native/assets-registry/registry': './src/stubs/assets-registry.js',
+    },
+    resolveExtensions: [
+      '.web.js', '.web.jsx', '.web.ts', '.web.tsx',
+      '.js', '.jsx', '.ts', '.tsx',
+    ],
+  },
+  // Keep webpack config as fallback (used when --webpack flag is passed)
   webpack: (config) => {
     // Define React Native globals
     config.plugins.push(

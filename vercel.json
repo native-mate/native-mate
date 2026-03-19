@@ -1,0 +1,6 @@
+{
+  "buildCommand": "npm run build --workspace=docs",
+  "outputDirectory": "docs/.next",
+  "installCommand": "npm install --legacy-peer-deps",
+  "framework": "nextjs"
+}

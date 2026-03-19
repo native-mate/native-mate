@@ -1,26 +1,32 @@
 import type React from 'react'
-import type { ViewProps, ImageSourcePropType, StyleProp, ViewStyle } from 'react-native'
+import type { ViewProps, ImageSourcePropType, StyleProp, ViewStyle, ImageStyle } from 'react-native'
 
-export type CardVariant = 'elevated' | 'outline' | 'flat'
-export type CardPadding = 'none' | 'sm' | 'md' | 'lg'
+export type CardVariant = 'elevated' | 'outline' | 'flat' | 'ghost'
+export type CardSize = 'sm' | 'md' | 'lg'
 
 export interface CardProps extends Omit<ViewProps, 'style'> {
   children?: React.ReactNode
   variant?: CardVariant
-  /** Padding applied to card when NOT using CardHeader/CardContent/CardFooter sub-components */
-  padding?: CardPadding
+  size?: CardSize
   /** Shows animated skeleton placeholder instead of children */
   loading?: boolean
+  /** Makes card pressable with spring animation */
   onPress?: () => void
-  /** Cover image rendered edge-to-edge at top */
-  image?: ImageSourcePropType
-  imageHeight?: number
+  disabled?: boolean
+  /** Scale on press, default 0.97 */
+  activeScale?: number
+  /** Accent color painted as a left border stripe */
+  accent?: string
   style?: StyleProp<ViewStyle>
 }
 
 export interface CardHeaderProps {
   title: string
   subtitle?: string
+  description?: string
+  /** Avatar or icon rendered on the left */
+  leading?: React.ReactNode
+  /** Action or badge rendered on the right */
   trailing?: React.ReactNode
   style?: StyleProp<ViewStyle>
 }
@@ -32,7 +38,17 @@ export interface CardContentProps {
 
 export interface CardFooterProps {
   children: React.ReactNode
-  /** Adds top border separator */
+  /** Adds top separator line */
   separated?: boolean
+  /** Reverse row direction (right-align actions) */
+  align?: 'left' | 'right' | 'apart'
   style?: StyleProp<ViewStyle>
+}
+
+export interface CardMediaProps {
+  source: ImageSourcePropType
+  height?: number
+  /** Rounded top corners only (default true) */
+  roundedTop?: boolean
+  style?: StyleProp<ImageStyle>
 }

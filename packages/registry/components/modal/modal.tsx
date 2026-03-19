@@ -141,7 +141,7 @@ export const Modal: React.FC<ModalProps> = ({
       <Animated.View style={[styles.backdrop, backdropAnim]}>
         <Pressable style={StyleSheet.absoluteFill} onPress={dismissible ? onClose : undefined} />
 
-        <Animated.View style={[styles.container, { width: maxWidth as any }, containerAnim]}>
+        <Animated.View style={[styles.container, { width: '92%', maxWidth: maxWidth as any }, containerAnim]}>
           {/* Stop inner press from dismissing */}
           <Pressable onPress={() => {}}>
             {hasHeader && (

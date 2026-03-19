@@ -1,21 +1,17 @@
 import { Hero } from '@/components/landing/Hero'
-import { Features } from '@/components/landing/Features'
+import { HomeShowcase } from '@/components/landing/HomeShowcase'
 import { ComponentShowcase } from '@/components/landing/ComponentShowcase'
-import { ThemePresets } from '@/components/landing/ThemePresets'
-import { InstallBlock } from '@/components/landing/InstallBlock'
 import { Footer } from '@/components/landing/Footer'
 import { Nav } from '@/components/Nav'
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-50">
+    <div className="min-h-screen text-zinc-50" style={{ background: '#070709' }}>
       <Nav />
-      <main>
+      <main className="pt-14">
         <Hero />
-        <Features />
+        <HomeShowcase />
         <ComponentShowcase />
-        <ThemePresets />
-        <InstallBlock />
       </main>
       <Footer />
     </div>

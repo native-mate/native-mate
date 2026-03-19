@@ -1,12 +1,13 @@
 // native-mate: toast@0.3.0 | hash:PLACEHOLDER
 import React, { useEffect, useRef, createContext, useContext, useState, useCallback, useMemo } from 'react'
-import { View, Pressable, PanResponder, Image, Modal } from 'react-native'
+import { View, Pressable, PanResponder, Image, Modal, Platform } from 'react-native'
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withSpring,
   withTiming,
   runOnJS,
+  cancelAnimation,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
 import { useTheme, Text, makeStyles } from '@native-mate/core'
@@ -106,18 +107,26 @@ export const Toast: React.FC<ToastProps> = ({
   }[variant]
 
   const hide = useCallback(() => onHide(), [onHide])
+  // Used to cancel stale exit-animation callbacks (race condition when fire() is called rapidly)
+  const exitGenRef = useRef(0)
 
   const dismiss = useCallback(() => {
+    exitGenRef.current += 1
+    const gen = exitGenRef.current
     opacity.value = withTiming(0, { duration: 180 })
     translateY.value = withSpring(
       position === 'bottom' ? 120 : -120,
       { mass: 0.5, damping: 18, stiffness: 200 },
-      () => runOnJS(hide)(),
+      () => { if (exitGenRef.current === gen) runOnJS(hide)() },
     )
   }, [position, hide])
 
   useEffect(() => {
     if (visible) {
+      // Cancel any in-flight exit animation so its callback won't fire
+      exitGenRef.current += 1
+      cancelAnimation(opacity)
+      cancelAnimation(translateY)
       setModalOpen(true)
       if (Haptics) {
         if (variant === 'success') Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
@@ -135,8 +144,12 @@ export const Toast: React.FC<ToastProps> = ({
         return () => clearTimeout(timer)
       }
     } else {
-      // Animate out, then close the Modal (keeps exit animation intact)
-      opacity.value = withTiming(0, { duration: 180 }, () => runOnJS(setModalOpen)(false))
+      exitGenRef.current += 1
+      const gen = exitGenRef.current
+      cancelAnimation(opacity)
+      opacity.value = withTiming(0, { duration: 180 }, () => {
+        if (exitGenRef.current === gen) runOnJS(setModalOpen)(false)
+      })
     }
   }, [visible])
 
@@ -200,9 +213,61 @@ export const Toast: React.FC<ToastProps> = ({
     ...(actions ?? []),
   ]
 
+  if (!modalOpen) return null
+
+  // On web, render with fixed positioning directly (no Modal portal needed)
+  if (Platform.OS === 'web') {
+    return (
+      <Animated.View
+        style={[
+          styles.container,
+          {
+            position: 'fixed' as any,
+            [position === 'top' ? 'top' : 'bottom']: 48,
+            zIndex: 9999,
+          },
+          animatedStyle,
+        ]}
+        accessibilityRole="alert"
+      >
+        {/* Left side: avatar image OR icon badge */}
+        {avatar ? (
+          <Image source={avatar} style={{ width: 40, height: 40, borderRadius: 20, marginTop: 1 }} />
+        ) : (
+          <View style={[styles.icon, { backgroundColor: iconBg }]}>
+            {icon ? icon : <Ionicons name={variantIconName[variant]} size={14} color={iconColor} />}
+          </View>
+        )}
+        <View style={styles.content}>
+          <Text variant="label">{message}</Text>
+          {description && <Text variant="caption" muted>{description}</Text>}
+          {allActions.length > 0 && (
+            <View style={styles.actionsRow}>
+              {allActions.map((a, idx) => (
+                <Pressable key={idx} style={[styles.action, a.variant === 'primary' && { borderColor: theme.colors.primary }]} onPress={a.onPress}>
+                  <Text variant="caption" style={{ fontWeight: '600', color: a.variant === 'primary' ? theme.colors.primary : theme.colors.foreground }}>{a.label}</Text>
+                </Pressable>
+              ))}
+            </View>
+          )}
+        </View>
+        {persistent && (
+          <Pressable onPress={dismiss} hitSlop={8}>
+            <Ionicons name="close" size={18} color={theme.colors.muted} />
+          </Pressable>
+        )}
+        {showProgress && !persistent && (
+          <View style={{ position: 'absolute', bottom: 0, left: 0, height: 3, backgroundColor: iconBg, opacity: 0.5, borderBottomLeftRadius: theme.radius.lg, borderBottomRightRadius: theme.radius.lg, width: '100%' }}>
+            <Animated.View style={[{ height: 3, backgroundColor: iconBg }, progressStyle]} />
+          </View>
+        )}
+      </Animated.View>
+    )
+  }
+
   return (
     <Modal visible={modalOpen} transparent animationType="none" onRequestClose={dismiss} statusBarTranslucent>
-    <View style={{ flex: 1, pointerEvents: 'box-none' }}>
+    <View pointerEvents="box-none" style={{ flex: 1 }}>
     <Animated.View
       style={[styles.container, { [position === 'top' ? 'top' : 'bottom']: 48 }, animatedStyle]}
       accessibilityRole="alert"

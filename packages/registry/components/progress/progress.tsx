@@ -1,6 +1,6 @@
 // native-mate: progress@0.2.0 | hash:PLACEHOLDER
 import React from 'react'
-import { View } from 'react-native'
+import { View, Platform } from 'react-native'
 import Animated, {
   useAnimatedStyle,
   withTiming,
@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
   label: { marginBottom: 4 },
 }))
 
-// Circular progress via two half-circle clips (no react-native-svg)
+// Circular progress — SVG arc on web, half-circle clip on native
 function CircularRing({
   value,
   size,
@@ -42,90 +42,83 @@ function CircularRing({
   const diameter = circularSizes[size]
   const stroke = circularStroke[size]
   const clamped = Math.min(100, Math.max(0, value))
-  const deg = (clamped / 100) * 360
 
-  // Two rotating half-circles show progress via clip
+  // ── Web: SVG with strokeDashoffset for smooth arc ──────────────────────────
+  if (Platform.OS === 'web') {
+    const radius = (diameter - stroke) / 2
+    const circumference = 2 * Math.PI * radius
+    const dashOffset = circumference - (clamped / 100) * circumference
+    const cx = diameter / 2
+    const cy = diameter / 2
+
+    const svg = React.createElement(
+      'svg' as unknown as React.ElementType,
+      { width: diameter, height: diameter, viewBox: `0 0 ${diameter} ${diameter}`, style: { display: 'block' } },
+      // Track
+      React.createElement('circle' as unknown as React.ElementType, {
+        cx, cy, r: radius, fill: 'none', stroke: trackColor, strokeWidth: stroke,
+      }),
+      // Arc
+      React.createElement('circle' as unknown as React.ElementType, {
+        cx, cy, r: radius, fill: 'none', stroke: color, strokeWidth: stroke,
+        strokeDasharray: circumference, strokeDashoffset: dashOffset,
+        strokeLinecap: 'round',
+        transform: `rotate(-90 ${cx} ${cy})`,
+        style: { transition: 'stroke-dashoffset 0.5s ease' },
+      }),
+      // Value text
+      showValue
+        ? React.createElement(
+            'text' as unknown as React.ElementType,
+            {
+              x: cx, y: cy,
+              textAnchor: 'middle', dominantBaseline: 'central',
+              fill: color, fontSize: Math.round(diameter * 0.18), fontWeight: '700',
+            },
+            `${Math.round(clamped)}%`,
+          )
+        : null,
+    ) as unknown as React.ReactElement
+
+    return svg
+  }
+
+  // ── Native: two rotating half-circle clips ─────────────────────────────────
+  const deg = (clamped / 100) * 360
   const leftDeg = deg > 180 ? 180 : deg
   const rightDeg = deg > 180 ? deg - 180 : 0
 
   const containerStyle = {
-    width: diameter,
-    height: diameter,
-    borderRadius: diameter / 2,
-    backgroundColor: trackColor,
-    alignItems: 'center' as const,
-    justifyContent: 'center' as const,
-    position: 'relative' as const,
+    width: diameter, height: diameter,
+    borderRadius: diameter / 2, backgroundColor: trackColor,
+    alignItems: 'center' as const, justifyContent: 'center' as const, position: 'relative' as const,
   }
-
   const halfBase = {
-    position: 'absolute' as const,
-    width: diameter,
-    height: diameter,
-    borderRadius: diameter / 2,
-    overflow: 'hidden' as const,
+    position: 'absolute' as const, width: diameter, height: diameter,
+    borderRadius: diameter / 2, overflow: 'hidden' as const,
   }
-
-  // Right half (0-180 degrees)
-  const rightClip = {
-    ...halfBase,
-    left: diameter / 2,
-    width: diameter / 2,
-  }
-
+  const rightClip = { ...halfBase, left: diameter / 2, width: diameter / 2 }
   const rightFill = {
-    position: 'absolute' as const,
-    right: 0,
-    width: diameter,
-    height: diameter,
-    borderRadius: diameter / 2,
-    backgroundColor: color,
+    position: 'absolute' as const, right: 0, width: diameter, height: diameter,
+    borderRadius: diameter / 2, backgroundColor: color,
     transform: [{ rotate: `${rightDeg}deg` }],
   }
-
-  // Left half (180-360 degrees)
-  const leftClip = {
-    ...halfBase,
-    width: diameter / 2,
-    overflow: 'hidden' as const,
-  }
-
+  const leftClip = { ...halfBase, width: diameter / 2, overflow: 'hidden' as const }
   const leftFill = {
-    position: 'absolute' as const,
-    left: 0,
-    width: diameter,
-    height: diameter,
-    borderRadius: diameter / 2,
-    backgroundColor: color,
+    position: 'absolute' as const, left: 0, width: diameter, height: diameter,
+    borderRadius: diameter / 2, backgroundColor: color,
     transform: [{ rotate: `${leftDeg}deg` }],
     display: (deg > 180 ? 'flex' : 'none') as 'flex' | 'none',
   }
-
   const innerSize = diameter - stroke * 2
 
   return (
     <View style={containerStyle}>
-      {/* Right fill (first 180°) */}
-      {rightDeg > 0 && (
-        <View style={rightClip}>
-          <View style={rightFill} />
-        </View>
-      )}
-      {/* Left fill (180°-360°) */}
-      {deg > 180 && (
-        <View style={leftClip}>
-          <View style={leftFill} />
-        </View>
-      )}
-      {/* Inner circle to create ring effect */}
+      {rightDeg > 0 && <View style={rightClip}><View style={rightFill} /></View>}
+      {deg > 180 && <View style={leftClip}><View style={leftFill} /></View>}
       <View style={{
-        width: innerSize,
-        height: innerSize,
-        borderRadius: innerSize / 2,
-        backgroundColor: innerBg,
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 2,
+        width: innerSize, height: innerSize, borderRadius: innerSize / 2,
+        backgroundColor: innerBg, alignItems: 'center', justifyContent: 'center', zIndex: 2,
       }}>
         {showValue && (
           <Text style={{ fontSize: diameter * 0.18, fontWeight: '700', color }}>
@@ -186,7 +179,8 @@ export const Progress: React.FC<ProgressProps> = ({
   const h = linearHeights[size]
 
   const fillStyle = useAnimatedStyle(() => ({
-    width: animated && !indeterminate
+    // withTiming with percentage strings doesn't interpolate correctly in React Native Web
+    width: (animated && !indeterminate && Platform.OS !== 'web')
       ? withTiming(`${clampedValue}%` as any, { duration: 500, easing: Easing.out(Easing.ease) })
       : (indeterminate ? '35%' : `${clampedValue}%` as any),
     transform: indeterminate

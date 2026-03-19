@@ -1,8 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300..800;1,14..32,300..800&family=JetBrains+Mono:wght@400;500&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 /* Ionicons web font (for @expo/vector-icons on web) */
 @font-face {
@@ -13,17 +13,20 @@
 }
 
 :root {
-  --background: #ffffff;
-  --foreground: #09090b;
-}
-
-.dark {
-  --background: #09090b;
+  --background: #070709;
   --foreground: #fafafa;
+  --accent: #6366f1;
+  --accent-glow: rgba(99, 102, 241, 0.25);
+  --purple: #8b5cf6;
+  --cyan: #06b6d4;
 }
 
 * {
   box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
@@ -31,21 +34,155 @@ body {
   color: var(--foreground);
   font-family: 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 code, pre {
   font-family: 'JetBrains Mono', 'Fira Code', monospace;
 }
 
-/* Scrollbar */
+/* ── Gradient text utility ─────────────────────────────────────────────────── */
+.gradient-text {
+  background: linear-gradient(135deg, #a5b4fc 0%, #818cf8 40%, #c084fc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-cyan {
+  background: linear-gradient(135deg, #67e8f9 0%, #818cf8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Shimmer text (subtle highlight sweep) ────────────────────────────────── */
+.shimmer-text {
+  color: #e4e4e7;
+  background: linear-gradient(
+    110deg,
+    #e4e4e7 0%,
+    #e4e4e7 40%,
+    #ffffff 50%,
+    #e4e4e7 60%,
+    #e4e4e7 100%
+  );
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer-sweep 4s ease-in-out infinite;
+}
+
+@keyframes shimmer-sweep {
+  0%, 100% { background-position: 100% 0; }
+  50% { background-position: 0% 0; }
+}
+
+/* ── Glow utilities ────────────────────────────────────────────────────────── */
+.glow-indigo {
+  box-shadow: 0 0 40px rgba(99, 102, 241, 0.2), 0 0 80px rgba(99, 102, 241, 0.1);
+}
+
+.glow-indigo-sm {
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
+}
+
+.hover-glow {
+  transition: box-shadow 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.4), 0 8px 32px rgba(99, 102, 241, 0.15);
+  transform: translateY(-2px);
+}
+
+/* ── Grid background pattern ───────────────────────────────────────────────── */
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+
+/* ── Glassmorphism card ─────────────────────────────────────────────────────── */
+.glass {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+/* ── Shimmer gradient ──────────────────────────────────────────────────────── */
+.shimmer-bg {
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,0.05) 50%,
+    rgba(255,255,255,0) 100%
+  );
+  background-size: 300% 100%;
+}
+
+/* ── Section divider ───────────────────────────────────────────────────────── */
+.section-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+}
+
+/* ── CTA button primary ────────────────────────────────────────────────────── */
+.btn-primary {
+  position: relative;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  transition: all 0.2s ease;
+  overflow: hidden;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #818cf8, #a78bfa);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.btn-primary:hover::before {
+  opacity: 1;
+}
+
+.btn-primary:hover {
+  box-shadow: 0 0 24px rgba(99, 102, 241, 0.4), 0 4px 12px rgba(0,0,0,0.3);
+  transform: translateY(-1px);
+}
+
+/* ── Scrollbar ──────────────────────────────────────────────────────────────── */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
+
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
-  background: #3f3f46;
+  background: #1e1e21;
   border-radius: 3px;
 }
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3f3f46;
+}
+
+/* ── Reduced motion ───────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Prism token colors live in styles/prism-dark.css */

@@ -1,5 +1,7 @@
+import React from 'react'
 import Link from 'next/link'
 import { Nav } from '@/components/Nav'
+import { ScrollProgress } from '@/components/ScrollProgress'
 
 const sidebarItems = [
   {
@@ -39,23 +41,27 @@ const sidebarItems = [
 
 export default function DocsLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-50">
+    <div className="min-h-screen text-zinc-50" style={{ background: '#070709' }}>
       <Nav />
-      <div className="mx-auto flex max-w-6xl gap-0">
+      <ScrollProgress />
+      <div className="mx-auto flex max-w-6xl pt-14">
         {/* Sidebar */}
-        <aside className="sticky top-14 hidden h-[calc(100vh-3.5rem)] w-56 flex-shrink-0 overflow-y-auto border-r border-zinc-800 py-8 lg:block">
-          <nav className="space-y-6 px-4">
+        <aside
+          className="sticky top-14 hidden max-h-[calc(100vh-3.5rem)] w-56 flex-shrink-0 self-start overflow-y-auto py-8 lg:block [&::-webkit-scrollbar]:hidden"
+          style={{ scrollbarWidth: 'none' } as React.CSSProperties}
+        >
+          <nav className="space-y-6 pl-6 pr-4">
             {sidebarItems.map((group) => (
               <div key={group.group}>
-                <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-zinc-500">
+                <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.15em] text-zinc-600">
                   {group.group}
                 </p>
-                <ul className="space-y-1">
+                <ul className="space-y-0.5">
                   {group.items.map((item) => (
                     <li key={item.href}>
                       <Link
                         href={item.href}
-                        className="block rounded-md px-2 py-1.5 text-sm text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-zinc-50"
+                        className="flex items-center py-1 text-sm text-zinc-500 transition-colors duration-150 hover:text-zinc-200"
                       >
                         {item.label}
                       </Link>
@@ -68,7 +74,7 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
         </aside>
 
         {/* Content */}
-        <main className="min-w-0 flex-1 px-6 py-10 lg:px-10">{children}</main>
+        <main className="min-w-0 flex-1 px-6 py-10 lg:px-12 lg:py-12">{children}</main>
       </div>
     </div>
   )

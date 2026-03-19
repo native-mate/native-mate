@@ -28,7 +28,6 @@ const components = [
   { name: 'Sheet', slug: 'sheet', category: 'Overlay', description: 'Bottom sheet with snap points and drag-to-close.' },
   { name: 'Dialog', slug: 'dialog', category: 'Overlay', description: 'Modal dialog with accessible focus management.' },
   { name: 'ActionSheet', slug: 'action-sheet', category: 'Overlay', description: 'iOS-style action sheet built on Sheet.' },
-  { name: 'Tooltip', slug: 'tooltip', category: 'Overlay', description: 'Contextual bubble anchored to any element.' },
   // Feedback
   { name: 'Toast', slug: 'toast', category: 'Feedback', description: 'Auto-dismissing notification with success/error/warning.' },
   { name: 'Progress', slug: 'progress', category: 'Feedback', description: 'Linear bar and circular ring variants.' },
@@ -54,9 +53,9 @@ export default function ComponentsPage() {
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-50">
       <Nav />
-      <main className="mx-auto max-w-5xl px-4 py-12">
-        <h1 className="mb-2 text-3xl font-bold">Components</h1>
-        <p className="mb-10 text-zinc-400">25 production-ready components. Click any to see docs and usage.</p>
+      <main className="mx-auto max-w-5xl px-4 sm:px-6 py-10 sm:py-16 pt-20 sm:pt-20">
+        <h1 className="mb-2 text-2xl sm:text-3xl font-bold">Components</h1>
+        <p className="mb-8 sm:mb-10 text-zinc-400">27 production-ready components. Click any to see docs and usage.</p>
 
         {categories.map((cat) => (
           <div key={cat} className="mb-12">

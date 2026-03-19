@@ -71,6 +71,9 @@ async function installComponent(
   }
 }
 
+// Components not yet ready for v1 — will be added in a future release
+const COMING_SOON = new Set(['tooltip', 'popover'])
+
 export async function add(names: string[], options: AddOptions) {
   const cwd = process.cwd()
 
@@ -85,6 +88,15 @@ export async function add(names: string[], options: AddOptions) {
   if (names.length === 0) {
     console.error(chalk.red('Provide at least one component name, e.g. native-mate add button'))
     process.exit(1)
+  }
+
+  // Check for components not yet in v1
+  for (const name of names) {
+    if (COMING_SOON.has(name)) {
+      console.error(chalk.yellow(`\n  "${name}" is not available in v1 yet — coming in a future release.`))
+      console.error(chalk.dim(`  Follow https://github.com/ayush-jadaun/native-mate for updates.\n`))
+      process.exit(1)
+    }
   }
 
   const installed = new Set<string>()

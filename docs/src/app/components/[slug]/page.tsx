@@ -4,6 +4,24 @@ import { Nav } from '@/components/Nav'
 import { CodeBlock } from '@/components/CodeBlock'
 import Link from 'next/link'
 import { ComponentPreview } from './ComponentPreview'
+import { ComponentSidebar } from '@/components/ComponentSidebar'
+import { CopyPageButton } from '@/components/CopyPageButton'
+import { TableOfContents } from '@/components/TableOfContents'
+import { ThemeCustomizerProvider } from '@/components/ThemeCustomizerContext'
+import { ThemeCustomizerPanel } from '@/components/ThemeCustomizerPanel'
+import { ScrollProgress } from '@/components/ScrollProgress'
+
+// GitHub base URL — update once repo goes public
+const GITHUB_BASE_URL = 'https://github.com/ayush-jadaun/native-mate'
+
+// Ordered component slugs for prev / next navigation
+const ALL_COMPONENT_SLUGS = [
+  'text', 'icon', 'spinner', 'separator',
+  'button', 'card', 'input', 'badge', 'sheet', 'accordion', 'tabs',
+  'avatar', 'checkbox', 'switch', 'slider', 'select', 'textarea',
+  'progress', 'skeleton', 'toast', 'radio', 'otp-input',
+  'action-sheet', 'tag', 'empty-state', 'alert',
+]
 
 interface ComponentDoc {
   name: string
@@ -15,11 +33,312 @@ interface ComponentDoc {
   props: Array<{ name: string; type: string; default?: string; description: string }>
   addCommand: string
   usageCode: string
-  exampleCode: string
+  exampleCode?: string
   accessibility?: Array<{ feature: string; detail: string }>
 }
 
-const COMPONENT_DOCS: Record<string, ComponentDoc> = {
+export const COMPONENT_DOCS: Record<string, ComponentDoc> = {
+  text: {
+    name: 'Text',
+    slug: 'text',
+    description: 'Typed typography component with 13 semantic variants, 6 weight presets, color tokens, alignment, transform, and truncation support.',
+    category: 'Primitives',
+    npmDeps: [],
+    componentDeps: [],
+    addCommand: 'npx native-mate add text',
+    accessibility: [
+      { feature: 'Selectable', detail: 'Pass selectable to allow users to copy text content.' },
+      { feature: 'Label', detail: 'Pass accessibilityLabel to override the read-out text for screen readers.' },
+    ],
+    props: [
+      { name: 'variant', type: '"h1"|"h2"|"h3"|"h4"|"h5"|"h6"|"body"|"bodyLarge"|"bodySmall"|"label"|"caption"|"overline"|"code"', default: '"body"', description: 'Semantic typography preset — sets size, weight, and line-height.' },
+      { name: 'weight', type: '"light"|"regular"|"medium"|"semibold"|"bold"|"extrabold"', description: 'Override the font weight independently of the variant.' },
+      { name: 'color', type: '"foreground"|"muted"|"primary"|"destructive"|"success"|"warning"|string', description: 'Semantic color token or raw hex/rgb value.' },
+      { name: 'align', type: '"left"|"center"|"right"|"justify"', description: 'Horizontal text alignment.' },
+      { name: 'size', type: 'number', description: 'Explicit font-size in dp that overrides the variant size.' },
+      { name: 'transform', type: '"none"|"uppercase"|"lowercase"|"capitalize"', description: 'CSS-like text transform.' },
+      { name: 'muted', type: 'boolean', default: 'false', description: 'Shorthand for color="muted".' },
+      { name: 'numberOfLines', type: 'number', description: 'Truncates text after N lines.' },
+      { name: 'selectable', type: 'boolean', default: 'false', description: 'Enables text selection and copy on long-press.' },
+    ],
+    usageCode: `import { Text } from '~/components/ui/text'
+
+// Variants
+<Text variant="h1">Page Title</Text>
+<Text variant="h3">Section heading</Text>
+<Text variant="body">Regular paragraph text.</Text>
+<Text variant="caption">Hint or metadata</Text>
+<Text variant="overline">Section label</Text>
+<Text variant="code">{'const x = 42'}</Text>
+
+// Weights
+<Text weight="bold">Bold label</Text>
+<Text weight="light">Light note</Text>
+
+// Colors (theme tokens)
+<Text color="primary">Accent text</Text>
+<Text color="success">All good</Text>
+<Text color="destructive">Error message</Text>
+<Text muted>Helper text</Text>
+
+// Alignment
+<Text align="center">Centered</Text>
+
+// Truncation
+<Text numberOfLines={1}>This long line will be cut…</Text>`,
+    exampleCode: `import { Text } from '~/components/ui/text'
+import { View } from 'react-native'
+
+export function TypographyScale() {
+  return (
+    <View style={{ gap: 8, padding: 16 }}>
+      <Text variant="h1">H1 — 36/700</Text>
+      <Text variant="h2">H2 — 30/700</Text>
+      <Text variant="h3">H3 — 24/600</Text>
+      <Text variant="body">Body — 15/400</Text>
+      <Text variant="caption" muted>Caption — 11/400</Text>
+      <Text variant="overline">Overline</Text>
+      <Text color="primary" weight="semibold">Primary semibold</Text>
+      <Text color="success">Success</Text>
+      <Text color="destructive">Destructive</Text>
+    </View>
+  )
+}`,
+  },
+
+  icon: {
+    name: 'Icon',
+    slug: 'icon',
+    description: 'Ionicons wrapper with semantic size presets (xs → 2xl), theme color tokens, opacity control, and correct accessibility hiding for decorative icons.',
+    category: 'Primitives',
+    npmDeps: ['@expo/vector-icons'],
+    componentDeps: [],
+    addCommand: 'npx native-mate add icon',
+    accessibility: [
+      { feature: 'Decorative', detail: 'Icons are hidden from VoiceOver/TalkBack by default (decorative=true). Pass decorative={false} + accessibilityLabel for meaningful icons.' },
+    ],
+    props: [
+      { name: 'name', type: 'string', description: 'Any Ionicons icon name (e.g. "home", "heart-outline").' },
+      { name: 'size', type: '"xs"|"sm"|"md"|"lg"|"xl"|"2xl"|number', default: '"md"', description: 'Preset (12/16/20/24/32/40 dp) or an explicit number.' },
+      { name: 'color', type: '"foreground"|"muted"|"primary"|"destructive"|"success"|"warning"|"border"|string', default: '"foreground"', description: 'Semantic token or raw color value.' },
+      { name: 'opacity', type: 'number', default: '1', description: 'Icon opacity (0–1).' },
+      { name: 'decorative', type: 'boolean', default: 'true', description: 'When true, hidden from screen readers. Set false for interactive icons.' },
+      { name: 'accessibilityLabel', type: 'string', description: 'Screen reader label. Required when decorative is false.' },
+    ],
+    usageCode: `import { Icon } from '~/components/ui/icon'
+
+// Basic
+<Icon name="home" />
+
+// Sizes
+<Icon name="star" size="xs" />  // 12dp
+<Icon name="star" size="md" />  // 20dp (default)
+<Icon name="star" size="xl" />  // 32dp
+<Icon name="star" size={48} />  // custom
+
+// Color tokens
+<Icon name="checkmark-circle" color="success" size="lg" />
+<Icon name="alert-circle"     color="warning" size="lg" />
+<Icon name="close-circle"     color="destructive" size="lg" />
+<Icon name="information-circle" color="primary" size="lg" />
+
+// Custom color
+<Icon name="heart" color="#f43f5e" size="xl" />
+
+// Opacity
+<Icon name="heart" color="#f43f5e" opacity={0.4} />
+
+// Accessible (non-decorative)
+<Icon
+  name="trash"
+  color="destructive"
+  decorative={false}
+  accessibilityLabel="Delete item"
+/>`,
+    exampleCode: `import { Icon } from '~/components/ui/icon'
+import { View } from 'react-native'
+
+export function IconExamples() {
+  return (
+    <View style={{ gap: 12, padding: 16 }}>
+      {/* Status icons */}
+      <View style={{ flexDirection: 'row', gap: 12 }}>
+        <Icon name="checkmark-circle" color="success"     size="xl" />
+        <Icon name="alert-circle"     color="warning"     size="xl" />
+        <Icon name="close-circle"     color="destructive" size="xl" />
+        <Icon name="information-circle" color="primary"   size="xl" />
+      </View>
+
+      {/* Filled vs outline */}
+      <View style={{ flexDirection: 'row', gap: 12 }}>
+        <Icon name="heart"         color="primary" />
+        <Icon name="heart-outline" color="primary" />
+        <Icon name="star"          color="warning" />
+        <Icon name="star-outline"  color="warning" />
+      </View>
+
+      {/* Dimmed */}
+      <Icon name="lock-closed" color="muted" opacity={0.5} />
+    </View>
+  )
+}`,
+  },
+
+  spinner: {
+    name: 'Spinner',
+    slug: 'spinner',
+    description: 'Animated loading indicator with three variants (circle, dots, pulse), four size presets, speed control, all theme color tokens, and an optional full-screen overlay.',
+    category: 'Primitives',
+    npmDeps: ['react-native-reanimated'],
+    componentDeps: [],
+    addCommand: 'npx native-mate add spinner',
+    accessibility: [
+      { feature: 'Role', detail: 'accessibilityRole="progressbar" is set automatically.' },
+      { feature: 'Label', detail: 'The label prop is read by screen readers (default: "Loading"). Pass a descriptive string when context matters.' },
+      { feature: 'Live region', detail: 'accessibilityLiveRegion="polite" announces the spinner to screen readers without interrupting current speech.' },
+    ],
+    props: [
+      { name: 'variant', type: '"circle"|"dots"|"pulse"', default: '"circle"', description: 'Animation style.' },
+      { name: 'size', type: '"sm"|"md"|"lg"|number', default: '"md"', description: 'Preset (16/24/40 dp) or explicit dp.' },
+      { name: 'color', type: '"primary"|"foreground"|"muted"|"destructive"|"success"|"warning"|string', default: '"primary"', description: 'Fill color — token or raw value.' },
+      { name: 'speed', type: '"slow"|"normal"|"fast"|number', default: '"normal"', description: 'Cycle duration. Number = ms per full cycle.' },
+      { name: 'label', type: 'string', default: '"Loading"', description: 'Accessible description for screen readers.' },
+      { name: 'overlay', type: 'boolean', default: 'false', description: 'Renders the spinner centered over a semi-transparent full-parent overlay.' },
+      { name: 'overlayOpacity', type: 'number', default: '0.6', description: 'Opacity of the overlay backdrop.' },
+    ],
+    usageCode: `import { Spinner } from '~/components/ui/spinner'
+
+// Variants
+<Spinner variant="circle" />
+<Spinner variant="dots" />
+<Spinner variant="pulse" />
+
+// Sizes
+<Spinner size="sm" />
+<Spinner size="md" />
+<Spinner size="lg" />
+<Spinner size={56} />
+
+// Colors
+<Spinner color="primary" />
+<Spinner color="success" />
+<Spinner color="destructive" />
+<Spinner color="#a78bfa" />
+
+// Speed
+<Spinner speed="fast" />
+<Spinner speed="slow" />
+<Spinner speed={400} />  // custom ms
+
+// Overlay — covers nearest positioned parent
+<View style={{ position: 'relative' }}>
+  <YourContent />
+  {loading && <Spinner overlay overlayOpacity={0.5} />}
+</View>`,
+    exampleCode: `import { useState } from 'react'
+import { Spinner } from '~/components/ui/spinner'
+import { Button } from '~/components/ui/button'
+import { View } from 'react-native'
+
+export function SpinnerExample() {
+  const [loading, setLoading] = useState(false)
+
+  return (
+    <View style={{ gap: 24, padding: 16 }}>
+      <View style={{ flexDirection: 'row', gap: 24, alignItems: 'center' }}>
+        <Spinner variant="circle" color="primary" />
+        <Spinner variant="dots"   color="success" />
+        <Spinner variant="pulse"  color="warning" />
+      </View>
+
+      <View style={{ position: 'relative', height: 120, backgroundColor: '#0f0f11', borderRadius: 12 }}>
+        {loading && <Spinner overlay label="Processing…" />}
+        <Button onPress={() => setLoading(l => !l)} style={{ margin: 16 }}>
+          {loading ? 'Hide overlay' : 'Show overlay'}
+        </Button>
+      </View>
+    </View>
+  )
+}`,
+  },
+
+  separator: {
+    name: 'Separator',
+    slug: 'separator',
+    description: 'Horizontal and vertical divider line with optional centered label, dashed style, configurable thickness, color, and spacing. Accessibility-aware (decorative by default).',
+    category: 'Primitives',
+    npmDeps: [],
+    componentDeps: [],
+    addCommand: 'npx native-mate add separator',
+    accessibility: [
+      { feature: 'Decorative', detail: 'When decorative={true} (default) the separator is hidden from screen readers. Set decorative={false} when the separator has semantic meaning.' },
+      { feature: 'Role', detail: 'When decorative={false}, accessibilityRole="separator" is applied automatically.' },
+    ],
+    props: [
+      { name: 'orientation', type: '"horizontal"|"vertical"', default: '"horizontal"', description: 'Direction of the divider.' },
+      { name: 'thickness', type: 'number', default: 'StyleSheet.hairlineWidth', description: 'Line width/height in dp.' },
+      { name: 'color', type: 'string', description: 'Line color. Defaults to theme.colors.border.' },
+      { name: 'spacing', type: 'number', default: '8', description: 'Margin on both sides (vertical for horizontal, horizontal for vertical).' },
+      { name: 'label', type: 'string', description: 'Optional text centered in the line, e.g. "or".' },
+      { name: 'labelColor', type: 'string', description: 'Label text color. Defaults to theme.colors.muted.' },
+      { name: 'labelSize', type: 'number', default: '11', description: 'Label font size.' },
+      { name: 'labelWeight', type: 'TextStyle["fontWeight"]', default: '"500"', description: 'Label font weight.' },
+      { name: 'dashed', type: 'boolean', default: 'false', description: 'Renders the line as dashed instead of solid.' },
+      { name: 'decorative', type: 'boolean', default: 'true', description: 'Hides from assistive technology when true.' },
+    ],
+    usageCode: `import { Separator } from '~/components/ui/separator'
+
+// Default horizontal
+<Separator />
+
+// With label
+<Separator label="or" />
+<Separator label="continue with" />
+
+// Dashed
+<Separator dashed />
+<Separator dashed label="or" />
+
+// Custom thickness & color
+<Separator thickness={2} color="#6366f1" />
+
+// Vertical (inside a row)
+<View style={{ flexDirection: 'row', height: 40 }}>
+  <Button variant="ghost">Cut</Button>
+  <Separator orientation="vertical" spacing={4} />
+  <Button variant="ghost">Copy</Button>
+  <Separator orientation="vertical" spacing={4} />
+  <Button variant="ghost">Paste</Button>
+</View>
+
+// Custom spacing
+<Separator spacing={16} label="section" />`,
+    exampleCode: `import { Separator } from '~/components/ui/separator'
+import { View } from 'react-native'
+
+export function SeparatorExamples() {
+  return (
+    <View style={{ padding: 16, gap: 0 }}>
+      <Separator />
+      <Separator label="or" />
+      <Separator dashed />
+      <Separator dashed label="or" />
+      <Separator thickness={2} color="#6366f1" />
+      <Separator spacing={16} />
+
+      {/* Toolbar with vertical separators */}
+      <View style={{ flexDirection: 'row', alignItems: 'center', height: 44 }}>
+        <Button variant="ghost" size="sm">Cut</Button>
+        <Separator orientation="vertical" />
+        <Button variant="ghost" size="sm">Copy</Button>
+        <Separator orientation="vertical" />
+        <Button variant="ghost" size="sm">Paste</Button>
+      </View>
+    </View>
+  )
+}`,
+  },
+
   button: {
     name: 'Button',
     slug: 'button',
@@ -159,19 +478,18 @@ export function ButtonExamples() {
   card: {
     name: 'Card',
     slug: 'card',
-    description: 'Surface container with CardHeader, CardContent, CardFooter sub-components, built-in loading skeleton, cover image, 3 variants (elevated/outline/flat), and pressable mode.',
+    description: 'Surface container with CardHeader, CardContent, CardFooter, CardMedia sub-components, spring press animation, accent stripe, built-in skeleton, and 4 variants.',
     category: 'Layout',
     npmDeps: [],
     componentDeps: ['skeleton'],
     addCommand: 'npx native-mate add card',
     props: [
-      { name: 'variant', type: '"elevated" | "outline" | "flat"', default: '"elevated"', description: 'Card surface style. Elevated has a shadow, outline has a border, flat is minimal.' },
-      { name: 'padding', type: '"none" | "sm" | "md" | "lg"', default: '"none"', description: 'Padding applied to the card container. Set to "none" when using CardHeader/CardContent/CardFooter.' },
-      { name: 'loading', type: 'boolean', default: 'false', description: 'Replaces children with an animated skeleton placeholder. Great for loading states.' },
-      { name: 'onPress', type: '() => void', description: 'Makes the card pressable. Adds ripple on Android and opacity feedback on iOS.' },
-      { name: 'image', type: 'ImageSourcePropType', description: 'Cover image rendered edge-to-edge at the top of the card.' },
-      { name: 'imageHeight', type: 'number', default: '180', description: 'Height of the cover image in pixels.' },
-      { name: 'children', type: 'React.ReactNode', description: 'Card content. Use CardHeader, CardContent, CardFooter for structured layouts.' },
+      { name: 'variant', type: '"elevated" | "outline" | "flat" | "ghost"', default: '"elevated"', description: 'Card surface style.' },
+      { name: 'loading', type: 'boolean', default: 'false', description: 'Replaces children with an animated skeleton placeholder.' },
+      { name: 'onPress', type: '() => void', description: 'Makes the card pressable with a spring scale animation.' },
+      { name: 'activeScale', type: 'number', default: '0.97', description: 'Scale factor on press.' },
+      { name: 'disabled', type: 'boolean', default: 'false', description: 'Reduces opacity and disables press.' },
+      { name: 'accent', type: 'string', description: 'Color of a left-side accent stripe (e.g. status indicators).' },
     ],
     usageCode: `import { Card, CardHeader, CardContent, CardFooter } from '~/components/ui/card'
 import { Button } from '~/components/ui/button'
@@ -1720,52 +2038,6 @@ export function ActionSheetExample() {
   )
 }`,
   },
-  tooltip: {
-    name: 'Tooltip',
-    slug: 'tooltip',
-    description: 'Contextual text bubble that appears near a trigger on press-and-hold. 4 placement positions, animated arrow indicator, delay, and Modal-based screen-level positioning.',
-    category: 'Overlay',
-    npmDeps: [],
-    componentDeps: [],
-    addCommand: 'npx native-mate add tooltip',
-    props: [
-      { name: 'content', type: 'string', description: 'Text shown inside the tooltip bubble.' },
-      { name: 'placement', type: '"top" | "bottom" | "left" | "right"', default: '"top"', description: 'Preferred side relative to the trigger. Arrow points toward the trigger.' },
-      { name: 'children', type: 'React.ReactElement', description: 'The trigger element. Tooltip shows on press-and-hold or long press.' },
-      { name: 'delay', type: 'number', default: '300', description: 'Milliseconds before the tooltip appears after press-in.' },
-    ],
-    usageCode: `import { Tooltip } from '~/components/ui/tooltip'
-import { Button } from '~/components/ui/button'
-
-// Above the trigger
-<Tooltip content="This action cannot be undone" placement="top">
-  <Button variant="destructive">Delete</Button>
-</Tooltip>
-
-// Below an icon
-<Tooltip content="Open settings" placement="bottom">
-  <IconButton icon={<SettingsIcon />} />
-</Tooltip>`,
-    exampleCode: `import { Tooltip } from '~/components/ui/tooltip'
-import { Button } from '~/components/ui/button'
-import { View } from 'react-native'
-
-export function TooltipExample() {
-  return (
-    <View style={{ gap: 32, padding: 40, alignItems: 'center' }}>
-      <Tooltip content="Saves your progress automatically" placement="top">
-        <Button>Auto-save</Button>
-      </Tooltip>
-      <Tooltip content="Cannot undo this action" placement="bottom">
-        <Button variant="destructive">Delete all</Button>
-      </Tooltip>
-      <Tooltip content="Copy to clipboard" placement="right">
-        <Button variant="outline">Copy</Button>
-      </Tooltip>
-    </View>
-  )
-}`,
-  },
   tag: {
     name: 'Tag',
     slug: 'tag',
@@ -1950,101 +2222,6 @@ export function AlertExamples() {
   )
 }`,
   },
-  popover: {
-    name: 'Popover',
-    slug: 'popover',
-    description: 'Interactive content bubble anchored to any trigger element. Supports 4 placements, arrow indicator, scrollable content, backdrop dismiss, and both controlled and uncontrolled modes.',
-    category: 'Overlay',
-    npmDeps: [],
-    componentDeps: [],
-    addCommand: 'npx native-mate add popover',
-    props: [
-      { name: 'children', type: 'React.ReactElement', description: 'The trigger element. Tapping opens/closes the popover.' },
-      { name: 'content', type: 'React.ReactNode', description: 'Any content rendered inside the popover bubble. Can include buttons, lists, inputs, etc.' },
-      { name: 'placement', type: '"top" | "bottom" | "left" | "right"', default: '"bottom"', description: 'Preferred side relative to the trigger. Arrow points toward the trigger.' },
-      { name: 'maxWidth', type: 'number', default: '260', description: 'Maximum width of the popover bubble in pixels.' },
-      { name: 'dismissible', type: 'boolean', default: 'true', description: 'Whether tapping outside the popover closes it.' },
-      { name: 'open', type: 'boolean', description: 'Controlled open state. Use with onOpenChange for full control.' },
-      { name: 'onOpenChange', type: '(open: boolean) => void', description: 'Called when the popover opens or closes.' },
-    ],
-    usageCode: `import { Popover } from '~/components/ui/popover'
-import { Button } from '~/components/ui/button'
-import { View } from 'react-native'
-import { Text } from '@native-mate/core'
-
-// Simple text popover
-<Popover content={<Text style={{ padding: 12 }}>More info here</Text>} placement="top">
-  <Button variant="outline">Info</Button>
-</Popover>
-
-// Popover menu
-<Popover
-  placement="bottom"
-  content={
-    <View style={{ paddingVertical: 4 }}>
-      {['Edit', 'Duplicate', 'Delete'].map(item => (
-        <Pressable key={item} style={{ paddingVertical: 10, paddingHorizontal: 16 }}>
-          <Text>{item}</Text>
-        </Pressable>
-      ))}
-    </View>
-  }
->
-  <Button variant="ghost" iconOnly>
-    <Ionicons name="ellipsis-horizontal" size={20} />
-  </Button>
-</Popover>
-
-// Controlled
-<Popover open={open} onOpenChange={setOpen} content={<DatePicker />}>
-  <Button>Pick date</Button>
-</Popover>`,
-    exampleCode: `import { useState } from 'react'
-import { Popover } from '~/components/ui/popover'
-import { Button } from '~/components/ui/button'
-import { View, Pressable } from 'react-native'
-import { Text } from '@native-mate/core'
-import { Ionicons } from '@expo/vector-icons'
-
-const MENU = [
-  { label: 'Edit', icon: 'create-outline' },
-  { label: 'Duplicate', icon: 'copy-outline' },
-  { label: 'Move to folder', icon: 'folder-outline' },
-  { label: 'Delete', icon: 'trash-outline', destructive: true },
-] as const
-
-export function PopoverExample() {
-  const [open, setOpen] = useState(false)
-
-  return (
-    <View style={{ padding: 32, alignItems: 'center' }}>
-      <Popover
-        open={open}
-        onOpenChange={setOpen}
-        placement="bottom"
-        content={
-          <View style={{ paddingVertical: 4 }}>
-            {MENU.map(item => (
-              <Pressable
-                key={item.label}
-                style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 10, paddingHorizontal: 16 }}
-                onPress={() => setOpen(false)}
-              >
-                <Ionicons name={item.icon} size={17} color={item.destructive ? '#ef4444' : '#a1a1aa'} />
-                <Text style={{ color: item.destructive ? '#ef4444' : undefined }}>{item.label}</Text>
-              </Pressable>
-            ))}
-          </View>
-        }
-      >
-        <Button variant="outline" iconOnly>
-          <Ionicons name="ellipsis-horizontal" size={18} />
-        </Button>
-      </Popover>
-    </View>
-  )
-}`,
-  },
   screen: {
     name: 'Screen',
     slug: 'screen',
@@ -2117,11 +2294,9 @@ export function generateStaticParams() {
     { slug: 'radio' },
     { slug: 'otp-input' },
     { slug: 'action-sheet' },
-    { slug: 'tooltip' },
     { slug: 'tag' },
     { slug: 'empty-state' },
     { slug: 'alert' },
-    { slug: 'popover' },
     { slug: 'screen' },
   ]
 }
@@ -2131,114 +2306,213 @@ export default async function ComponentPage({ params }: { params: Promise<{ slug
   const doc = COMPONENT_DOCS[slug]
   if (!doc) notFound()
 
+  const currentIdx = ALL_COMPONENT_SLUGS.indexOf(slug)
+  const prevSlug = currentIdx > 0 ? ALL_COMPONENT_SLUGS[currentIdx - 1] : null
+  const nextSlug = currentIdx < ALL_COMPONENT_SLUGS.length - 1 ? ALL_COMPONENT_SLUGS[currentIdx + 1] : null
+  const prevDoc = prevSlug ? COMPONENT_DOCS[prevSlug] : null
+  const nextDoc = nextSlug ? COMPONENT_DOCS[nextSlug] : null
+  const githubUrl = `${GITHUB_BASE_URL}/tree/main/packages/registry/components/${slug}`
+
+  const tocItems = [
+    { id: 'installation', label: 'Installation' },
+    { id: 'examples', label: 'Examples' },
+    { id: 'usage', label: 'Usage' },
+    { id: 'props', label: 'Props' },
+    ...(doc.exampleCode ? [{ id: 'example', label: 'Example' }] : []),
+    ...(doc.accessibility?.length ? [{ id: 'accessibility', label: 'Accessibility' }] : []),
+  ]
+
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-50">
+    <div className="min-h-screen text-zinc-50" style={{ background: '#070709' }}>
       <Nav />
-      <main className="mx-auto max-w-4xl px-4 py-12">
-        {/* Breadcrumb */}
-        <nav className="mb-6 flex items-center gap-2 text-sm text-zinc-500">
-          <Link href="/components" className="hover:text-zinc-300">Components</Link>
-          <span>/</span>
-          <span className="text-zinc-300">{doc.name}</span>
-        </nav>
+      <ScrollProgress />
+      <div className="flex pt-14">
+        {/* Left sidebar */}
+        <ComponentSidebar />
 
-        {/* Header */}
-        <div className="mb-8">
-          <div className="mb-2 flex items-center gap-3">
-            <h1 className="text-3xl font-bold">{doc.name}</h1>
-            <span className="rounded-full bg-zinc-800 px-2.5 py-0.5 text-xs text-zinc-400">
-              {doc.category}
-            </span>
-          </div>
-          <p className="text-zinc-400">{doc.description}</p>
-        </div>
+        {/* Main content */}
+        <main className="min-w-0 flex-1 px-4 sm:px-6 py-8 sm:py-10 lg:px-10">
+          <div className="mx-auto max-w-3xl">
 
-        {/* First preview (default/simplest variant) */}
-        <section className="mb-10">
-          <ComponentPreview slug={doc.slug} part="first" />
-        </section>
+            {/* Header bar */}
+            <div className="mb-8 flex items-start justify-between gap-4">
+              <div className="min-w-0">
+                <div className="mb-1.5 flex items-center gap-3">
+                  <h1 className="text-2xl font-bold">{doc.name}</h1>
+                  <span className="rounded-full bg-zinc-800 px-2.5 py-0.5 text-xs text-zinc-400">{doc.category}</span>
+                </div>
+                <p className="text-sm text-zinc-400">{doc.description}</p>
+              </div>
 
-        {/* Install */}
-        <section className="mb-10">
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-widest text-zinc-500">Installation</h2>
-          <CodeBlock language="bash" code={doc.addCommand} />
-          {(doc.npmDeps.length > 0 || doc.componentDeps.length > 0) && (
-            <div className="mt-3 flex flex-wrap gap-3 text-xs text-zinc-500">
-              {doc.npmDeps.length > 0 && <span>npm deps: {doc.npmDeps.join(', ')}</span>}
-              {doc.componentDeps.length > 0 && <span>component deps: {doc.componentDeps.join(', ')}</span>}
+              {/* Action buttons */}
+              <div className="flex flex-shrink-0 items-center gap-1.5">
+                <CopyPageButton
+                  componentName={doc.name}
+                  slug={slug}
+                  description={doc.description}
+                  installCommand={doc.addCommand}
+                  usageCode={doc.usageCode}
+                />
+                <a
+                  href={githubUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-1.5 rounded-lg border border-zinc-700/80 bg-zinc-800/80 px-3 py-1.5 text-xs text-zinc-400 transition-all hover:border-zinc-500 hover:text-zinc-200"
+                >
+                  <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                  </svg>
+                  GitHub
+                </a>
+                {prevDoc && (
+                  <Link
+                    href={`/components/${prevSlug}`}
+                    title={`Previous: ${prevDoc.name}`}
+                    className="flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-700/80 bg-zinc-800/80 text-zinc-400 transition-all hover:border-zinc-500 hover:text-zinc-200"
+                  >
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </Link>
+                )}
+                {nextDoc && (
+                  <Link
+                    href={`/components/${nextSlug}`}
+                    title={`Next: ${nextDoc.name}`}
+                    className="flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-700/80 bg-zinc-800/80 text-zinc-400 transition-all hover:border-zinc-500 hover:text-zinc-200"
+                  >
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </Link>
+                )}
+              </div>
             </div>
-          )}
-        </section>
 
-        {/* Rest of previews (all variants) */}
-        <section className="mb-10">
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-widest text-zinc-500">Examples</h2>
-          <ComponentPreview slug={doc.slug} part="rest" />
-        </section>
+            {/* Install */}
+            <section id="installation" className="mb-10">
+              <h2 className="mb-3 text-sm font-semibold uppercase tracking-widest text-zinc-500">Installation</h2>
+              <CodeBlock language="bash" code={doc.addCommand} />
+              {(doc.npmDeps.length > 0 || doc.componentDeps.length > 0) && (
+                <div className="mt-3 flex flex-wrap gap-3 text-xs text-zinc-500">
+                  {doc.npmDeps.length > 0 && <span>npm deps: {doc.npmDeps.join(', ')}</span>}
+                  {doc.componentDeps.length > 0 && <span>component deps: {doc.componentDeps.join(', ')}</span>}
+                </div>
+              )}
+            </section>
 
-        {/* Usage */}
-        <section className="mb-10">
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-widest text-zinc-500">Usage</h2>
-          <CodeBlock language="tsx" code={doc.usageCode} />
-        </section>
+            {/* Examples preview */}
+            <section id="examples" className="mb-10">
+              <h2 className="mb-3 text-sm font-semibold uppercase tracking-widest text-zinc-500">Examples</h2>
+              <ThemeCustomizerProvider>
+                <ThemeCustomizerPanel />
+                <ComponentPreview slug={doc.slug} />
+              </ThemeCustomizerProvider>
+            </section>
 
-        {/* Props */}
-        <section className="mb-10">
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-widest text-zinc-500">Props</h2>
-          <div className="overflow-hidden rounded-xl border border-zinc-800">
-            <table className="w-full text-sm">
-              <thead className="border-b border-zinc-800 bg-zinc-900">
-                <tr>
-                  {['Prop', 'Type', 'Default', 'Description'].map((h) => (
-                    <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-zinc-400">{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {doc.props.map((prop, i) => (
-                  <tr key={prop.name} className={i % 2 === 0 ? 'bg-zinc-950' : 'bg-zinc-900/50'}>
-                    <td className="px-4 py-3 font-mono text-xs text-blue-400">{prop.name}</td>
-                    <td className="px-4 py-3 font-mono text-xs text-amber-400">{prop.type}</td>
-                    <td className="px-4 py-3 font-mono text-xs text-zinc-500">{prop.default ?? '—'}</td>
-                    <td className="px-4 py-3 text-xs text-zinc-400">{prop.description}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
+            {/* Usage */}
+            <section id="usage" className="mb-10">
+              <h2 className="mb-3 text-sm font-semibold uppercase tracking-widest text-zinc-500">Usage</h2>
+              <CodeBlock language="tsx" code={doc.usageCode} />
+            </section>
 
-        {/* Example */}
-        <section className="mb-10">
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-widest text-zinc-500">Example</h2>
-          <CodeBlock language="tsx" code={doc.exampleCode} />
-        </section>
-
-        {/* Accessibility */}
-        {doc.accessibility && doc.accessibility.length > 0 && (
-          <section className="mb-10">
-            <h2 className="mb-3 text-sm font-semibold uppercase tracking-widest text-zinc-500">Accessibility</h2>
-            <div className="overflow-hidden rounded-xl border border-zinc-800">
-              <table className="w-full text-sm">
-                <thead className="border-b border-zinc-800 bg-zinc-900">
-                  <tr>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-400">Feature</th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-400">Detail</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {doc.accessibility.map((item, i) => (
-                    <tr key={item.feature} className={i % 2 === 0 ? 'bg-zinc-950' : 'bg-zinc-900/50'}>
-                      <td className="px-4 py-3 font-mono text-xs text-blue-400">{item.feature}</td>
-                      <td className="px-4 py-3 text-xs text-zinc-400">{item.detail}</td>
+            {/* Props */}
+            <section id="props" className="mb-10">
+              <h2 className="mb-3 text-sm font-semibold uppercase tracking-widest text-zinc-500">Props</h2>
+              <div className="overflow-hidden rounded-xl border border-zinc-800">
+                <table className="w-full text-sm">
+                  <thead className="border-b border-zinc-800 bg-zinc-900">
+                    <tr>
+                      {['Prop', 'Type', 'Default', 'Description'].map((h) => (
+                        <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-zinc-400">{h}</th>
+                      ))}
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {doc.props.map((prop, i) => (
+                      <tr key={prop.name} className={i % 2 === 0 ? 'bg-zinc-950' : 'bg-zinc-900/50'}>
+                        <td className="px-4 py-3 font-mono text-xs text-blue-400">{prop.name}</td>
+                        <td className="px-4 py-3 font-mono text-xs text-amber-400">{prop.type}</td>
+                        <td className="px-4 py-3 font-mono text-xs text-zinc-500">{prop.default ?? '—'}</td>
+                        <td className="px-4 py-3 text-xs text-zinc-400">{prop.description}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            {/* Example code */}
+            {doc.exampleCode && (
+              <section id="example" className="mb-10">
+                <h2 className="mb-3 text-sm font-semibold uppercase tracking-widest text-zinc-500">Example</h2>
+                <CodeBlock language="tsx" code={doc.exampleCode} />
+              </section>
+            )}
+
+            {/* Accessibility */}
+            {doc.accessibility && doc.accessibility.length > 0 && (
+              <section id="accessibility" className="mb-10">
+                <h2 className="mb-3 text-sm font-semibold uppercase tracking-widest text-zinc-500">Accessibility</h2>
+                <div className="overflow-hidden rounded-xl border border-zinc-800">
+                  <table className="w-full text-sm">
+                    <thead className="border-b border-zinc-800 bg-zinc-900">
+                      <tr>
+                        <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-400">Feature</th>
+                        <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-400">Detail</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {doc.accessibility.map((item, i) => (
+                        <tr key={item.feature} className={i % 2 === 0 ? 'bg-zinc-950' : 'bg-zinc-900/50'}>
+                          <td className="px-4 py-3 font-mono text-xs text-blue-400">{item.feature}</td>
+                          <td className="px-4 py-3 text-xs text-zinc-400">{item.detail}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+            )}
+
+            {/* Prev / Next navigation */}
+            <div className="mt-12 flex items-center justify-between border-t border-zinc-800 pt-8">
+              {prevDoc ? (
+                <Link
+                  href={`/components/${prevSlug}`}
+                  className="flex items-center gap-2 text-sm text-zinc-400 transition-colors hover:text-zinc-200"
+                >
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                  </svg>
+                  <div>
+                    <div className="text-xs text-zinc-600">Previous</div>
+                    <div>{prevDoc.name}</div>
+                  </div>
+                </Link>
+              ) : <div />}
+              {nextDoc ? (
+                <Link
+                  href={`/components/${nextSlug}`}
+                  className="flex items-center gap-2 text-right text-sm text-zinc-400 transition-colors hover:text-zinc-200"
+                >
+                  <div>
+                    <div className="text-xs text-zinc-600">Next</div>
+                    <div>{nextDoc.name}</div>
+                  </div>
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                  </svg>
+                </Link>
+              ) : <div />}
             </div>
-          </section>
-        )}
-      </main>
+
+          </div>
+        </main>
+
+        {/* Right sidebar — table of contents */}
+        <TableOfContents items={tocItems} />
+      </div>
     </div>
   )
 }

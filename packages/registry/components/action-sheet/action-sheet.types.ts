@@ -3,6 +3,7 @@ export interface ActionSheetAction {
   onPress: () => void
   variant?: 'default' | 'destructive'
   icon?: React.ReactNode
+  description?: string
   disabled?: boolean
 }
 
@@ -13,4 +14,8 @@ export interface ActionSheetProps {
   message?: string
   actions: ActionSheetAction[]
   cancelLabel?: string
+  /** Animation preset. Default: 'slide' */
+  animation?: 'slide' | 'spring' | 'fade'
+  /** Show separators between actions. Default: true */
+  showDividers?: boolean
 }
