@@ -2,16 +2,16 @@ import type { TokenSet } from '../types'
 
 export const zinc: TokenSet = {
   colors: {
-    background:    { light: '#ffffff', dark: '#0a0a0a' },
-    surface:       { light: '#f4f4f5', dark: '#18181b' },
-    surfaceRaised: { light: '#ffffff', dark: '#27272a' },
-    border:        { light: '#e4e4e7', dark: '#3f3f46' },
+    background:    { light: '#ffffff', dark: '#070709' },
+    surface:       { light: '#f4f4f5', dark: '#0f0f11' },
+    surfaceRaised: { light: '#ffffff', dark: '#161619' },
+    border:        { light: '#e4e4e7', dark: '#252529' },
     primary:       { light: '#18181b', dark: '#fafafa' },
     onPrimary:     { light: '#fafafa', dark: '#18181b' },
     foreground:    { light: '#09090b', dark: '#fafafa' },
     onBackground:  { light: '#09090b', dark: '#fafafa' },
     onSurface:     { light: '#18181b', dark: '#e4e4e7' },
-    muted:         { light: '#71717a', dark: '#a1a1aa' },
+    muted:         { light: '#71717a', dark: '#71717a' },
     destructive:   { light: '#ef4444', dark: '#f87171' },
     onDestructive: { light: '#ffffff', dark: '#ffffff' },
     success:       { light: '#22c55e', dark: '#4ade80' },
