@@ -1,7 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
+import { motion, useInView, AnimatePresence } from 'framer-motion'
 
 const components = [
   { name: 'Text',      slug: 'text',      category: 'primitives', description: '13 variants, weights, color tokens, truncation' },
@@ -46,6 +47,8 @@ const tabs = ['All', 'Forms', 'Layout', 'Display', 'Feedback', 'Overlay', 'Primi
 
 export function ComponentShowcase() {
   const [active, setActive] = useState('All')
+  const ref = useRef(null)
+  const inView = useInView(ref, { once: true, margin: '-60px' })
 
   const filtered = active === 'All'
     ? components
@@ -55,71 +58,96 @@ export function ComponentShowcase() {
     <section className="relative px-4 sm:px-5 py-14 sm:py-20">
       <div className="section-divider mb-0" />
 
-      <div className="mx-auto max-w-6xl pt-10 sm:pt-16">
+      <div className="mx-auto max-w-6xl pt-10 sm:pt-16" ref={ref}>
         {/* Header */}
-        <div className="text-center mb-8 sm:mb-12">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, ease: [0.25, 0.4, 0.25, 1] }}
+          className="text-center mb-8 sm:mb-12"
+        >
           <p className="text-xs text-zinc-600 font-medium uppercase tracking-[0.18em] mb-4">Component library</p>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-zinc-50 mb-4">
             27 components.<br />Production ready.
           </h2>
-          <p className="text-zinc-400 max-w-md mx-auto leading-relaxed">
+          <p className="text-zinc-500 max-w-md mx-auto leading-relaxed">
             Everything you need to ship a polished mobile app. Each one animated, accessible, and typed.
           </p>
-        </div>
+        </motion.div>
 
         {/* Filter tabs */}
-        <div className="flex flex-wrap justify-center gap-2 mb-10">
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, delay: 0.15 }}
+          className="flex flex-wrap justify-center gap-2 mb-10"
+        >
           {tabs.map((tab) => (
             <button
               key={tab}
               onClick={() => setActive(tab)}
-              className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all duration-200 border ${
+              className={`relative px-4 py-1.5 rounded-full text-xs font-medium transition-all duration-200 border cursor-pointer ${
                 active === tab
-                  ? 'bg-zinc-800 border-zinc-700 text-zinc-100'
+                  ? 'bg-zinc-800 border-zinc-700 text-zinc-100 shadow-[0_0_12px_rgba(255,255,255,0.04)]'
                   : 'border-zinc-800 text-zinc-500 hover:border-zinc-600 hover:text-zinc-300 bg-transparent'
               }`}
             >
               {tab}
             </button>
           ))}
-        </div>
+        </motion.div>
 
         {/* Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {filtered.map((c) => {
-            const cat = categoryConfig[c.category]
-            return (
-              <Link
-                key={c.slug}
-                href={`/components/${c.slug}`}
-                className="group relative rounded-xl p-4 border border-zinc-800 hover:border-zinc-700 bg-zinc-950 transition-all duration-200"
-              >
-                <div className="flex items-start justify-between mb-2">
-                  <span className="font-semibold text-zinc-100 text-sm group-hover:text-white transition-colors">
-                    {c.name}
-                  </span>
-                  <span className={`flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-medium ${cat.color}`}>
-                    <span className={`w-1 h-1 rounded-full ${cat.dot} flex-shrink-0`} />
-                    {cat.label}
-                  </span>
-                </div>
-                <p className="text-xs text-zinc-600">{c.description}</p>
-              </Link>
-            )
-          })}
+          <AnimatePresence mode="popLayout">
+            {filtered.map((c) => {
+              const cat = categoryConfig[c.category]
+              return (
+                <motion.div
+                  key={c.slug}
+                  layout
+                  initial={{ opacity: 0, scale: 0.96 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.96 }}
+                  transition={{ duration: 0.25, ease: [0.25, 0.4, 0.25, 1] }}
+                >
+                  <Link
+                    href={`/components/${c.slug}`}
+                    className="group relative flex flex-col rounded-xl p-4 border border-zinc-800/80 hover:border-zinc-700 bg-zinc-950/80 transition-all duration-200 cursor-pointer hover:bg-zinc-900/50"
+                  >
+                    <div className="flex items-start justify-between mb-2">
+                      <span className="font-semibold text-zinc-100 text-sm group-hover:text-white transition-colors">
+                        {c.name}
+                      </span>
+                      <span className={`flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-medium ${cat.color}`}>
+                        <span className={`w-1 h-1 rounded-full ${cat.dot} flex-shrink-0`} />
+                        {cat.label}
+                      </span>
+                    </div>
+                    <p className="text-xs text-zinc-600 group-hover:text-zinc-500 transition-colors">{c.description}</p>
+                  </Link>
+                </motion.div>
+              )
+            })}
+          </AnimatePresence>
         </div>
 
-        <div className="mt-10 text-center">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={inView ? { opacity: 1 } : {}}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="mt-10 text-center"
+        >
           <Link
             href="/components"
-            className="inline-flex items-center gap-2 text-sm text-zinc-500 hover:text-zinc-200 transition-colors duration-200 group"
+            className="inline-flex items-center gap-2 text-sm text-zinc-500 hover:text-zinc-200 transition-colors duration-200 group cursor-pointer"
           >
             View all components
             <svg className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
           </Link>
-        </div>
+        </motion.div>
       </div>
     </section>
   )
