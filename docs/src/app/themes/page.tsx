@@ -345,7 +345,7 @@ function Showcase() {
                 <CardContent>
                   <View style={{ gap: 14 }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-                      <Avatar initials="TM" size="lg" shape="square" status="online" />
+                      <Avatar src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=faces&auto=format" name="Thomas Miller" size="lg" shape="square" status="online" />
                       <View style={{ flex: 1, gap: 3 }}>
                         <span style={{ fontSize: 15, fontWeight: '600', color: fg }}>Thomas Miller</span>
                         <span style={{ fontSize: 12, color: muted }}>Senior Designer · native-mate</span>
@@ -394,12 +394,12 @@ function Showcase() {
                 <CardContent>
                   <View style={{ gap: 14 }}>
                     {[
-                      { initials: 'AJ', status: 'online' as const },
-                      { initials: 'KR', status: undefined },
-                      { initials: 'SP', status: 'busy' as const },
+                      { src: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=faces&auto=format', name: 'Alex Johnson', status: 'online' as const },
+                      { src: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=faces&auto=format', name: 'Kate Ross',     status: undefined },
+                      { src: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=faces&auto=format', name: 'Sam Park',     status: 'busy' as const },
                     ].map((item, i) => (
                       <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                        <Avatar initials={item.initials} size="sm" status={item.status} />
+                        <Avatar src={item.src} name={item.name} size="sm" status={item.status} />
                         <View style={{ flex: 1, gap: 5 }}>
                           <Skeleton width={`${75 - i * 10}%`} height={11} borderRadius={4} />
                           <Skeleton width={`${50 - i * 5}%`} height={9} borderRadius={4} />
@@ -584,17 +584,17 @@ export default function ThemeStudioPage() {
           style={{ height: 'calc(100vh - 3.5rem - 73px)' }}
         >
           {/* Left — token controls */}
-          <aside className="hidden w-64 flex-shrink-0 overflow-hidden border-r border-zinc-800/80 xl:flex xl:flex-col">
+          <aside className="hidden w-64 flex-shrink-0 overflow-hidden border-r border-zinc-800/80 lg:flex lg:flex-col">
             <Sidebar />
           </aside>
 
           {/* Center — live preview */}
-          <main className="flex min-w-0 flex-1 overflow-hidden p-4">
+          <main className="flex min-w-0 flex-1 overflow-hidden p-3 sm:p-4">
             <Showcase />
           </main>
 
           {/* Right — config output */}
-          <aside className="hidden w-72 flex-shrink-0 overflow-hidden border-l border-zinc-800/80 xl:flex xl:flex-col">
+          <aside className="hidden w-64 flex-shrink-0 overflow-hidden border-l border-zinc-800/80 xl:flex xl:flex-col">
             <ConfigPanel />
           </aside>
         </div>

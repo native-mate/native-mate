@@ -206,23 +206,32 @@ function PaymentPanel() {
   )
 }
 
+// Unsplash portrait URLs (stable photo IDs, 100×100 face crop)
+const AVATARS = {
+  alex:   'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=faces&auto=format',
+  sara:   'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=faces&auto=format',
+  jay:    'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=100&h=100&fit=crop&crop=faces&auto=format',
+  thomas: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=faces&auto=format',
+  maya:   'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=faces&auto=format',
+}
+
 // Team Members
 function TeamContent() {
   const theme = useTheme()
   const members = [
-    { label: 'AC', name: 'Alex Chen',    role: 'Frontend',  status: 'online'  as const, tag: 'Admin'  },
-    { label: 'SR', name: 'Sara Rashid',  role: 'Design',    status: 'busy'    as const, tag: 'Editor' },
-    { label: 'JK', name: 'Jay Kim',      role: 'Backend',   status: undefined,           tag: 'Viewer' },
+    { src: AVATARS.alex,  name: 'Alex Chen',    role: 'Frontend',  status: 'online'  as const, tag: 'Admin'  },
+    { src: AVATARS.sara,  name: 'Sara Rashid',  role: 'Design',    status: 'busy'    as const, tag: 'Editor' },
+    { src: AVATARS.jay,   name: 'Jay Kim',      role: 'Backend',   status: undefined,           tag: 'Viewer' },
   ]
   return (
     <View style={{ gap: 14 }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
         <AvatarGroup
           avatars={[
-            { label: 'AC', status: 'online' },
-            { label: 'SR', status: 'busy' },
-            { label: 'JK' },
-            { label: 'TM' },
+            { src: AVATARS.alex,   name: 'Alex Chen',    status: 'online' },
+            { src: AVATARS.sara,   name: 'Sara Rashid',  status: 'busy'   },
+            { src: AVATARS.jay,    name: 'Jay Kim'                        },
+            { src: AVATARS.thomas, name: 'Thomas Miller'                  },
           ]}
           size="sm"
           max={4}
@@ -244,7 +253,7 @@ function TeamContent() {
 
       {members.map(m => (
         <View key={m.name} style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-          <Avatar label={m.label} size="sm" status={m.status} />
+          <Avatar src={m.src} name={m.name} size="sm" status={m.status} />
           <View style={{ flex: 1, gap: 1 }}>
             <RNText style={{ fontSize: 13, fontWeight: '500', color: theme.colors.foreground }}>{m.name}</RNText>
             <RNText style={{ fontSize: 11, color: theme.colors.muted }}>{m.role}</RNText>
@@ -278,7 +287,7 @@ function ProfileContent() {
   return (
     <View style={{ gap: 14 }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-        <Avatar label="TM" size="lg" shape="square" status="online" />
+        <Avatar src={AVATARS.thomas} name="Thomas Miller" size="lg" shape="square" status="online" />
         <View style={{ flex: 1 }}>
           <RNText style={{ fontWeight: '600', color: theme.colors.foreground, fontSize: 15, lineHeight: 22 }}>
             Thomas Miller
@@ -327,15 +336,15 @@ function ActivityContent() {
   const [notify, setNotify] = useState(true)
   const theme = useTheme()
   const items = [
-    { label: 'AC', name: 'Alex Chen',   action: 'pushed a new component' },
-    { label: 'SR', name: 'Sara Rashid', action: 'updated the design tokens' },
-    { label: 'JK', name: 'Jay Kim',     action: 'opened a pull request'   },
+    { src: AVATARS.alex,  name: 'Alex Chen',   action: 'pushed a new component'   },
+    { src: AVATARS.sara,  name: 'Sara Rashid', action: 'updated the design tokens' },
+    { src: AVATARS.jay,   name: 'Jay Kim',     action: 'opened a pull request'     },
   ]
   return (
     <View style={{ gap: 14 }}>
       {items.map((item, i) => (
         <View key={item.name} style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-          <Avatar label={item.label} size="sm" />
+          <Avatar src={item.src} name={item.name} size="sm" />
           <View style={{ flex: 1, gap: 4 }}>
             <RNText style={{ fontSize: 12, fontWeight: '500', color: theme.colors.foreground }}>
               {item.name}{' '}
@@ -850,11 +859,11 @@ function ShowcaseInner() {
 
 export function HomeShowcase() {
   return (
-    <section className="px-5 pb-24">
+    <section className="px-4 sm:px-5 pb-16 sm:pb-24">
       <div className="mx-auto max-w-6xl">
-        <div className="mb-8 text-center">
+        <div className="mb-6 sm:mb-8 text-center">
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-zinc-600 mb-2">Live preview</p>
-          <h2 className="text-2xl font-semibold text-zinc-100">See it in action</h2>
+          <h2 className="text-xl sm:text-2xl font-semibold text-zinc-100">See it in action</h2>
         </div>
 
         <ThemeCustomizerProvider>
