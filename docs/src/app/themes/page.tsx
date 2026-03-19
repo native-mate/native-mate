@@ -45,7 +45,7 @@ const TOKEN_GROUPS: { label: string; keys: string[] }[] = [
 ]
 
 const PRESETS: { id: ThemePreset; label: string; band: string[] }[] = [
-  { id: 'zinc',     label: 'Zinc',     band: ['#0a0a0a', '#18181b', '#3f3f46', '#fafafa'] },
+  { id: 'zinc',     label: 'Zinc',     band: ['#070709', '#0f0f11', '#252529', '#fafafa'] },
   { id: 'slate',    label: 'Slate',    band: ['#0f172a', '#1e293b', '#475569', '#f8fafc'] },
   { id: 'rose',     label: 'Rose',     band: ['#0c0a0b', '#1c1115', '#e11d48', '#fb7185'] },
   { id: 'midnight', label: 'Midnight', band: ['#000000', '#111111', '#2a2a2a', '#818cf8'] },
