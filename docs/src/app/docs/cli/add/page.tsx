@@ -24,7 +24,13 @@ npx native-mate add button card input badge avatar
 npx native-mate add button --registry https://my-registry.dev
 
 # Overwrite existing files
-npx native-mate add button --overwrite`} />
+npx native-mate add button --overwrite
+
+# Add all available components
+npx native-mate add --all
+
+# Interactive mode — no arguments opens a multi-select picker
+npx native-mate add`} />
 
       <h2 className="mt-8 mb-3 text-xl font-semibold text-zinc-50">Options</h2>
       <div className="overflow-hidden rounded-xl border border-zinc-800">
@@ -37,6 +43,7 @@ npx native-mate add button --overwrite`} />
           </thead>
           <tbody>
             {[
+              ['-a, --all', 'Add all available components at once'],
               ['-r, --registry <url>', 'Use a custom registry URL instead of the default'],
               ['--overwrite', 'Overwrite existing component files if they differ'],
             ].map(([flag, desc], i) => (

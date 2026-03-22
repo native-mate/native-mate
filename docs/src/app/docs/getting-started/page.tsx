@@ -31,8 +31,8 @@ export default function GettingStartedPage() {
       <h2 className="mt-10 mb-3 text-xl font-semibold text-zinc-50">2. Add your first component</h2>
       <CodeBlock language="bash" code="npx native-mate add button" />
       <p className="mt-3 mb-3 text-sm text-zinc-400">
-        The component is written to <code className="text-zinc-300">components/ui/button/</code> (or wherever you
-        configured). No runtime imports — just source files.
+        The component is written to <code className="text-zinc-300">components/ui/button.tsx</code> (or wherever you
+        configured). No runtime imports — just source files you own completely.
       </p>
 
       <h2 className="mt-10 mb-3 text-xl font-semibold text-zinc-50">3. Import and use</h2>
@@ -72,7 +72,7 @@ export default function App() {
         <p className="text-sm font-medium text-zinc-50 mb-1">Next steps</p>
         <ul className="space-y-1 text-sm text-zinc-400">
           <li>→ <a href="/docs/tokens" className="text-zinc-300 hover:text-white underline">Read about the token system</a></li>
-          <li>→ <a href="/components" className="text-zinc-300 hover:text-white underline">Browse all 27 components</a></li>
+          <li>→ <a href="/components" className="text-zinc-300 hover:text-white underline">Browse all 28 components</a></li>
           <li>→ <a href="/themes" className="text-zinc-300 hover:text-white underline">Try the Theme Studio</a></li>
         </ul>
       </div>

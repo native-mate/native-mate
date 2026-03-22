@@ -26,7 +26,22 @@ const sidebarItems = [
     items: [
       { label: 'native-mate init', href: '/docs/cli/init' },
       { label: 'native-mate add', href: '/docs/cli/add' },
+      { label: 'native-mate list', href: '/docs/cli/list' },
       { label: 'native-mate upgrade', href: '/docs/cli/upgrade' },
+    ],
+  },
+  {
+    group: 'Packages',
+    items: [
+      { label: '@native-mate/core', href: '/docs/packages/core' },
+      { label: '@native-mate/cli', href: '/docs/packages/cli' },
+    ],
+  },
+  {
+    group: 'Integrations',
+    items: [
+      { label: 'MCP Server', href: '/docs/integrations/mcp' },
+      { label: 'VS Code Extension', href: '/docs/integrations/vscode' },
     ],
   },
   {

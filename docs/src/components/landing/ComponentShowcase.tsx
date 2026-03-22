@@ -68,7 +68,7 @@ export function ComponentShowcase() {
         >
           <p className="text-xs text-zinc-600 font-medium uppercase tracking-[0.18em] mb-4">Component library</p>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-zinc-50 mb-4">
-            27 components.<br />Production ready.
+            28 components.<br />Production ready.
           </h2>
           <p className="text-zinc-500 max-w-md mx-auto leading-relaxed">
             Everything you need to ship a polished mobile app. Each one animated, accessible, and typed.

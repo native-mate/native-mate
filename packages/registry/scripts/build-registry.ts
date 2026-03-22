@@ -29,7 +29,10 @@ function buildRegistry() {
       const filePath = path.join(dir, file.path)
       if (!fs.existsSync(filePath)) { console.warn(`Missing: ${filePath}`); continue }
 
-      const raw = fs.readFileSync(filePath, 'utf-8')
+      let raw = fs.readFileSync(filePath, 'utf-8')
+      // Transform cross-component imports from directory layout (../name/name)
+      // to flat file layout (./name) for CLI output
+      raw = raw.replace(/from\s+['"]\.\.\/([^/]+)\/\1['"]/g, "from './$1'")
       const lines = raw.split('\n')
       // Only strip existing header if present; otherwise keep all lines
       const hasHeader = lines[0]?.startsWith('// native-mate:')

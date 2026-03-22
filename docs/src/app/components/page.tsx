@@ -18,6 +18,7 @@ const components = [
   { name: 'Select', slug: 'select', category: 'Forms', description: 'Bottom-sheet select built on Sheet. Searchable.' },
   { name: 'OTP Input', slug: 'otp-input', category: 'Forms', description: 'Shake animation, haptic feedback, smooth focus transitions.' },
   // Layout
+  { name: 'Screen', slug: 'screen', category: 'Layout', description: 'Safe-area root wrapper with themed background.' },
   { name: 'Card', slug: 'card', category: 'Layout', description: 'Container with header, content, and footer slots.' },
   { name: 'Accordion', slug: 'accordion', category: 'Layout', description: 'Animated height expansion, single or multi-open.' },
   { name: 'Tabs', slug: 'tabs', category: 'Layout', description: 'Horizontal tabs with sliding indicator animation.' },
@@ -58,7 +59,7 @@ export default function ComponentsPage() {
       <Nav />
       <main className="mx-auto max-w-5xl px-4 sm:px-6 py-10 sm:py-16 pt-20 sm:pt-20">
         <h1 className="mb-2 text-2xl sm:text-3xl font-bold">Components</h1>
-        <p className="mb-8 sm:mb-10 text-zinc-400">27 production-ready components. Click any to see docs and usage.</p>
+        <p className="mb-8 sm:mb-10 text-zinc-400">28 production-ready components. Click any to see docs and usage.</p>
 
         {categories.map((cat) => (
           <div key={cat} className="mb-12">

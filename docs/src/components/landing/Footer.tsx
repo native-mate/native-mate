@@ -18,13 +18,14 @@ const links = {
     { label: 'Card', href: '/components/card' },
     { label: 'Input', href: '/components/input' },
     { label: 'Sheet', href: '/components/sheet' },
-    { label: 'All 27 →', href: '/components' },
+    { label: 'All 28 →', href: '/components' },
   ],
   Tools: [
     { label: 'Theme Studio', href: '/themes' },
-    { label: 'MCP Server', href: '/docs/getting-started' },
-    { label: 'VS Code Extension', href: '/docs/getting-started' },
-    { label: 'Figma Plugin', href: '#' },
+    { label: 'MCP Server', href: '/docs/integrations/mcp' },
+    { label: 'VS Code Extension', href: '/docs/integrations/vscode' },
+    { label: '@native-mate/core', href: '/docs/packages/core' },
+    { label: '@native-mate/cli', href: '/docs/packages/cli' },
   ],
   Community: [
     { label: 'GitHub', href: 'https://github.com/native-mate/native-mate' },
