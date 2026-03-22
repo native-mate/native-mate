@@ -1,5 +1,5 @@
 const REGISTRY = 'https://registry.native-mate.dev'
-const GITHUB_FALLBACK = 'https://raw.githubusercontent.com/native-mate/native-mate/main/packages/registry/dist/registry'
+const GITHUB_FALLBACK = 'https://raw.githubusercontent.com/ayush-jadaun/native-mate/main/packages/registry/dist/registry'
 
 export interface RegistryFile {
   path: string
