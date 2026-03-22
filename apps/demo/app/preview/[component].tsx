@@ -33,10 +33,8 @@ import { Sheet } from '../../../../packages/registry/components/sheet/sheet'
 import { Modal } from '../../../../packages/registry/components/modal/modal'
 import { ActionSheet } from '../../../../packages/registry/components/action-sheet/action-sheet'
 import { Toast } from '../../../../packages/registry/components/toast/toast'
-import { Tooltip } from '../../../../packages/registry/components/tooltip/tooltip'
 import { OTPInput } from '../../../../packages/registry/components/otp-input/otp-input'
 import { Select } from '../../../../packages/registry/components/select/select'
-import { Popover } from '../../../../packages/registry/components/popover/popover'
 
 const labels: Record<string, string> = {
   text: 'Text', icon: 'Icon', spinner: 'Spinner', separator: 'Separator',
@@ -45,8 +43,8 @@ const labels: Record<string, string> = {
   avatar: 'Avatar', tag: 'Tag', progress: 'Progress', skeleton: 'Skeleton',
   alert: 'Alert', card: 'Card', tabs: 'Tabs', accordion: 'Accordion',
   'empty-state': 'Empty State', sheet: 'Sheet', modal: 'Modal',
-  'action-sheet': 'Action Sheet', toast: 'Toast', tooltip: 'Tooltip',
-  'otp-input': 'OTP Input', select: 'Select', popover: 'Popover',
+  'action-sheet': 'Action Sheet', toast: 'Toast',
+  'otp-input': 'OTP Input', select: 'Select', screen: 'Screen',
 }
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
@@ -1198,85 +1196,6 @@ function ToastPreview() {
   )
 }
 
-function TooltipPreview() {
-  return (
-    <>
-      <Section title="Placements">
-        <View style={s.row}>
-          <Tooltip content="Top tooltip" placement="top">
-            <Button size="sm" variant="outline">Top</Button>
-          </Tooltip>
-          <Tooltip content="Bottom tooltip" placement="bottom">
-            <Button size="sm" variant="outline">Bottom</Button>
-          </Tooltip>
-          <Tooltip content="Left tooltip" placement="left">
-            <Button size="sm" variant="outline">Left</Button>
-          </Tooltip>
-          <Tooltip content="Right tooltip" placement="right">
-            <Button size="sm" variant="outline">Right</Button>
-          </Tooltip>
-        </View>
-      </Section>
-      <Section title="Custom delay">
-        <View style={s.row}>
-          <Tooltip content="Hold longer" delay={800} placement="top">
-            <Button size="sm" variant="outline">Slow (800ms)</Button>
-          </Tooltip>
-          <Tooltip content="Instant!" delay={0} placement="bottom">
-            <Button size="sm" variant="outline">Instant</Button>
-          </Tooltip>
-        </View>
-      </Section>
-    </>
-  )
-}
-
-function PopoverPreview() {
-  const MENU = [
-    { label: 'Edit', destructive: false },
-    { label: 'Duplicate', destructive: false },
-    { label: 'Delete', destructive: true },
-  ]
-  return (
-    <>
-      <Section title="Context menu">
-        <View style={s.row}>
-          <Popover
-            placement="bottom"
-            content={
-              <View style={{ paddingVertical: 4 }}>
-                {MENU.map((item, i) => (
-                  <View key={item.label}>
-                    {i > 0 && <View style={{ height: 1, backgroundColor: '#27272a' }} />}
-                    <View style={{ paddingVertical: 12, paddingHorizontal: 16 }}>
-                      <Text style={{ fontSize: 15, color: item.destructive ? '#ef4444' : '#fafafa' }}>{item.label}</Text>
-                    </View>
-                  </View>
-                ))}
-              </View>
-            }
-          >
-            <Button size="sm" variant="outline">Options</Button>
-          </Popover>
-        </View>
-      </Section>
-      <Section title="Placements">
-        <View style={s.row}>
-          {(['top', 'bottom', 'left', 'right'] as const).map(p => (
-            <Popover
-              key={p}
-              placement={p}
-              content={<View style={{ padding: 12 }}><Text style={{ color: '#fafafa', fontSize: 13 }}>{p}</Text></View>}
-            >
-              <Button size="sm" variant="outline">{p.charAt(0).toUpperCase() + p.slice(1)}</Button>
-            </Popover>
-          ))}
-        </View>
-      </Section>
-    </>
-  )
-}
-
 function OtpInputPreview() {
   const [v6, setV6] = useState('')
   const [v4, setV4] = useState('')
@@ -1700,6 +1619,23 @@ function SeparatorPreview() {
   )
 }
 
+function ScreenPreview() {
+  const theme = useTheme()
+  return (
+    <>
+      <Section title="Screen component">
+        <Text style={{ color: theme.colors.muted, fontSize: 14, lineHeight: 20 }}>
+          Screen is a themed SafeAreaView wrapper. It automatically applies the
+          background color from your active theme preset and handles safe area insets.
+        </Text>
+        <Text style={{ color: theme.colors.muted, fontSize: 14, lineHeight: 20, marginTop: 8 }}>
+          This entire preview is already wrapped in the Screen component via the app layout.
+        </Text>
+      </Section>
+    </>
+  )
+}
+
 const previews: Record<string, React.FC> = {
   text: TextPreview,
   icon: IconPreview,
@@ -1726,10 +1662,9 @@ const previews: Record<string, React.FC> = {
   modal: ModalPreview,
   'action-sheet': ActionSheetPreview,
   toast: ToastPreview,
-  tooltip: TooltipPreview,
-  popover: PopoverPreview,
   'otp-input': OtpInputPreview,
   select: SelectPreview,
+  screen: ScreenPreview,
 }
 
 export default function PreviewScreen() {

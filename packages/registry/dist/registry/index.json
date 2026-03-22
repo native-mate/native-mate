@@ -1,0 +1,148 @@
+{
+  "components": [
+    {
+      "name": "accordion",
+      "version": "0.1.0",
+      "description": "Collapsible accordion with animated height and chevron",
+      "category": "layout"
+    },
+    {
+      "name": "action-sheet",
+      "version": "0.1.0",
+      "description": "iOS-style action sheet with animated slide-up, destructive variants, and cancel button",
+      "category": "overlay"
+    },
+    {
+      "name": "alert",
+      "version": "0.1.0",
+      "description": "Inline alert box with left accent border and variants",
+      "category": "feedback"
+    },
+    {
+      "name": "avatar",
+      "version": "0.1.0",
+      "description": "Circular avatar with image + initials fallback",
+      "category": "display"
+    },
+    {
+      "name": "badge",
+      "version": "0.1.0",
+      "description": "Inline status badge with 5 variants",
+      "category": "display"
+    },
+    {
+      "name": "button",
+      "version": "0.3.0",
+      "description": "Feature-rich button with 7 variants including gradient, icon-only mode, button group, rounded pill shape, custom colors, haptic feedback, and spring animation",
+      "category": "input"
+    },
+    {
+      "name": "card",
+      "version": "0.1.0",
+      "description": "Surface container with border and shadow",
+      "category": "display"
+    },
+    {
+      "name": "checkbox",
+      "version": "0.1.0",
+      "description": "Animated checkbox with label",
+      "category": "input"
+    },
+    {
+      "name": "empty-state",
+      "version": "0.1.0",
+      "description": "Animated empty state with icon, title, description, and action button",
+      "category": "display"
+    },
+    {
+      "name": "input",
+      "version": "0.2.0",
+      "description": "Feature-rich text input with 3 sizes, prefix/suffix, floating label, password toggle, clearable, character count, shake on error, haptic on focus",
+      "category": "input"
+    },
+    {
+      "name": "modal",
+      "version": "0.1.0",
+      "description": "Centered dialog with scale animation and backdrop",
+      "category": "overlay"
+    },
+    {
+      "name": "otp-input",
+      "version": "0.1.0",
+      "description": "OTP/PIN code input with individual digit boxes",
+      "category": "input"
+    },
+    {
+      "name": "progress",
+      "version": "0.1.0",
+      "description": "Animated progress bar with accessibility support",
+      "category": "feedback"
+    },
+    {
+      "name": "radio",
+      "version": "0.1.0",
+      "description": "Radio button and RadioGroup with animated selection",
+      "category": "input"
+    },
+    {
+      "name": "screen",
+      "version": "0.1.0",
+      "description": "SafeAreaView wrapper with theme background color",
+      "category": "layout"
+    },
+    {
+      "name": "select",
+      "version": "0.1.0",
+      "description": "Select dropdown using Sheet with FlatList options",
+      "category": "input"
+    },
+    {
+      "name": "sheet",
+      "version": "0.1.0",
+      "description": "Animated bottom sheet with snap points",
+      "category": "overlay"
+    },
+    {
+      "name": "skeleton",
+      "version": "0.1.0",
+      "description": "Pulsing skeleton loader placeholder",
+      "category": "feedback"
+    },
+    {
+      "name": "slider",
+      "version": "0.1.0",
+      "description": "Gesture-based range slider with step and accessibility support",
+      "category": "input"
+    },
+    {
+      "name": "switch",
+      "version": "0.1.0",
+      "description": "Animated toggle switch with interpolated track color",
+      "category": "input"
+    },
+    {
+      "name": "tabs",
+      "version": "0.1.0",
+      "description": "Horizontal tabs with animated underline indicator",
+      "category": "layout"
+    },
+    {
+      "name": "tag",
+      "version": "0.1.0",
+      "description": "Compact dismissible label chip with spring animation on remove",
+      "category": "display"
+    },
+    {
+      "name": "textarea",
+      "version": "0.1.0",
+      "description": "Multiline text input with label and error state",
+      "category": "input"
+    },
+    {
+      "name": "toast",
+      "version": "0.1.0",
+      "description": "Floating toast notification with auto-dismiss and position",
+      "category": "feedback"
+    }
+  ]
+}

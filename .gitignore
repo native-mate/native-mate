@@ -1,9 +1,10 @@
 node_modules/
 dist/
+!packages/registry/dist/
 .turbo/
 *.log
 .expo/
 docs/.next/
 docs/tsconfig.tsbuildinfo
-.claude/settings.local.json
+.claude/
 .vercel

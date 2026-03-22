@@ -11,9 +11,13 @@ const components = [
   { name: 'slider', label: 'Slider', category: 'Forms' },
   { name: 'select', label: 'Select', category: 'Forms' },
   { name: 'otp-input', label: 'OTP Input', category: 'Forms' },
+  { name: 'text', label: 'Text', category: 'Display' },
+  { name: 'icon', label: 'Icon', category: 'Display' },
   { name: 'badge', label: 'Badge', category: 'Display' },
   { name: 'avatar', label: 'Avatar', category: 'Display' },
   { name: 'tag', label: 'Tag', category: 'Display' },
+  { name: 'separator', label: 'Separator', category: 'Display' },
+  { name: 'spinner', label: 'Spinner', category: 'Display' },
   { name: 'progress', label: 'Progress', category: 'Display' },
   { name: 'skeleton', label: 'Skeleton', category: 'Display' },
   { name: 'alert', label: 'Alert', category: 'Display' },
@@ -21,14 +25,14 @@ const components = [
   { name: 'tabs', label: 'Tabs', category: 'Display' },
   { name: 'accordion', label: 'Accordion', category: 'Display' },
   { name: 'empty-state', label: 'Empty State', category: 'Display' },
+  { name: 'screen', label: 'Screen', category: 'Layout' },
   { name: 'sheet', label: 'Sheet', category: 'Overlay' },
   { name: 'modal', label: 'Modal', category: 'Overlay' },
   { name: 'action-sheet', label: 'Action Sheet', category: 'Overlay' },
   { name: 'toast', label: 'Toast', category: 'Overlay' },
-  { name: 'tooltip', label: 'Tooltip', category: 'Overlay' },
 ]
 
-const categories = ['Forms', 'Display', 'Overlay']
+const categories = ['Forms', 'Display', 'Layout', 'Overlay']
 
 export default function Gallery() {
   const router = useRouter()
@@ -36,7 +40,7 @@ export default function Gallery() {
   return (
     <ScrollView style={s.container} contentContainerStyle={s.content}>
       <Text style={s.hero}>Component Gallery</Text>
-      <Text style={s.sub}>25 components — tap to preview</Text>
+      <Text style={s.sub}>28 components — tap to preview</Text>
 
       {categories.map((cat) => (
         <View key={cat} style={s.section}>
