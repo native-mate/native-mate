@@ -16,11 +16,16 @@ const fadeUp = {
 
 export function Hero() {
   return (
-    <section className="flex flex-col items-center justify-center text-center px-4 sm:px-5 pt-24 sm:pt-32 lg:pt-36 pb-14 sm:pb-16">
-      {/* Ambient glow */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-[600px] overflow-hidden">
-        <div className="absolute left-1/2 top-0 -translate-x-1/2 w-[800px] h-[400px] rounded-full bg-white/[0.03] blur-[120px]" />
+    <section className="relative flex flex-col items-center justify-center text-center px-4 sm:px-5 pt-24 sm:pt-32 lg:pt-36 pb-14 sm:pb-16">
+      {/* ── Minimal glow ── */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        {/* Soft ambient wash */}
+        <div className="absolute left-1/2 top-[8%] -translate-x-1/2 w-[800px] h-[500px] rounded-full blur-[160px] bg-purple-600/15" />
+        {/* Core glow */}
+        <div className="absolute left-1/2 top-[10%] -translate-x-1/2 w-[350px] h-[250px] rounded-full blur-[80px] bg-violet-500/25" />
       </div>
+      {/* Hard black fade at bottom — no glow leaks into next section */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[40%] bg-gradient-to-t from-[#070709] via-[#070709] to-transparent" />
 
       {/* Pill badge */}
       <motion.div
@@ -57,7 +62,7 @@ export function Hero() {
         animate="visible"
         className="max-w-2xl text-sm sm:text-base lg:text-lg text-zinc-400 leading-relaxed mb-8 sm:mb-10 px-2"
       >
-        27 production-ready components built on{' '}
+        28 production-ready components built on{' '}
         <span className="text-zinc-200 font-medium">Reanimated 4</span> and React Native{' '}
         <span className="text-zinc-200 font-medium">New Architecture</span>.
         Optimized for <span className="text-zinc-200 font-medium">Expo SDK 54</span>, fully typed,
