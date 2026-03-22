@@ -10,8 +10,8 @@
     },
     {
       "path": "radio.types.ts",
-      "content": "// native-mate: radio@0.1.0 | hash:0352dc91218d9e99\n\r\nexport interface RadioOption {\r\n  label: string\r\n  value: string\r\n  description?: string\r\n  icon?: React.ReactNode\r\n  disabled?: boolean\r\n}\r\n\r\nexport interface RadioProps {\r\n  selected: boolean\r\n  onSelect: () => void\r\n  label?: string\r\n  description?: string\r\n  disabled?: boolean\r\n  size?: RadioSize\r\n  color?: string\r\n  card?: boolean\r\n  haptic?: boolean\r\n  accessibilityLabel?: string\r\n}\r\n\r\nexport interface RadioGroupProps {\r\n  options: RadioOption[]\r\n  value?: string\r\n  onChange: (value: string) => void\r\n  label?: string\r\n  error?: string\r\n  disabled?: boolean\r\n  size?: RadioSize\r\n  horizontal?: boolean\r\n  card?: boolean\r\n  haptic?: boolean\r\n}\r\n",
-      "hash": "0352dc91218d9e99"
+      "content": "// native-mate: radio@0.1.0 | hash:87734eaf86883d8e\nexport type RadioSize = 'sm' | 'md' | 'lg'\r\n\r\nexport interface RadioOption {\r\n  label: string\r\n  value: string\r\n  description?: string\r\n  icon?: React.ReactNode\r\n  disabled?: boolean\r\n}\r\n\r\nexport interface RadioProps {\r\n  selected: boolean\r\n  onSelect: () => void\r\n  label?: string\r\n  description?: string\r\n  disabled?: boolean\r\n  size?: RadioSize\r\n  color?: string\r\n  card?: boolean\r\n  haptic?: boolean\r\n  accessibilityLabel?: string\r\n}\r\n\r\nexport interface RadioGroupProps {\r\n  options: RadioOption[]\r\n  value?: string\r\n  onChange: (value: string) => void\r\n  label?: string\r\n  error?: string\r\n  disabled?: boolean\r\n  size?: RadioSize\r\n  horizontal?: boolean\r\n  card?: boolean\r\n  haptic?: boolean\r\n}\r\n",
+      "hash": "87734eaf86883d8e"
     }
   ],
   "dependencies": {

@@ -31,11 +31,13 @@ function buildRegistry() {
 
       const raw = fs.readFileSync(filePath, 'utf-8')
       const lines = raw.split('\n')
-      // Hash is computed over content WITHOUT the first header line
-      const contentWithoutHeader = lines.slice(1).join('\n')
-      const hash = hashContent(contentWithoutHeader)
+      // Only strip existing header if present; otherwise keep all lines
+      const hasHeader = lines[0]?.startsWith('// native-mate:')
+      const bodyLines = hasHeader ? lines.slice(1) : lines
+      const body = bodyLines.join('\n')
+      const hash = hashContent(body)
       const header = `// native-mate: ${name}@${meta.version} | hash:${hash}`
-      const content = [header, ...lines.slice(1)].join('\n')
+      const content = [header, ...bodyLines].join('\n')
       files.push({ path: file.path, content, hash })
     }
 

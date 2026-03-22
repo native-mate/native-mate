@@ -10,8 +10,8 @@
     },
     {
       "path": "modal.types.ts",
-      "content": "// native-mate: modal@0.1.0 | hash:44d1ea0ebc0dd639\n\r\nexport interface ModalAction {\r\n  label: string\r\n  onPress: () => void\r\n  variant?: 'default' | 'primary' | 'destructive'\r\n}\r\n\r\nexport interface ModalProps {\r\n  visible: boolean\r\n  onClose: () => void\r\n  title?: string\r\n  description?: string\r\n  children?: React.ReactNode\r\n  size?: 'sm' | 'md' | 'lg' | 'fullscreen'\r\n  /** Footer action buttons */\r\n  actions?: ModalAction[]\r\n  /** Prevent closing by tapping backdrop */\r\n  dismissible?: boolean\r\n  /** Show close (×) button in header */\r\n  showCloseButton?: boolean\r\n}\r\n",
-      "hash": "44d1ea0ebc0dd639"
+      "content": "// native-mate: modal@0.1.0 | hash:b741536e601b6ee3\nimport type React from 'react'\r\n\r\nexport interface ModalAction {\r\n  label: string\r\n  onPress: () => void\r\n  variant?: 'default' | 'primary' | 'destructive'\r\n}\r\n\r\nexport interface ModalProps {\r\n  visible: boolean\r\n  onClose: () => void\r\n  title?: string\r\n  description?: string\r\n  children?: React.ReactNode\r\n  size?: 'sm' | 'md' | 'lg' | 'fullscreen'\r\n  /** Footer action buttons */\r\n  actions?: ModalAction[]\r\n  /** Prevent closing by tapping backdrop */\r\n  dismissible?: boolean\r\n  /** Show close (×) button in header */\r\n  showCloseButton?: boolean\r\n}\r\n",
+      "hash": "b741536e601b6ee3"
     }
   ],
   "dependencies": {

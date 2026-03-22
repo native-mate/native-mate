@@ -10,8 +10,8 @@
     },
     {
       "path": "avatar.types.ts",
-      "content": "// native-mate: avatar@0.1.0 | hash:2f4b7ba08d0526bd\nexport type AvatarStatus = 'online' | 'offline' | 'busy' | 'away'\r\n\r\nexport interface AvatarProps {\r\n  src?: string\r\n  name?: string\r\n  fallback?: string\r\n  size?: AvatarSize\r\n  status?: AvatarStatus\r\n  shape?: 'circle' | 'square'\r\n  color?: string\r\n  accessibilityLabel?: string\r\n}\r\n\r\nexport interface AvatarGroupProps {\r\n  avatars: Omit<AvatarProps, 'size'>[]\r\n  size?: AvatarSize\r\n  max?: number\r\n  spacing?: number\r\n}\r\n",
-      "hash": "2f4b7ba08d0526bd"
+      "content": "// native-mate: avatar@0.1.0 | hash:b281fe1c3d36a186\nexport type AvatarSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'\r\nexport type AvatarStatus = 'online' | 'offline' | 'busy' | 'away'\r\n\r\nexport interface AvatarProps {\r\n  src?: string\r\n  name?: string\r\n  fallback?: string\r\n  size?: AvatarSize\r\n  status?: AvatarStatus\r\n  shape?: 'circle' | 'square'\r\n  color?: string\r\n  accessibilityLabel?: string\r\n}\r\n\r\nexport interface AvatarGroupProps {\r\n  avatars: Omit<AvatarProps, 'size'>[]\r\n  size?: AvatarSize\r\n  max?: number\r\n  spacing?: number\r\n}\r\n",
+      "hash": "b281fe1c3d36a186"
     }
   ],
   "dependencies": {

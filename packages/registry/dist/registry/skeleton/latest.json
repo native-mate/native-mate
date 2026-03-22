@@ -10,8 +10,8 @@
     },
     {
       "path": "skeleton.types.ts",
-      "content": "// native-mate: skeleton@0.1.0 | hash:e2c5ee6decc73b37\n\r\nexport type SkeletonVariant = 'pulse' | 'shimmer'\r\n\r\nexport interface SkeletonProps {\r\n  width?: number | string\r\n  height?: number\r\n  borderRadius?: number\r\n  variant?: SkeletonVariant\r\n  style?: ViewStyle\r\n}\r\n\r\nexport interface SkeletonTextProps {\r\n  lines?: number\r\n  lastLineWidth?: string | number\r\n  variant?: SkeletonVariant\r\n  style?: ViewStyle\r\n}\r\n\r\nexport interface SkeletonAvatarProps {\r\n  size?: number\r\n  showText?: boolean\r\n  textLines?: number\r\n  variant?: SkeletonVariant\r\n  style?: ViewStyle\r\n}\r\n\r\nexport interface SkeletonCardProps {\r\n  imageHeight?: number\r\n  lines?: number\r\n  variant?: SkeletonVariant\r\n  style?: ViewStyle\r\n}\r\n",
-      "hash": "e2c5ee6decc73b37"
+      "content": "// native-mate: skeleton@0.1.0 | hash:030e916832f3c19a\nimport type { ViewStyle } from 'react-native'\r\n\r\nexport type SkeletonVariant = 'pulse' | 'shimmer'\r\n\r\nexport interface SkeletonProps {\r\n  width?: number | string\r\n  height?: number\r\n  borderRadius?: number\r\n  variant?: SkeletonVariant\r\n  style?: ViewStyle\r\n}\r\n\r\nexport interface SkeletonTextProps {\r\n  lines?: number\r\n  lastLineWidth?: string | number\r\n  variant?: SkeletonVariant\r\n  style?: ViewStyle\r\n}\r\n\r\nexport interface SkeletonAvatarProps {\r\n  size?: number\r\n  showText?: boolean\r\n  textLines?: number\r\n  variant?: SkeletonVariant\r\n  style?: ViewStyle\r\n}\r\n\r\nexport interface SkeletonCardProps {\r\n  imageHeight?: number\r\n  lines?: number\r\n  variant?: SkeletonVariant\r\n  style?: ViewStyle\r\n}\r\n",
+      "hash": "030e916832f3c19a"
     }
   ],
   "dependencies": {

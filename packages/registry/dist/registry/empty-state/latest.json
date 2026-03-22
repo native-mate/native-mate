@@ -10,8 +10,8 @@
     },
     {
       "path": "empty-state.types.ts",
-      "content": "// native-mate: empty-state@0.1.0 | hash:ba058409b1eed319\nimport type { StyleProp, ViewStyle } from 'react-native'\r\n\r\nexport interface EmptyStateAction {\r\n  label: string\r\n  onPress: () => void\r\n  variant?: 'primary' | 'outline'\r\n}\r\n\r\nexport interface EmptyStateProps {\r\n  icon?: React.ReactNode\r\n  title: string\r\n  description?: string\r\n  action?: EmptyStateAction\r\n  secondaryAction?: { label: string; onPress: () => void }\r\n  variant?: 'default' | 'compact' | 'illustration'\r\n  style?: StyleProp<ViewStyle>\r\n}\r\n",
-      "hash": "ba058409b1eed319"
+      "content": "// native-mate: empty-state@0.1.0 | hash:0cc3b1866b6702dd\nimport type React from 'react'\r\nimport type { StyleProp, ViewStyle } from 'react-native'\r\n\r\nexport interface EmptyStateAction {\r\n  label: string\r\n  onPress: () => void\r\n  variant?: 'primary' | 'outline'\r\n}\r\n\r\nexport interface EmptyStateProps {\r\n  icon?: React.ReactNode\r\n  title: string\r\n  description?: string\r\n  action?: EmptyStateAction\r\n  secondaryAction?: { label: string; onPress: () => void }\r\n  variant?: 'default' | 'compact' | 'illustration'\r\n  style?: StyleProp<ViewStyle>\r\n}\r\n",
+      "hash": "0cc3b1866b6702dd"
     }
   ],
   "dependencies": {

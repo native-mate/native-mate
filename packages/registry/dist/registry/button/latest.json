@@ -10,8 +10,8 @@
     },
     {
       "path": "button.types.ts",
-      "content": "// native-mate: button@0.3.0 | hash:212638b4d22d11e6\n\r\nexport type ButtonVariant = 'default' | 'destructive' | 'outline' | 'ghost' | 'secondary' | 'link'\r\nexport type ButtonSize = 'sm' | 'md' | 'lg'\r\nexport type HapticStyle = 'light' | 'medium' | 'heavy' | 'none'\r\n\r\nexport interface ButtonProps extends Omit<PressableProps, 'style'> {\r\n  variant?: ButtonVariant\r\n  size?: ButtonSize\r\n  loading?: boolean\r\n  disabled?: boolean\r\n  fullWidth?: boolean\r\n  rounded?: boolean\r\n  iconOnly?: boolean\r\n  haptic?: HapticStyle\r\n  color?: string\r\n  iconLeft?: React.ReactNode\r\n  iconRight?: React.ReactNode\r\n  children?: React.ReactNode\r\n  accessibilityLabel?: string\r\n}\r\n\r\nexport interface ButtonGroupProps {\r\n  children: React.ReactNode\r\n  size?: ButtonSize\r\n  variant?: ButtonVariant\r\n  fullWidth?: boolean\r\n}\r\n",
-      "hash": "212638b4d22d11e6"
+      "content": "// native-mate: button@0.3.0 | hash:6604c869c98bf6a5\nimport type { PressableProps } from 'react-native'\r\n\r\nexport type ButtonVariant = 'default' | 'destructive' | 'outline' | 'ghost' | 'secondary' | 'link'\r\nexport type ButtonSize = 'sm' | 'md' | 'lg'\r\nexport type HapticStyle = 'light' | 'medium' | 'heavy' | 'none'\r\n\r\nexport interface ButtonProps extends Omit<PressableProps, 'style'> {\r\n  variant?: ButtonVariant\r\n  size?: ButtonSize\r\n  loading?: boolean\r\n  disabled?: boolean\r\n  fullWidth?: boolean\r\n  rounded?: boolean\r\n  iconOnly?: boolean\r\n  haptic?: HapticStyle\r\n  color?: string\r\n  iconLeft?: React.ReactNode\r\n  iconRight?: React.ReactNode\r\n  children?: React.ReactNode\r\n  accessibilityLabel?: string\r\n}\r\n\r\nexport interface ButtonGroupProps {\r\n  children: React.ReactNode\r\n  size?: ButtonSize\r\n  variant?: ButtonVariant\r\n  fullWidth?: boolean\r\n}\r\n",
+      "hash": "6604c869c98bf6a5"
     }
   ],
   "dependencies": {

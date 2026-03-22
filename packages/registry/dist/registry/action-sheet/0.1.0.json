@@ -10,8 +10,8 @@
     },
     {
       "path": "action-sheet.types.ts",
-      "content": "// native-mate: action-sheet@0.1.0 | hash:cfeeb5b1e762f3de\n  label: string\r\n  onPress: () => void\r\n  variant?: 'default' | 'destructive'\r\n  icon?: React.ReactNode\r\n  description?: string\r\n  disabled?: boolean\r\n}\r\n\r\nexport interface ActionSheetProps {\r\n  isOpen: boolean\r\n  onClose: () => void\r\n  title?: string\r\n  message?: string\r\n  actions: ActionSheetAction[]\r\n  cancelLabel?: string\r\n  /** Animation preset. Default: 'slide' */\r\n  animation?: 'slide' | 'spring' | 'fade'\r\n  /** Show separators between actions. Default: true */\r\n  showDividers?: boolean\r\n}\r\n",
-      "hash": "cfeeb5b1e762f3de"
+      "content": "// native-mate: action-sheet@0.1.0 | hash:e71ceda46358702a\nexport interface ActionSheetAction {\r\n  label: string\r\n  onPress: () => void\r\n  variant?: 'default' | 'destructive'\r\n  icon?: React.ReactNode\r\n  description?: string\r\n  disabled?: boolean\r\n}\r\n\r\nexport interface ActionSheetProps {\r\n  isOpen: boolean\r\n  onClose: () => void\r\n  title?: string\r\n  message?: string\r\n  actions: ActionSheetAction[]\r\n  cancelLabel?: string\r\n  /** Animation preset. Default: 'slide' */\r\n  animation?: 'slide' | 'spring' | 'fade'\r\n  /** Show separators between actions. Default: true */\r\n  showDividers?: boolean\r\n}\r\n",
+      "hash": "e71ceda46358702a"
     }
   ],
   "dependencies": {

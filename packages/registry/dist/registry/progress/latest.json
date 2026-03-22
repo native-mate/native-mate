@@ -10,8 +10,8 @@
     },
     {
       "path": "progress.types.ts",
-      "content": "// native-mate: progress@0.1.0 | hash:2e68bb76fefe0ea7\nexport type ProgressSize = 'sm' | 'md' | 'lg'\r\n\r\nexport interface ProgressProps {\r\n  value: number\r\n  variant?: ProgressVariant\r\n  size?: ProgressSize\r\n  color?: string\r\n  trackColor?: string\r\n  showValue?: boolean\r\n  label?: string\r\n  indeterminate?: boolean\r\n  animated?: boolean\r\n  striped?: boolean\r\n  accessibilityLabel?: string\r\n}\r\n",
-      "hash": "2e68bb76fefe0ea7"
+      "content": "// native-mate: progress@0.1.0 | hash:8c20efa7aaecbcbe\nexport type ProgressVariant = 'linear' | 'circular'\r\nexport type ProgressSize = 'sm' | 'md' | 'lg'\r\n\r\nexport interface ProgressProps {\r\n  value: number\r\n  variant?: ProgressVariant\r\n  size?: ProgressSize\r\n  color?: string\r\n  trackColor?: string\r\n  showValue?: boolean\r\n  label?: string\r\n  indeterminate?: boolean\r\n  animated?: boolean\r\n  striped?: boolean\r\n  accessibilityLabel?: string\r\n}\r\n",
+      "hash": "8c20efa7aaecbcbe"
     }
   ],
   "dependencies": {

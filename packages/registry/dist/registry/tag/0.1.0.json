@@ -10,8 +10,8 @@
     },
     {
       "path": "tag.types.ts",
-      "content": "// native-mate: tag@0.1.0 | hash:e94b9a1635bd5b15\nimport type { ViewStyle } from 'react-native'\r\n\r\nexport type TagVariant = 'default' | 'primary' | 'success' | 'warning' | 'destructive' | 'info'\r\n\r\nexport interface TagProps {\r\n  label: string\r\n  selected?: boolean\r\n  onPress?: () => void\r\n  onRemove?: () => void\r\n  variant?: TagVariant\r\n  icon?: React.ReactNode\r\n  disabled?: boolean\r\n  size?: 'sm' | 'md' | 'lg'\r\n  style?: ViewStyle\r\n}\r\n\r\nexport interface TagGroupProps {\r\n  tags: TagProps[]\r\n  multiSelect?: boolean\r\n  selected?: string[]\r\n  onChange?: (selected: string[]) => void\r\n  style?: ViewStyle\r\n}\r\n",
-      "hash": "e94b9a1635bd5b15"
+      "content": "// native-mate: tag@0.1.0 | hash:f4f150340347d840\nimport type React from 'react'\r\nimport type { ViewStyle } from 'react-native'\r\n\r\nexport type TagVariant = 'default' | 'primary' | 'success' | 'warning' | 'destructive' | 'info'\r\n\r\nexport interface TagProps {\r\n  label: string\r\n  selected?: boolean\r\n  onPress?: () => void\r\n  onRemove?: () => void\r\n  variant?: TagVariant\r\n  icon?: React.ReactNode\r\n  disabled?: boolean\r\n  size?: 'sm' | 'md' | 'lg'\r\n  style?: ViewStyle\r\n}\r\n\r\nexport interface TagGroupProps {\r\n  tags: TagProps[]\r\n  multiSelect?: boolean\r\n  selected?: string[]\r\n  onChange?: (selected: string[]) => void\r\n  style?: ViewStyle\r\n}\r\n",
+      "hash": "f4f150340347d840"
     }
   ],
   "dependencies": {

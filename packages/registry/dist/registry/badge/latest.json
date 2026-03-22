@@ -10,8 +10,8 @@
     },
     {
       "path": "badge.types.ts",
-      "content": "// native-mate: badge@0.1.0 | hash:414e2b8d6c4c2742\n\r\nexport type BadgeVariant = 'default' | 'secondary' | 'destructive' | 'success' | 'warning' | 'info'\r\nexport type BadgeSize = 'sm' | 'md' | 'lg'\r\nexport type BadgeAppearance = 'solid' | 'soft' | 'outline'\r\n\r\nexport interface BadgeProps {\r\n  variant?: BadgeVariant\r\n  size?: BadgeSize\r\n  appearance?: BadgeAppearance\r\n  dot?: boolean\r\n  pulse?: boolean          // animated pulsing dot (for live/online status)\r\n  icon?: React.ReactNode   // node before text\r\n  count?: number\r\n  maxCount?: number\r\n  onDismiss?: () => void\r\n  children?: React.ReactNode\r\n}\r\n",
-      "hash": "414e2b8d6c4c2742"
+      "content": "// native-mate: badge@0.1.0 | hash:1657a98cb42cfb2e\nimport type React from 'react'\r\n\r\nexport type BadgeVariant = 'default' | 'secondary' | 'destructive' | 'success' | 'warning' | 'info'\r\nexport type BadgeSize = 'sm' | 'md' | 'lg'\r\nexport type BadgeAppearance = 'solid' | 'soft' | 'outline'\r\n\r\nexport interface BadgeProps {\r\n  variant?: BadgeVariant\r\n  size?: BadgeSize\r\n  appearance?: BadgeAppearance\r\n  dot?: boolean\r\n  pulse?: boolean          // animated pulsing dot (for live/online status)\r\n  icon?: React.ReactNode   // node before text\r\n  count?: number\r\n  maxCount?: number\r\n  onDismiss?: () => void\r\n  children?: React.ReactNode\r\n}\r\n",
+      "hash": "1657a98cb42cfb2e"
     }
   ],
   "dependencies": {

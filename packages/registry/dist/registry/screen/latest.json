@@ -10,8 +10,8 @@
     },
     {
       "path": "screen.types.ts",
-      "content": "// native-mate: screen@0.1.0 | hash:79a58a5950c9bff9\n\r\nexport interface ScreenProps extends Omit<ViewProps, 'style'> {\r\n  children: React.ReactNode\r\n  backgroundColor?: string\r\n}\r\n",
-      "hash": "79a58a5950c9bff9"
+      "content": "// native-mate: screen@0.1.0 | hash:95e0f6b89266f0e9\nimport type { ViewProps } from 'react-native'\r\n\r\nexport interface ScreenProps extends Omit<ViewProps, 'style'> {\r\n  children: React.ReactNode\r\n  backgroundColor?: string\r\n}\r\n",
+      "hash": "95e0f6b89266f0e9"
     }
   ],
   "dependencies": {

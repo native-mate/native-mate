@@ -10,8 +10,8 @@
     },
     {
       "path": "icon.types.ts",
-      "content": "// native-mate: icon@0.1.0 | hash:b0802c1e592b5b3b\n\r\nexport type IconSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | number\r\n\r\nexport type IconColor =\r\n  | 'foreground' | 'muted' | 'primary'\r\n  | 'destructive' | 'success' | 'warning' | 'border'\r\n  | (string & {})\r\n\r\nexport type IconLibrary = 'ionicons'\r\n\r\nexport interface IconProps {\r\n  /** Ionicons icon name. See https://ionic.io/ionicons */\r\n  name: string\r\n  /** Preset size or explicit dp value. Default: 'md' (20dp) */\r\n  size?: IconSize\r\n  /** Semantic color token or raw hex/rgb value. Default: 'foreground' */\r\n  color?: IconColor\r\n  /** Opacity (0–1). Default: 1 */\r\n  opacity?: number\r\n  /** Extra style applied to the icon element. */\r\n  style?: StyleProp<ViewStyle>\r\n  accessibilityLabel?: string\r\n  /** If true the icon is hidden from assistive technology (decorative). */\r\n  decorative?: boolean\r\n}\r\n",
-      "hash": "b0802c1e592b5b3b"
+      "content": "// native-mate: icon@0.1.0 | hash:8691278ec7776ed4\nimport type { StyleProp, ViewStyle } from 'react-native'\r\n\r\nexport type IconSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | number\r\n\r\nexport type IconColor =\r\n  | 'foreground' | 'muted' | 'primary'\r\n  | 'destructive' | 'success' | 'warning' | 'border'\r\n  | (string & {})\r\n\r\nexport type IconLibrary = 'ionicons'\r\n\r\nexport interface IconProps {\r\n  /** Ionicons icon name. See https://ionic.io/ionicons */\r\n  name: string\r\n  /** Preset size or explicit dp value. Default: 'md' (20dp) */\r\n  size?: IconSize\r\n  /** Semantic color token or raw hex/rgb value. Default: 'foreground' */\r\n  color?: IconColor\r\n  /** Opacity (0–1). Default: 1 */\r\n  opacity?: number\r\n  /** Extra style applied to the icon element. */\r\n  style?: StyleProp<ViewStyle>\r\n  accessibilityLabel?: string\r\n  /** If true the icon is hidden from assistive technology (decorative). */\r\n  decorative?: boolean\r\n}\r\n",
+      "hash": "8691278ec7776ed4"
     }
   ],
   "dependencies": {

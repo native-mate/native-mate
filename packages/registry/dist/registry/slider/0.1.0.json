@@ -10,8 +10,8 @@
     },
     {
       "path": "slider.types.ts",
-      "content": "// native-mate: slider@0.1.0 | hash:62903ae2f7aac2d4\n  value: number\r\n  min?: number\r\n  max?: number\r\n  step?: number\r\n  onChange?: (value: number) => void\r\n  onChangeEnd?: (value: number) => void\r\n  disabled?: boolean\r\n  showValue?: boolean\r\n  trackColor?: string\r\n  fillColor?: string\r\n  thumbSize?: number\r\n  marks?: boolean\r\n  haptic?: boolean\r\n  accessibilityLabel?: string\r\n}\r\n\r\nexport interface RangeSliderProps {\r\n  low: number\r\n  high: number\r\n  min?: number\r\n  max?: number\r\n  step?: number\r\n  onChange?: (low: number, high: number) => void\r\n  onChangeEnd?: (low: number, high: number) => void\r\n  disabled?: boolean\r\n  showValue?: boolean\r\n  trackColor?: string\r\n  fillColor?: string\r\n  thumbSize?: number\r\n  marks?: boolean\r\n  haptic?: boolean\r\n  accessibilityLabel?: string\r\n}\r\n",
-      "hash": "62903ae2f7aac2d4"
+      "content": "// native-mate: slider@0.1.0 | hash:529004df321414ab\nexport interface SliderProps {\r\n  value: number\r\n  min?: number\r\n  max?: number\r\n  step?: number\r\n  onChange?: (value: number) => void\r\n  onChangeEnd?: (value: number) => void\r\n  disabled?: boolean\r\n  showValue?: boolean\r\n  trackColor?: string\r\n  fillColor?: string\r\n  thumbSize?: number\r\n  marks?: boolean\r\n  haptic?: boolean\r\n  accessibilityLabel?: string\r\n}\r\n\r\nexport interface RangeSliderProps {\r\n  low: number\r\n  high: number\r\n  min?: number\r\n  max?: number\r\n  step?: number\r\n  onChange?: (low: number, high: number) => void\r\n  onChangeEnd?: (low: number, high: number) => void\r\n  disabled?: boolean\r\n  showValue?: boolean\r\n  trackColor?: string\r\n  fillColor?: string\r\n  thumbSize?: number\r\n  marks?: boolean\r\n  haptic?: boolean\r\n  accessibilityLabel?: string\r\n}\r\n",
+      "hash": "529004df321414ab"
     }
   ],
   "dependencies": {

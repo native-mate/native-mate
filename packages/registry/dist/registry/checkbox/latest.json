@@ -10,8 +10,8 @@
     },
     {
       "path": "checkbox.types.ts",
-      "content": "// native-mate: checkbox@0.1.0 | hash:efd386400fddd36c\n\r\nexport interface CheckboxProps {\r\n  checked: boolean\r\n  onChange: (checked: boolean) => void\r\n  indeterminate?: boolean\r\n  label?: string\r\n  description?: string\r\n  disabled?: boolean\r\n  error?: string\r\n  size?: CheckboxSize\r\n  color?: string\r\n  labelPosition?: 'right' | 'left'\r\n  haptic?: boolean\r\n  accessibilityLabel?: string\r\n}\r\n\r\nexport interface CheckboxGroupOption {\r\n  label: string\r\n  value: string\r\n  description?: string\r\n  disabled?: boolean\r\n}\r\n\r\nexport interface CheckboxGroupProps {\r\n  options: CheckboxGroupOption[]\r\n  value: string[]\r\n  onChange: (value: string[]) => void\r\n  label?: string\r\n  error?: string\r\n  disabled?: boolean\r\n  size?: CheckboxSize\r\n  horizontal?: boolean\r\n}\r\n",
-      "hash": "efd386400fddd36c"
+      "content": "// native-mate: checkbox@0.1.0 | hash:3776e3a1dfc61bc8\nexport type CheckboxSize = 'sm' | 'md' | 'lg'\r\n\r\nexport interface CheckboxProps {\r\n  checked: boolean\r\n  onChange: (checked: boolean) => void\r\n  indeterminate?: boolean\r\n  label?: string\r\n  description?: string\r\n  disabled?: boolean\r\n  error?: string\r\n  size?: CheckboxSize\r\n  color?: string\r\n  labelPosition?: 'right' | 'left'\r\n  haptic?: boolean\r\n  accessibilityLabel?: string\r\n}\r\n\r\nexport interface CheckboxGroupOption {\r\n  label: string\r\n  value: string\r\n  description?: string\r\n  disabled?: boolean\r\n}\r\n\r\nexport interface CheckboxGroupProps {\r\n  options: CheckboxGroupOption[]\r\n  value: string[]\r\n  onChange: (value: string[]) => void\r\n  label?: string\r\n  error?: string\r\n  disabled?: boolean\r\n  size?: CheckboxSize\r\n  horizontal?: boolean\r\n}\r\n",
+      "hash": "3776e3a1dfc61bc8"
     }
   ],
   "dependencies": {

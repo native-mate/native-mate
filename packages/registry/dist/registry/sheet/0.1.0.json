@@ -10,8 +10,8 @@
     },
     {
       "path": "sheet.types.ts",
-      "content": "// native-mate: sheet@0.1.0 | hash:95f5f6069aa686ae\n  visible: boolean\r\n  onClose: () => void\r\n  /** Height of the sheet. Default: 400 */\r\n  height?: number\r\n  children: React.ReactNode\r\n  title?: string\r\n  /** Show drag handle. Default: true */\r\n  showHandle?: boolean\r\n  /** Close when backdrop is pressed. Default: true */\r\n  closeOnBackdrop?: boolean\r\n  /** Animation preset. Default: 'slide' */\r\n  animation?: 'slide' | 'spring' | 'fade'\r\n  /** Horizontal padding for the content area. Default: 16 */\r\n  padding?: number\r\n  /** @deprecated use height instead */\r\n  snapPoints?: number[]\r\n}\r\n",
-      "hash": "95f5f6069aa686ae"
+      "content": "// native-mate: sheet@0.1.0 | hash:0b92e238a886f889\nexport interface SheetProps {\r\n  visible: boolean\r\n  onClose: () => void\r\n  /** Height of the sheet. Default: 400 */\r\n  height?: number\r\n  children: React.ReactNode\r\n  title?: string\r\n  /** Show drag handle. Default: true */\r\n  showHandle?: boolean\r\n  /** Close when backdrop is pressed. Default: true */\r\n  closeOnBackdrop?: boolean\r\n  /** Animation preset. Default: 'slide' */\r\n  animation?: 'slide' | 'spring' | 'fade'\r\n  /** Horizontal padding for the content area. Default: 16 */\r\n  padding?: number\r\n  /** @deprecated use height instead */\r\n  snapPoints?: number[]\r\n}\r\n",
+      "hash": "0b92e238a886f889"
     }
   ],
   "dependencies": {

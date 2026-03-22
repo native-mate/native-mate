@@ -10,8 +10,8 @@
     },
     {
       "path": "accordion.types.ts",
-      "content": "// native-mate: accordion@0.1.0 | hash:43621d0d29cfea4f\nimport type { StyleProp, ViewStyle } from 'react-native'\r\n\r\nexport interface AccordionItem {\r\n  key: string\r\n  title: string\r\n  content: React.ReactNode\r\n  icon?: React.ReactNode\r\n  trailing?: React.ReactNode\r\n  disabled?: boolean\r\n}\r\n\r\nexport interface AccordionProps {\r\n  items: AccordionItem[]\r\n  allowMultiple?: boolean\r\n  variant?: 'ghost' | 'card' | 'bordered'\r\n  size?: 'sm' | 'md' | 'lg'\r\n  defaultOpen?: string[]\r\n  style?: StyleProp<ViewStyle>\r\n}\r\n",
-      "hash": "43621d0d29cfea4f"
+      "content": "// native-mate: accordion@0.1.0 | hash:726c47b3c8f6241b\nimport type React from 'react'\r\nimport type { StyleProp, ViewStyle } from 'react-native'\r\n\r\nexport interface AccordionItem {\r\n  key: string\r\n  title: string\r\n  content: React.ReactNode\r\n  icon?: React.ReactNode\r\n  trailing?: React.ReactNode\r\n  disabled?: boolean\r\n}\r\n\r\nexport interface AccordionProps {\r\n  items: AccordionItem[]\r\n  allowMultiple?: boolean\r\n  variant?: 'ghost' | 'card' | 'bordered'\r\n  size?: 'sm' | 'md' | 'lg'\r\n  defaultOpen?: string[]\r\n  style?: StyleProp<ViewStyle>\r\n}\r\n",
+      "hash": "726c47b3c8f6241b"
     }
   ],
   "dependencies": {

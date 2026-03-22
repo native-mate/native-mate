@@ -10,8 +10,8 @@
     },
     {
       "path": "select.types.ts",
-      "content": "// native-mate: select@0.1.0 | hash:546c15f4e8f0788a\n  label: string\r\n  value: string\r\n  description?: string\r\n  icon?: React.ReactNode\r\n  disabled?: boolean\r\n}\r\n\r\nexport interface SelectGroup {\r\n  label: string\r\n  options: SelectOption[]\r\n}\r\n\r\nexport interface SelectProps {\r\n  options: SelectOption[]\r\n  groups?: SelectGroup[]\r\n  value?: string\r\n  onChange: (value: string) => void\r\n  placeholder?: string\r\n  label?: string\r\n  error?: string\r\n  hint?: string\r\n  disabled?: boolean\r\n  required?: boolean\r\n  clearable?: boolean\r\n  searchable?: boolean\r\n  searchPlaceholder?: string\r\n  loading?: boolean\r\n  size?: 'sm' | 'md' | 'lg'\r\n}\r\n\r\nexport interface MultiSelectProps extends Omit<SelectProps, 'value' | 'onChange'> {\r\n  value: string[]\r\n  onChange: (value: string[]) => void\r\n  maxSelections?: number\r\n}\r\n",
-      "hash": "546c15f4e8f0788a"
+      "content": "// native-mate: select@0.1.0 | hash:ebd911373182c001\nexport interface SelectOption {\r\n  label: string\r\n  value: string\r\n  description?: string\r\n  icon?: React.ReactNode\r\n  disabled?: boolean\r\n}\r\n\r\nexport interface SelectGroup {\r\n  label: string\r\n  options: SelectOption[]\r\n}\r\n\r\nexport interface SelectProps {\r\n  options: SelectOption[]\r\n  groups?: SelectGroup[]\r\n  value?: string\r\n  onChange: (value: string) => void\r\n  placeholder?: string\r\n  label?: string\r\n  error?: string\r\n  hint?: string\r\n  disabled?: boolean\r\n  required?: boolean\r\n  clearable?: boolean\r\n  searchable?: boolean\r\n  searchPlaceholder?: string\r\n  loading?: boolean\r\n  size?: 'sm' | 'md' | 'lg'\r\n}\r\n\r\nexport interface MultiSelectProps extends Omit<SelectProps, 'value' | 'onChange'> {\r\n  value: string[]\r\n  onChange: (value: string[]) => void\r\n  maxSelections?: number\r\n}\r\n",
+      "hash": "ebd911373182c001"
     }
   ],
   "dependencies": {

@@ -10,8 +10,8 @@
     },
     {
       "path": "switch.types.ts",
-      "content": "// native-mate: switch@0.1.0 | hash:2bceed54cb5a7d04\n\r\nexport interface SwitchProps {\r\n  value: boolean\r\n  onValueChange: (value: boolean) => void\r\n  label?: string\r\n  description?: string\r\n  disabled?: boolean\r\n  size?: SwitchSize\r\n  color?: string\r\n  loading?: boolean\r\n  haptic?: boolean\r\n  labelPosition?: 'left' | 'right'\r\n  accessibilityLabel?: string\r\n}\r\n",
-      "hash": "2bceed54cb5a7d04"
+      "content": "// native-mate: switch@0.1.0 | hash:ed13e21f1569ab7c\nexport type SwitchSize = 'sm' | 'md' | 'lg'\r\n\r\nexport interface SwitchProps {\r\n  value: boolean\r\n  onValueChange: (value: boolean) => void\r\n  label?: string\r\n  description?: string\r\n  disabled?: boolean\r\n  size?: SwitchSize\r\n  color?: string\r\n  loading?: boolean\r\n  haptic?: boolean\r\n  labelPosition?: 'left' | 'right'\r\n  accessibilityLabel?: string\r\n}\r\n",
+      "hash": "ed13e21f1569ab7c"
     }
   ],
   "dependencies": {

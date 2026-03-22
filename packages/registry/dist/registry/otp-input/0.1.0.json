@@ -10,8 +10,8 @@
     },
     {
       "path": "otp-input.types.ts",
-      "content": "// native-mate: otp-input@0.1.0 | hash:61db8d1f3924cbb1\nexport type OTPType = 'numeric' | 'alphanumeric'\r\n\r\nexport interface OTPInputProps {\r\n  length?: number\r\n  value: string\r\n  onChange: (value: string) => void\r\n  onComplete?: (value: string) => void\r\n  error?: boolean\r\n  errorMessage?: string\r\n  success?: boolean\r\n  disabled?: boolean\r\n  loading?: boolean\r\n  secure?: boolean\r\n  type?: OTPType\r\n  variant?: OTPVariant\r\n  autoFocus?: boolean\r\n  hint?: string\r\n  resend?: boolean\r\n  resendCooldown?: number\r\n  onResend?: () => void\r\n  haptic?: boolean\r\n}\r\n",
-      "hash": "61db8d1f3924cbb1"
+      "content": "// native-mate: otp-input@0.1.0 | hash:806c6c4a862d8e9e\nexport type OTPVariant = 'box' | 'underline' | 'rounded'\r\nexport type OTPType = 'numeric' | 'alphanumeric'\r\n\r\nexport interface OTPInputProps {\r\n  length?: number\r\n  value: string\r\n  onChange: (value: string) => void\r\n  onComplete?: (value: string) => void\r\n  error?: boolean\r\n  errorMessage?: string\r\n  success?: boolean\r\n  disabled?: boolean\r\n  loading?: boolean\r\n  secure?: boolean\r\n  type?: OTPType\r\n  variant?: OTPVariant\r\n  autoFocus?: boolean\r\n  hint?: string\r\n  resend?: boolean\r\n  resendCooldown?: number\r\n  onResend?: () => void\r\n  haptic?: boolean\r\n}\r\n",
+      "hash": "806c6c4a862d8e9e"
     }
   ],
   "dependencies": {

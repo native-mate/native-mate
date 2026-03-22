@@ -10,8 +10,8 @@
     },
     {
       "path": "alert.types.ts",
-      "content": "// native-mate: alert@0.1.0 | hash:e4a54c8333bd204d\n\r\nexport type AlertVariant = 'default' | 'destructive' | 'success' | 'warning' | 'info'\r\n\r\nexport interface AlertAction {\r\n  label: string\r\n  onPress: () => void\r\n}\r\n\r\nexport interface AlertProps {\r\n  variant?: AlertVariant\r\n  title: string\r\n  description?: string\r\n  icon?: React.ReactNode\r\n  /** Show dismiss (×) button */\r\n  onDismiss?: () => void\r\n  /** Optional action button in footer */\r\n  action?: AlertAction\r\n  children?: React.ReactNode\r\n}\r\n",
-      "hash": "e4a54c8333bd204d"
+      "content": "// native-mate: alert@0.1.0 | hash:24755a9f59ba2df7\nimport type React from 'react'\r\n\r\nexport type AlertVariant = 'default' | 'destructive' | 'success' | 'warning' | 'info'\r\n\r\nexport interface AlertAction {\r\n  label: string\r\n  onPress: () => void\r\n}\r\n\r\nexport interface AlertProps {\r\n  variant?: AlertVariant\r\n  title: string\r\n  description?: string\r\n  icon?: React.ReactNode\r\n  /** Show dismiss (×) button */\r\n  onDismiss?: () => void\r\n  /** Optional action button in footer */\r\n  action?: AlertAction\r\n  children?: React.ReactNode\r\n}\r\n",
+      "hash": "24755a9f59ba2df7"
     }
   ],
   "dependencies": {

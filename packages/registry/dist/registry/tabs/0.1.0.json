@@ -10,8 +10,8 @@
     },
     {
       "path": "tabs.types.ts",
-      "content": "// native-mate: tabs@0.1.0 | hash:ea61ee90709e8678\nimport type { StyleProp, ViewStyle } from 'react-native'\r\n\r\nexport interface TabItem {\r\n  key: string\r\n  label: string\r\n  icon?: React.ReactNode\r\n  badge?: number | string\r\n  disabled?: boolean\r\n}\r\n\r\nexport interface TabsProps {\r\n  items: TabItem[]\r\n  activeKey: string\r\n  onChange: (key: string) => void\r\n  variant?: 'underline' | 'pill' | 'card'\r\n  size?: 'sm' | 'md' | 'lg'\r\n  scrollable?: boolean\r\n  style?: StyleProp<ViewStyle>\r\n}\r\n",
-      "hash": "ea61ee90709e8678"
+      "content": "// native-mate: tabs@0.1.0 | hash:55174e3658eda176\nimport type React from 'react'\r\nimport type { StyleProp, ViewStyle } from 'react-native'\r\n\r\nexport interface TabItem {\r\n  key: string\r\n  label: string\r\n  icon?: React.ReactNode\r\n  badge?: number | string\r\n  disabled?: boolean\r\n}\r\n\r\nexport interface TabsProps {\r\n  items: TabItem[]\r\n  activeKey: string\r\n  onChange: (key: string) => void\r\n  variant?: 'underline' | 'pill' | 'card'\r\n  size?: 'sm' | 'md' | 'lg'\r\n  scrollable?: boolean\r\n  style?: StyleProp<ViewStyle>\r\n}\r\n",
+      "hash": "55174e3658eda176"
     }
   ],
   "dependencies": {

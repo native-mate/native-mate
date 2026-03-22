@@ -10,8 +10,8 @@
     },
     {
       "path": "input.types.ts",
-      "content": "// native-mate: input@0.2.0 | hash:53328a0fb48d211a\n\r\nexport type InputSize = 'sm' | 'md' | 'lg'\r\n\r\nexport interface InputProps extends Omit<TextInputProps, 'style'> {\r\n  label?: string\r\n  error?: string\r\n  hint?: string\r\n  disabled?: boolean\r\n  size?: InputSize\r\n  required?: boolean\r\n  maxLength?: number\r\n  showCount?: boolean\r\n  clearable?: boolean\r\n  onClear?: () => void\r\n  secureTextEntry?: boolean\r\n  showPasswordToggle?: boolean\r\n  prefix?: React.ReactNode\r\n  suffix?: React.ReactNode\r\n  prefixText?: string\r\n  suffixText?: string\r\n  floatingLabel?: boolean\r\n  hapticOnFocus?: boolean\r\n}\r\n",
-      "hash": "53328a0fb48d211a"
+      "content": "// native-mate: input@0.2.0 | hash:19e416df1fb1c896\nimport type { TextInputProps } from 'react-native'\r\n\r\nexport type InputSize = 'sm' | 'md' | 'lg'\r\n\r\nexport interface InputProps extends Omit<TextInputProps, 'style'> {\r\n  label?: string\r\n  error?: string\r\n  hint?: string\r\n  disabled?: boolean\r\n  size?: InputSize\r\n  required?: boolean\r\n  maxLength?: number\r\n  showCount?: boolean\r\n  clearable?: boolean\r\n  onClear?: () => void\r\n  secureTextEntry?: boolean\r\n  showPasswordToggle?: boolean\r\n  prefix?: React.ReactNode\r\n  suffix?: React.ReactNode\r\n  prefixText?: string\r\n  suffixText?: string\r\n  floatingLabel?: boolean\r\n  hapticOnFocus?: boolean\r\n}\r\n",
+      "hash": "19e416df1fb1c896"
     }
   ],
   "dependencies": {
