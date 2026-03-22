@@ -20,5 +20,8 @@
     "turbo": "^2.0.0",
     "typescript": "~5.3.3",
     "vitest": "^4.1.0"
+  },
+  "dependencies": {
+    "@native-mate/core": "^0.1.0"
   }
 }

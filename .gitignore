@@ -9,3 +9,4 @@ docs/tsconfig.tsbuildinfo
 .claude/
 .vercel
 docs/tsconfig.lint.tsbuildinfo
+*.vsix
