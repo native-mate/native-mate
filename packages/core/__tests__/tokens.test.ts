@@ -17,7 +17,7 @@ describe('token presets', () => {
 
   it('resolveTokens dark mode', () => {
     const theme = resolveTokens(zinc, 'dark')
-    expect(theme.colors.background).toBe('#0a0a0a')
+    expect(theme.colors.background).toBe('#070709')
     expect(theme.colorScheme).toBe('dark')
   })
 

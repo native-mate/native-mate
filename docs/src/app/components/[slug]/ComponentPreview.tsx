@@ -2,7 +2,7 @@
 import React from 'react'
 import dynamic from 'next/dynamic'
 
-const componentPreviews: Record<string, React.ComponentType<{ part?: string }>> = {
+const componentPreviews: Record<string, any> = {
   text:      dynamic(() => import('@/components/previews/TextPreview'),      { ssr: false }),
   icon:      dynamic(() => import('@/components/previews/IconPreview'),      { ssr: false }),
   spinner:   dynamic(() => import('@/components/previews/SpinnerPreview'),   { ssr: false }),

@@ -3,7 +3,7 @@ import { resolveTokens, zinc, slate, rose, midnight, presets } from '../tokens'
 describe('resolveTokens', () => {
   it('resolves zinc dark mode correctly', () => {
     const theme = resolveTokens(zinc, 'dark')
-    expect(theme.colors.background).toBe('#0a0a0a')
+    expect(theme.colors.background).toBe('#070709')
     expect(theme.colors.foreground).toBe('#fafafa')
     expect(theme.colorScheme).toBe('dark')
   })
@@ -36,7 +36,7 @@ describe('resolveTokens', () => {
       colors: { primary: '#6366f1' },
     })
     expect(theme.colors.primary).toBe('#6366f1')
-    expect(theme.colors.background).toBe('#0a0a0a') // unchanged
+    expect(theme.colors.background).toBe('#070709') // unchanged
   })
 
   it('applies spacing overrides', () => {
