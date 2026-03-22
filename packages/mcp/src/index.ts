@@ -199,7 +199,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     if (!components || components.length === 0) {
       return { content: [{ type: 'text', text: 'No components specified.' }] }
     }
-    const cmd = `npx native-mate add ${components.join(' ')}`
+    const cmd = `npx @native-mate/cli add ${components.join(' ')}`
     const text = [
       `Run this command in your project root:`,
       '',

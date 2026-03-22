@@ -106,7 +106,7 @@ async function handleToolCall(name: string, args: Record<string, unknown>): Prom
   if (name === 'get_add_command') {
     const components = args?.components as string[]
     if (!components?.length) return { content: [{ type: 'text', text: 'No components specified.' }] }
-    return { content: [{ type: 'text', text: `Run:\n\n\`\`\`bash\nnpx native-mate add ${components.join(' ')}\n\`\`\`` }] }
+    return { content: [{ type: 'text', text: `Run:\n\n\`\`\`bash\nnpx @native-mate/cli add ${components.join(' ')}\n\`\`\`` }] }
   }
 
   return { content: [{ type: 'text', text: `Unknown tool: ${name}` }], isError: true }
