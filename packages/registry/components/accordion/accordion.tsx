@@ -1,14 +1,11 @@
 // native-mate: accordion@0.2.0 | hash:PLACEHOLDER
 import React, { useState, useCallback } from 'react'
-import { View, Pressable } from 'react-native'
+import { View, Pressable, LayoutChangeEvent } from 'react-native'
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
   Easing,
-  FadeIn,
-  FadeOut,
-  LinearTransition,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
 import { useTheme, Text, Separator } from '@native-mate/core'
@@ -20,7 +17,7 @@ const sizeMap = {
   lg: { py: 18, px: 20, fontSize: 17, iconSize: 18, chevronSize: 18 },
 }
 
-const TIMING_CONFIG = { duration: 250, easing: Easing.out(Easing.cubic) }
+const TIMING = { duration: 250, easing: Easing.out(Easing.cubic) }
 
 // ── Single accordion item ─────────────────────────────────────────────────────
 
@@ -46,15 +43,36 @@ const AccordionItemComponent: React.FC<AccordionItemComponentProps> = ({
   const theme = useTheme()
   const sz = sizeMap[size]
 
-  // Only chevron rotation needs manual animation
   const rotation = useSharedValue(isOpen ? 180 : 0)
+  const heightAnim = useSharedValue(isOpen ? 0 : 0)
+  const opacityAnim = useSharedValue(isOpen ? 1 : 0)
+  const [contentH, setContentH] = useState(0)
+
+  const handleMeasure = useCallback((e: LayoutChangeEvent) => {
+    const h = Math.ceil(e.nativeEvent.layout.height)
+    if (h > 0 && h !== contentH) {
+      setContentH(h)
+    }
+  }, [contentH])
 
   React.useEffect(() => {
-    rotation.value = withTiming(isOpen ? 180 : 0, TIMING_CONFIG)
-  }, [isOpen, rotation])
+    rotation.value = withTiming(isOpen ? 180 : 0, TIMING)
+    opacityAnim.value = withTiming(isOpen ? 1 : 0, { duration: isOpen ? 250 : 150 })
+    if (isOpen && contentH > 0) {
+      heightAnim.value = withTiming(contentH, TIMING)
+    } else if (!isOpen) {
+      heightAnim.value = withTiming(0, TIMING)
+    }
+  }, [isOpen, contentH])
 
   const chevronStyle = useAnimatedStyle(() => ({
     transform: [{ rotate: `${rotation.value}deg` }],
+  }))
+
+  const collapseStyle = useAnimatedStyle(() => ({
+    height: heightAnim.value,
+    opacity: opacityAnim.value,
+    overflow: 'hidden' as const,
   }))
 
   const cardItemRadius =
@@ -82,11 +100,16 @@ const AccordionItemComponent: React.FC<AccordionItemComponentProps> = ({
         }
       : {}
 
+  const contentBody = (
+    <View style={{ paddingHorizontal: sz.px, paddingBottom: sz.py }}>
+      {item.content}
+    </View>
+  )
+
   return (
-    <Animated.View
-      layout={LinearTransition.duration(250).easing(Easing.out(Easing.cubic))}
+    <View
       style={[
-        { opacity: item.disabled ? 0.45 : 1, overflow: 'hidden' as const },
+        { opacity: item.disabled ? 0.45 : 1 },
         itemBg,
         itemBorder,
         cardItemRadius,
@@ -123,18 +146,20 @@ const AccordionItemComponent: React.FC<AccordionItemComponentProps> = ({
         </Animated.View>
       </Pressable>
 
-      {/* Content — conditionally rendered; Reanimated Layout handles height animation */}
-      {isOpen && (
-        <Animated.View
-          entering={FadeIn.duration(200).delay(50)}
-          exiting={FadeOut.duration(100)}
-        >
-          <View style={{ paddingHorizontal: sz.px, paddingBottom: sz.py }}>
-            {item.content}
-          </View>
-        </Animated.View>
-      )}
-    </Animated.View>
+      {/* Hidden measurer — always rendered, positioned off-screen to get real height */}
+      <View
+        style={{ position: 'absolute', top: -9999, left: 0, right: 0, opacity: 0 }}
+        pointerEvents="none"
+        onLayout={handleMeasure}
+      >
+        {contentBody}
+      </View>
+
+      {/* Animated collapsible */}
+      <Animated.View style={collapseStyle}>
+        {contentBody}
+      </Animated.View>
+    </View>
   )
 }
 
