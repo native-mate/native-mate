@@ -2,11 +2,17 @@
   "name": "native-mate",
   "displayName": "native-mate",
   "description": "Add and manage native-mate React Native components from VS Code",
-  "version": "0.1.0",
-  "publisher": "native-mate",
+  "version": "0.1.1",
+  "publisher": "NativeMate",
   "engines": {
     "vscode": "^1.85.0"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/native-mate/native-mate",
+    "directory": "packages/vscode-extension"
+  },
+  "icon": "icon.png",
   "categories": ["Other"],
   "activationEvents": ["workspaceContains:native-mate.json"],
   "main": "./dist/extension.js",

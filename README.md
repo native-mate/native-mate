@@ -29,6 +29,7 @@ npx @native-mate/cli add button card input
 | [`packages/registry`](./packages/registry) | — | Component source + registry build script |
 | [`packages/vscode-extension`](./packages/vscode-extension) | — | VS Code extension — add components from the command palette |
 | [`docs`](./docs) | — | Next.js documentation site ([live](https://native-mate.vercel.app)) |
+| [`apps/example`](./apps/example) | — | Demo Expo app with 7 screens showcasing all 28 components |
 
 ---
 
