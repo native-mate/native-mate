@@ -72,7 +72,7 @@ export default function App() {
         <p className="text-sm font-medium text-zinc-50 mb-1">Next steps</p>
         <ul className="space-y-1 text-sm text-zinc-400">
           <li>→ <a href="/docs/tokens" className="text-zinc-300 hover:text-white underline">Read about the token system</a></li>
-          <li>→ <a href="/components" className="text-zinc-300 hover:text-white underline">Browse all 25 components</a></li>
+          <li>→ <a href="/components" className="text-zinc-300 hover:text-white underline">Browse all 27 components</a></li>
           <li>→ <a href="/themes" className="text-zinc-300 hover:text-white underline">Try the Theme Studio</a></li>
         </ul>
       </div>

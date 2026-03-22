@@ -8,8 +8,10 @@ import { Slider, RangeSlider } from '../../../../packages/registry/components/sl
 export default function SliderPreview() {
   const [vol, setVol] = useState(60)
   const [brightness, setBrightness] = useState(40)
-  const [range, setRange] = useState<[number, number]>([20, 75])
-  const [price, setPrice] = useState<[number, number]>([100, 800])
+  const [rangeLow, setRangeLow] = useState(20)
+  const [rangeHigh, setRangeHigh] = useState(75)
+  const [priceLow, setPriceLow] = useState(100)
+  const [priceHigh, setPriceHigh] = useState(800)
   const [step, setStep] = useState(50)
 
   return (
@@ -18,73 +20,76 @@ export default function SliderPreview() {
 
 const [value, setValue] = useState(60)
 
-<Slider value={value} onValueChange={setValue} />`}>
+<Slider value={value} onChange={setValue} />`}>
         <View style={{ width: '100%', maxWidth: 340, gap: 8 }}>
-          <Slider value={vol} onValueChange={setVol} />
+          <Slider value={vol} onChange={setVol} />
           <Text style={{ fontSize: 12, color: '#71717a', textAlign: 'center' }}>Volume: {vol}</Text>
         </View>
       </Preview>
 
-      <Preview title="With label" code={`<Slider value={value} onValueChange={setValue} label="Brightness" showValue />`}>
+      <Preview title="With showValue" code={`<Slider value={value} onChange={setValue} showValue />`}>
         <View style={{ width: '100%', maxWidth: 340 }}>
-          <Slider value={brightness} onValueChange={setBrightness} label="Brightness" showValue />
+          <Slider value={brightness} onChange={setBrightness} showValue />
         </View>
       </Preview>
 
-      <Preview title="Step" code={`<Slider value={value} onValueChange={setValue} step={10} min={0} max={100} showValue />`}>
+      <Preview title="Step" code={`<Slider value={value} onChange={setValue} step={10} min={0} max={100} showValue />`}>
         <View style={{ width: '100%', maxWidth: 340, gap: 8 }}>
-          <Slider value={step} onValueChange={setStep} step={10} min={0} max={100} showValue label="Step: 10" />
+          <Slider value={step} onChange={setStep} step={10} min={0} max={100} showValue />
           <Text style={{ fontSize: 12, color: '#71717a', textAlign: 'center' }}>Snaps to: {step}</Text>
         </View>
       </Preview>
 
-      <Preview title="Custom color" code={`<Slider value={value} onValueChange={setValue} color="#10b981" />
-<Slider value={value} onValueChange={setValue} color="#f59e0b" />`}>
+      <Preview title="Custom color" code={`<Slider value={value} onChange={setValue} fillColor="#10b981" />
+<Slider value={value} onChange={setValue} fillColor="#f59e0b" />`}>
         <View style={{ gap: 16, width: '100%', maxWidth: 340 }}>
-          <Slider value={60} onValueChange={() => {}} color="#10b981" label="Emerald" showValue />
-          <Slider value={40} onValueChange={() => {}} color="#f59e0b" label="Amber" showValue />
-          <Slider value={75} onValueChange={() => {}} color="#8b5cf6" label="Violet" showValue />
+          <Slider value={60} onChange={() => {}} fillColor="#10b981" showValue />
+          <Slider value={40} onChange={() => {}} fillColor="#f59e0b" showValue />
+          <Slider value={75} onChange={() => {}} fillColor="#8b5cf6" showValue />
         </View>
       </Preview>
 
       <Preview title="RangeSlider" code={`import { RangeSlider } from '~/components/ui/slider'
 
-const [range, setRange] = useState([20, 75])
+const [low, setLow] = useState(20)
+const [high, setHigh] = useState(75)
 
-<RangeSlider value={range} onValueChange={setRange} />`}>
+<RangeSlider low={low} high={high} onChange={(l, h) => { setLow(l); setHigh(h) }} />`}>
         <View style={{ width: '100%', maxWidth: 340, gap: 8 }}>
-          <RangeSlider value={range} onValueChange={setRange} />
-          <Text style={{ fontSize: 12, color: '#71717a', textAlign: 'center' }}>{range[0]} — {range[1]}</Text>
+          <RangeSlider
+            low={rangeLow}
+            high={rangeHigh}
+            onChange={(l, h) => { setRangeLow(l); setRangeHigh(h) }}
+          />
+          <Text style={{ fontSize: 12, color: '#71717a', textAlign: 'center' }}>{rangeLow} — {rangeHigh}</Text>
         </View>
       </Preview>
 
       <Preview title="Price range" code={`<RangeSlider
-  value={price}
-  onValueChange={setPrice}
+  low={priceLow}
+  high={priceHigh}
+  onChange={(l, h) => { setPriceLow(l); setPriceHigh(h) }}
   min={0}
   max={1000}
   step={50}
-  label="Price range"
   showValue
-  formatValue={(v) => \`$\${v}\`}
 />`}>
         <View style={{ width: '100%', maxWidth: 340 }}>
           <RangeSlider
-            value={price}
-            onValueChange={setPrice}
+            low={priceLow}
+            high={priceHigh}
+            onChange={(l, h) => { setPriceLow(l); setPriceHigh(h) }}
             min={0}
             max={1000}
             step={50}
-            label="Price range"
             showValue
-            formatValue={(v) => `$${v}`}
           />
         </View>
       </Preview>
 
-      <Preview title="Disabled" code={`<Slider value={50} onValueChange={() => {}} disabled />`}>
+      <Preview title="Disabled" code={`<Slider value={50} onChange={() => {}} disabled />`}>
         <View style={{ width: '100%', maxWidth: 340 }}>
-          <Slider value={50} onValueChange={() => {}} disabled label="Disabled" />
+          <Slider value={50} onChange={() => {}} disabled />
         </View>
       </Preview>
     </div>

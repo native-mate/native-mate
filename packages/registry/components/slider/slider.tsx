@@ -1,5 +1,5 @@
 // native-mate: slider@0.2.0 | hash:PLACEHOLDER
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useCallback } from 'react'
 import { View, PanResponder, LayoutChangeEvent, StyleSheet } from 'react-native'
 import Animated, {
   useSharedValue,
@@ -28,6 +28,7 @@ function clamp(v: number, min: number, max: number) {
   return Math.min(max, Math.max(min, v))
 }
 function snapVal(v: number, min: number, step: number) {
+  if (step <= 0) return v
   return Math.round((v - min) / step) * step + min
 }
 
@@ -53,18 +54,24 @@ export const Slider: React.FC<SliderProps> = ({
   const styles = useStyles()
   const [width, setWidth] = useState(0)
 
-  // All mutable values accessed inside PanResponder must be refs
+  // ── Refs for everything PanResponder needs (avoids stale closures) ──
   const widthRef = useRef(0)
   const disabledRef = useRef(disabled)
-  const grantOffsetRef = useRef(0)   // thumb pixel position captured at grant
+  const grantOffsetRef = useRef(0)
   const lastHapticVal = useRef(value)
+  const onChangeRef = useRef(onChange)
+  const onChangeEndRef = useRef(onChangeEnd)
+  const hapticRef = useRef(haptic)
+
+  // Sync refs every render
   disabledRef.current = disabled
+  onChangeRef.current = onChange
+  onChangeEndRef.current = onChangeEnd
+  hapticRef.current = haptic
 
   const thumbScale = useSharedValue(1)
   const trackH = TRACK_HEIGHT
 
-  // Pixel-based positioning (no %) to avoid edge-clipping issues
-  // trackableWidth = width - thumbSize (accounts for thumb margin on both sides)
   const trackableWidth = width > 0 ? width - thumbSize : 0
   const thumbPx = trackableWidth > 0 ? ((value - min) / (max - min)) * trackableWidth : 0
 
@@ -72,56 +79,54 @@ export const Slider: React.FC<SliderProps> = ({
     transform: [{ scale: thumbScale.value }],
   }))
 
-  // Convert pixel position (0..trackableWidth) to snapped value
-  const resolvePixel = (px: number): number => {
+  const resolvePixel = useCallback((px: number): number => {
     const tw = widthRef.current - thumbSize
-    if (tw <= 0) return value
+    if (tw <= 0) return min
     const ratio = clamp(px / tw, 0, 1)
     return clamp(snapVal(min + ratio * (max - min), min, step), min, max)
-  }
+  }, [min, max, step, thumbSize])
 
-  // IMPORTANT: PanResponder is on a separate child view from onLayout.
-  // Putting both on the same view breaks Android after first drag (RN bug #28228).
+  // Store resolvePixel in a ref so PanResponder always has the latest
+  const resolveRef = useRef(resolvePixel)
+  resolveRef.current = resolvePixel
+
   const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => !disabledRef.current,
       onMoveShouldSetPanResponder: () => !disabledRef.current,
       onPanResponderGrant: (e) => {
-        // locationX is reliable at grant time.
-        // Subtract thumbSize/2 to convert from container coords to track coords.
         const tw = widthRef.current - thumbSize
+        if (tw <= 0) return
         const px = clamp(e.nativeEvent.locationX - thumbSize / 2, 0, tw)
         grantOffsetRef.current = px
         thumbScale.value = withSpring(1.3, { mass: 0.3, damping: 10 })
-        const newVal = resolvePixel(px)
-        if (haptic && Haptics && newVal !== lastHapticVal.current) {
+        const newVal = resolveRef.current(px)
+        if (hapticRef.current && Haptics && newVal !== lastHapticVal.current) {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
           lastHapticVal.current = newVal
         }
-        onChange?.(newVal)
+        onChangeRef.current?.(newVal)
       },
       onPanResponderMove: (_, gestureState) => {
-        // gestureState.dx is reliable on both iOS and Android.
-        // locationX is NOT used here (broken on Android: frozen; broken on iOS: jumps to child views).
         if (disabledRef.current) return
         const tw = widthRef.current - thumbSize
         if (tw <= 0) return
         const px = clamp(grantOffsetRef.current + gestureState.dx, 0, tw)
-        const newVal = resolvePixel(px)
-        if (haptic && Haptics && newVal !== lastHapticVal.current) {
+        const newVal = resolveRef.current(px)
+        if (hapticRef.current && Haptics && newVal !== lastHapticVal.current) {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
           lastHapticVal.current = newVal
         }
-        onChange?.(newVal)
+        onChangeRef.current?.(newVal)
       },
       onPanResponderRelease: (_, gestureState) => {
         thumbScale.value = withSpring(1, { mass: 0.3, damping: 10 })
         const tw = widthRef.current - thumbSize
         if (disabledRef.current || tw <= 0) return
         const px = clamp(grantOffsetRef.current + gestureState.dx, 0, tw)
-        const newVal = resolvePixel(px)
-        onChange?.(newVal)
-        onChangeEnd?.(newVal)
+        const newVal = resolveRef.current(px)
+        onChangeRef.current?.(newVal)
+        onChangeEndRef.current?.(newVal)
       },
     })
   ).current
@@ -139,7 +144,6 @@ export const Slider: React.FC<SliderProps> = ({
           <Text variant="caption" muted>{max}</Text>
         </View>
       )}
-      {/* onLayout is on THIS view — NOT on the panResponder view (Android bug #28228) */}
       <View
         style={[styles.trackContainer, { height: thumbSize, opacity: disabled ? 0.4 : 1 }]}
         onLayout={(e: LayoutChangeEvent) => {
@@ -154,7 +158,7 @@ export const Slider: React.FC<SliderProps> = ({
           backgroundColor: trackColor ?? theme.colors.border,
           marginHorizontal: thumbSize / 2,
         }]} />
-        {/* Active fill — pixel width so it aligns perfectly with thumb */}
+        {/* Active fill */}
         <View style={{
           position: 'absolute',
           backgroundColor: fillColor ?? theme.colors.primary,
@@ -164,7 +168,7 @@ export const Slider: React.FC<SliderProps> = ({
           width: thumbPx,
           borderRadius: theme.radius.full,
         }} />
-        {/* Thumb — left: thumbPx (0..trackableWidth), no % needed */}
+        {/* Thumb */}
         <Animated.View style={[{
           position: 'absolute',
           width: thumbSize,
@@ -179,8 +183,7 @@ export const Slider: React.FC<SliderProps> = ({
           shadowOpacity: 0.15,
           shadowRadius: 4,
         }, thumbAnimStyle]} />
-        {/* Touch overlay — separate view from onLayout to avoid Android PanResponder bug.
-            backgroundColor: 'transparent' required for Android touch to register. */}
+        {/* Touch overlay — separate from onLayout (Android PanResponder bug #28228) */}
         <View
           style={[StyleSheet.absoluteFill, { backgroundColor: 'transparent' }]}
           {...panResponder.panHandlers}
@@ -230,15 +233,24 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
   const styles = useStyles()
   const [width, setWidth] = useState(0)
 
+  // ── Refs for everything PanResponder needs (avoids stale closures) ──
   const widthRef = useRef(0)
   const disabledRef = useRef(disabled)
   const activeThumb = useRef<'low' | 'high' | null>(null)
-  const grantOffsetRef = useRef(0)   // pixel position of active thumb at grant
+  const grantOffsetRef = useRef(0)
   const lowRef = useRef(low)
   const highRef = useRef(high)
+  const onChangeRef = useRef(onChange)
+  const onChangeEndRef = useRef(onChangeEnd)
+  const hapticRef = useRef(haptic)
+
+  // Sync refs every render
   disabledRef.current = disabled
   lowRef.current = low
   highRef.current = high
+  onChangeRef.current = onChange
+  onChangeEndRef.current = onChangeEnd
+  hapticRef.current = haptic
 
   const lowScale = useSharedValue(1)
   const highScale = useSharedValue(1)
@@ -247,12 +259,15 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
   const pxLow = trackableWidth > 0 ? ((low - min) / (max - min)) * trackableWidth : 0
   const pxHigh = trackableWidth > 0 ? ((high - min) / (max - min)) * trackableWidth : trackableWidth
 
-  const resolvePixel = (px: number): number => {
+  const resolvePixel = useCallback((px: number): number => {
     const tw = widthRef.current - thumbSize
     if (tw <= 0) return min
     const ratio = clamp(px / tw, 0, 1)
     return clamp(snapVal(min + ratio * (max - min), min, step), min, max)
-  }
+  }, [min, max, step, thumbSize])
+
+  const resolveRef = useRef(resolvePixel)
+  resolveRef.current = resolvePixel
 
   const panResponder = useRef(
     PanResponder.create({
@@ -260,13 +275,16 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
       onMoveShouldSetPanResponder: () => !disabledRef.current,
       onPanResponderGrant: (e) => {
         const tw = widthRef.current - thumbSize
+        if (tw <= 0) return
         const touchPx = clamp(e.nativeEvent.locationX - thumbSize / 2, 0, tw)
-        // Determine which thumb is closer to the touch
-        const dLow = Math.abs(touchPx - pxLow)
-        const dHigh = Math.abs(touchPx - pxHigh)
+        // Compute current pixel positions from refs (always fresh)
+        const curPxLow = ((lowRef.current - min) / (max - min)) * tw
+        const curPxHigh = ((highRef.current - min) / (max - min)) * tw
+        // Determine which thumb is closer
+        const dLow = Math.abs(touchPx - curPxLow)
+        const dHigh = Math.abs(touchPx - curPxHigh)
         activeThumb.current = dLow <= dHigh ? 'low' : 'high'
-        const currentPx = activeThumb.current === 'low' ? pxLow : pxHigh
-        grantOffsetRef.current = currentPx
+        grantOffsetRef.current = activeThumb.current === 'low' ? curPxLow : curPxHigh
         if (activeThumb.current === 'low') lowScale.value = withSpring(1.3, { mass: 0.3, damping: 10 })
         else highScale.value = withSpring(1.3, { mass: 0.3, damping: 10 })
       },
@@ -275,13 +293,13 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
         const tw = widthRef.current - thumbSize
         if (tw <= 0) return
         const px = clamp(grantOffsetRef.current + gestureState.dx, 0, tw)
-        const newVal = resolvePixel(px)
+        const newVal = resolveRef.current(px)
         if (activeThumb.current === 'low') {
-          onChange?.(Math.min(newVal, highRef.current - step), highRef.current)
+          onChangeRef.current?.(Math.min(newVal, highRef.current - step), highRef.current)
         } else {
-          onChange?.(lowRef.current, Math.max(newVal, lowRef.current + step))
+          onChangeRef.current?.(lowRef.current, Math.max(newVal, lowRef.current + step))
         }
-        if (haptic && Haptics) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+        if (hapticRef.current && Haptics) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
       },
       onPanResponderRelease: (_, gestureState) => {
         lowScale.value = withSpring(1, { mass: 0.3, damping: 10 })
@@ -290,15 +308,15 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
           const tw = widthRef.current - thumbSize
           if (tw > 0) {
             const px = clamp(grantOffsetRef.current + gestureState.dx, 0, tw)
-            const newVal = resolvePixel(px)
+            const newVal = resolveRef.current(px)
             if (activeThumb.current === 'low') {
               const l = Math.min(newVal, highRef.current - step)
-              onChange?.(l, highRef.current)
-              onChangeEnd?.(l, highRef.current)
+              onChangeRef.current?.(l, highRef.current)
+              onChangeEndRef.current?.(l, highRef.current)
             } else {
               const h = Math.max(newVal, lowRef.current + step)
-              onChange?.(lowRef.current, h)
-              onChangeEnd?.(lowRef.current, h)
+              onChangeRef.current?.(lowRef.current, h)
+              onChangeEndRef.current?.(lowRef.current, h)
             }
           }
         }
@@ -379,7 +397,7 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
           shadowOpacity: 0.15,
           shadowRadius: 4,
         }, highThumbStyle]} />
-        {/* Touch overlay — separate from onLayout view (Android PanResponder bug #28228) */}
+        {/* Touch overlay — separate from onLayout (Android PanResponder bug #28228) */}
         <View
           style={[StyleSheet.absoluteFill, { backgroundColor: 'transparent' }]}
           {...panResponder.panHandlers}
@@ -390,7 +408,7 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
       {marks && width > 0 && (
         <View style={styles.marksRow}>
           {Array.from({ length: stepCount }).map((_, i) => {
-            const idx = i / (stepCount - 1)
+            const idx = stepCount > 1 ? i / (stepCount - 1) : 0
             const pctLow = (low - min) / (max - min)
             const pctHigh = (high - min) / (max - min)
             const inRange = idx >= pctLow && idx <= pctHigh

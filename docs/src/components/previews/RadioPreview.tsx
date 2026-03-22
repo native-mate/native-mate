@@ -130,7 +130,7 @@ const [value, setValue] = useState('rn')
             ]}
             error="Please select a billing cycle"
           />
-          <Radio label="Unavailable option" value="x" disabled checked={false} onChange={() => {}} />
+          <Radio label="Unavailable option" disabled selected={false} onSelect={() => {}} />
         </View>
       </Preview>
     </div>
