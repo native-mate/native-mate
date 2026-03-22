@@ -1,5 +1,5 @@
 const REGISTRY = 'https://registry.native-mate.dev'
-const GITHUB_FALLBACK = 'https://raw.githubusercontent.com/ayush-jadaun/native-mate/main/packages/registry/dist/registry'
+const GITHUB_FALLBACK = 'https://raw.githubusercontent.com/native-mate/native-mate/main/packages/registry/dist/registry'
 
 export interface RegistryFile {
   path: string
@@ -39,7 +39,7 @@ export async function fetchIndex(): Promise<ComponentIndex[]> {
 
 export async function fetchComponent(name: string): Promise<RegistryComponent> {
   try {
-    const res = await fetch(`${REGISTRY}/${name}/latest.json`)
+    const res = await fetch(`${REGISTRY}/components/${name}/latest.json`)
     if (!res.ok) throw new Error('not found')
     return res.json() as Promise<RegistryComponent>
   } catch {
@@ -72,7 +72,6 @@ const STATIC_INDEX: ComponentIndex[] = [
   { name: 'card',         version: '0.2.0', description: 'CardHeader/CardContent/CardFooter sub-components, loading skeleton prop, image cover, 3 variants (elevated/outline/flat), pressable, Ionicons.', category: 'layout' },
   { name: 'accordion',    version: '0.1.0', description: 'Animated height expansion, single or multi-open, Ionicons chevron.', category: 'layout' },
   { name: 'tabs',         version: '0.1.0', description: 'Horizontal tabs with sliding indicator animation.', category: 'layout' },
-  { name: 'screen',       version: '0.1.0', description: 'SafeAreaView wrapper with theme background, scroll mode, keyboard-avoiding, StatusBar integration.', category: 'layout' },
 
   // Display
   { name: 'badge',        version: '0.3.0', description: '6 variants + info, 3 sizes, 3 appearances (solid/soft/outline), animated pulse dot, count overflow (99+), icon slot, dismissible, Ionicons.', category: 'display' },
@@ -86,7 +85,7 @@ const STATIC_INDEX: ComponentIndex[] = [
   { name: 'action-sheet', version: '0.2.0', description: 'iOS-style bottom sheet with handle, title/message header, actions with destructive variant, separate cancel button, Ionicons, lifecycle-safe animation.', category: 'overlay' },
   { name: 'tooltip',      version: '0.2.0', description: 'Contextual text bubble on press-and-hold, 4 placements (top/bottom/left/right), arrow indicator, delay, Modal-based screen-level positioning.', category: 'overlay' },
   { name: 'popover',      version: '0.1.0', description: 'Interactive content bubble anchored to any element, 4 placements, arrow indicator, backdrop dismiss, scrollable content, Modal-based screen-level positioning.', category: 'overlay' },
-  { name: 'alert',        version: '0.2.0', description: '5 variants (default/info/success/warning/destructive), Ionicons icon, dismissible, action button, description text.', category: 'display' },
+  { name: 'alert',        version: '0.2.0', description: '5 variants (default/info/success/warning/destructive), Ionicons icon, dismissible, action button, description text.', category: 'overlay' },
 
   // Feedback
   { name: 'toast',        version: '0.3.0', description: '4 variants, Modal screen-level positioning, avatar for social notifications, multiple actions, swipe-to-dismiss (horizontal+vertical), progress bar, persistent, useToast hook, Ionicons.', category: 'feedback' },
