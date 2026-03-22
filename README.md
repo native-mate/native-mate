@@ -160,7 +160,7 @@ Install once and Claude / Cursor can list, search, and scaffold native-mate comp
 **Claude Code:**
 
 ```bash
-claude mcp add native-mate npx @native-mate/mcp
+claude mcp add native-mate -- npx @native-mate/mcp
 ```
 
 Available tools: `list_components`, `get_component`, `search_components`, `generate_theme_config`, `get_add_command`

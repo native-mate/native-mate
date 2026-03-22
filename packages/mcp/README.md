@@ -7,7 +7,7 @@ MCP (Model Context Protocol) server for [native-mate](https://github.com/native-
 ### Claude Code
 
 ```bash
-claude mcp add native-mate -- npx -y @native-mate/mcp
+claude mcp add native-mate -- npx @native-mate/mcp
 ```
 
 ### Claude Desktop
