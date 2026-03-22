@@ -1,1 +1,1 @@
-{ "name": "modal", "version": "0.1.0", "description": "Centered dialog with scale animation and backdrop", "files": [{"path": "modal.tsx", "hash": ""}, {"path": "modal.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": ["separator"]} }
+{ "name": "modal", "version": "0.1.0", "description": "Centered dialog with scale animation and backdrop", "category": "overlay", "files": [{"path": "modal.tsx", "hash": ""}, {"path": "modal.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": ["separator"]} }

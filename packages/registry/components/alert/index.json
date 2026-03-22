@@ -1,1 +1,1 @@
-{ "name": "alert", "version": "0.1.0", "description": "Inline alert box with left accent border and variants", "files": [{"path": "alert.tsx", "hash": ""}, {"path": "alert.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }
+{ "name": "alert", "version": "0.1.0", "description": "Inline alert box with left accent border and variants", "category": "feedback", "files": [{"path": "alert.tsx", "hash": ""}, {"path": "alert.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }

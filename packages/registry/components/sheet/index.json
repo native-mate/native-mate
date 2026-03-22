@@ -1,1 +1,1 @@
-{ "name": "sheet", "version": "0.1.0", "description": "Animated bottom sheet with snap points", "files": [{"path": "sheet.tsx", "hash": ""}, {"path": "sheet.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": ["separator"]} }
+{ "name": "sheet", "version": "0.1.0", "description": "Animated bottom sheet with snap points", "category": "overlay", "files": [{"path": "sheet.tsx", "hash": ""}, {"path": "sheet.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": ["separator"]} }

@@ -1,1 +1,1 @@
-{ "name": "accordion", "version": "0.1.0", "description": "Collapsible accordion with animated height and chevron", "files": [{"path": "accordion.tsx", "hash": ""}, {"path": "accordion.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": ["separator"]} }
+{ "name": "accordion", "version": "0.1.0", "description": "Collapsible accordion with animated height and chevron", "category": "layout", "files": [{"path": "accordion.tsx", "hash": ""}, {"path": "accordion.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": ["separator"]} }

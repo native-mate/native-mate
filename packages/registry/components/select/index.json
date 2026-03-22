@@ -1,1 +1,1 @@
-{ "name": "select", "version": "0.1.0", "description": "Select dropdown using Sheet with FlatList options", "files": [{"path": "select.tsx", "hash": ""}, {"path": "select.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": ["sheet"]} }
+{ "name": "select", "version": "0.1.0", "description": "Select dropdown using Sheet with FlatList options", "category": "input", "files": [{"path": "select.tsx", "hash": ""}, {"path": "select.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": ["sheet"]} }

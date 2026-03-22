@@ -1,1 +1,1 @@
-{ "name": "empty-state", "version": "0.1.0", "description": "Animated empty state with icon, title, description, and action button", "files": [{"path": "empty-state.tsx", "hash": ""}, {"path": "empty-state.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }
+{ "name": "empty-state", "version": "0.1.0", "description": "Animated empty state with icon, title, description, and action button", "category": "display", "files": [{"path": "empty-state.tsx", "hash": ""}, {"path": "empty-state.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }

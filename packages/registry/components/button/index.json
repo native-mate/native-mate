@@ -1,7 +1,7 @@
 {
   "name": "button",
   "version": "0.3.0",
-  "description": "Feature-rich button with 7 variants including gradient, icon-only mode, button group, rounded pill shape, custom colors, haptic feedback, and spring animation",
+  "description": "Feature-rich button with 7 variants including gradient, icon-only mode, button group, rounded pill shape, custom colors, haptic feedback, and spring animation", "category": "input",
   "files": [
     { "path": "button.tsx", "hash": "" },
     { "path": "button.types.ts", "hash": "" }
