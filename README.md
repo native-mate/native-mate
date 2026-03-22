@@ -2,13 +2,13 @@
 
 A production-grade React Native + Expo UI component library inspired by shadcn/ui. Copy components directly into your project, own the code, and never fight a library again.
 
-> **Status:** v0.1.0 — all 25 components, CLI, docs site, MCP server, Figma plugin, VS Code extension
+> **Status:** v0.1.0 — 30 components, CLI, docs site, MCP server, Figma plugin, VS Code extension
 
 ---
 
 ## What it is
 
-native-mate gives you 25 fully-typed, themeable React Native components that you copy into your own codebase via a CLI. There's no runtime dependency to update — you own the source. The token system supports four built-in presets (zinc, slate, rose, midnight) with full dark mode.
+native-mate gives you 30 fully-typed, themeable React Native components that you copy into your own codebase via a CLI. There's no runtime dependency to update — you own the source. The token system supports four built-in presets (zinc, slate, rose, midnight) with full dark mode.
 
 ```bash
 npx @native-mate/cli init
@@ -29,19 +29,23 @@ npx @native-mate/cli add button card input
 | [`packages/figma-plugin`](./packages/figma-plugin) | Figma plugin — export tokens, inspect components |
 | [`packages/vscode-extension`](./packages/vscode-extension) | VS Code extension — add components from the command palette |
 | [`docs`](./docs) | Next.js documentation site |
-| [`apps/storybook`](./apps/storybook) | React Native Storybook with all 25 components |
+| [`apps/storybook`](./apps/storybook) | React Native Storybook with 30 components |
 
 ---
 
 ## Components
 
-**Forms:** Button, Input, Checkbox, Switch, Slider, Select, Textarea, Radio, OTP Input
+**Primitives:** Button, Text, Icon, Spinner, Separator
 
-**Display:** Badge, Avatar, Tag, Progress, Skeleton, Alert, Card, Tabs, Accordion
+**Forms:** Input, Textarea, Checkbox, Radio, Switch, Slider, Select, OTP Input
 
-**Overlay:** Sheet, Modal, Action Sheet, Toast, Tooltip, Dialog
+**Layout:** Card, Accordion, Tabs, Screen
 
-**Layout:** Screen
+**Display:** Badge, Avatar, Tag, Empty State, Alert
+
+**Overlay:** Sheet, Modal, Action Sheet, Toast, Tooltip, Popover
+
+**Feedback:** Progress, Skeleton
 
 ---
 
