@@ -1,0 +1,21 @@
+{
+  "name": "alert",
+  "version": "0.1.0",
+  "description": "Inline alert box with left accent border and variants",
+  "files": [
+    {
+      "path": "alert.tsx",
+      "content": "// native-mate: alert@0.1.0 | hash:490aafd230c7b6f3\nimport React from 'react'\nimport { View, Pressable } from 'react-native'\nimport { Ionicons } from '@expo/vector-icons'\nimport { useTheme, Text, makeStyles } from '@native-mate/core'\nimport type { AlertProps, AlertVariant } from './alert.types'\n\ntype IconName = React.ComponentProps<typeof Ionicons>['name']\n\nconst variantMeta: Record<AlertVariant, { colorKey: string; icon: IconName; hardColor?: string }> = {\n  default:     { colorKey: 'primary',     icon: 'information-circle' },\n  info:        { colorKey: '',            icon: 'information-circle', hardColor: '#3b82f6' },\n  success:     { colorKey: 'success',     icon: 'checkmark-circle' },\n  warning:     { colorKey: 'warning',     icon: 'warning' },\n  destructive: { colorKey: 'destructive', icon: 'close-circle' },\n}\n\nconst useStyles = makeStyles((theme) => ({\n  container: {\n    borderRadius: theme.radius.md,\n    overflow: 'hidden',\n  },\n  inner: {\n    flexDirection: 'row',\n    padding: theme.spacing.md,\n    gap: theme.spacing.sm,\n    borderWidth: 1,\n    borderRadius: theme.radius.md,\n  },\n  body: {\n    flex: 1,\n    gap: 4,\n  },\n  footer: {\n    flexDirection: 'row',\n    alignItems: 'center',\n    justifyContent: 'flex-end',\n    marginTop: 8,\n  },\n  actionBtn: {\n    paddingVertical: 4,\n    paddingHorizontal: 10,\n    borderRadius: 6,\n    borderWidth: 1,\n  },\n}))\n\nexport const Alert: React.FC<AlertProps> = ({\n  variant = 'default',\n  title,\n  description,\n  icon,\n  onDismiss,\n  action,\n  children,\n}) => {\n  const theme = useTheme()\n  const styles = useStyles()\n  const meta = variantMeta[variant]\n  const accentColor = meta.hardColor ?? (theme.colors[meta.colorKey as keyof typeof theme.colors] as string)\n\n  return (\n    <View\n      style={[\n        styles.inner,\n        {\n          backgroundColor: accentColor + '14',\n          borderColor: accentColor + '45',\n        },\n      ]}\n      accessibilityRole=\"alert\"\n    >\n      {/* Icon column */}\n      <View style={{ paddingTop: 1 }}>\n        {icon ?? <Ionicons name={meta.icon} size={18} color={accentColor} />}\n      </View>\n\n      {/* Content */}\n      <View style={styles.body}>\n        <Text variant=\"label\" style={{ color: accentColor }}>{title}</Text>\n        {description != null && (\n          <Text variant=\"body\" style={{ color: accentColor, opacity: 0.8, fontSize: 13 }}>\n            {description}\n          </Text>\n        )}\n        {children}\n        {action != null && (\n          <View style={styles.footer}>\n            <Pressable\n              onPress={action.onPress}\n              style={[styles.actionBtn, { borderColor: accentColor + '60' }]}\n            >\n              <Text style={{ color: accentColor, fontSize: 12, fontWeight: '600' }}>\n                {action.label}\n              </Text>\n            </Pressable>\n          </View>\n        )}\n      </View>\n\n      {/* Dismiss */}\n      {onDismiss != null && (\n        <Pressable onPress={onDismiss} hitSlop={8} style={{ paddingTop: 1 }}>\n          <Ionicons name=\"close\" size={16} color={accentColor} style={{ opacity: 0.7 }} />\n        </Pressable>\n      )}\n    </View>\n  )\n}\n",
+      "hash": "490aafd230c7b6f3"
+    },
+    {
+      "path": "alert.types.ts",
+      "content": "// native-mate: alert@0.1.0 | hash:ec593e032eb3996d\n\nexport type AlertVariant = 'default' | 'destructive' | 'success' | 'warning' | 'info'\n\nexport interface AlertAction {\n  label: string\n  onPress: () => void\n}\n\nexport interface AlertProps {\n  variant?: AlertVariant\n  title: string\n  description?: string\n  icon?: React.ReactNode\n  /** Show dismiss (×) button */\n  onDismiss?: () => void\n  /** Optional action button in footer */\n  action?: AlertAction\n  children?: React.ReactNode\n}\n",
+      "hash": "ec593e032eb3996d"
+    }
+  ],
+  "dependencies": {
+    "npm": [],
+    "components": []
+  }
+}

@@ -1,5 +1,6 @@
 node_modules/
 dist/
+!packages/registry/dist/
 .turbo/
 *.log
 .expo/
