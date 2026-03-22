@@ -31,5 +31,5 @@ export function installCommand(pm: PackageManager, packages: string[]): string {
 
 export function runInstall(pm: PackageManager, packages: string[], cwd: string = process.cwd()): void {
   const cmd = installCommand(pm, packages)
-  execSync(cmd, { cwd, stdio: 'inherit' })
+  execSync(cmd, { cwd, stdio: 'pipe' })
 }

@@ -6,7 +6,7 @@ const CURSORRULES_BLOCK = `
 - Import components from your components directory, not from npm
 - Use \`makeStyles(theme => ({...}))\` for styles, never inline StyleSheet.create
 - Use \`useTheme()\` to access design tokens inside components
-- Animations: use Reanimated 3 (\`useSharedValue\`, \`useAnimatedStyle\`, \`withSpring\`, \`withTiming\`)
+- Animations: use Reanimated 4 (\`useSharedValue\`, \`useAnimatedStyle\`, \`withSpring\`, \`withTiming\`)
 - Never use NativeWind or className props — this codebase uses the StyleSheet token system
 - Run \`native-mate add <component>\` to add new components, never copy from npm packages
 - Run \`native-mate upgrade\` to check for component updates
