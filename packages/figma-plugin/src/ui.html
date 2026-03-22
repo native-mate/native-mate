@@ -27,7 +27,10 @@
       font-size: 13px;
       line-height: 1.5;
       padding: 0;
+      overflow: hidden;
     }
+
+    html { overflow: hidden; }
 
     header {
       display: flex;
@@ -160,6 +163,24 @@
     }
 
     .status { font-size: 11px; color: var(--muted); text-align: center; padding: 20px; }
+
+    .component-item { display: flex; align-items: center; justify-content: space-between; }
+    .insert-btn, .copy-btn-sm {
+      background: var(--accent);
+      color: var(--fg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      width: 26px;
+      height: 26px;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      transition: background 0.1s;
+    }
+    .insert-btn:hover, .copy-btn-sm:hover { background: var(--primary); color: var(--primary-fg); }
   </style>
 </head>
 <body>
@@ -264,13 +285,26 @@
     if (!list.length) { el.innerHTML = '<div class="status">No results</div>'; return }
     el.innerHTML = list.map(c => `
       <div class="component-item" data-name="${c.name}">
-        <span class="component-name">${c.name}</span>
-        <span class="component-cat">${c.category}</span>
+        <div style="flex:1;min-width:0">
+          <span class="component-name">${c.name}</span>
+          <span class="component-cat">${c.category}</span>
+        </div>
+        <div style="display:flex;gap:4px;flex-shrink:0">
+          <button class="insert-btn" data-name="${c.name}" title="Insert on canvas">+</button>
+          <button class="copy-btn-sm" data-name="${c.name}" title="Copy code">⎘</button>
+        </div>
       </div>
     `).join('')
-    el.querySelectorAll('.component-item').forEach(item => {
-      item.addEventListener('click', () => {
-        parent.postMessage({ pluginMessage: { type: 'COPY_COMPONENT_CODE', payload: item.dataset.name } }, '*')
+    el.querySelectorAll('.insert-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation()
+        parent.postMessage({ pluginMessage: { type: 'INSERT_COMPONENT', payload: btn.dataset.name } }, '*')
+      })
+    })
+    el.querySelectorAll('.copy-btn-sm').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation()
+        parent.postMessage({ pluginMessage: { type: 'COPY_COMPONENT_CODE', payload: btn.dataset.name } }, '*')
       })
     })
   }
@@ -319,6 +353,10 @@
       navigator.clipboard.writeText(text).then(() => {
         alert(`${msg.data.name} code copied to clipboard!`)
       })
+    }
+
+    if (msg.type === 'COMPONENT_INSERTED') {
+      figma && figma.notify ? figma.notify(msg.name + ' inserted!') : null
     }
 
     if (msg.type === 'ERROR') {
