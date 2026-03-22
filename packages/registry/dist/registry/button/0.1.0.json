@@ -1,0 +1,21 @@
+{
+  "name": "button",
+  "version": "0.1.0",
+  "description": "Pressable button with variants, sizes, loading state and spring animation",
+  "files": [
+    {
+      "path": "button.tsx",
+      "content": "// native-mate: button@0.1.0 | hash:ad07e3c9356bf57d\nimport React from 'react'\nimport { Pressable, ActivityIndicator } from 'react-native'\nimport Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated'\nimport { useTheme, Text, makeStyles } from '@native-mate/core'\nimport type { ButtonProps, ButtonVariant } from './button.types'\n\nconst useStyles = makeStyles((theme) => ({\n  base: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', borderRadius: theme.radius.md },\n  default:     { backgroundColor: theme.colors.primary },\n  destructive: { backgroundColor: theme.colors.destructive },\n  outline:     { backgroundColor: 'transparent', borderWidth: 1, borderColor: theme.colors.border },\n  ghost:       { backgroundColor: 'transparent' },\n  secondary:   { backgroundColor: theme.colors.surface },\n  sm: { paddingVertical: theme.spacing.xs, paddingHorizontal: theme.spacing.sm, minHeight: 32 },\n  md: { paddingVertical: theme.spacing.sm, paddingHorizontal: theme.spacing.lg, minHeight: 44 },\n  lg: { paddingVertical: theme.spacing.md, paddingHorizontal: theme.spacing.xl, minHeight: 52 },\n  disabled: { opacity: 0.5 },\n}))\n\nconst labelColorMap: Record<ButtonVariant, keyof ReturnType<typeof useTheme>['colors']> = {\n  default: 'onPrimary', destructive: 'onDestructive', outline: 'foreground', ghost: 'foreground', secondary: 'onSurface',\n}\n\nexport const Button: React.FC<ButtonProps> = ({\n  variant = 'default', size = 'md', loading = false, disabled = false,\n  children, accessibilityLabel, onPress, ...rest\n}) => {\n  const theme = useTheme()\n  const styles = useStyles()\n  const pressed = useSharedValue(0)\n\n  const animatedStyle = useAnimatedStyle(() => ({\n    transform: [{ scale: withSpring(pressed.value ? 0.97 : 1, theme.animation.easing.spring) }],\n  }))\n\n  const isDisabled = disabled || loading\n  const textColor = theme.colors[labelColorMap[variant]]\n\n  return (\n    <Pressable\n      onPressIn={() => { pressed.value = 1 }}\n      onPressOut={() => { pressed.value = 0 }}\n      onPress={onPress}\n      disabled={isDisabled}\n      accessibilityRole=\"button\"\n      accessibilityLabel={accessibilityLabel ?? (typeof children === 'string' ? children : undefined)}\n      accessibilityState={{ disabled: isDisabled, busy: loading }}\n      {...rest}\n    >\n      <Animated.View style={[styles.base, styles[variant], styles[size], isDisabled && styles.disabled, animatedStyle]}>\n        {loading\n          ? <ActivityIndicator size=\"small\" color={textColor} />\n          : <Text variant=\"label\" color={textColor}>{children}</Text>\n        }\n      </Animated.View>\n    </Pressable>\n  )\n}\n",
+      "hash": "ad07e3c9356bf57d"
+    },
+    {
+      "path": "button.types.ts",
+      "content": "// native-mate: button@0.1.0 | hash:fef3f0876343f601\n\nexport type ButtonVariant = 'default' | 'destructive' | 'outline' | 'ghost' | 'secondary'\nexport type ButtonSize = 'sm' | 'md' | 'lg'\n\nexport interface ButtonProps extends Omit<PressableProps, 'style'> {\n  variant?: ButtonVariant\n  size?: ButtonSize\n  loading?: boolean\n  disabled?: boolean\n  children: React.ReactNode\n  accessibilityLabel?: string\n}\n",
+      "hash": "fef3f0876343f601"
+    }
+  ],
+  "dependencies": {
+    "npm": [],
+    "components": []
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "input",
+  "version": "0.1.0",
+  "description": "Text input with label, error, hint and focus state",
+  "files": [
+    {
+      "path": "input.tsx",
+      "content": "// native-mate: input@0.1.0 | hash:bd180baa8da5027f\nimport React, { useState } from 'react'\nimport { View, TextInput } from 'react-native'\nimport { useTheme, Text, makeStyles } from '@native-mate/core'\nimport type { InputProps } from './input.types'\n\nconst useStyles = makeStyles((theme) => ({\n  wrapper: { gap: theme.spacing.xs },\n  inputContainer: {\n    borderWidth: 1, borderRadius: theme.radius.md,\n    paddingHorizontal: theme.spacing.md, minHeight: 44,\n    justifyContent: 'center',\n  },\n  hint: { color: theme.colors.muted },\n  error: { color: theme.colors.destructive },\n}))\n\nexport const Input: React.FC<InputProps> = ({ label, error, hint, disabled = false, ...rest }) => {\n  const theme = useTheme()\n  const styles = useStyles()\n  const [focused, setFocused] = useState(false)\n\n  const borderColor = error\n    ? theme.colors.destructive\n    : focused\n    ? theme.colors.primary\n    : theme.colors.border\n\n  return (\n    <View style={styles.wrapper}>\n      {label && <Text variant=\"label\">{label}</Text>}\n      <View style={[styles.inputContainer, { borderColor, backgroundColor: disabled ? theme.colors.surface : theme.colors.background }]}>\n        <TextInput\n          style={{ color: theme.colors.foreground, fontSize: theme.typography.size.md, opacity: disabled ? 0.5 : 1 }}\n          placeholderTextColor={theme.colors.muted}\n          editable={!disabled}\n          onFocus={() => setFocused(true)}\n          onBlur={() => setFocused(false)}\n          accessibilityLabel={label}\n          accessibilityState={{ disabled }}\n          {...rest}\n        />\n      </View>\n      {error && <Text variant=\"caption\" style={styles.error}>{error}</Text>}\n      {!error && hint && <Text variant=\"caption\" style={styles.hint}>{hint}</Text>}\n    </View>\n  )\n}\n",
+      "hash": "bd180baa8da5027f"
+    },
+    {
+      "path": "input.types.ts",
+      "content": "// native-mate: input@0.1.0 | hash:bf0f3546b427ac6e\n\nexport interface InputProps extends Omit<TextInputProps, 'style'> {\n  label?: string\n  error?: string\n  hint?: string\n  disabled?: boolean\n}\n",
+      "hash": "bf0f3546b427ac6e"
+    }
+  ],
+  "dependencies": {
+    "npm": [],
+    "components": []
+  }
+}

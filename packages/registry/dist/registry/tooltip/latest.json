@@ -1,0 +1,21 @@
+{
+  "name": "tooltip",
+  "version": "0.1.0",
+  "description": "Contextual bubble anchored to any element, with top/bottom/left/right placement",
+  "files": [
+    {
+      "path": "tooltip.tsx",
+      "content": "// native-mate: tooltip@0.1.0 | hash:7509efb5391fd9cc\nimport React, { useRef, useState } from 'react'\nimport { View, Pressable, Modal } from 'react-native'\nimport Animated, { useSharedValue, useAnimatedStyle, withSpring, withTiming } from 'react-native-reanimated'\nimport { makeStyles, Text, useTheme } from '@native-mate/core'\nimport type { TooltipProps, TooltipPlacement } from './tooltip.types'\n\nconst useStyles = makeStyles((theme) => ({\n  bubble: {\n    position: 'absolute',\n    backgroundColor: theme.colors.foreground,\n    borderRadius: theme.radius.sm,\n    paddingVertical: theme.spacing.xs,\n    paddingHorizontal: theme.spacing.sm,\n    maxWidth: 220,\n    zIndex: 9999,\n  },\n  arrow: {\n    position: 'absolute',\n    width: 8,\n    height: 8,\n    backgroundColor: theme.colors.foreground,\n    transform: [{ rotate: '45deg' }],\n  },\n}))\n\nconst OFFSET = 8\n\nexport const Tooltip: React.FC<TooltipProps> = ({ content, placement = 'top', children, style }) => {\n  const theme = useTheme()\n  const styles = useStyles()\n  const [visible, setVisible] = useState(false)\n  const [anchorLayout, setAnchorLayout] = useState({ x: 0, y: 0, width: 0, height: 0 })\n  const opacity = useSharedValue(0)\n  const scale = useSharedValue(0.9)\n  const anchorRef = useRef<View>(null)\n\n  const show = () => {\n    anchorRef.current?.measureInWindow((x, y, width, height) => {\n      setAnchorLayout({ x, y, width, height })\n      setVisible(true)\n      opacity.value = withTiming(1, { duration: theme.animation.speed.fast })\n      scale.value = withSpring(1, theme.animation.easing.spring)\n    })\n  }\n\n  const hide = () => {\n    opacity.value = withTiming(0, { duration: 100 })\n    scale.value = withSpring(0.9, theme.animation.easing.spring)\n    setTimeout(() => setVisible(false), 120)\n  }\n\n  const animatedStyle = useAnimatedStyle(() => ({\n    opacity: opacity.value,\n    transform: [{ scale: scale.value }],\n  }))\n\n  const getBubblePosition = (): ViewStyle => {\n    const { x, y, width, height } = anchorLayout\n    switch (placement) {\n      case 'bottom': return { top: y + height + OFFSET, left: x + width / 2 }\n      case 'left':   return { top: y + height / 2, left: x - OFFSET, transform: [{ translateX: -100 }, { translateY: -50 }] }\n      case 'right':  return { top: y + height / 2, left: x + width + OFFSET, transform: [{ translateY: -50 }] }\n      default:       return { top: y - OFFSET, left: x + width / 2, transform: [{ translateX: -50 }, { translateY: -100 }] }\n    }\n  }\n\n  type ViewStyle = { top?: number; left?: number; transform?: object[] }\n\n  return (\n    <>\n      <Pressable ref={anchorRef as React.RefObject<View>} onPress={show} onLongPress={show} onPressOut={hide} style={style}>\n        {children}\n      </Pressable>\n      {visible && (\n        <Modal visible transparent onRequestClose={hide}>\n          <Pressable style={{ flex: 1 }} onPress={hide}>\n            <Animated.View\n              style={[\n                styles.bubble,\n                getBubblePosition() as object,\n                animatedStyle,\n              ]}\n            >\n              <Text size=\"xs\" style={{ color: theme.colors.background }}>{content}</Text>\n            </Animated.View>\n          </Pressable>\n        </Modal>\n      )}\n    </>\n  )\n}\n",
+      "hash": "7509efb5391fd9cc"
+    },
+    {
+      "path": "tooltip.types.ts",
+      "content": "// native-mate: tooltip@0.1.0 | hash:da605ed788a77a7e\n\nexport type TooltipPlacement = 'top' | 'bottom' | 'left' | 'right'\n\nexport interface TooltipProps {\n  content: string\n  placement?: TooltipPlacement\n  children: React.ReactElement\n  style?: ViewStyle\n}\n",
+      "hash": "da605ed788a77a7e"
+    }
+  ],
+  "dependencies": {
+    "npm": [],
+    "components": []
+  }
+}
