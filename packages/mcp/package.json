@@ -6,6 +6,14 @@
     "native-mate-mcp": "./dist/index.js"
   },
   "main": "./dist/index.js",
+  "files": ["dist"],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/native-mate/native-mate",
+    "directory": "packages/mcp"
+  },
+  "keywords": ["mcp", "claude", "cursor", "react-native", "native-mate", "ai"],
   "scripts": {
     "build": "tsc --project tsconfig.json",
     "dev": "ts-node src/index.ts",

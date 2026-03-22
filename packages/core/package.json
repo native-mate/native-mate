@@ -2,8 +2,16 @@
   "name": "@native-mate/core",
   "version": "0.1.0",
   "description": "Token system, ThemeProvider, and primitive components for native-mate",
-  "main": "./src/index.ts",
-  "types": "./src/index.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": ["dist", "src"],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/native-mate/native-mate",
+    "directory": "packages/core"
+  },
+  "keywords": ["react-native", "expo", "ui", "theme", "tokens", "native-mate"],
   "scripts": {
     "build": "tsc --project tsconfig.json",
     "test": "cd ../.. && npx vitest run --config vitest.config.ts packages/core",
