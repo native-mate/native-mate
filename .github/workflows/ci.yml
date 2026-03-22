@@ -25,14 +25,14 @@ jobs:
       - name: Install dependencies
         run: npm ci --ignore-scripts --legacy-peer-deps
 
-      - name: Build all packages
-        run: npx turbo run build
+      - name: Build packages
+        run: npx turbo run build --filter=@native-mate/core --filter=@native-mate/cli --filter=@native-mate/mcp --filter=@native-mate/registry --filter=@native-mate/docs
 
       - name: Run tests
         run: npx vitest run
 
-      - name: Lint all packages
-        run: npx turbo run lint
+      - name: Lint packages
+        run: npx turbo run lint --filter=@native-mate/core --filter=@native-mate/cli --filter=@native-mate/mcp --filter=@native-mate/registry --filter=@native-mate/docs
 
   # ──────────────────────────────────────────────────────────
   # npm publish — DISABLED until ready to launch
@@ -41,7 +41,7 @@ jobs:
   publish:
     name: Publish to npm
     needs: build-and-test
-    if: false  # ← flip to `github.ref == 'refs/heads/main'` when ready
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -58,8 +58,8 @@ jobs:
       - name: Install dependencies
         run: npm ci --ignore-scripts --legacy-peer-deps
 
-      - name: Build all packages
-        run: npx turbo run build
+      - name: Build packages
+        run: npx turbo run build --filter=@native-mate/core --filter=@native-mate/cli --filter=@native-mate/mcp --filter=@native-mate/registry
 
       - name: Publish @native-mate/core
         working-directory: packages/core
@@ -75,12 +75,6 @@ jobs:
 
       - name: Publish @native-mate/mcp
         working-directory: packages/mcp
-        run: npm publish --access public --provenance
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Publish @native-mate/framer
-        working-directory: packages/framer
         run: npm publish --access public --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
