@@ -41,7 +41,7 @@ jobs:
   publish:
     name: Publish to npm
     needs: build-and-test
-    if: false  # ← flip to `github.ref == 'refs/heads/main'` when ready
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
     permissions:
       contents: read
