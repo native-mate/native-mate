@@ -55,6 +55,7 @@ const nextConfig = {
     'react-native-reanimated',
     '@native-mate/core',
     '@expo/vector-icons',
+    '@modelcontextprotocol/sdk',
   ],
 }
 

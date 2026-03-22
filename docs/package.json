@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@expo/vector-icons": "*",
+    "@modelcontextprotocol/sdk": "^1.27.1",
     "@native-mate/core": "*",
     "@types/prismjs": "^1.26.6",
     "framer-motion": "^12.38.0",
