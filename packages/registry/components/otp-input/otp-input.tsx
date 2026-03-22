@@ -215,9 +215,10 @@ export const OTPInput: React.FC<OTPInputProps> = ({
   }, [length, type, onChange, onComplete, haptic])
 
   const handleResend = useCallback(() => {
+    onChange('')
     setCooldown(resendCooldown)
     onResend?.()
-  }, [resendCooldown, onResend])
+  }, [onChange, resendCooldown, onResend])
 
   const rowAnimStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: shakeAnim.value }],
