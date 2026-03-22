@@ -5,6 +5,7 @@
   "description": "Internal — component source and registry build scripts",
   "scripts": {
     "build": "ts-node scripts/build-registry.ts",
+    "test": "cd ../.. && npx vitest run --config vitest.config.ts packages/registry",
     "lint": "tsc --noEmit"
   },
   "devDependencies": {

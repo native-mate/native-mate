@@ -9,6 +9,7 @@
   "scripts": {
     "build": "tsc --project tsconfig.json",
     "dev": "ts-node src/index.ts",
+    "test": "cd ../.. && npx vitest run --config vitest.config.ts packages/mcp",
     "lint": "tsc --noEmit"
   },
   "dependencies": {

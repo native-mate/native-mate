@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest'
 import { resolveTokens, zinc, slate, rose, midnight, presets } from '../tokens'
 
 describe('resolveTokens', () => {
