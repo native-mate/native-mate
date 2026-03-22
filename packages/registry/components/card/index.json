@@ -1,1 +1,1 @@
-{ "name": "card", "version": "0.1.0", "description": "Surface container with border and shadow", "files": [{"path": "card.tsx", "hash": ""}, {"path": "card.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }
+{ "name": "card", "version": "0.1.0", "description": "Surface container with border and shadow", "category": "display", "files": [{"path": "card.tsx", "hash": ""}, {"path": "card.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }

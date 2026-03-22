@@ -1,1 +1,1 @@
-{ "name": "slider", "version": "0.1.0", "description": "Gesture-based range slider with step and accessibility support", "files": [{"path": "slider.tsx", "hash": ""}, {"path": "slider.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }
+{ "name": "slider", "version": "0.1.0", "description": "Gesture-based range slider with step and accessibility support", "category": "input", "files": [{"path": "slider.tsx", "hash": ""}, {"path": "slider.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }

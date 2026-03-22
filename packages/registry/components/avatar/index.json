@@ -1,1 +1,1 @@
-{ "name": "avatar", "version": "0.1.0", "description": "Circular avatar with image + initials fallback", "files": [{"path": "avatar.tsx", "hash": ""}, {"path": "avatar.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }
+{ "name": "avatar", "version": "0.1.0", "description": "Circular avatar with image + initials fallback", "category": "display", "files": [{"path": "avatar.tsx", "hash": ""}, {"path": "avatar.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }

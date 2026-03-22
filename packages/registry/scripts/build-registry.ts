@@ -46,7 +46,23 @@ function buildRegistry() {
     fs.writeFileSync(path.join(outDir, 'latest.json'), JSON.stringify(output, null, 2))
     console.log(`✓ ${name}@${meta.version}`)
   }
-  console.log(`\nRegistry built → ${DIST_DIR}`)
+  // Build index.json
+  const index = {
+    components: componentDirs
+      .filter((name) => fs.existsSync(path.join(COMPONENTS_DIR, name, 'index.json')))
+      .map((name) => {
+        const meta = JSON.parse(fs.readFileSync(path.join(COMPONENTS_DIR, name, 'index.json'), 'utf-8'))
+        return {
+          name,
+          version: meta.version,
+          description: meta.description ?? '',
+          category: meta.category ?? 'other',
+        }
+      }),
+  }
+  fs.writeFileSync(path.join(DIST_DIR, 'index.json'), JSON.stringify(index, null, 2))
+  console.log(`\n✓ index.json (${index.components.length} components)`)
+  console.log(`Registry built → ${DIST_DIR}`)
 }
 
 buildRegistry()

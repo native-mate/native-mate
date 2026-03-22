@@ -1,1 +1,1 @@
-{ "name": "badge", "version": "0.1.0", "description": "Inline status badge with 5 variants", "files": [{"path": "badge.tsx", "hash": ""}, {"path": "badge.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }
+{ "name": "badge", "version": "0.1.0", "description": "Inline status badge with 5 variants", "category": "display", "files": [{"path": "badge.tsx", "hash": ""}, {"path": "badge.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }

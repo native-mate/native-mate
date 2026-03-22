@@ -2,6 +2,7 @@
 import { Command } from 'commander'
 import { init } from './commands/init'
 import { add } from './commands/add'
+import { list } from './commands/list'
 import { upgrade } from './commands/upgrade'
 
 const program = new Command()
@@ -9,7 +10,7 @@ const program = new Command()
 program
   .name('native-mate')
   .description('Add production-ready React Native components to your project')
-  .version('0.1.0')
+  .version('1.0.0')
 
 program
   .command('init')
@@ -21,9 +22,17 @@ program
 program
   .command('add [components...]')
   .description('Add one or more components from the registry')
+  .option('-a, --all', 'Add all available components')
   .option('-r, --registry <url>', 'Custom registry URL')
   .option('--overwrite', 'Overwrite existing component files')
   .action((components, options) => add(components, options))
+
+program
+  .command('list')
+  .alias('ls')
+  .description('List all available components in the registry')
+  .option('-r, --registry <url>', 'Custom registry URL')
+  .action((options) => list(options))
 
 program
   .command('upgrade [components...]')

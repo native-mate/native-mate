@@ -1,1 +1,1 @@
-{ "name": "screen", "version": "0.1.0", "description": "SafeAreaView wrapper with theme background color", "files": [{"path": "screen.tsx", "hash": ""}, {"path": "screen.types.ts", "hash": ""}], "dependencies": {"npm": ["react-native-safe-area-context"], "components": []} }
+{ "name": "screen", "version": "0.1.0", "description": "SafeAreaView wrapper with theme background color", "category": "layout", "files": [{"path": "screen.tsx", "hash": ""}, {"path": "screen.types.ts", "hash": ""}], "dependencies": {"npm": ["react-native-safe-area-context"], "components": []} }

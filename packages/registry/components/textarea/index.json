@@ -1,1 +1,1 @@
-{ "name": "textarea", "version": "0.1.0", "description": "Multiline text input with label and error state", "files": [{"path": "textarea.tsx", "hash": ""}, {"path": "textarea.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }
+{ "name": "textarea", "version": "0.1.0", "description": "Multiline text input with label and error state", "category": "input", "files": [{"path": "textarea.tsx", "hash": ""}, {"path": "textarea.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }

@@ -1,1 +1,1 @@
-{ "name": "switch", "version": "0.1.0", "description": "Animated toggle switch with interpolated track color", "files": [{"path": "switch.tsx", "hash": ""}, {"path": "switch.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }
+{ "name": "switch", "version": "0.1.0", "description": "Animated toggle switch with interpolated track color", "category": "input", "files": [{"path": "switch.tsx", "hash": ""}, {"path": "switch.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }

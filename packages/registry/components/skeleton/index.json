@@ -1,1 +1,1 @@
-{ "name": "skeleton", "version": "0.1.0", "description": "Pulsing skeleton loader placeholder", "files": [{"path": "skeleton.tsx", "hash": ""}, {"path": "skeleton.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }
+{ "name": "skeleton", "version": "0.1.0", "description": "Pulsing skeleton loader placeholder", "category": "feedback", "files": [{"path": "skeleton.tsx", "hash": ""}, {"path": "skeleton.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }

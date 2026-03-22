@@ -1,1 +1,1 @@
-{ "name": "tag", "version": "0.1.0", "description": "Compact dismissible label chip with spring animation on remove", "files": [{"path": "tag.tsx", "hash": ""}, {"path": "tag.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }
+{ "name": "tag", "version": "0.1.0", "description": "Compact dismissible label chip with spring animation on remove", "category": "display", "files": [{"path": "tag.tsx", "hash": ""}, {"path": "tag.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }
