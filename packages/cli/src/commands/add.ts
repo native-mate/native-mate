@@ -151,6 +151,9 @@ export async function add(names: string[], options: AddOptions) {
     }
   })()
 
+  // Trim whitespace and filter empty names
+  names = names.map((n) => n.trim().toLowerCase()).filter(Boolean)
+
   // Interactive multi-select if no names provided and --all not set
   if (names.length === 0 && !options.all) {
     names = await promptComponentSelection(options.registry)

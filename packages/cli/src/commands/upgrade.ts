@@ -63,10 +63,18 @@ async function checkComponent(
     }
   }
 
-  const hasUpdates = semver.gt(
-    latest.version,
-    currentVersion === 'unknown' ? '0.0.0' : currentVersion
-  )
+  // Use version comparison as primary check; fall back to hash if version unknown
+  const currentSemver = currentVersion === 'unknown' ? '0.0.0' : currentVersion
+  const hasVersionBump = semver.gt(latest.version, currentSemver)
+  // Also flag as needing update if content differs (hash mismatch on any file)
+  const hasContentDiff = modifiedFiles.length > 0 || latest.files.some((file) => {
+    const filePath = join(cwd, config.componentsDir, file.path)
+    if (!existsSync(filePath)) return true // missing file = needs update
+    const diskContent = readFileSync(filePath, 'utf-8')
+    const diskBody = diskContent.split('\n').slice(1).join('\n')
+    return hashContent(diskBody) !== file.hash
+  })
+  const hasUpdates = hasVersionBump || (currentVersion !== 'unknown' && hasContentDiff)
 
   return { name, currentVersion, latestVersion: latest.version, hasUpdates, modifiedFiles }
 }
@@ -93,27 +101,38 @@ export async function upgrade(names: string[], options: UpgradeOptions) {
     }
   })()
 
-  // If no names given, scan installed components
-  let targets = names
-  if (targets.length === 0) {
-    const componentsDir = join(cwd, config.componentsDir)
-    if (!existsSync(componentsDir)) {
-      p.log.warn('No components installed yet.')
-      p.outro('Nothing to upgrade.')
-      return
-    }
+  // Scan installed components
+  const componentsDir = join(cwd, config.componentsDir)
+  const installedSet = new Set<string>()
+  if (existsSync(componentsDir)) {
     const entries = readdirSync(componentsDir, { withFileTypes: true })
-    // Components can be flat files (button.tsx) or directories (button/)
     const dirs = entries.filter((e) => e.isDirectory()).map((e) => e.name)
     const files = entries
       .filter((e) => e.isFile() && e.name.endsWith('.tsx'))
       .map((e) => e.name.replace('.tsx', ''))
-    targets = [...new Set([...dirs, ...files])]
+    for (const n of [...dirs, ...files]) installedSet.add(n)
+  }
 
-    if (targets.length === 0) {
-      p.log.warn('No components found in ' + config.componentsDir)
+  let targets = names.map((n) => n.trim()).filter(Boolean)
+  if (targets.length === 0) {
+    if (installedSet.size === 0) {
+      p.log.warn('No components installed yet.')
       p.outro('Nothing to upgrade.')
       return
+    }
+    targets = [...installedSet]
+  } else {
+    // Validate that explicitly named components are actually installed
+    const notInstalled = targets.filter((n) => !installedSet.has(n))
+    if (notInstalled.length > 0) {
+      for (const n of notInstalled) {
+        p.log.error(`"${n}" is not installed. Use ${pc.cyan('native-mate add ' + n)} to install it.`)
+      }
+      targets = targets.filter((n) => installedSet.has(n))
+      if (targets.length === 0) {
+        p.outro('Nothing to upgrade.')
+        return
+      }
     }
   }
 

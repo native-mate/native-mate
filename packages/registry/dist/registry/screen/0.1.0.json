@@ -5,13 +5,13 @@
   "files": [
     {
       "path": "screen.tsx",
-      "content": "// native-mate: screen@0.1.0 | hash:b95e9e2945502154\nimport React from 'react'\nimport { SafeAreaView } from 'react-native-safe-area-context'\nimport { useTheme } from '@native-mate/core'\nimport type { ScreenProps } from './screen.types'\n\nexport const Screen: React.FC<ScreenProps> = ({ children, backgroundColor, style, ...rest }) => {\n  const theme = useTheme()\n  return (\n    <SafeAreaView\n      style={[{ flex: 1, backgroundColor: backgroundColor ?? theme.colors.background }, style]}\n      {...rest}\n    >\n      {children}\n    </SafeAreaView>\n  )\n}\n",
-      "hash": "b95e9e2945502154"
+      "content": "// native-mate: screen@0.1.0 | hash:3a4e461df6c1709e\nimport React from 'react'\r\nimport { SafeAreaView } from 'react-native-safe-area-context'\r\nimport { useTheme } from '@native-mate/core'\r\nimport type { ScreenProps } from './screen.types'\r\n\r\nexport const Screen: React.FC<ScreenProps> = ({ children, backgroundColor, style, ...rest }) => {\r\n  const theme = useTheme()\r\n  return (\r\n    <SafeAreaView\r\n      style={[{ flex: 1, backgroundColor: backgroundColor ?? theme.colors.background }, style]}\r\n      {...rest}\r\n    >\r\n      {children}\r\n    </SafeAreaView>\r\n  )\r\n}\r\n",
+      "hash": "3a4e461df6c1709e"
     },
     {
       "path": "screen.types.ts",
-      "content": "// native-mate: screen@0.1.0 | hash:03d5477d368e4b33\n\nexport interface ScreenProps extends Omit<ViewProps, 'style'> {\n  children: React.ReactNode\n  backgroundColor?: string\n}\n",
-      "hash": "03d5477d368e4b33"
+      "content": "// native-mate: screen@0.1.0 | hash:79a58a5950c9bff9\n\r\nexport interface ScreenProps extends Omit<ViewProps, 'style'> {\r\n  children: React.ReactNode\r\n  backgroundColor?: string\r\n}\r\n",
+      "hash": "79a58a5950c9bff9"
     }
   ],
   "dependencies": {
