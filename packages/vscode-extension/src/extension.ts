@@ -190,6 +190,8 @@ const FALLBACK_COMPONENTS: ComponentMeta[] = [
   // Primitives
   { name: 'button',       category: 'primitives', description: '6 variants, 3 sizes, ButtonGroup, icon-only, pill, haptic, loading, spring animation' },
   { name: 'text',         category: 'primitives', description: 'Typed typography with size, weight, and color tokens' },
+  { name: 'icon',         category: 'primitives', description: 'Ionicons wrapper — xs/sm/md/lg/xl/2xl size presets, theme color tokens' },
+  { name: 'spinner',      category: 'primitives', description: '3 variants (circle/dots/pulse), 4 sizes, speed control, label, overlay mode' },
   { name: 'separator',    category: 'primitives', description: 'Horizontal or vertical divider' },
   // Forms
   { name: 'input',        category: 'forms', description: '3 sizes, prefix/suffix, floating label, password toggle, clearable (Ionicons), char count, shake on error, haptic' },
@@ -204,6 +206,7 @@ const FALLBACK_COMPONENTS: ComponentMeta[] = [
   { name: 'card',         category: 'layout', description: 'CardHeader/CardContent/CardFooter, loading skeleton prop, image cover, elevated/outline/flat variants, pressable' },
   { name: 'accordion',    category: 'layout', description: 'Animated expand/collapse, single or multi-open, Ionicons chevron' },
   { name: 'tabs',         category: 'layout', description: 'Horizontal tabs with sliding indicator animation' },
+  { name: 'screen',       category: 'layout', description: 'SafeAreaView wrapper with theme background, scroll mode, keyboard-avoiding' },
   // Display
   { name: 'badge',        category: 'display', description: '6 variants + info, 3 sizes, solid/soft/outline, pulse dot, count 99+, icon, dismissible' },
   { name: 'avatar',       category: 'display', description: 'Image + auto-initials, 5 sizes, status dot, circle/square, AvatarGroup with overflow' },
@@ -215,7 +218,7 @@ const FALLBACK_COMPONENTS: ComponentMeta[] = [
   { name: 'action-sheet', category: 'overlay', description: 'iOS-style bottom sheet, handle, actions with destructive variant, cancel button, Ionicons' },
   { name: 'tooltip',      category: 'overlay', description: 'Text bubble on press-and-hold, 4 placements, arrow, delay, screen-level Modal' },
   { name: 'popover',      category: 'overlay', description: 'Interactive content bubble, 4 placements, arrow, backdrop dismiss, scrollable, screen-level Modal' },
-  { name: 'alert',        category: 'overlay', description: '5 variants, Ionicons icon, dismissible, action button, description' },
+  { name: 'alert',        category: 'display', description: '5 variants, Ionicons icon, dismissible, action button, description' },
   // Feedback
   { name: 'toast',        category: 'feedback', description: '4 variants, screen-level Modal, avatar, multiple actions, swipe dismiss (H+V), progress bar, persistent, useToast hook' },
   { name: 'progress',     category: 'feedback', description: 'Linear bar + circular ring, 3 sizes, showValue, indeterminate shimmer, custom color' },

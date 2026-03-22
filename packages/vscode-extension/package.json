@@ -8,7 +8,17 @@
     "vscode": "^1.85.0"
   },
   "categories": ["Other"],
-  "activationEvents": ["workspaceContains:native-mate.json"],
+  "keywords": ["react-native", "expo", "ui", "components", "shadcn", "theme"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/native-mate/native-mate"
+  },
+  "activationEvents": [
+    "workspaceContains:native-mate.json",
+    "onCommand:native-mate.addComponent",
+    "onCommand:native-mate.upgradeComponents",
+    "onCommand:native-mate.openThemeStudio"
+  ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
