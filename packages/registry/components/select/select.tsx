@@ -9,8 +9,8 @@ import Animated, {
   interpolate,
 } from 'react-native-reanimated'
 import { useTheme, Text, makeStyles } from '@native-mate/core'
-import { Sheet } from '../sheet/sheet'
-import { Checkbox } from '../checkbox/checkbox'
+import { Sheet } from './sheet'
+import { Checkbox } from './checkbox'
 import type { SelectProps, MultiSelectProps, SelectOption } from './select.types'
 
 let Haptics: any = null

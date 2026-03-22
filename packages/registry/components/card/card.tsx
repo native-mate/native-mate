@@ -3,7 +3,7 @@ import React from 'react'
 import { View, Pressable, Image } from 'react-native'
 import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated'
 import { useTheme, Text, Separator, makeStyles, shadow } from '@native-mate/core'
-import { Skeleton } from '../skeleton/skeleton'
+import { Skeleton } from './skeleton'
 import type { CardProps, CardHeaderProps, CardContentProps, CardFooterProps, CardMediaProps } from './card.types'
 
 const sizeTokens = {
