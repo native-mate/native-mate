@@ -156,7 +156,7 @@ export const Select: React.FC<SelectProps> = ({
     <Pressable
       style={[styles.option, { opacity: item.disabled ? 0.4 : 1 }]}
       onPress={() => !item.disabled && handleSelect(item.value)}
-      accessibilityRole="option"
+      accessibilityRole="menuitem"
       accessibilityState={{ selected: item.value === value, disabled: item.disabled }}
     >
       <View style={styles.optionLeft}>
@@ -371,7 +371,7 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
               <Pressable
                 style={[styles.option, { opacity: isDisabled ? 0.4 : 1 }]}
                 onPress={() => !isDisabled && toggleOption(item.value)}
-                accessibilityRole="option"
+                accessibilityRole="menuitem"
                 accessibilityState={{ selected: isSelected }}
               >
                 <View style={styles.optionLeft}>
