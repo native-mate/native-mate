@@ -63,18 +63,18 @@ jobs:
 
       - name: Publish @native-mate/core
         working-directory: packages/core
-        run: npm publish --access public --provenance
+        run: npm publish --access public --provenance || true
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish @native-mate/cli
         working-directory: packages/cli
-        run: npm publish --access public --provenance
+        run: npm publish --access public --provenance || true
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish @native-mate/mcp
         working-directory: packages/mcp
-        run: npm publish --access public --provenance
+        run: npm publish --access public --provenance || true
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
