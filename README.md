@@ -2,7 +2,9 @@
 
 A production-grade React Native + Expo UI component library inspired by shadcn/ui. Copy components directly into your project, own the code, and never fight a library again.
 
-> **Status:** v0.1.0 — 30 components, CLI, docs site, MCP server, Figma plugin, VS Code extension
+> **Status:** v1.0 — 28 components, CLI, docs site, MCP server, VS Code extension
+>
+> [![npm core](https://img.shields.io/npm/v/@native-mate/core?label=core)](https://www.npmjs.com/package/@native-mate/core) [![npm cli](https://img.shields.io/npm/v/@native-mate/cli?label=cli)](https://www.npmjs.com/package/@native-mate/cli) [![npm mcp](https://img.shields.io/npm/v/@native-mate/mcp?label=mcp)](https://www.npmjs.com/package/@native-mate/mcp)
 
 ---
 
@@ -19,17 +21,14 @@ npx @native-mate/cli add button card input
 
 ## Packages
 
-| Package | Description |
-|---|---|
-| [`@native-mate/core`](./packages/core) | Token system, theme provider, `makeStyles`, `useTheme`, `useBreakpoint` |
-| [`@native-mate/cli`](./packages/cli) | CLI — `init`, `add`, `upgrade` commands |
-| [`@native-mate/mcp`](./packages/mcp) | MCP server for Claude and Cursor integration |
-| [`@native-mate/framer`](./packages/framer) | Framer component wrappers for design previews |
-| [`packages/registry`](./packages/registry) | Component source + registry build script |
-| [`packages/figma-plugin`](./packages/figma-plugin) | Figma plugin — export tokens, inspect components |
-| [`packages/vscode-extension`](./packages/vscode-extension) | VS Code extension — add components from the command palette |
-| [`docs`](./docs) | Next.js documentation site |
-| [`apps/storybook`](./apps/storybook) | React Native Storybook with 30 components |
+| Package | npm | Description |
+|---|---|---|
+| [`@native-mate/core`](./packages/core) | [![npm](https://img.shields.io/npm/v/@native-mate/core)](https://www.npmjs.com/package/@native-mate/core) | Token system, theme provider, `makeStyles`, `useTheme`, `useBreakpoint` |
+| [`@native-mate/cli`](./packages/cli) | [![npm](https://img.shields.io/npm/v/@native-mate/cli)](https://www.npmjs.com/package/@native-mate/cli) | CLI — `init`, `add`, `list`, `upgrade` commands |
+| [`@native-mate/mcp`](./packages/mcp) | [![npm](https://img.shields.io/npm/v/@native-mate/mcp)](https://www.npmjs.com/package/@native-mate/mcp) | MCP server for Claude and Cursor integration |
+| [`packages/registry`](./packages/registry) | — | Component source + registry build script |
+| [`packages/vscode-extension`](./packages/vscode-extension) | — | VS Code extension — add components from the command palette |
+| [`docs`](./docs) | — | Next.js documentation site ([live](https://native-mate.vercel.app)) |
 
 ---
 
