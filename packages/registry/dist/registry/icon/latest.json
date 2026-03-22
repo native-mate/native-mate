@@ -1,0 +1,21 @@
+{
+  "name": "icon",
+  "version": "0.1.0",
+  "description": "Themed icon wrapper with size and color token support",
+  "files": [
+    {
+      "path": "icon.tsx",
+      "content": "// native-mate: icon@0.1.0 | hash:beb53b070ffe483e\nimport React from 'react'\r\nimport { Ionicons } from '@expo/vector-icons'\r\nimport { useTheme } from '@native-mate/core'\r\nimport type { IconProps, IconSize, IconColor } from './icon.types'\r\n\r\n// ─── Size map ──────────────────────────────────────────────────────────────────\r\n\r\nconst SIZE_MAP: Record<Exclude<IconSize, number>, number> = {\r\n  xs:   12,\r\n  sm:   16,\r\n  md:   20,\r\n  lg:   24,\r\n  xl:   32,\r\n  '2xl': 40,\r\n}\r\n\r\nfunction resolveSize(size: IconSize): number {\r\n  return typeof size === 'number' ? size : SIZE_MAP[size]\r\n}\r\n\r\n// ─── Color resolution ──────────────────────────────────────────────────────────\r\n\r\nfunction resolveColor(color: IconColor, colors: Record<string, string>): string {\r\n  const TOKEN_MAP: Record<string, string> = {\r\n    foreground:  colors.foreground  ?? '#fafafa',\r\n    muted:       colors.muted       ?? '#71717a',\r\n    primary:     colors.primary     ?? '#6366f1',\r\n    destructive: colors.destructive ?? '#ef4444',\r\n    success:     colors.success     ?? '#22c55e',\r\n    warning:     colors.warning     ?? '#f59e0b',\r\n    border:      colors.border      ?? '#27272a',\r\n  }\r\n  return TOKEN_MAP[color] ?? color\r\n}\r\n\r\n// ─── Component ─────────────────────────────────────────────────────────────────\r\n\r\nexport const Icon: React.FC<IconProps> = ({\r\n  name,\r\n  size = 'md',\r\n  color = 'foreground',\r\n  opacity = 1,\r\n  style,\r\n  accessibilityLabel,\r\n  decorative = true,\r\n}) => {\r\n  const theme = useTheme()\r\n  const resolvedSize  = resolveSize(size)\r\n  const resolvedColor = resolveColor(color, theme.colors as Record<string, string>)\r\n\r\n  return (\r\n    <Ionicons\r\n      // eslint-disable-next-line @typescript-eslint/no-explicit-any\r\n      name={name as any}\r\n      size={resolvedSize}\r\n      color={resolvedColor}\r\n      style={[{ opacity }, style] as any}\r\n      accessibilityLabel={decorative ? undefined : accessibilityLabel}\r\n      accessibilityElementsHidden={decorative}\r\n      importantForAccessibility={decorative ? 'no-hide-descendants' : 'auto'}\r\n    />\r\n  )\r\n}\r\n",
+      "hash": "beb53b070ffe483e"
+    },
+    {
+      "path": "icon.types.ts",
+      "content": "// native-mate: icon@0.1.0 | hash:b0802c1e592b5b3b\n\r\nexport type IconSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | number\r\n\r\nexport type IconColor =\r\n  | 'foreground' | 'muted' | 'primary'\r\n  | 'destructive' | 'success' | 'warning' | 'border'\r\n  | (string & {})\r\n\r\nexport type IconLibrary = 'ionicons'\r\n\r\nexport interface IconProps {\r\n  /** Ionicons icon name. See https://ionic.io/ionicons */\r\n  name: string\r\n  /** Preset size or explicit dp value. Default: 'md' (20dp) */\r\n  size?: IconSize\r\n  /** Semantic color token or raw hex/rgb value. Default: 'foreground' */\r\n  color?: IconColor\r\n  /** Opacity (0–1). Default: 1 */\r\n  opacity?: number\r\n  /** Extra style applied to the icon element. */\r\n  style?: StyleProp<ViewStyle>\r\n  accessibilityLabel?: string\r\n  /** If true the icon is hidden from assistive technology (decorative). */\r\n  decorative?: boolean\r\n}\r\n",
+      "hash": "b0802c1e592b5b3b"
+    }
+  ],
+  "dependencies": {
+    "npm": [],
+    "components": []
+  }
+}

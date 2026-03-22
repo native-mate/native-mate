@@ -1,0 +1,11 @@
+{
+  "name": "icon",
+  "version": "0.1.0",
+  "description": "Themed icon wrapper with size and color token support",
+  "category": "display",
+  "files": [
+    { "path": "icon.tsx", "hash": "" },
+    { "path": "icon.types.ts", "hash": "" }
+  ],
+  "dependencies": { "npm": [], "components": [] }
+}

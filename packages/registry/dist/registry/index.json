@@ -55,6 +55,12 @@
       "category": "display"
     },
     {
+      "name": "icon",
+      "version": "0.1.0",
+      "description": "Themed icon wrapper with size and color token support",
+      "category": "display"
+    },
+    {
       "name": "input",
       "version": "0.2.0",
       "description": "Feature-rich text input with 3 sizes, prefix/suffix, floating label, password toggle, clearable, character count, shake on error, haptic on focus",
@@ -97,6 +103,12 @@
       "category": "input"
     },
     {
+      "name": "separator",
+      "version": "0.1.0",
+      "description": "Horizontal or vertical divider line with theme-aware color",
+      "category": "display"
+    },
+    {
       "name": "sheet",
       "version": "0.1.0",
       "description": "Animated bottom sheet with snap points",
@@ -115,6 +127,12 @@
       "category": "input"
     },
     {
+      "name": "spinner",
+      "version": "0.1.0",
+      "description": "Animated loading spinner with theme-aware colors and sizes",
+      "category": "feedback"
+    },
+    {
       "name": "switch",
       "version": "0.1.0",
       "description": "Animated toggle switch with interpolated track color",
@@ -130,6 +148,12 @@
       "name": "tag",
       "version": "0.1.0",
       "description": "Compact dismissible label chip with spring animation on remove",
+      "category": "display"
+    },
+    {
+      "name": "text",
+      "version": "0.1.0",
+      "description": "Theme-aware text component with variant styles and sizes",
       "category": "display"
     },
     {

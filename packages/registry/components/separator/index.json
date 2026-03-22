@@ -1,0 +1,11 @@
+{
+  "name": "separator",
+  "version": "0.1.0",
+  "description": "Horizontal or vertical divider line with theme-aware color",
+  "category": "display",
+  "files": [
+    { "path": "separator.tsx", "hash": "" },
+    { "path": "separator.types.ts", "hash": "" }
+  ],
+  "dependencies": { "npm": [], "components": [] }
+}

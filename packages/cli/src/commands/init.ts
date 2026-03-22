@@ -22,7 +22,16 @@ export async function init(options: { preset?: string; yes?: boolean }) {
     return
   }
 
+  const VALID_PRESETS = ['zinc', 'slate', 'rose', 'midnight'] as const
   let preset = options.preset as 'zinc' | 'slate' | 'rose' | 'midnight' | undefined
+
+  if (preset && !VALID_PRESETS.includes(preset as any)) {
+    p.log.error(
+      `Invalid preset "${options.preset}". Valid presets: ${VALID_PRESETS.join(', ')}`
+    )
+    process.exit(1)
+  }
+
   let componentsDir = 'components/ui'
 
   if (!options.yes) {

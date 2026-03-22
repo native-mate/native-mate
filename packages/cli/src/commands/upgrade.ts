@@ -103,7 +103,12 @@ export async function upgrade(names: string[], options: UpgradeOptions) {
       return
     }
     const entries = readdirSync(componentsDir, { withFileTypes: true })
-    targets = entries.filter((e) => e.isDirectory()).map((e) => e.name)
+    // Components can be flat files (button.tsx) or directories (button/)
+    const dirs = entries.filter((e) => e.isDirectory()).map((e) => e.name)
+    const files = entries
+      .filter((e) => e.isFile() && e.name.endsWith('.tsx'))
+      .map((e) => e.name.replace('.tsx', ''))
+    targets = [...new Set([...dirs, ...files])]
 
     if (targets.length === 0) {
       p.log.warn('No components found in ' + config.componentsDir)
