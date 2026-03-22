@@ -18,7 +18,7 @@ Since the registry JSON is committed to the repo, **GitHub raw serves as your re
 
 ## 1. npm Packages
 
-Packages to publish: `@native-mate/core`, `@native-mate/cli`, `@native-mate/mcp`, `@native-mate/framer`
+Packages to publish: `@native-mate/core`, `@native-mate/cli`, `@native-mate/mcp`
 
 ### Create npm org (one-time)
 
@@ -49,8 +49,6 @@ npm publish --access public
 cd ../mcp
 npm publish --access public
 
-cd ../framer
-npm publish --access public
 ```
 
 ### After publishing
@@ -228,7 +226,7 @@ Buy `native-mate.dev` (~$10/year) on Cloudflare, Namecheap, or Google Domains:
 ## Deployment Order
 
 ```
-1. npm publish: core → cli → mcp → framer     ← do this now
+1. npm publish: core → cli → mcp               ← do this now
 2. Test VS Code extension locally via .vsix
 3. vsce publish (VS Code Marketplace)
 4. Deploy docs to Vercel (when ready)
