@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "Figma plugin for native-mate — inspect components, export tokens, sync styles",
   "scripts": {
-    "build": "tsc --project tsconfig.json",
+    "build": "tsc --project tsconfig.json && cp src/ui.html dist/ui.html",
     "lint": "tsc --noEmit"
   },
   "devDependencies": {
