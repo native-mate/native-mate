@@ -1,11 +1,28 @@
 {
   "name": "@native-mate/cli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "CLI tool for native-mate — init, add, list, upgrade",
   "bin": {
     "native-mate": "./dist/index.js"
   },
   "main": "./dist/index.js",
+  "files": [
+    "dist",
+    "!dist/__tests__"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/native-mate/native-mate",
+    "directory": "packages/cli"
+  },
+  "keywords": [
+    "react-native",
+    "components",
+    "cli",
+    "native-mate",
+    "expo"
+  ],
   "scripts": {
     "build": "tsc --project tsconfig.json",
     "dev": "ts-node src/index.ts",
