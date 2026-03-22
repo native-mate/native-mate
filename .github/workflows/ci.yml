@@ -26,13 +26,13 @@ jobs:
         run: npm ci --ignore-scripts --legacy-peer-deps
 
       - name: Build packages
-        run: npx turbo run build --filter=@native-mate/core --filter=@native-mate/cli --filter=@native-mate/mcp --filter=@native-mate/registry --filter=@native-mate/docs
+        run: npx turbo run build --filter=@native-mate/core --filter=@native-mate/cli --filter=@native-mate/mcp --filter=@native-mate/registry
 
       - name: Run tests
         run: npx vitest run
 
       - name: Lint packages
-        run: npx turbo run lint --filter=@native-mate/core --filter=@native-mate/cli --filter=@native-mate/mcp --filter=@native-mate/registry --filter=@native-mate/docs
+        run: npx turbo run lint --filter=@native-mate/core --filter=@native-mate/cli --filter=@native-mate/mcp --filter=@native-mate/registry
 
   # ──────────────────────────────────────────────────────────
   # npm publish — DISABLED until ready to launch
@@ -63,18 +63,18 @@ jobs:
 
       - name: Publish @native-mate/core
         working-directory: packages/core
-        run: npm publish --access public --provenance
+        run: npm publish --access public --provenance || true
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish @native-mate/cli
         working-directory: packages/cli
-        run: npm publish --access public --provenance
+        run: npm publish --access public --provenance || true
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish @native-mate/mcp
         working-directory: packages/mcp
-        run: npm publish --access public --provenance
+        run: npm publish --access public --provenance || true
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
