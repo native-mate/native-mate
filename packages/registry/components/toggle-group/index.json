@@ -1,0 +1,11 @@
+{
+  "name": "toggle-group",
+  "version": "0.1.0",
+  "description": "Multi-option toggle with animated sliding indicator, single/multiple selection modes, and icon support",
+  "category": "input",
+  "files": [
+    { "path": "toggle-group.tsx", "hash": "" },
+    { "path": "toggle-group.types.ts", "hash": "" }
+  ],
+  "dependencies": { "npm": [], "components": [] }
+}

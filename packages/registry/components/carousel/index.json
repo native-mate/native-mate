@@ -1,0 +1,11 @@
+{
+  "name": "carousel",
+  "version": "0.1.0",
+  "description": "Horizontal snap carousel with animated expanding pagination dots, auto-play, loop mode, and configurable item width",
+  "category": "display",
+  "files": [
+    { "path": "carousel.tsx", "hash": "" },
+    { "path": "carousel.types.ts", "hash": "" }
+  ],
+  "dependencies": { "npm": [], "components": [] }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "image",
+  "version": "0.1.0",
+  "description": "Enhanced image with fade-in on load, shimmer/blur/color placeholders, fallback source, and error state with icon",
+  "category": "display",
+  "files": [
+    { "path": "image.tsx", "hash": "" },
+    { "path": "image.types.ts", "hash": "" }
+  ],
+  "dependencies": { "npm": [], "components": [] }
+}

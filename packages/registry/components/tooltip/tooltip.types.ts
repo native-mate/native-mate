@@ -1,12 +1,20 @@
+import type React from 'react'
 import type { StyleProp, ViewStyle } from 'react-native'
 
-export type TooltipPlacement = 'top' | 'bottom' | 'left' | 'right'
+export type TooltipPosition = 'top' | 'bottom' | 'left' | 'right'
 
 export interface TooltipProps {
-  content: string
-  placement?: TooltipPlacement
+  /** Tooltip content — string or custom ReactNode */
+  content: string | React.ReactNode
+  /** The trigger element */
   children: React.ReactElement
-  /** Delay in ms before showing (default 300) */
+  position?: TooltipPosition
+  /** Delay in ms before showing on long press (native) or hover (web) */
   delay?: number
+  /** Controlled visibility */
+  visible?: boolean
+  onOpenChange?: (open: boolean) => void
+  /** Max width of the tooltip bubble */
+  maxWidth?: number
   style?: StyleProp<ViewStyle>
 }

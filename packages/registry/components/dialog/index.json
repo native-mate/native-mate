@@ -1,0 +1,11 @@
+{
+  "name": "dialog",
+  "version": "0.1.0",
+  "description": "Confirm/cancel dialog with scale + fade animation, destructive variant, icon support, and backdrop dismiss",
+  "category": "overlay",
+  "files": [
+    { "path": "dialog.tsx", "hash": "" },
+    { "path": "dialog.types.ts", "hash": "" }
+  ],
+  "dependencies": { "npm": [], "components": [] }
+}
