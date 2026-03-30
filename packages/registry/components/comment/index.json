@@ -1,0 +1,1 @@
+{ "name": "comment", "version": "0.1.0", "description": "Threaded comment with nested replies, like/reply actions, relative timestamps, and author interaction", "category": "display", "files": [{"path": "comment.tsx", "hash": ""}, {"path": "comment.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }

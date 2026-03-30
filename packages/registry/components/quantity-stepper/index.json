@@ -1,0 +1,1 @@
+{ "name": "quantity-stepper", "version": "0.1.0", "description": "Plus/minus quantity control with animated press feedback and long-press rapid increment", "category": "input", "files": [{"path": "quantity-stepper.tsx", "hash": ""}, {"path": "quantity-stepper.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }

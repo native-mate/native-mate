@@ -1,0 +1,1 @@
+{ "name": "video-player", "version": "0.1.0", "description": "Inline video player with play/pause overlay, progress bar, time display, and fullscreen toggle", "category": "display", "files": [{"path": "video-player.tsx", "hash": ""}, {"path": "video-player.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }

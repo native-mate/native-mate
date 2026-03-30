@@ -1,0 +1,1 @@
+{ "name": "mention-input", "version": "0.1.0", "description": "Text input with @mention autocomplete, user dropdown, and highlighted mention chips", "category": "input", "files": [{"path": "mention-input.tsx", "hash": ""}, {"path": "mention-input.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }

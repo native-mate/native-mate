@@ -1,0 +1,1 @@
+{ "name": "product-card", "version": "0.1.0", "description": "E-commerce product card with image, pricing, ratings, favorite toggle, and add-to-cart", "category": "display", "files": [{"path": "product-card.tsx", "hash": ""}, {"path": "product-card.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }
