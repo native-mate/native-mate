@@ -19,6 +19,9 @@ const screens = [
   { name: 'profile', label: 'Profile', desc: 'Avatar, switch, select, radio', icon: 'person-outline' },
   { name: 'forms', label: 'Forms', desc: 'Input, textarea, slider, toast', icon: 'create-outline' },
   { name: 'overlays', label: 'Overlays', desc: 'Modal, sheet, action sheet, alerts', icon: 'layers-outline' },
+  { name: 'navigation-showcase', label: 'Navigation', desc: 'Header, bottom-bar, FAB, search, stepper', icon: 'navigate-outline' },
+  { name: 'lists-showcase', label: 'Lists & Filters', desc: 'List items, chips, toggles, swipe', icon: 'list-outline' },
+  { name: 'media-showcase', label: 'Media & Overlays', desc: 'Carousel, rating, dialog, dropdown', icon: 'images-outline' },
 ] as const
 
 const presets = ['zinc', 'slate', 'rose', 'midnight'] as const

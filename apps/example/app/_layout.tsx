@@ -40,6 +40,9 @@ export default function RootLayout() {
             <Stack.Screen name="profile" />
             <Stack.Screen name="forms" />
             <Stack.Screen name="overlays" />
+            <Stack.Screen name="navigation-showcase" />
+            <Stack.Screen name="lists-showcase" />
+            <Stack.Screen name="media-showcase" />
           </Stack>
           <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
         </ToastProvider>
