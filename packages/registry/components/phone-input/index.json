@@ -1,0 +1,1 @@
+{ "name": "phone-input", "version": "0.1.0", "description": "International phone number input with country picker, flag display, and auto-formatting", "category": "input", "files": [{"path": "phone-input.tsx", "hash": ""}, {"path": "phone-input.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }

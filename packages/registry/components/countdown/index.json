@@ -1,0 +1,1 @@
+{ "name": "countdown", "version": "0.1.0", "description": "Countdown timer with animated digit flip, card/inline/minimal variants", "category": "display", "files": [{"path": "countdown.tsx", "hash": ""}, {"path": "countdown.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }
