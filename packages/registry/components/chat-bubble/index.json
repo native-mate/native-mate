@@ -1,0 +1,1 @@
+{ "name": "chat-bubble", "version": "0.1.0", "description": "Chat message bubble with sender alignment, delivery status, avatar, and bubble tail", "category": "display", "files": [{"path": "chat-bubble.tsx", "hash": ""}, {"path": "chat-bubble.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }

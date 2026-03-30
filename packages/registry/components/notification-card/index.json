@@ -1,0 +1,1 @@
+{ "name": "notification-card", "version": "0.1.0", "description": "Notification list item with category accent, unread indicator, relative time, and swipe dismiss", "category": "display", "files": [{"path": "notification-card.tsx", "hash": ""}, {"path": "notification-card.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }

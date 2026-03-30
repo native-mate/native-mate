@@ -1,0 +1,1 @@
+{ "name": "infinite-scroll", "version": "0.1.0", "description": "Infinite scroll list wrapper with load-more trigger, loading indicator, and empty state", "category": "layout", "files": [{"path": "infinite-scroll.tsx", "hash": ""}, {"path": "infinite-scroll.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }
