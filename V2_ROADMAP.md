@@ -2,36 +2,42 @@
 
 > Goal: The most complete, production-ready React Native UI system. Not just components — screens, hooks, animations, CLI superpowers, and AI-native tooling. Make shadcn look like a starter kit.
 
-## Current State (v1)
+## Current State (v2 — in progress)
 
-28 components: accordion, action-sheet, alert, avatar, badge, button, card, checkbox, empty-state, icon, input, modal, otp-input, popover*, progress, radio, screen, select, separator, sheet, skeleton, slider, spinner, switch, tabs, tag, text, textarea, toast, tooltip*
-
-(*coming soon — not yet implemented)
+**80 components** shipped. 28 from v1 + 52 new across Phase 1–3.
+**15 example app screens** (6 original + 9 new showcases).
+**4 theme presets** (zinc, slate, rose, midnight).
 
 ---
 
-## Phase 1 — Core Mobile Essentials
+## Phase 1 — Core Mobile Essentials ✅ COMPLETE
 
-High-impact components every mobile app needs. Ship these first.
+High-impact components every mobile app needs.
 
 ### Components
 
-- [ ] **header** — Custom nav header with back button, title, action icons
-- [ ] **bottom-bar** — Bottom navigation bar with icons, badges, animated active indicator
-- [ ] **fab** — Floating action button (single + speed dial expand)
-- [ ] **search-bar** — Animated search input with cancel button and suggestion list
-- [ ] **list-item** — List row with leading icon/avatar, title, subtitle, trailing chevron, press state
-- [ ] **chip** — Selectable/filterable chip for multi-select tag UIs
-- [ ] **toggle-group** — Multi-option toggle (single or multi select mode)
-- [ ] **dialog** — Simple confirm/cancel dialog (lighter than modal)
-- [ ] **dropdown-menu** — Context menu triggered from a button press
-- [ ] **rating** — Star rating display + interactive input (tap or swipe)
-- [ ] **banner** — Top/bottom app banner for announcements, offline status, promos
-- [ ] **image** — Cached image with placeholder, blur hash, error fallback
-- [ ] **carousel** — Horizontal swipeable image/card carousel with pagination dots
-- [ ] **divider-label** — "OR" style divider / section header with line
-- [ ] **tooltip** — Finish existing planned component
-- [ ] **popover** — Finish existing planned component
+- [x] **header** — Custom nav header with back button, title, action icons, safe area aware
+- [x] **bottom-bar** — Bottom navigation bar with icons, badges, animated active indicator
+- [x] **fab** — Floating action button with speed dial fan-out animation
+- [x] **search-bar** — Animated search input with cancel button and suggestion list
+- [x] **list-item** — List row with leading icon/avatar, title, subtitle, trailing chevron
+- [x] **chip** — Selectable/filterable chip with animated selection state
+- [x] **toggle-group** — Multi-option toggle (single or multi select) with sliding indicator
+- [x] **dialog** — Confirm/cancel dialog with scale + fade animation
+- [x] **dropdown-menu** — Context menu with scale animation from trigger
+- [x] **rating** — Star rating display + interactive input with haptic per star
+- [x] **banner** — Top/bottom app banner with slide in/out animation
+- [x] **image** — Enhanced image with placeholder, error fallback, fade-in on load
+- [x] **carousel** — Horizontal swipeable carousel with animated pagination dots
+- [x] **divider-label** — "OR" style divider / section header with line
+- [x] **tooltip** — Tooltip on long press with arrow and auto-positioning
+- [x] **popover** — Rich popover with interactive content, scale + fade animation
+
+### Showcase
+
+- [x] `navigation-showcase.tsx` — Header, BottomBar, FAB, SearchBar, Breadcrumb, Stepper
+- [x] `lists-showcase.tsx` — ListItem, Chip, ToggleGroup, SegmentedControl, Collapsible, SwipeableRow
+- [x] `media-showcase.tsx` — Carousel, Rating, Banner, Dialog, DropdownMenu, Tooltip, Popover
 
 ### Themes
 
@@ -48,27 +54,33 @@ High-impact components every mobile app needs. Ship these first.
 
 ---
 
-## Phase 2 — Common App Patterns
+## Phase 2 — Common App Patterns ✅ COMPLETE
 
 Components for standard app flows: onboarding, settings, notifications.
 
 ### Components
 
-- [ ] **swipeable-row** — Swipe-to-delete / swipe-to-archive list actions
-- [ ] **stepper** — Multi-step wizard / onboarding flow progress indicator
-- [ ] **segmented-control** — iOS-style segmented toggle (distinct from tabs)
-- [ ] **date-picker** — Date and time selection
-- [ ] **phone-input** — International phone number input with country code picker
-- [ ] **notification-card** — In-app notification item with icon, timestamp, read/unread state
-- [ ] **chat-bubble** — Message bubble (sent/received) with timestamp and delivery status
-- [ ] **stat-card** — KPI / metric display card with value, label, trend arrow
-- [ ] **timeline** — Vertical timeline for order tracking, activity feeds
-- [ ] **draggable-list** — Reorderable list with drag handles
-- [ ] **countdown** — Countdown timer display (OTP expiry, sales, events)
-- [ ] **collapsible** — Simple expand/collapse (lighter than accordion)
-- [ ] **pull-to-refresh** — Custom pull-to-refresh indicator
-- [ ] **infinite-scroll** — Load-more trigger at list bottom
-- [ ] **bottom-sheet-list** — Pre-built bottom sheet with searchable list
+- [x] **swipeable-row** — Swipe-to-reveal actions with spring physics, full-swipe destructive
+- [x] **stepper** — Multi-step progress indicator (horizontal/vertical, numbered/icon/dot)
+- [x] **segmented-control** — iOS-style segmented toggle with sliding pill animation
+- [x] **date-picker** — Custom calendar grid + time spinners, bottom sheet presentation
+- [x] **phone-input** — International phone input with country picker, flag emoji, auto-format
+- [x] **notification-card** — Notification item with category accent, unread dot, relative time
+- [x] **chat-bubble** — Message bubble with self/other alignment, status checkmarks, bubble tails
+- [x] **stat-card** — KPI card with animated number counter, trend arrows, skeleton loading
+- [x] **timeline** — Vertical timeline with status nodes, stagger entrance, active pulse
+- [x] **draggable-list** — Reorderable list with shadow lift, smooth 60fps reorder, haptic
+- [x] **countdown** — Countdown timer with card/inline/minimal variants, animated digit flip
+- [x] **collapsible** — Animated expand/collapse with chevron rotation
+- [x] **pull-to-refresh** — Custom refresh indicator with progress arc and spring-back
+- [x] **infinite-scroll** — FlatList wrapper with threshold trigger and loading footer
+- [x] **bottom-sheet-list** — Searchable bottom sheet with multi-select and keyboard avoidance
+
+### Showcase
+
+- [x] `social-showcase.tsx` — ChatBubble, NotificationCard, Timeline, Comment, ReactionBar, MentionInput
+- [x] `data-showcase.tsx` — StatCard, Countdown, DataTable, PhoneInput, DatePicker
+- [x] `interactive-showcase.tsx` — DraggableList, BottomSheetList, SegmentedControl, Stepper
 
 ### Themes
 
@@ -83,33 +95,39 @@ Components for standard app flows: onboarding, settings, notifications.
 
 ---
 
-## Phase 3 — Domain-Specific
+## Phase 3 — Domain-Specific ✅ COMPLETE
 
 Components for specific app types: e-commerce, auth, social, media.
 
 ### Components
 
-- [ ] **product-card** — Product image, price, rating, add-to-cart button
-- [ ] **cart-item** — Cart row with image, quantity stepper, remove button
-- [ ] **quantity-stepper** — +/- increment control
-- [ ] **pricing-card** — Subscription / plan pricing display with feature list
-- [ ] **payment-card** — Credit card display and input form
-- [ ] **review-card** — User review with avatar, stars, text, date
-- [ ] **onboarding-screen** — Full-screen onboarding slide with image, title, description, CTA
-- [ ] **pin-lock** — PIN / passcode entry screen (banking apps)
-- [ ] **biometric-prompt** — Face ID / fingerprint trigger UI
-- [ ] **social-login-button** — Google / Apple / GitHub sign-in with brand colors
-- [ ] **video-player** — Inline video player with controls
-- [ ] **audio-player** — Mini audio player bar
-- [ ] **file-upload** — File/image picker with preview and upload progress
-- [ ] **markdown** — Render markdown content (chat, docs, notes)
-- [ ] **comment** — Comment thread with avatar, timestamp, reply action
-- [ ] **mention-input** — Text input with @mention autocomplete
-- [ ] **reaction-bar** — Emoji reaction row (Slack / iMessage style)
-- [ ] **color-picker** — Color selection input
-- [ ] **speed-dial** — FAB that expands into multiple action buttons
-- [ ] **breadcrumb** — Nested navigation path indicator
-- [ ] **data-table** — Sortable, scrollable data table
+- [x] **product-card** — Product image, price/strikethrough, rating, animated favorite heart, add-to-cart
+- [x] **cart-item** — Cart row with image thumbnail, inline quantity stepper, swipe-to-remove
+- [x] **quantity-stepper** — +/- control with spring feedback, long-press rapid increment
+- [x] **pricing-card** — Subscription plan with feature list, "Most Popular" badge, CTA
+- [x] **payment-card** — Display mode (gradient card, masked number) + input mode (formatted fields)
+- [x] **review-card** — Star rating, author info, expandable text, image thumbnails, helpful voting
+- [x] **onboarding-screen** — Full-screen slide with animated dot indicator, skip/next/finish
+- [x] **pin-lock** — Animated dot fill, number keypad, shake on error, biometric button, lockout
+- [x] **biometric-prompt** — Modal with fingerprint/face icon, pulse animation, success/error states
+- [x] **social-login-button** — Google/Apple/GitHub/Facebook/Twitter/Discord with brand colors
+- [x] **video-player** — Play/pause overlay, progress bar, time display, fullscreen, poster
+- [x] **audio-player** — Full + compact modes, artwork, play/pause/skip, progress bar
+- [x] **file-upload** — Dropzone/button/compact variants, file preview thumbnails, progress bars
+- [x] **markdown** — Full parser for headings, bold, italic, code, links, lists, blockquotes, images
+- [x] **comment** — Threaded replies with indentation, like/reply, relative timestamps
+- [x] **mention-input** — @mention autocomplete dropdown, user search, cursor-aware replacement
+- [x] **reaction-bar** — Emoji pills with animated count, own-reaction highlight, add button
+- [x] **color-picker** — Preset swatches, hue/saturation/lightness sliders, hex input
+- [x] **speed-dial** — Rotating FAB, staggered spring action fan-out, backdrop dim, labels
+- [x] **breadcrumb** — Configurable separators, middle truncation, icon support
+- [x] **data-table** — Sortable columns, horizontal scroll, sticky header, striped, loading skeleton
+
+### Showcase
+
+- [x] `ecommerce-showcase.tsx` — ProductCard, CartItem, QuantityStepper, PricingCard, PaymentCard, ReviewCard
+- [x] `auth-showcase.tsx` — SocialLoginButton, PinLock, BiometricPrompt, OnboardingScreen
+- [x] `content-showcase.tsx` — Markdown, VideoPlayer, AudioPlayer, FileUpload, ColorPicker, SpeedDial, Breadcrumb
 
 ### Themes
 
@@ -455,14 +473,48 @@ Pre-composed combinations of 2-5 components that form common UI patterns.
 
 ---
 
+## Progress Summary
+
+| Phase | Status | Components | Showcase Screens |
+|---|---|---|---|
+| Phase 1 — Core Essentials | ✅ Complete | 16 shipped | 3 screens |
+| Phase 2 — App Patterns | ✅ Complete | 15 shipped | 3 screens |
+| Phase 3 — Domain-Specific | ✅ Complete | 21 shipped | 3 screens |
+| Phase 4 — Hooks | Planned | 56 hooks | — |
+| Phase 5 — Screens | Planned | 31 screens | — |
+| Phase 6 — Animations | Planned | 29 presets | — |
+| Phase 7 — CLI & Tooling | Planned | 14 CLI commands + extensions | — |
+| Phase 8 — Platform & Ecosystem | Planned | a11y, adaptive, tests, docs | — |
+| Phase 9 — Blocks | Planned | 21 blocks | — |
+
+### What's Done
+
+- **80 components** in the registry (28 v1 + 52 new)
+- **9 new showcase screens** in the example app (15 total)
+- **~18,000+ lines** of new component code
+- Every component: spring animations, haptics, accessibility, iOS + Android handling
+- All code on `mate/v2` branch with clean, meaningful commits
+
+### What's Next
+
+- 8 new theme presets (ocean, forest, sunset, lavender, monochrome, neon, pastel, corporate)
+- Token system expansion (fonts, borders, opacity, z-index, gradients, component-level tokens)
+- Hooks library (56 hooks)
+- Ready-made screens (31 screens)
+- Animation presets (29 animations)
+- CLI superpowers (doctor, diff, migrate, create, theme export)
+- Blocks (21 multi-component patterns)
+
+---
+
 ## Totals
 
 | Phase | Components | Hooks | Screens | Animations | Blocks | Themes |
 |---|---|---|---|---|---|---|
-| v1 (current) | 28 | 0 | 0 | 0 | 0 | 4 |
-| Phase 1 | +16 | — | — | — | — | +4 |
-| Phase 2 | +15 | — | — | — | — | +2 |
-| Phase 3 | +21 | — | — | — | — | +2 |
+| v1 (shipped) | 28 | 0 | 0 | 0 | 0 | 4 |
+| Phase 1 ✅ | +16 | — | — | — | — | +4 planned |
+| Phase 2 ✅ | +15 | — | — | — | — | +2 planned |
+| Phase 3 ✅ | +21 | — | — | — | — | +2 planned |
 | Phase 4 | — | +56 | — | — | — | — |
 | Phase 5 | — | — | +31 | — | — | — |
 | Phase 6 | — | — | — | +29 | — | — |
@@ -480,16 +532,16 @@ Pre-composed combinations of 2-5 components that form common UI patterns.
 | Feature | shadcn/ui | native-mate v2 |
 |---|---|---|
 | Platform | Web only | Mobile-first (iOS + Android + Web) |
-| Components | ~50 | 80 |
-| Hooks | 0 | 56 |
-| Ready-made screens | 0 | 31 |
-| Animation presets | 0 | 29 |
-| Blocks (patterns) | ~12 | 21 |
-| Themes | 1 (+ manual) | 12 presets |
-| CLI commands | 3 (init, add, diff) | 14 |
-| AI integration | 0 | MCP server + VS Code + Cursor |
-| Figma integration | 0 | Full plugin with token sync |
-| Platform-adaptive | N/A | iOS + Android native feel |
-| Accessibility audit | 0 | Built-in CLI audit |
-| Testing utilities | 0 | Pre-written tests for all components |
-| Documentation | Good | Interactive playground + AI chatbot + Expo Snack |
+| Components | ~50 | 80 (shipped) |
+| Hooks | 0 | 56 (planned) |
+| Ready-made screens | 0 | 31 (planned) |
+| Animation presets | 0 | 29 (planned) |
+| Blocks (patterns) | ~12 | 21 (planned) |
+| Themes | 1 (+ manual) | 12 presets (4 shipped, 8 planned) |
+| CLI commands | 3 (init, add, diff) | 14 (4 shipped, 10 planned) |
+| AI integration | 0 | MCP server + VS Code + Cursor (shipped) |
+| Figma integration | 0 | Full plugin with token sync (shipped) |
+| Platform-adaptive | N/A | iOS + Android native feel (planned) |
+| Accessibility audit | 0 | Built-in CLI audit (planned) |
+| Testing utilities | 0 | Pre-written tests for all components (planned) |
+| Documentation | Good | Interactive playground + AI chatbot + Expo Snack (planned) |
