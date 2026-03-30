@@ -43,6 +43,12 @@ export default function RootLayout() {
             <Stack.Screen name="navigation-showcase" />
             <Stack.Screen name="lists-showcase" />
             <Stack.Screen name="media-showcase" />
+            <Stack.Screen name="social-showcase" />
+            <Stack.Screen name="data-showcase" />
+            <Stack.Screen name="interactive-showcase" />
+            <Stack.Screen name="ecommerce-showcase" />
+            <Stack.Screen name="auth-showcase" />
+            <Stack.Screen name="content-showcase" />
           </Stack>
           <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
         </ToastProvider>

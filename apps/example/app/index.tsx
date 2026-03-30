@@ -22,6 +22,12 @@ const screens = [
   { name: 'navigation-showcase', label: 'Navigation', desc: 'Header, bottom-bar, FAB, search, stepper', icon: 'navigate-outline' },
   { name: 'lists-showcase', label: 'Lists & Filters', desc: 'List items, chips, toggles, swipe', icon: 'list-outline' },
   { name: 'media-showcase', label: 'Media & Overlays', desc: 'Carousel, rating, dialog, dropdown', icon: 'images-outline' },
+  { name: 'social-showcase', label: 'Social & Chat', desc: 'Chat bubbles, timeline, comments, reactions', icon: 'chatbubbles-outline' },
+  { name: 'data-showcase', label: 'Data & Analytics', desc: 'Stats, countdown, tables, date picker', icon: 'analytics-outline' },
+  { name: 'interactive-showcase', label: 'Interactive', desc: 'Draggable list, bottom sheet, stepper', icon: 'hand-left-outline' },
+  { name: 'ecommerce-showcase', label: 'E-Commerce', desc: 'Products, cart, pricing, reviews', icon: 'cart-outline' },
+  { name: 'auth-showcase', label: 'Auth & Onboarding', desc: 'Social login, PIN, biometrics', icon: 'shield-checkmark-outline' },
+  { name: 'content-showcase', label: 'Content & Media', desc: 'Markdown, video, audio, uploads', icon: 'document-text-outline' },
 ] as const
 
 const presets = ['zinc', 'slate', 'rose', 'midnight'] as const
@@ -41,10 +47,10 @@ export default function HomeScreen() {
           <View style={{ gap: 8 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
               <Text variant="h3">Native Mate</Text>
-              <Badge variant="info" size="sm">v0.1</Badge>
+              <Badge variant="info" size="sm">v2.0</Badge>
             </View>
             <Text variant="body" color="muted">
-              Production-ready UI components for React Native. This demo showcases all 28 components across every theme preset and color mode.
+              Production-ready UI components for React Native. This demo showcases all 80 components across every theme preset and color mode.
             </Text>
           </View>
 
