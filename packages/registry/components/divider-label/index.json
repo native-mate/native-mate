@@ -1,0 +1,11 @@
+{
+  "name": "divider-label",
+  "version": "0.1.0",
+  "description": "Labeled divider with center/left/right positioning, solid and dashed line variants, and theme-aware colors",
+  "category": "display",
+  "files": [
+    { "path": "divider-label.tsx", "hash": "" },
+    { "path": "divider-label.types.ts", "hash": "" }
+  ],
+  "dependencies": { "npm": [], "components": [] }
+}

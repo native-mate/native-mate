@@ -1,0 +1,11 @@
+{
+  "name": "tooltip",
+  "version": "0.1.0",
+  "description": "Tooltip on long press (native) or hover (web) with arrow, auto-positioning, fade + scale animation, and controlled mode",
+  "category": "overlay",
+  "files": [
+    { "path": "tooltip.tsx", "hash": "" },
+    { "path": "tooltip.types.ts", "hash": "" }
+  ],
+  "dependencies": { "npm": [], "components": [] }
+}

@@ -1,81 +1,21 @@
 // native-mate: popover@0.1.0 | hash:PLACEHOLDER
 import React, { useRef, useState, useCallback } from 'react'
-import { View, Pressable, Modal, StyleSheet, ScrollView } from 'react-native'
+import { View, Pressable, Modal, StyleSheet, ScrollView, Dimensions } from 'react-native'
 import Animated, {
-  useSharedValue, useAnimatedStyle, withSpring, withTiming, runOnJS,
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+  withTiming,
+  runOnJS,
 } from 'react-native-reanimated'
 import { useTheme, makeStyles, shadow } from '@native-mate/core'
-import type { PopoverProps, PopoverPlacement } from './popover.types'
+import type { PopoverProps, PopoverPosition } from './popover.types'
 
 const OFFSET = 8
-const ARROW = 8
+const ARROW_SIZE = 8
+const SCREEN_PADDING = 12
 
 interface AnchorRect { x: number; y: number; width: number; height: number }
-
-function getOriginStyle(placement: PopoverPlacement) {
-  switch (placement) {
-    case 'top':    return { transformOrigin: 'bottom center' }
-    case 'bottom': return { transformOrigin: 'top center' }
-    case 'left':   return { transformOrigin: 'right center' }
-    case 'right':  return { transformOrigin: 'left center' }
-  }
-}
-
-function getBubbleLayout(
-  placement: PopoverPlacement,
-  anchor: AnchorRect,
-  maxWidth: number,
-): { top: number; left: number; translateX?: number; translateY?: number; arrowStyle: object } {
-  const cx = anchor.x + anchor.width / 2
-  const cy = anchor.y + anchor.height / 2
-
-  switch (placement) {
-    case 'top':
-      return {
-        top: anchor.y - OFFSET,
-        left: cx,
-        translateX: -(maxWidth / 2),
-        translateY: -10000, // will be recalculated after measure
-        arrowStyle: {
-          top: '100%', left: '50%',
-          marginLeft: -(ARROW / 2), marginTop: -(ARROW / 2 - 1),
-          transform: [{ rotate: '45deg' }],
-        },
-      }
-    case 'bottom':
-      return {
-        top: anchor.y + anchor.height + OFFSET,
-        left: cx,
-        translateX: -(maxWidth / 2),
-        arrowStyle: {
-          bottom: '100%', left: '50%',
-          marginLeft: -(ARROW / 2), marginBottom: -(ARROW / 2 - 1),
-          transform: [{ rotate: '45deg' }],
-        },
-      }
-    case 'left':
-      return {
-        top: cy,
-        left: anchor.x - OFFSET,
-        translateX: -(maxWidth + OFFSET),
-        translateY: -20,
-        arrowStyle: {
-          top: 20, right: -(ARROW / 2 - 1),
-          transform: [{ rotate: '45deg' }],
-        },
-      }
-    case 'right':
-      return {
-        top: cy,
-        left: anchor.x + anchor.width + OFFSET,
-        translateY: -20,
-        arrowStyle: {
-          top: 20, left: -(ARROW / 2 - 1),
-          transform: [{ rotate: '45deg' }],
-        },
-      }
-  }
-}
 
 const useStyles = makeStyles((theme) => ({
   bubble: {
@@ -85,27 +25,100 @@ const useStyles = makeStyles((theme) => ({
     borderWidth: 1,
     borderColor: theme.colors.border + '80',
     overflow: 'hidden',
-    ...shadow(4),
+    ...shadow(6),
   },
   arrow: {
     position: 'absolute',
-    width: ARROW,
-    height: ARROW,
+    width: ARROW_SIZE,
+    height: ARROW_SIZE,
     backgroundColor: theme.colors.surfaceRaised ?? theme.colors.surface,
     borderTopWidth: 1,
     borderLeftWidth: 1,
     borderColor: theme.colors.border + '80',
+    transform: [{ rotate: '45deg' }],
   },
 }))
 
+function getBubbleLayout(
+  position: PopoverPosition,
+  anchor: AnchorRect,
+  maxWidth: number,
+): { top: number; left: number; arrowStyle: Record<string, any>; adjustedPosition: PopoverPosition } {
+  const { width: screenW, height: screenH } = Dimensions.get('window')
+  const cx = anchor.x + anchor.width / 2
+  const cy = anchor.y + anchor.height / 2
+  let adjustedPosition = position
+
+  // Auto-flip if not enough space
+  if (position === 'top' && anchor.y < 120) adjustedPosition = 'bottom'
+  if (position === 'bottom' && anchor.y + anchor.height > screenH - 120) adjustedPosition = 'top'
+  if (position === 'left' && anchor.x < maxWidth + OFFSET + SCREEN_PADDING) adjustedPosition = 'right'
+  if (position === 'right' && anchor.x + anchor.width + maxWidth + OFFSET > screenW - SCREEN_PADDING) adjustedPosition = 'left'
+
+  let left: number
+
+  switch (adjustedPosition) {
+    case 'top':
+      left = Math.max(SCREEN_PADDING, Math.min(cx - maxWidth / 2, screenW - maxWidth - SCREEN_PADDING))
+      return {
+        top: anchor.y - OFFSET,
+        left,
+        arrowStyle: {
+          top: '100%',
+          left: cx - left - ARROW_SIZE / 2,
+          marginTop: -(ARROW_SIZE / 2 - 1),
+          transform: [{ rotate: '225deg' }],
+        },
+        adjustedPosition,
+      }
+    case 'bottom':
+      left = Math.max(SCREEN_PADDING, Math.min(cx - maxWidth / 2, screenW - maxWidth - SCREEN_PADDING))
+      return {
+        top: anchor.y + anchor.height + OFFSET,
+        left,
+        arrowStyle: {
+          bottom: '100%',
+          left: cx - left - ARROW_SIZE / 2,
+          marginBottom: -(ARROW_SIZE / 2 - 1),
+          transform: [{ rotate: '45deg' }],
+        },
+        adjustedPosition,
+      }
+    case 'left':
+      return {
+        top: cy - 40,
+        left: anchor.x - OFFSET - maxWidth,
+        arrowStyle: {
+          top: 36,
+          right: -(ARROW_SIZE / 2 - 1),
+          transform: [{ rotate: '135deg' }],
+        },
+        adjustedPosition,
+      }
+    case 'right':
+      return {
+        top: cy - 40,
+        left: anchor.x + anchor.width + OFFSET,
+        arrowStyle: {
+          top: 36,
+          left: -(ARROW_SIZE / 2 - 1),
+          transform: [{ rotate: '-45deg' }],
+        },
+        adjustedPosition,
+      }
+  }
+}
+
 export const Popover: React.FC<PopoverProps> = ({
-  children,
+  trigger,
   content,
-  placement = 'bottom',
-  maxWidth = 260,
-  dismissible = true,
-  open: controlledOpen,
+  position = 'bottom',
+  visible: controlledVisible,
   onOpenChange,
+  showArrow = true,
+  closeOnOutsidePress = true,
+  maxWidth = 280,
+  maxHeight = 360,
   style,
 }) => {
   const theme = useTheme()
@@ -113,9 +126,10 @@ export const Popover: React.FC<PopoverProps> = ({
   const anchorRef = useRef<View>(null)
   const [anchor, setAnchor] = useState<AnchorRect>({ x: 0, y: 0, width: 0, height: 0 })
   const [internalOpen, setInternalOpen] = useState(false)
-  const [modalOpen, setModalOpen] = useState(false)
+  const [modalVisible, setModalVisible] = useState(false)
 
-  const isOpen = controlledOpen ?? internalOpen
+  const isOpen = controlledVisible ?? internalOpen
+
   const opacity = useSharedValue(0)
   const scale = useSharedValue(0.9)
 
@@ -127,38 +141,43 @@ export const Popover: React.FC<PopoverProps> = ({
   const openPopover = useCallback(() => {
     anchorRef.current?.measureInWindow((x, y, width, height) => {
       setAnchor({ x, y, width, height })
-      setModalOpen(true)
+      setModalVisible(true)
       setInternalOpen(true)
       onOpenChange?.(true)
-      opacity.value = withTiming(1, { duration: 150 })
-      scale.value = withSpring(1, { damping: 16, stiffness: 280 })
+      opacity.value = withTiming(1, { duration: 160 })
+      scale.value = withSpring(1, { damping: 16, stiffness: 260 })
     })
   }, [onOpenChange])
 
   const closePopover = useCallback(() => {
     opacity.value = withTiming(0, { duration: 120 })
     scale.value = withTiming(0.9, { duration: 120 }, () => {
-      runOnJS(setModalOpen)(false)
+      runOnJS(setModalVisible)(false)
       runOnJS(setInternalOpen)(false)
     })
     onOpenChange?.(false)
   }, [onOpenChange])
 
-  const toggle = () => {
+  const toggle = useCallback(() => {
     if (isOpen) closePopover()
     else openPopover()
-  }
+  }, [isOpen, openPopover, closePopover])
 
-  const layout = getBubbleLayout(placement, anchor, maxWidth)
-  const bg = theme.colors.surfaceRaised ?? theme.colors.surface
+  const layout = getBubbleLayout(position, anchor, maxWidth)
 
   return (
     <>
-      <Pressable ref={anchorRef as React.RefObject<View>} onPress={toggle} style={style}>
-        {children}
+      <Pressable
+        ref={anchorRef as React.RefObject<View>}
+        onPress={toggle}
+        style={style}
+        accessibilityRole="button"
+        accessibilityState={{ expanded: isOpen }}
+      >
+        {trigger}
       </Pressable>
 
-      {modalOpen && (
+      {modalVisible && (
         <Modal
           visible
           transparent
@@ -166,7 +185,7 @@ export const Popover: React.FC<PopoverProps> = ({
           statusBarTranslucent
           onRequestClose={closePopover}
         >
-          {dismissible && (
+          {closeOnOutsidePress && (
             <Pressable style={StyleSheet.absoluteFill} onPress={closePopover} />
           )}
 
@@ -177,21 +196,20 @@ export const Popover: React.FC<PopoverProps> = ({
                 top: layout.top,
                 left: layout.left,
                 maxWidth,
-                transform: [
-                  { translateX: layout.translateX ?? 0 },
-                  ...(layout.translateY ? [{ translateY: layout.translateY }] : []),
-                ],
               },
               animStyle,
             ]}
           >
             {/* Arrow */}
-            <View style={[styles.arrow, layout.arrowStyle as object]} />
+            {showArrow && (
+              <View style={[styles.arrow, layout.arrowStyle as object]} />
+            )}
 
             <ScrollView
-              style={{ maxHeight: 320 }}
+              style={{ maxHeight }}
               showsVerticalScrollIndicator={false}
               keyboardShouldPersistTaps="handled"
+              nestedScrollEnabled
             >
               {content}
             </ScrollView>

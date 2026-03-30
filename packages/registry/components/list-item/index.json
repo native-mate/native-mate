@@ -1,0 +1,11 @@
+{
+  "name": "list-item",
+  "version": "0.1.0",
+  "description": "Universal list row with leading/trailing slots, press animation, destructive variant, compact mode, and divider support",
+  "category": "display",
+  "files": [
+    { "path": "list-item.tsx", "hash": "" },
+    { "path": "list-item.types.ts", "hash": "" }
+  ],
+  "dependencies": { "npm": [], "components": [] }
+}

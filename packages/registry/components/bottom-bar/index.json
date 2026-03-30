@@ -1,0 +1,11 @@
+{
+  "name": "bottom-bar",
+  "version": "0.1.0",
+  "description": "Bottom navigation bar with animated sliding indicator, badge support with pulse animation, and haptic feedback",
+  "category": "navigation",
+  "files": [
+    { "path": "bottom-bar.tsx", "hash": "" },
+    { "path": "bottom-bar.types.ts", "hash": "" }
+  ],
+  "dependencies": { "npm": [], "components": [] }
+}
