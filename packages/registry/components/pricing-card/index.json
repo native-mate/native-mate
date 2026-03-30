@@ -1,0 +1,1 @@
+{ "name": "pricing-card", "version": "0.1.0", "description": "Subscription plan card with price, features list, popular badge, and CTA button", "category": "display", "files": [{"path": "pricing-card.tsx", "hash": ""}, {"path": "pricing-card.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }

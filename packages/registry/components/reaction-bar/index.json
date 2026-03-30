@@ -1,0 +1,1 @@
+{ "name": "reaction-bar", "version": "0.1.0", "description": "Emoji reaction bar with animated count change, own-reaction highlight, and add reaction button", "category": "input", "files": [{"path": "reaction-bar.tsx", "hash": ""}, {"path": "reaction-bar.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }

@@ -1,0 +1,1 @@
+{ "name": "breadcrumb", "version": "0.1.0", "description": "Navigation breadcrumb path with configurable separators, middle truncation, and icon support", "category": "navigation", "files": [{"path": "breadcrumb.tsx", "hash": ""}, {"path": "breadcrumb.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }

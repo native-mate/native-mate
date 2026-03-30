@@ -1,0 +1,1 @@
+{ "name": "social-login-button", "version": "0.1.0", "description": "Branded social authentication buttons for Google, Apple, GitHub, Facebook, Twitter, and Discord", "category": "input", "files": [{"path": "social-login-button.tsx", "hash": ""}, {"path": "social-login-button.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }
