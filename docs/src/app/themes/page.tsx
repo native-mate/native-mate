@@ -580,7 +580,7 @@ export default function ThemeStudioPage() {
 
         {/* 3-column workspace */}
         <div
-          className="flex flex-1 overflow-hidden"
+          className="flex flex-1 overflow-hidden pl-4 sm:pl-6"
           style={{ height: 'calc(100vh - 3.5rem - 73px)' }}
         >
           {/* Left — token controls */}

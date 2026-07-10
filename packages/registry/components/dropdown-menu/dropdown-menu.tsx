@@ -1,6 +1,6 @@
 // native-mate: dropdown-menu@0.1.0 | hash:PLACEHOLDER
-import React, { useRef, useState, useCallback } from 'react'
-import { View, Pressable, Modal, StyleSheet } from 'react-native'
+import React, { useRef, useState, useCallback, useEffect } from 'react'
+import { View, Pressable, Modal, StyleSheet, Platform } from 'react-native'
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'hidden',
     minWidth: 180,
     maxWidth: 280,
-    ...shadow(6),
+    ...shadow(4),
   },
   item: {
     flexDirection: 'row',
@@ -102,7 +102,35 @@ const MenuItem: React.FC<{
   )
 }
 
-export const DropdownMenu: React.FC<DropdownMenuProps> = ({
+function MenuItems({
+  items,
+  theme,
+  haptic,
+  onClose,
+}: {
+  items: DropdownMenuItem[]
+  theme: any
+  haptic: HapticStyle
+  onClose: () => void
+}) {
+  return (
+    <>
+      {items.map((item, i) => (
+        <React.Fragment key={item.key}>
+          <MenuItem item={item} theme={theme} haptic={haptic} onClose={onClose} />
+          {item.divider && i < items.length - 1 && <View style={{ height: 1, backgroundColor: theme.colors.border, marginHorizontal: 8 }} />}
+        </React.Fragment>
+      ))}
+    </>
+  )
+}
+
+// ─── Web version ─────────────────────────────────────────────────────────────
+// RN's Modal + measureInWindow don't behave reliably under react-native-web,
+// so on web we position the menu with plain relative/absolute CSS instead
+// (same approach used by the Tooltip/Popover components' web implementations).
+
+function DropdownMenuWeb({
   trigger,
   items,
   open: controlledOpen,
@@ -110,7 +138,117 @@ export const DropdownMenu: React.FC<DropdownMenuProps> = ({
   align = 'right',
   haptic = 'light',
   style,
-}) => {
+}: DropdownMenuProps) {
+  const theme = useTheme()
+  const [open, setOpen] = useState(false)
+  const isOpen = controlledOpen ?? open
+
+  const scale = useSharedValue(0.92)
+  const opacity = useSharedValue(0)
+
+  const animStyle = useAnimatedStyle(() => ({
+    opacity: opacity.value,
+    transform: [{ scale: scale.value }],
+  }))
+
+  const animateIn = useCallback(() => {
+    scale.value = withSpring(1, { damping: 16, stiffness: 260 })
+    opacity.value = withTiming(1, { duration: 160 })
+  }, [])
+
+  const animateOut = useCallback((cb?: () => void) => {
+    scale.value = withSpring(0.92, { damping: 16, stiffness: 260 })
+    opacity.value = withTiming(0, { duration: 120 }, () => {
+      if (cb) runOnJS(cb)()
+    })
+  }, [])
+
+  const openMenu = useCallback(() => {
+    setOpen(true)
+    onOpenChange?.(true)
+    triggerHaptic(haptic)
+    animateIn()
+  }, [onOpenChange, haptic, animateIn])
+
+  const closeMenu = useCallback(() => {
+    animateOut(() => setOpen(false))
+    onOpenChange?.(false)
+  }, [onOpenChange, animateOut])
+
+  const toggle = useCallback(() => {
+    if (isOpen) closeMenu()
+    else openMenu()
+  }, [isOpen, openMenu, closeMenu])
+
+  useEffect(() => {
+    if (controlledOpen === undefined) return
+    if (controlledOpen) animateIn()
+    else animateOut()
+  }, [controlledOpen, animateIn, animateOut])
+
+  const bg = theme.colors.surfaceRaised ?? theme.colors.surface
+  const borderColor = theme.colors.border + '80'
+
+  const menuPosition: any = align === 'right'
+    ? { top: '100%', right: 0, marginTop: 4 }
+    : { top: '100%', left: 0, marginTop: 4 }
+
+  return (
+    <View style={[{ position: 'relative' as any }, style]}>
+      <Pressable
+        onPress={toggle}
+        accessibilityRole="button"
+        accessibilityLabel="Open menu"
+        accessibilityState={{ expanded: isOpen }}
+      >
+        {trigger}
+      </Pressable>
+
+      {isOpen && (
+        <>
+          <Pressable
+            // @ts-ignore web-only fixed positioning to catch outside clicks
+            style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 998 }}
+            onPress={closeMenu}
+          />
+
+          <Animated.View
+            style={[
+              {
+                position: 'absolute',
+                zIndex: 999,
+                backgroundColor: bg,
+                borderRadius: theme.radius.lg,
+                borderWidth: 1,
+                borderColor,
+                overflow: 'hidden',
+                minWidth: 180,
+                maxWidth: 280,
+                ...menuPosition,
+              },
+              animStyle,
+            ]}
+            accessibilityRole="menu"
+          >
+            <MenuItems items={items} theme={theme} haptic={haptic} onClose={closeMenu} />
+          </Animated.View>
+        </>
+      )}
+    </View>
+  )
+}
+
+// ─── Native version ──────────────────────────────────────────────────────────
+
+function DropdownMenuNative({
+  trigger,
+  items,
+  open: controlledOpen,
+  onOpenChange,
+  align = 'right',
+  haptic = 'light',
+  style,
+}: DropdownMenuProps) {
   const theme = useTheme()
   const styles = useStyles()
   const triggerRef = useRef<View>(null)
@@ -153,6 +291,24 @@ export const DropdownMenu: React.FC<DropdownMenuProps> = ({
     else openMenu()
   }, [isOpen, openMenu, closeMenu])
 
+  // Keep animation + anchor measurement in sync when open is controlled externally.
+  useEffect(() => {
+    if (controlledOpen === undefined) return
+    if (controlledOpen) {
+      triggerRef.current?.measureInWindow((x, y, width, height) => {
+        setAnchor({ x, y, width, height })
+        setModalVisible(true)
+        scale.value = withSpring(1, { damping: 16, stiffness: 260 })
+        opacity.value = withTiming(1, { duration: 160 })
+      })
+    } else {
+      scale.value = withSpring(0.92, { damping: 16, stiffness: 260 })
+      opacity.value = withTiming(0, { duration: 120 }, () => {
+        runOnJS(setModalVisible)(false)
+      })
+    }
+  }, [controlledOpen])
+
   // Position the menu below the trigger
   const menuTop = anchor.y + anchor.height + 4
   const menuStyle: any = { top: menuTop }
@@ -192,22 +348,17 @@ export const DropdownMenu: React.FC<DropdownMenuProps> = ({
             style={[styles.menu, menuStyle, animStyle]}
             accessibilityRole="menu"
           >
-            {items.map((item, i) => (
-              <React.Fragment key={item.key}>
-                <MenuItem
-                  item={item}
-                  theme={theme}
-                  haptic={haptic}
-                  onClose={closeMenu}
-                />
-                {item.divider && i < items.length - 1 && (
-                  <View style={styles.divider} />
-                )}
-              </React.Fragment>
-            ))}
+            <MenuItems items={items} theme={theme} haptic={haptic} onClose={closeMenu} />
           </Animated.View>
         </Modal>
       )}
     </>
   )
+}
+
+// ─── Unified export ──────────────────────────────────────────────────────────
+
+export const DropdownMenu: React.FC<DropdownMenuProps> = (props) => {
+  if (Platform.OS === 'web') return <DropdownMenuWeb {...props} />
+  return <DropdownMenuNative {...props} />
 }

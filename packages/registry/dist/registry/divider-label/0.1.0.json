@@ -1,0 +1,21 @@
+{
+  "name": "divider-label",
+  "version": "0.1.0",
+  "description": "Labeled divider with center/left/right positioning, solid and dashed line variants, and theme-aware colors",
+  "files": [
+    {
+      "path": "divider-label.tsx",
+      "content": "// native-mate: divider-label@0.1.0 | hash:f2f87b5a165b20ca\nimport React from 'react'\r\nimport { View } from 'react-native'\r\nimport { useTheme, Text, makeStyles } from '@native-mate/core'\r\nimport type { DividerLabelProps, DividerLabelPosition } from './divider-label.types'\r\n\r\nconst useStyles = makeStyles((theme) => ({\r\n  container: {\r\n    flexDirection: 'row',\r\n    alignItems: 'center',\r\n  },\r\n  line: {\r\n    flex: 1,\r\n    height: 1,\r\n  },\r\n  labelWrap: {\r\n    paddingHorizontal: theme.spacing.md,\r\n  },\r\n}))\r\n\r\nexport const DividerLabel: React.FC<DividerLabelProps> = ({\r\n  label,\r\n  position = 'center',\r\n  variant = 'line',\r\n  color,\r\n  textColor,\r\n  thickness = 1,\r\n  spacing = 16,\r\n  style,\r\n}) => {\r\n  const theme = useTheme()\r\n  const styles = useStyles()\r\n\r\n  const lineColor = color ?? theme.colors.border\r\n  const labelColor = textColor ?? theme.colors.muted\r\n\r\n  const lineStyle = {\r\n    height: thickness,\r\n    backgroundColor: variant === 'line' ? lineColor : 'transparent',\r\n    borderBottomWidth: variant === 'dashed' ? thickness : 0,\r\n    borderBottomColor: variant === 'dashed' ? lineColor : undefined,\r\n    borderStyle: variant === 'dashed' ? 'dashed' as const : undefined,\r\n  }\r\n\r\n  const leftFlex = position === 'left' ? 0.15 : position === 'right' ? 1 : 1\r\n  const rightFlex = position === 'right' ? 0.15 : position === 'left' ? 1 : 1\r\n\r\n  return (\r\n    <View\r\n      style={[\r\n        styles.container,\r\n        { marginVertical: spacing },\r\n        style,\r\n      ]}\r\n      accessibilityRole=\"separator\"\r\n    >\r\n      <View style={[styles.line, lineStyle, { flex: leftFlex }]} />\r\n      <View style={styles.labelWrap}>\r\n        <Text\r\n          style={{\r\n            fontSize: 12,\r\n            fontWeight: '500',\r\n            color: labelColor,\r\n            textTransform: 'uppercase',\r\n            letterSpacing: 0.5,\r\n          }}\r\n        >\r\n          {label}\r\n        </Text>\r\n      </View>\r\n      <View style={[styles.line, lineStyle, { flex: rightFlex }]} />\r\n    </View>\r\n  )\r\n}\r\n",
+      "hash": "f2f87b5a165b20ca"
+    },
+    {
+      "path": "divider-label.types.ts",
+      "content": "// native-mate: divider-label@0.1.0 | hash:9c12ee36fb24e5a7\nimport type { StyleProp, ViewStyle } from 'react-native'\r\n\r\nexport type DividerLabelPosition = 'center' | 'left' | 'right'\r\nexport type DividerLabelVariant = 'line' | 'dashed'\r\n\r\nexport interface DividerLabelProps {\r\n  /** Text label in the divider */\r\n  label: string\r\n  /** Position of the label */\r\n  position?: DividerLabelPosition\r\n  /** Line style */\r\n  variant?: DividerLabelVariant\r\n  /** Line color override */\r\n  color?: string\r\n  /** Text color override */\r\n  textColor?: string\r\n  /** Line thickness */\r\n  thickness?: number\r\n  /** Vertical spacing around the divider */\r\n  spacing?: number\r\n  style?: StyleProp<ViewStyle>\r\n}\r\n",
+      "hash": "9c12ee36fb24e5a7"
+    }
+  ],
+  "dependencies": {
+    "npm": [],
+    "components": []
+  }
+}

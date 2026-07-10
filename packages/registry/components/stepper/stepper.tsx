@@ -211,12 +211,12 @@ const StepNode: React.FC<StepNodeProps> = ({
   const textColor =
     status === 'upcoming'
       ? upcomingColor
-      : '#fff'
+      : theme.colors.onPrimary
 
   const renderNodeContent = () => {
     if (status === 'completed') {
       return (
-        <Ionicons name="checkmark" size={sz.iconSize} color="#fff" />
+        <Ionicons name="checkmark" size={sz.iconSize} color={theme.colors.onPrimary} />
       )
     }
 
@@ -227,7 +227,7 @@ const StepNode: React.FC<StepNodeProps> = ({
             width: sz.dotSize,
             height: sz.dotSize,
             borderRadius: sz.dotSize / 2,
-            backgroundColor: status === 'active' ? '#fff' : upcomingColor,
+            backgroundColor: status === 'active' ? theme.colors.onPrimary : upcomingColor,
           }}
         />
       )

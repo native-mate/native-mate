@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 9999,
-    ...shadow(6),
+    ...shadow(4),
   },
   speedDialItem: {
     flexDirection: 'row',

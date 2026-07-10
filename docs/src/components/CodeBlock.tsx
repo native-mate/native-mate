@@ -1,12 +1,19 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState } from 'react'
 import Prism from 'prismjs'
 import 'prismjs/components/prism-jsx'
 import 'prismjs/components/prism-tsx'
 import 'prismjs/components/prism-bash'
 import 'prismjs/components/prism-typescript'
 import '@/styles/prism-dark.css'
+
+// Disable Prism's automatic whole-document highlighting — we highlight to a
+// string ourselves (see below) and render it via dangerouslySetInnerHTML.
+// Without this, Prism's own DOMContentLoaded scan re-processes our <code>
+// elements imperatively (adding tabindex/class to <pre>) after hydration,
+// causing a client/server attribute mismatch.
+Prism.manual = true
 
 interface CodeBlockProps {
   code: string
@@ -26,11 +33,8 @@ function FileIcon() {
 
 export function CodeBlock({ code, language = 'tsx', filename, showLineNumbers = true }: CodeBlockProps) {
   const [copied, setCopied] = useState(false)
-  const codeRef = useRef<HTMLElement>(null)
-
-  useEffect(() => {
-    if (codeRef.current) Prism.highlightElement(codeRef.current)
-  }, [code, language])
+  const grammar = Prism.languages[language] ?? Prism.languages.tsx
+  const highlighted = Prism.highlight(code, grammar, language)
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(code)
@@ -98,7 +102,10 @@ export function CodeBlock({ code, language = 'tsx', filename, showLineNumbers = 
         {/* Code content */}
         <div className="flex-1 overflow-x-auto py-5 pl-5 pr-6">
           <pre className="!m-0 !bg-transparent !p-0 font-mono text-[13px] leading-[1.7]">
-            <code ref={codeRef} className={`language-${language}`}>{code}</code>
+            <code
+              className={`language-${language}`}
+              dangerouslySetInnerHTML={{ __html: highlighted }}
+            />
           </pre>
         </div>
       </div>

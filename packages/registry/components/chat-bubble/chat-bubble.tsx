@@ -154,8 +154,8 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
     ? selfColor ?? theme.colors.primary
     : otherColor ?? (theme.colors.surfaceRaised ?? theme.colors.surface)
 
-  const textColor = isSelf ? '#fff' : theme.colors.foreground
-  const mutedTextColor = isSelf ? 'rgba(255,255,255,0.65)' : theme.colors.muted
+  const textColor = isSelf ? theme.colors.onPrimary : theme.colors.foreground
+  const mutedTextColor = isSelf ? theme.colors.onPrimary + 'A6' : theme.colors.muted
 
   const handleLongPress = () => {
     if (haptic && Haptics) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)

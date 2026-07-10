@@ -74,6 +74,7 @@ const TimelineNode: React.FC<TimelineNodeProps> = ({
   upcomingColor,
   icon,
 }) => {
+  const theme = useTheme()
   const sz = sizeMap[size]
   const pulseScale = useSharedValue(1)
   const pulseOpacity = useSharedValue(0)
@@ -122,10 +123,10 @@ const TimelineNode: React.FC<TimelineNodeProps> = ({
   const renderContent = () => {
     if (icon) return icon
     if (status === 'completed') {
-      return <Ionicons name="checkmark" size={sz.iconSize} color="#fff" />
+      return <Ionicons name="checkmark" size={sz.iconSize} color={theme.colors.onPrimary} />
     }
     if (status === 'error') {
-      return <Ionicons name="close" size={sz.iconSize} color="#fff" />
+      return <Ionicons name="close" size={sz.iconSize} color={theme.colors.onDestructive} />
     }
     if (status === 'active') {
       return (
@@ -134,7 +135,7 @@ const TimelineNode: React.FC<TimelineNodeProps> = ({
             width: sz.node * 0.35,
             height: sz.node * 0.35,
             borderRadius: sz.node,
-            backgroundColor: '#fff',
+            backgroundColor: theme.colors.onPrimary,
           }}
         />
       )
@@ -216,11 +217,19 @@ const TimelineItemRow: React.FC<TimelineItemRowProps> = ({
   const translateY = useSharedValue(animated ? 20 : 0)
 
   useEffect(() => {
-    if (animated) {
+    if (!animated) return
+    // Deferring the trigger by a tick (rather than calling withDelay/withTiming
+    // synchronously inside the mount effect) mirrors the working pattern in
+    // bottom-sheet-list.tsx — Reanimated's initial style commit on web isn't
+    // reliably picked up when the animation is kicked off in the same tick
+    // the shared values are created, which otherwise leaves items stuck at
+    // opacity: 0.
+    const t = setTimeout(() => {
       const delay = index * staggerDelay
       opacity.value = withDelay(delay, withTiming(1, { duration: 400, easing: Easing.out(Easing.cubic) }))
       translateY.value = withDelay(delay, withSpring(0, SPRING))
-    }
+    }, 10)
+    return () => clearTimeout(t)
   }, [animated, index, staggerDelay])
 
   const animStyle = useAnimatedStyle(() => ({

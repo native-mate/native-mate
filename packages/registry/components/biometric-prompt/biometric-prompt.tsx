@@ -138,8 +138,12 @@ export const BiometricPrompt: React.FC<BiometricPromptProps> = ({
   const pulseScale = useSharedValue(1)
   const pulseOpacity = useSharedValue(0.6)
   const iconScale = useSharedValue(1)
-  const cardScale = useSharedValue(0.9)
-  const cardOpacity = useSharedValue(0)
+  // Initialized from the current `visible` prop (not a fixed "hidden" baseline)
+  // since RN's Modal may only mount this content once `visible` first becomes
+  // true, making the very first open a fresh mount that can't rely solely on
+  // the entry-animation effect below to have run yet.
+  const cardScale = useSharedValue(visible ? 1 : 0.9)
+  const cardOpacity = useSharedValue(visible ? 1 : 0)
 
   // Pulse animation
   useEffect(() => {

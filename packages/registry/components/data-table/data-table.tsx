@@ -194,14 +194,21 @@ export function DataTable<T extends Record<string, any>>({
     const isSorted = sortBy === column.key
     const isSortable = column.sortable && onSort != null
 
+    // This sizing style must live on the cell's outermost element (the direct
+    // child of headerRow's flex row), not on an inner wrapper — otherwise the
+    // header column widths won't match the body cells' flex/width and the
+    // columns misalign.
+    const sizingStyle = [
+      column.width != null ? { width: column.width } : { flex: column.flex ?? 1 },
+      bordered && index < columns.length - 1 && styles.cellBordered,
+    ]
+
     const cellContent = (
       <View
         style={[
           styles.headerCell,
-          column.width != null ? { width: column.width } : { flex: column.flex ?? 1 },
           column.align === 'center' && { justifyContent: 'center' },
           column.align === 'right' && { justifyContent: 'flex-end' },
-          bordered && index < columns.length - 1 && styles.cellBordered,
         ]}
       >
         <Text variant="caption" style={styles.headerText}>
@@ -232,13 +239,14 @@ export function DataTable<T extends Record<string, any>>({
           onPress={() => handleSort(column.key)}
           accessibilityRole="button"
           accessibilityLabel={`Sort by ${column.title}`}
+          style={sizingStyle}
         >
           {cellContent}
         </Pressable>
       )
     }
 
-    return <View key={column.key}>{cellContent}</View>
+    return <View key={column.key} style={sizingStyle}>{cellContent}</View>
   }
 
   const renderRow = (row: T, rowIndex: number) => {

@@ -144,7 +144,7 @@ export const ActionSheet: React.FC<ActionSheetProps> = ({
   }, [isOpen])
 
   const handleClose = () => {
-    hide(() => runOnJS(onClose)())
+    hide(onClose)
   }
 
   const sheetStyle = useAnimatedStyle(() => ({

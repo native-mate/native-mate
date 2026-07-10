@@ -1,12 +1,17 @@
 'use client'
 
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState } from 'react'
 import Prism from 'prismjs'
 import 'prismjs/components/prism-jsx'
 import 'prismjs/components/prism-tsx'
 import '@/styles/prism-dark.css'
 import { PreviewWrapper } from '../../PreviewWrapper'
 import { useThemeCustomizer } from '../../ThemeCustomizerContext'
+
+// See CodeBlock.tsx — disables Prism's automatic whole-document highlighting,
+// which otherwise re-mutates our already-highlighted <code> elements after
+// hydration and causes a client/server attribute mismatch.
+Prism.manual = true
 
 interface PreviewProps {
   title: string
@@ -30,12 +35,8 @@ function usePreviewColors() {
 export function Preview({ title, code, minHeight = 120, children }: PreviewProps) {
   const [expanded, setExpanded] = useState(false)
   const [copied, setCopied] = useState(false)
-  const codeRef = useRef<HTMLElement>(null)
   const { bg, border } = usePreviewColors()
-
-  useEffect(() => {
-    if (codeRef.current) Prism.highlightElement(codeRef.current)
-  }, [code, expanded])
+  const highlighted = Prism.highlight(code, Prism.languages.tsx, 'tsx')
 
   const handleCopy = () => {
     navigator.clipboard.writeText(code)
@@ -77,7 +78,7 @@ export function Preview({ title, code, minHeight = 120, children }: PreviewProps
               </div>
             )}
             <pre className="!m-0 !bg-transparent !p-5 font-mono text-[13px] leading-[1.7]">
-              <code ref={codeRef} className="language-tsx">{code}</code>
+              <code className="language-tsx" dangerouslySetInnerHTML={{ __html: highlighted }} />
             </pre>
           </div>
           {!expanded && (

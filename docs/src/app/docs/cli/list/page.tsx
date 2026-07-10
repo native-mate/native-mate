@@ -40,7 +40,7 @@ export default function CliListPage() {
 
       <h2 className="mt-8 mb-3 text-xl font-semibold text-zinc-50">Output</h2>
       <p className="mb-3 text-sm text-zinc-400">
-        Displays all 28 components grouped by category (Input, Display, Feedback, Overlay, Layout)
+        Displays all 80 components grouped by category (Input, Display, Feedback, Overlay, Layout, Navigation, Interaction)
         with their version and description.
       </p>
     </article>

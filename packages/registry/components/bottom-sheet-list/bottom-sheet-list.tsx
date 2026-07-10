@@ -313,7 +313,7 @@ export const BottomSheetList: React.FC<BottomSheetListProps> = ({
                 { backgroundColor: theme.colors.primary },
               ]}
             >
-              <Ionicons name="checkmark" size={16} color="#fff" />
+              <Ionicons name="checkmark" size={16} color={theme.colors.onPrimary} />
             </View>
           )}
         </Pressable>
@@ -429,7 +429,7 @@ export const BottomSheetList: React.FC<BottomSheetListProps> = ({
                   style={{
                     fontSize: 15,
                     fontWeight: '600',
-                    color: '#fff',
+                    color: theme.colors.onPrimary,
                   }}
                 >
                   {confirmLabel}

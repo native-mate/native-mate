@@ -334,7 +334,7 @@ const CalendarGrid: React.FC<CalendarProps> = ({
                       color: isDisabled
                         ? theme.colors.muted + '60'
                         : isSelected
-                          ? '#fff'
+                          ? theme.colors.onPrimary
                           : theme.colors.foreground,
                     }}
                   >
@@ -555,7 +555,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
             accessibilityLabel={confirmLabel}
           >
             <Text
-              style={{ fontSize: 15, fontWeight: '600', color: '#fff' }}
+              style={{ fontSize: 15, fontWeight: '600', color: theme.colors.onPrimary }}
             >
               {confirmLabel}
             </Text>

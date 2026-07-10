@@ -62,7 +62,7 @@ export function Hero() {
         animate="visible"
         className="max-w-2xl text-sm sm:text-base lg:text-lg text-zinc-400 leading-relaxed mb-8 sm:mb-10 px-2"
       >
-        28 production-ready components built on{' '}
+        80 production-ready components built on{' '}
         <span className="text-zinc-200 font-medium">Reanimated 4</span> and React Native{' '}
         <span className="text-zinc-200 font-medium">New Architecture</span>.
         Optimized for <span className="text-zinc-200 font-medium">Expo SDK 54</span>, fully typed,

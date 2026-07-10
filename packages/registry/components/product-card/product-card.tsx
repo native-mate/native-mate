@@ -234,7 +234,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             <Text
               variant="caption"
               style={{
-                color: '#FFFFFF',
+                color: badgeColor ? '#FFFFFF' : theme.colors.onPrimary,
                 fontWeight: theme.typography.weight.bold as any,
                 fontSize: 11,
               }}

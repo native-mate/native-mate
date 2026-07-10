@@ -146,6 +146,19 @@ function TooltipWeb({
     return () => { if (timerRef.current) clearTimeout(timerRef.current) }
   }, [])
 
+  // Drive the entrance/exit animation when visibility is controlled externally
+  // (i.e. not toggled via this component's own hover/press handlers).
+  useEffect(() => {
+    if (controlledVisible === undefined) return
+    if (controlledVisible) {
+      opacity.value = withTiming(1, { duration: 130 })
+      scale.value = withSpring(1, { damping: 14, stiffness: 280 })
+    } else {
+      opacity.value = withTiming(0, { duration: 90 })
+      scale.value = withTiming(0.9, { duration: 90 })
+    }
+  }, [controlledVisible])
+
   const bg = theme.colors.foreground
   const textColor = theme.colors.background
 
@@ -252,6 +265,22 @@ function TooltipNative({
       scale.value = withSpring(1, { damping: 14, stiffness: 260 })
     })
   }, [onOpenChange])
+
+  // Drive the entrance animation + anchor measurement when visibility is
+  // controlled externally (i.e. not toggled via long-press on this component).
+  useEffect(() => {
+    if (controlledVisible === undefined) return
+    if (controlledVisible) {
+      anchorRef.current?.measureInWindow((x, y, width, height) => {
+        setAnchor({ x, y, width, height })
+        opacity.value = withTiming(1, { duration: 140 })
+        scale.value = withSpring(1, { damping: 14, stiffness: 260 })
+      })
+    } else {
+      opacity.value = withTiming(0, { duration: 100 })
+      scale.value = withTiming(0.88, { duration: 100 })
+    }
+  }, [controlledVisible])
 
   const hide = useCallback(() => {
     opacity.value = withTiming(0, { duration: 100 })

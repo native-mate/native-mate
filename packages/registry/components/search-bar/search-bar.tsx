@@ -101,10 +101,13 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   const inputRef = useRef<TextInput>(null)
   const [focused, setFocused] = useState(false)
 
-  const cancelWidth = useSharedValue(0)
-  const cancelOpacity = useSharedValue(0)
-
   const showCancelButton = showCancel !== undefined ? showCancel : focused
+
+  // Initialized from the current value (not a fixed "hidden" baseline) so a
+  // demo/consumer passing showCancel={true} on first mount doesn't depend
+  // solely on the effect below to reveal it.
+  const cancelWidth = useSharedValue(showCancelButton ? 60 : 0)
+  const cancelOpacity = useSharedValue(showCancelButton ? 1 : 0)
 
   useEffect(() => {
     if (showCancelButton) {

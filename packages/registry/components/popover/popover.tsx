@@ -1,6 +1,6 @@
 // native-mate: popover@0.1.0 | hash:PLACEHOLDER
-import React, { useRef, useState, useCallback } from 'react'
-import { View, Pressable, Modal, StyleSheet, ScrollView, Dimensions } from 'react-native'
+import React, { useRef, useState, useCallback, useEffect } from 'react'
+import { View, Pressable, Modal, StyleSheet, ScrollView, Dimensions, Platform } from 'react-native'
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
     borderWidth: 1,
     borderColor: theme.colors.border + '80',
     overflow: 'hidden',
-    ...shadow(6),
+    ...shadow(4),
   },
   arrow: {
     position: 'absolute',
@@ -109,7 +109,12 @@ function getBubbleLayout(
   }
 }
 
-export const Popover: React.FC<PopoverProps> = ({
+// ─── Web version ─────────────────────────────────────────────────────────────
+// RN's Modal + measureInWindow don't behave reliably under react-native-web,
+// so on web we position the bubble with plain relative/absolute CSS instead
+// (same approach used by the Tooltip component's web implementation).
+
+function PopoverWeb({
   trigger,
   content,
   position = 'bottom',
@@ -120,7 +125,150 @@ export const Popover: React.FC<PopoverProps> = ({
   maxWidth = 280,
   maxHeight = 360,
   style,
-}) => {
+}: PopoverProps) {
+  const theme = useTheme()
+  const [open, setOpen] = useState(false)
+  const isOpen = controlledVisible ?? open
+
+  const opacity = useSharedValue(0)
+  const scale = useSharedValue(0.9)
+
+  const animStyle = useAnimatedStyle(() => ({
+    opacity: opacity.value,
+    transform: [{ scale: scale.value }],
+  }))
+
+  const animateIn = useCallback(() => {
+    opacity.value = withTiming(1, { duration: 160 })
+    scale.value = withSpring(1, { damping: 16, stiffness: 260 })
+  }, [])
+
+  const animateOut = useCallback((cb?: () => void) => {
+    opacity.value = withTiming(0, { duration: 120 }, () => {
+      if (cb) runOnJS(cb)()
+    })
+    scale.value = withTiming(0.9, { duration: 120 })
+  }, [])
+
+  const openPopover = useCallback(() => {
+    setOpen(true)
+    onOpenChange?.(true)
+    animateIn()
+  }, [onOpenChange, animateIn])
+
+  const closePopover = useCallback(() => {
+    animateOut(() => setOpen(false))
+    onOpenChange?.(false)
+  }, [onOpenChange, animateOut])
+
+  const toggle = useCallback(() => {
+    if (isOpen) closePopover()
+    else openPopover()
+  }, [isOpen, openPopover, closePopover])
+
+  // Keep animation in sync when visibility is controlled externally.
+  useEffect(() => {
+    if (controlledVisible === undefined) return
+    if (controlledVisible) animateIn()
+    else animateOut()
+  }, [controlledVisible, animateIn, animateOut])
+
+  const bg = theme.colors.surfaceRaised ?? theme.colors.surface
+  const borderColor = theme.colors.border + '80'
+
+  const bubblePosition: any = {
+    top:    { bottom: '100%', left: '50%', marginBottom: OFFSET, transform: [{ translateX: '-50%' as any }] },
+    bottom: { top: '100%', left: '50%', marginTop: OFFSET, transform: [{ translateX: '-50%' as any }] },
+    left:   { right: '100%', top: '50%', marginRight: OFFSET, transform: [{ translateY: '-50%' as any }] },
+    right:  { left: '100%', top: '50%', marginLeft: OFFSET, transform: [{ translateY: '-50%' as any }] },
+  }[position]
+
+  const arrowPosition: any = {
+    top:    { top: '100%', left: '50%', marginLeft: -ARROW_SIZE / 2, marginTop: -ARROW_SIZE / 2, transform: [{ rotate: '225deg' }] },
+    bottom: { bottom: '100%', left: '50%', marginLeft: -ARROW_SIZE / 2, marginBottom: -ARROW_SIZE / 2, transform: [{ rotate: '45deg' }] },
+    left:   { left: '100%', top: '50%', marginTop: -ARROW_SIZE / 2, marginLeft: -ARROW_SIZE / 2, transform: [{ rotate: '135deg' }] },
+    right:  { right: '100%', top: '50%', marginTop: -ARROW_SIZE / 2, marginRight: -ARROW_SIZE / 2, transform: [{ rotate: '-45deg' }] },
+  }[position]
+
+  return (
+    <View style={[{ position: 'relative' as any }, style]}>
+      <Pressable
+        onPress={toggle}
+        accessibilityRole="button"
+        accessibilityState={{ expanded: isOpen }}
+      >
+        {trigger}
+      </Pressable>
+
+      {isOpen && (
+        <>
+          {closeOnOutsidePress && (
+            <Pressable
+              // @ts-ignore web-only fixed positioning to catch outside clicks
+              style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 998 }}
+              onPress={closePopover}
+            />
+          )}
+
+          <Animated.View
+            style={[
+              {
+                position: 'absolute',
+                zIndex: 999,
+                backgroundColor: bg,
+                borderRadius: theme.radius.lg,
+                borderWidth: 1,
+                borderColor,
+                overflow: 'hidden',
+                maxWidth,
+                ...bubblePosition,
+              },
+              animStyle,
+            ]}
+          >
+            {showArrow && (
+              <View
+                style={{
+                  position: 'absolute',
+                  width: ARROW_SIZE,
+                  height: ARROW_SIZE,
+                  backgroundColor: bg,
+                  borderTopWidth: 1,
+                  borderLeftWidth: 1,
+                  borderColor,
+                  ...arrowPosition,
+                }}
+              />
+            )}
+
+            <ScrollView
+              style={{ maxHeight }}
+              showsVerticalScrollIndicator={false}
+              keyboardShouldPersistTaps="handled"
+            >
+              {content}
+            </ScrollView>
+          </Animated.View>
+        </>
+      )}
+    </View>
+  )
+}
+
+// ─── Native version ──────────────────────────────────────────────────────────
+
+function PopoverNative({
+  trigger,
+  content,
+  position = 'bottom',
+  visible: controlledVisible,
+  onOpenChange,
+  showArrow = true,
+  closeOnOutsidePress = true,
+  maxWidth = 280,
+  maxHeight = 360,
+  style,
+}: PopoverProps) {
   const theme = useTheme()
   const styles = useStyles()
   const anchorRef = useRef<View>(null)
@@ -162,6 +310,24 @@ export const Popover: React.FC<PopoverProps> = ({
     if (isOpen) closePopover()
     else openPopover()
   }, [isOpen, openPopover, closePopover])
+
+  // Keep animation + anchor measurement in sync when visibility is controlled externally.
+  useEffect(() => {
+    if (controlledVisible === undefined) return
+    if (controlledVisible) {
+      anchorRef.current?.measureInWindow((x, y, width, height) => {
+        setAnchor({ x, y, width, height })
+        setModalVisible(true)
+        opacity.value = withTiming(1, { duration: 160 })
+        scale.value = withSpring(1, { damping: 16, stiffness: 260 })
+      })
+    } else {
+      opacity.value = withTiming(0, { duration: 120 }, () => {
+        runOnJS(setModalVisible)(false)
+      })
+      scale.value = withTiming(0.9, { duration: 120 })
+    }
+  }, [controlledVisible])
 
   const layout = getBubbleLayout(position, anchor, maxWidth)
 
@@ -218,4 +384,11 @@ export const Popover: React.FC<PopoverProps> = ({
       )}
     </>
   )
+}
+
+// ─── Unified export ──────────────────────────────────────────────────────────
+
+export const Popover: React.FC<PopoverProps> = (props) => {
+  if (Platform.OS === 'web') return <PopoverWeb {...props} />
+  return <PopoverNative {...props} />
 }

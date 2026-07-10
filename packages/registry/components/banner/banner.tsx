@@ -77,14 +77,17 @@ export const Banner: React.FC<BannerProps> = ({
   const config = variantConfig[variant]
   const accentColor = config.hardColor ?? (theme.colors[config.colorKey as keyof typeof theme.colors] as string)
 
-  const translateY = useSharedValue(position === 'top' ? -100 : 100)
-  const opacity = useSharedValue(0)
+  const translateY = useSharedValue(visible ? 0 : (position === 'top' ? -100 : 100))
+  const opacity = useSharedValue(visible ? 1 : 0)
+  const isFirstRender = useRef(true)
 
   useEffect(() => {
     if (visible) {
       setMounted(true)
-      translateY.value = withSpring(0, { damping: 18, stiffness: 200 })
-      opacity.value = withTiming(1, { duration: 200 })
+      if (!isFirstRender.current) {
+        translateY.value = withSpring(0, { damping: 18, stiffness: 200 })
+        opacity.value = withTiming(1, { duration: 200 })
+      }
 
       if (autoDismiss > 0) {
         timerRef.current = setTimeout(() => {
@@ -98,6 +101,8 @@ export const Banner: React.FC<BannerProps> = ({
         runOnJS(setMounted)(false)
       })
     }
+
+    isFirstRender.current = false
 
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current)

@@ -176,7 +176,7 @@ export const PricingCard: React.FC<PricingCardProps> = ({
           <Text
             variant="caption"
             style={{
-              color: '#FFFFFF',
+              color: badgeColor != null ? '#FFFFFF' : theme.colors.onPrimary,
               fontWeight: '700',
               fontSize: 12,
               letterSpacing: 0.5,

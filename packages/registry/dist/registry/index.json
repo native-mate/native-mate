@@ -19,6 +19,12 @@
       "category": "feedback"
     },
     {
+      "name": "audio-player",
+      "version": "0.1.0",
+      "description": "Audio player with play/pause, progress bar, track info, artwork, and compact mode",
+      "category": "display"
+    },
+    {
       "name": "avatar",
       "version": "0.1.0",
       "description": "Circular avatar with image + initials fallback",
@@ -29,6 +35,36 @@
       "version": "0.1.0",
       "description": "Inline status badge with 5 variants",
       "category": "display"
+    },
+    {
+      "name": "banner",
+      "version": "0.1.0",
+      "description": "App banner with slide in/out animation, four variants (info/warning/success/error), action button, and auto-dismiss",
+      "category": "feedback"
+    },
+    {
+      "name": "biometric-prompt",
+      "version": "0.1.0",
+      "description": "Biometric authentication modal with pulse animation, success/error states, and fallback option",
+      "category": "overlay"
+    },
+    {
+      "name": "bottom-bar",
+      "version": "0.1.0",
+      "description": "Bottom navigation bar with animated sliding indicator, badge support with pulse animation, and haptic feedback",
+      "category": "navigation"
+    },
+    {
+      "name": "bottom-sheet-list",
+      "version": "0.1.0",
+      "description": "Searchable bottom sheet list with single and multi-select, animated item appearance",
+      "category": "overlay"
+    },
+    {
+      "name": "breadcrumb",
+      "version": "0.1.0",
+      "description": "Navigation breadcrumb path with configurable separators, middle truncation, and icon support",
+      "category": "navigation"
     },
     {
       "name": "button",
@@ -43,10 +79,94 @@
       "category": "display"
     },
     {
+      "name": "carousel",
+      "version": "0.1.0",
+      "description": "Horizontal snap carousel with animated expanding pagination dots, auto-play, loop mode, and configurable item width",
+      "category": "display"
+    },
+    {
+      "name": "cart-item",
+      "version": "0.1.0",
+      "description": "Shopping cart item row with image, quantity stepper, swipe-to-remove, and animated price",
+      "category": "display"
+    },
+    {
+      "name": "chat-bubble",
+      "version": "0.1.0",
+      "description": "Chat message bubble with sender alignment, delivery status, avatar, and bubble tail",
+      "category": "display"
+    },
+    {
       "name": "checkbox",
       "version": "0.1.0",
       "description": "Animated checkbox with label",
       "category": "input"
+    },
+    {
+      "name": "chip",
+      "version": "0.1.0",
+      "description": "Selectable chip with animated selection state, icon/avatar support, closable mode, and ChipGroup layout helper",
+      "category": "input"
+    },
+    {
+      "name": "collapsible",
+      "version": "0.1.0",
+      "description": "Simple expand/collapse section with animated height and chevron rotation",
+      "category": "layout"
+    },
+    {
+      "name": "color-picker",
+      "version": "0.1.0",
+      "description": "Color picker with preset swatches, hue/saturation/lightness sliders, and hex input",
+      "category": "input"
+    },
+    {
+      "name": "comment",
+      "version": "0.1.0",
+      "description": "Threaded comment with nested replies, like/reply actions, relative timestamps, and author interaction",
+      "category": "display"
+    },
+    {
+      "name": "countdown",
+      "version": "0.1.0",
+      "description": "Countdown timer with animated digit flip, card/inline/minimal variants",
+      "category": "display"
+    },
+    {
+      "name": "data-table",
+      "version": "0.1.0",
+      "description": "Data table with sortable columns, horizontal scroll, sticky header, striped rows, and loading skeleton",
+      "category": "display"
+    },
+    {
+      "name": "date-picker",
+      "version": "0.1.0",
+      "description": "Custom calendar date picker with scroll wheel time selector and bottom sheet presentation",
+      "category": "input"
+    },
+    {
+      "name": "dialog",
+      "version": "0.1.0",
+      "description": "Confirm/cancel dialog with scale + fade animation, destructive variant, icon support, and backdrop dismiss",
+      "category": "overlay"
+    },
+    {
+      "name": "divider-label",
+      "version": "0.1.0",
+      "description": "Labeled divider with center/left/right positioning, solid and dashed line variants, and theme-aware colors",
+      "category": "display"
+    },
+    {
+      "name": "draggable-list",
+      "version": "0.1.0",
+      "description": "Reorderable list with long-press drag, shadow lift, and smooth 60fps reorder animations",
+      "category": "input"
+    },
+    {
+      "name": "dropdown-menu",
+      "version": "0.1.0",
+      "description": "Context menu anchored to a trigger with scale animation, icons, destructive items, and dividers",
+      "category": "overlay"
     },
     {
       "name": "empty-state",
@@ -55,15 +175,63 @@
       "category": "display"
     },
     {
+      "name": "fab",
+      "version": "0.1.0",
+      "description": "Floating action button with speed dial fan-out, extended label mode, spring animations, and haptic feedback",
+      "category": "input"
+    },
+    {
+      "name": "file-upload",
+      "version": "0.1.0",
+      "description": "File/image picker with dropzone, button, and compact variants, file previews, and progress bars",
+      "category": "input"
+    },
+    {
+      "name": "header",
+      "version": "0.1.0",
+      "description": "Custom navigation header with large title mode, animated collapse on scroll, transparent/blur modes, and safe area awareness",
+      "category": "navigation"
+    },
+    {
       "name": "icon",
       "version": "0.1.0",
       "description": "Themed icon wrapper with size and color token support",
       "category": "display"
     },
     {
+      "name": "image",
+      "version": "0.1.0",
+      "description": "Enhanced image with fade-in on load, shimmer/blur/color placeholders, fallback source, and error state with icon",
+      "category": "display"
+    },
+    {
+      "name": "infinite-scroll",
+      "version": "0.1.0",
+      "description": "Infinite scroll list wrapper with load-more trigger, loading indicator, and empty state",
+      "category": "layout"
+    },
+    {
       "name": "input",
       "version": "0.2.0",
       "description": "Feature-rich text input with 3 sizes, prefix/suffix, floating label, password toggle, clearable, character count, shake on error, haptic on focus",
+      "category": "input"
+    },
+    {
+      "name": "list-item",
+      "version": "0.1.0",
+      "description": "Universal list row with leading/trailing slots, press animation, destructive variant, compact mode, and divider support",
+      "category": "display"
+    },
+    {
+      "name": "markdown",
+      "version": "0.1.0",
+      "description": "Markdown renderer supporting headings, bold, italic, code, links, lists, blockquotes, images, and rules",
+      "category": "display"
+    },
+    {
+      "name": "mention-input",
+      "version": "0.1.0",
+      "description": "Text input with @mention autocomplete, user dropdown, and highlighted mention chips",
       "category": "input"
     },
     {
@@ -73,10 +241,58 @@
       "category": "overlay"
     },
     {
+      "name": "notification-card",
+      "version": "0.1.0",
+      "description": "Notification list item with category accent, unread indicator, relative time, and swipe dismiss",
+      "category": "display"
+    },
+    {
+      "name": "onboarding-screen",
+      "version": "0.1.0",
+      "description": "Full-screen onboarding slide with image, text, animated dot indicator, and navigation controls",
+      "category": "layout"
+    },
+    {
       "name": "otp-input",
       "version": "0.1.0",
       "description": "OTP/PIN code input with individual digit boxes",
       "category": "input"
+    },
+    {
+      "name": "payment-card",
+      "version": "0.1.0",
+      "description": "Credit card display with gradient styling and masked numbers, or input form with validation",
+      "category": "display"
+    },
+    {
+      "name": "phone-input",
+      "version": "0.1.0",
+      "description": "International phone number input with country picker, flag display, and auto-formatting",
+      "category": "input"
+    },
+    {
+      "name": "pin-lock",
+      "version": "0.1.0",
+      "description": "PIN entry screen with animated dot fill, number pad, shake on error, biometric button, and lockout timer",
+      "category": "input"
+    },
+    {
+      "name": "popover",
+      "version": "0.1.0",
+      "description": "Rich popover anchored to a trigger with arrow, auto-positioning, scale + fade animation, and interactive scrollable content",
+      "category": "overlay"
+    },
+    {
+      "name": "pricing-card",
+      "version": "0.1.0",
+      "description": "Subscription plan card with price, features list, popular badge, and CTA button",
+      "category": "display"
+    },
+    {
+      "name": "product-card",
+      "version": "0.1.0",
+      "description": "E-commerce product card with image, pricing, ratings, favorite toggle, and add-to-cart",
+      "category": "display"
     },
     {
       "name": "progress",
@@ -85,16 +301,58 @@
       "category": "feedback"
     },
     {
+      "name": "pull-to-refresh",
+      "version": "0.1.0",
+      "description": "Custom pull-to-refresh indicator with progress arc, spring animation, and haptic feedback",
+      "category": "feedback"
+    },
+    {
+      "name": "quantity-stepper",
+      "version": "0.1.0",
+      "description": "Plus/minus quantity control with animated press feedback and long-press rapid increment",
+      "category": "input"
+    },
+    {
       "name": "radio",
       "version": "0.1.0",
       "description": "Radio button and RadioGroup with animated selection",
       "category": "input"
     },
     {
+      "name": "rating",
+      "version": "0.1.0",
+      "description": "Star rating with animated fill, half-star support, haptic feedback per star, and read-only display mode",
+      "category": "input"
+    },
+    {
+      "name": "reaction-bar",
+      "version": "0.1.0",
+      "description": "Emoji reaction bar with animated count change, own-reaction highlight, and add reaction button",
+      "category": "input"
+    },
+    {
+      "name": "review-card",
+      "version": "0.1.0",
+      "description": "User review card with star rating, author info, expandable text, images, and helpful voting",
+      "category": "display"
+    },
+    {
       "name": "screen",
       "version": "0.1.0",
       "description": "SafeAreaView wrapper with theme background color",
       "category": "layout"
+    },
+    {
+      "name": "search-bar",
+      "version": "0.1.0",
+      "description": "Animated search input with slide-in cancel button, suggestions dropdown, loading state, and clear button",
+      "category": "input"
+    },
+    {
+      "name": "segmented-control",
+      "version": "0.1.0",
+      "description": "iOS-style segmented toggle with animated sliding pill indicator",
+      "category": "input"
     },
     {
       "name": "select",
@@ -127,10 +385,40 @@
       "category": "input"
     },
     {
+      "name": "social-login-button",
+      "version": "0.1.0",
+      "description": "Branded social authentication buttons for Google, Apple, GitHub, Facebook, Twitter, and Discord",
+      "category": "input"
+    },
+    {
+      "name": "speed-dial",
+      "version": "0.1.0",
+      "description": "FAB speed dial with rotating icon, staggered spring-animated actions, backdrop dim, and labels",
+      "category": "input"
+    },
+    {
       "name": "spinner",
       "version": "0.1.0",
       "description": "Animated loading spinner with theme-aware colors and sizes",
       "category": "feedback"
+    },
+    {
+      "name": "stat-card",
+      "version": "0.1.0",
+      "description": "KPI metric card with animated counter, trend indicator, and skeleton loading",
+      "category": "display"
+    },
+    {
+      "name": "stepper",
+      "version": "0.1.0",
+      "description": "Multi-step progress indicator with animated transitions and connecting lines",
+      "category": "navigation"
+    },
+    {
+      "name": "swipeable-row",
+      "version": "0.1.0",
+      "description": "Swipe-to-reveal actions row with spring physics and destructive full-swipe",
+      "category": "input"
     },
     {
       "name": "switch",
@@ -163,10 +451,34 @@
       "category": "input"
     },
     {
+      "name": "timeline",
+      "version": "0.1.0",
+      "description": "Vertical timeline with animated stagger entrance, status nodes, and connecting lines",
+      "category": "display"
+    },
+    {
       "name": "toast",
       "version": "0.1.0",
       "description": "Floating toast notification with auto-dismiss and position",
       "category": "feedback"
+    },
+    {
+      "name": "toggle-group",
+      "version": "0.1.0",
+      "description": "Multi-option toggle with animated sliding indicator, single/multiple selection modes, and icon support",
+      "category": "input"
+    },
+    {
+      "name": "tooltip",
+      "version": "0.1.0",
+      "description": "Tooltip on long press (native) or hover (web) with arrow, auto-positioning, fade + scale animation, and controlled mode",
+      "category": "overlay"
+    },
+    {
+      "name": "video-player",
+      "version": "0.1.0",
+      "description": "Inline video player with play/pause overlay, progress bar, time display, and fullscreen toggle",
+      "category": "display"
     }
   ]
 }

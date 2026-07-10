@@ -1,129 +1,83 @@
 'use client'
-import React, { useState } from 'react'
-import { View, Pressable } from 'react-native'
+import React from 'react'
+import { View } from 'react-native'
 import { Preview } from './shared/Preview'
 import { Popover } from '../../../../packages/registry/components/popover/popover'
 import { Text } from '@native-mate/core'
 
-const MENU_ITEMS = [
-  { label: 'Edit', icon: '✏', destructive: false },
-  { label: 'Duplicate', icon: '⧉', destructive: false },
-  { label: 'Move to folder', icon: '📁', destructive: false },
-  { label: 'Delete', icon: '🗑', destructive: true },
-]
-
-function MenuItem({ icon, label, destructive, onPress }: { icon: string; label: string; destructive: boolean; onPress: () => void }) {
+function TriggerBtn({ label }: { label: string }) {
   return (
-    <Pressable
-      onPress={onPress}
-      style={({ pressed }) => ({
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 12,
-        paddingVertical: 10,
-        paddingHorizontal: 16,
-        opacity: pressed ? 0.7 : 1,
-      })}
+    <View
+      style={{ paddingVertical: 10, paddingHorizontal: 20, borderRadius: 10, backgroundColor: '#6366f1', alignItems: 'center' }}
     >
-      <Text style={{ fontSize: 15 }}>{icon}</Text>
-      <Text style={{ fontSize: 14, color: destructive ? '#ef4444' : '#fafafa', flex: 1 }}>{label}</Text>
-    </Pressable>
+      <Text style={{ color: '#fff', fontWeight: '600', fontSize: 14 }}>{label}</Text>
+    </View>
   )
 }
 
-function TriggerBtn({ children }: { children: string }) {
+function InfoContent() {
   return (
-    <View style={{ paddingVertical: 9, paddingHorizontal: 16, borderRadius: 8, borderWidth: 1, borderColor: '#252529', backgroundColor: '#1e1e21', alignItems: 'center' }}>
-      <Text style={{ color: '#fafafa', fontSize: 13 }}>{children}</Text>
+    <View style={{ padding: 14, gap: 6, width: 220 }}>
+      <Text style={{ color: '#e4e4e7', fontSize: 14, fontWeight: '600' }}>Storage usage</Text>
+      <Text style={{ color: '#a1a1aa', fontSize: 13, lineHeight: 18 }}>
+        You've used 4.2 GB of your 10 GB plan. Upgrade for more space.
+      </Text>
     </View>
   )
 }
 
 export default function PopoverPreview() {
-  const [lastAction, setLastAction] = useState<string | null>(null)
-
-  const menuContent = (close: () => void) => (
-    <View style={{ paddingVertical: 4 }}>
-      {MENU_ITEMS.map((item, i) => (
-        <View key={item.label}>
-          {i > 0 && <View style={{ height: 1, backgroundColor: '#1e1e21' }} />}
-          <MenuItem
-            icon={item.icon}
-            label={item.label}
-            destructive={item.destructive}
-            onPress={() => { setLastAction(item.label); close() }}
-          />
-        </View>
-      ))}
-    </View>
-  )
-
   return (
     <div className="space-y-10">
-      <Preview title="Context menu (bottom)" minHeight={200} code={`import { Popover } from '~/components/ui/popover'
+      <Preview title="Basic (bottom, with arrow)" code={`import { Popover } from '~/components/ui/popover'
 
 <Popover
-  placement="bottom"
-  content={
-    <View style={{ paddingVertical: 4 }}>
-      <Pressable onPress={() => {}} style={rowStyle}>
-        <Text>Edit</Text>
-      </Pressable>
-      <Pressable onPress={() => {}} style={rowStyle}>
-        <Text style={{ color: '#ef4444' }}>Delete</Text>
-      </Pressable>
-    </View>
-  }
->
-  <Button variant="outline">Options</Button>
-</Popover>`}>
-        <View style={{ alignItems: 'center', gap: 12 }}>
-          <Popover
-            placement="bottom"
-            content={
-              <View style={{ paddingVertical: 4 }}>
-                {MENU_ITEMS.map((item, i) => (
-                  <View key={item.label}>
-                    {i > 0 && <View style={{ height: 1, backgroundColor: '#1e1e21' }} />}
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 10, paddingHorizontal: 16 }}>
-                      <Text style={{ fontSize: 15 }}>{item.icon}</Text>
-                      <Text style={{ fontSize: 14, color: item.destructive ? '#ef4444' : '#fafafa' }}>{item.label}</Text>
-                    </View>
-                  </View>
-                ))}
-              </View>
-            }
-          >
-            <TriggerBtn>••• Options</TriggerBtn>
-          </Popover>
-          {lastAction && (
-            <Text style={{ color: '#71717a', fontSize: 13 }}>Selected: {lastAction}</Text>
-          )}
+  trigger={<Button>Storage</Button>}
+  content={<InfoContent />}
+  position="bottom"
+/>`}>
+        <Popover
+          trigger={<TriggerBtn label="Storage" />}
+          content={<InfoContent />}
+          position="bottom"
+        />
+      </Preview>
+
+      <Preview title="Positions" code={`<Popover trigger={<Button>Top</Button>} content={<InfoContent />} position="top" />
+<Popover trigger={<Button>Left</Button>} content={<InfoContent />} position="left" />
+<Popover trigger={<Button>Right</Button>} content={<InfoContent />} position="right" />`}>
+        <View style={{ flexDirection: 'row', gap: 16 }}>
+          <Popover trigger={<TriggerBtn label="Top" />} content={<InfoContent />} position="top" />
+          <Popover trigger={<TriggerBtn label="Right" />} content={<InfoContent />} position="right" />
         </View>
       </Preview>
 
-      <Preview title="Placements" minHeight={160} code={`<Popover placement="top" content={<Text>Top popover</Text>}>
-  <Button variant="outline">Top</Button>
-</Popover>
+      <Preview title="Without arrow, no outside-press dismiss" code={`<Popover
+  trigger={<Button>Help</Button>}
+  content={<InfoContent />}
+  showArrow={false}
+  closeOnOutsidePress={false}
+/>`}>
+        <Popover
+          trigger={<TriggerBtn label="Help" />}
+          content={<InfoContent />}
+          showArrow={false}
+          closeOnOutsidePress={false}
+        />
+      </Preview>
 
-<Popover placement="right" content={<Text>Right popover</Text>}>
-  <Button variant="outline">Right</Button>
-</Popover>`}>
-        <View style={{ flexDirection: 'row', gap: 16, flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
-          {(['top', 'bottom', 'left', 'right'] as const).map(placement => (
-            <Popover
-              key={placement}
-              placement={placement}
-              content={
-                <View style={{ padding: 12 }}>
-                  <Text style={{ color: '#fafafa', fontSize: 13 }}>{placement} popover</Text>
-                </View>
-              }
-            >
-              <TriggerBtn>{placement.charAt(0).toUpperCase() + placement.slice(1)}</TriggerBtn>
-            </Popover>
-          ))}
-        </View>
+      <Preview title="Custom width" code={`<Popover
+  trigger={<Button>Details</Button>}
+  content={<InfoContent />}
+  maxWidth={320}
+  maxHeight={200}
+/>`}>
+        <Popover
+          trigger={<TriggerBtn label="Details" />}
+          content={<InfoContent />}
+          maxWidth={320}
+          maxHeight={200}
+        />
       </Preview>
     </div>
   )
