@@ -20,6 +20,8 @@ export const rose: TokenSet = {
     onSuccess:     { light: '#ffffff',  dark: '#000000' },
     warning:       { light: '#f59e0b',  dark: '#fbbf24' },
     onWarning:     { light: '#ffffff',  dark: '#000000' },
+    info:          { light: '#3b82f6',  dark: '#60a5fa' },
+    onInfo:        { light: '#ffffff',  dark: '#000000' },
     overlay:       { light: '#0f0a0b80', dark: '#000000b3' },
     input:         { light: '#fff1f2',  dark: '#1c1115' },
     ring:          { light: '#e11d48',  dark: '#fb7185' },

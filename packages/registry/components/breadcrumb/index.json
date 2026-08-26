@@ -1,6 +1,6 @@
 {
   "name": "breadcrumb",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Navigation breadcrumb path with configurable separators, middle truncation, and icon support",
   "category": "navigation",
   "files": [
@@ -14,7 +14,10 @@
     }
   ],
   "dependencies": {
-    "npm": [],
+    "npm": [
+      "@expo/vector-icons",
+      "expo-haptics"
+    ],
     "components": []
   }
 }

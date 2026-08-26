@@ -1,6 +1,6 @@
 {
   "name": "audio-player",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Audio player with play/pause, progress bar, track info, artwork, and compact mode",
   "category": "display",
   "files": [
@@ -14,7 +14,10 @@
     }
   ],
   "dependencies": {
-    "npm": [],
+    "npm": [
+      "@expo/vector-icons",
+      "expo-haptics"
+    ],
     "components": []
   }
 }

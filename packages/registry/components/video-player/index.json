@@ -1,6 +1,6 @@
 {
   "name": "video-player",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Inline video player with play/pause overlay, progress bar, time display, and fullscreen toggle",
   "category": "display",
   "files": [
@@ -14,7 +14,10 @@
     }
   ],
   "dependencies": {
-    "npm": [],
+    "npm": [
+      "@expo/vector-icons",
+      "expo-haptics"
+    ],
     "components": []
   }
 }

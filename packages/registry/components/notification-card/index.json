@@ -1,6 +1,6 @@
 {
   "name": "notification-card",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Notification list item with category accent, unread indicator, relative time, and swipe dismiss",
   "category": "display",
   "files": [
@@ -14,7 +14,10 @@
     }
   ],
   "dependencies": {
-    "npm": [],
+    "npm": [
+      "@expo/vector-icons",
+      "expo-haptics"
+    ],
     "components": []
   }
 }

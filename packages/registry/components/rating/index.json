@@ -1,6 +1,6 @@
 {
   "name": "rating",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Star rating with animated fill, half-star support, haptic feedback per star, and read-only display mode",
   "category": "input",
   "files": [
@@ -14,7 +14,10 @@
     }
   ],
   "dependencies": {
-    "npm": [],
+    "npm": [
+      "@expo/vector-icons",
+      "expo-haptics"
+    ],
     "components": []
   }
 }

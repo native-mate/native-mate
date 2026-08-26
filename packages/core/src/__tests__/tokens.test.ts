@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { resolveTokens, normalizeOverrides, fontStyle, zinc, slate, rose, midnight, presets } from '../tokens'
+import { resolveTokens, normalizeOverrides, fontStyle, textLineHeight, zinc, slate, rose, midnight, presets } from '../tokens'
 
 const POPPINS = {
   regular: 'Poppins-Regular',
@@ -132,6 +132,34 @@ describe('fontStyle', () => {
     const theme = resolveTokens(zinc, 'light', { typography: { family: POPPINS } })
     expect(fontStyle(theme.typography, 'semibold')).toEqual({ fontFamily: 'Poppins-SemiBold' })
     expect(fontStyle(theme.typography, 'bold')).toEqual({ fontFamily: 'Poppins-Bold' })
+  })
+})
+
+describe('textLineHeight', () => {
+  it('keeps the normal lineHeight for body-range sizes (unchanged behavior)', () => {
+    const theme = resolveTokens(zinc, 'light')
+    for (const size of [11, 13, 15, 17]) {
+      expect(textLineHeight(theme.typography, size)).toBe(22)
+    }
+  })
+
+  it('scales lineHeight above fontSize for large variants so text never clips', () => {
+    const theme = resolveTokens(zinc, 'light')
+    for (const size of [20, 24, 30]) {
+      expect(textLineHeight(theme.typography, size)).toBeGreaterThan(size)
+    }
+  })
+})
+
+describe('info tokens', () => {
+  it('every preset resolves info and onInfo in both modes', () => {
+    for (const preset of Object.values(presets)) {
+      for (const mode of ['light', 'dark'] as const) {
+        const theme = resolveTokens(preset, mode)
+        expect(theme.colors.info).toMatch(/^#/)
+        expect(theme.colors.onInfo).toMatch(/^#/)
+      }
+    }
   })
 })
 

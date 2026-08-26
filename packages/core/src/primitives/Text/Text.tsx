@@ -2,7 +2,7 @@ import React from 'react'
 import { Text as RNText } from 'react-native'
 import type { TextStyle } from 'react-native'
 import { useTheme } from '../../theme/useTheme'
-import { fontStyle } from '../../tokens'
+import { fontStyle, textLineHeight } from '../../tokens'
 import type { TextProps, TextVariant, TextSize, TextWeight } from './Text.types'
 
 const variantMap: Record<TextVariant, { sizeKey: string; weightKey: string }> = {
@@ -34,7 +34,7 @@ export const Text: React.FC<TextProps> = ({
           color: color ?? (muted ? theme.colors.muted : theme.colors.foreground),
           fontSize: theme.typography.size[size ?? sizeKey as TextSize],
           ...(fontStyle(theme.typography, weight ?? weightKey as TextWeight) as TextStyle),
-          lineHeight: theme.typography.lineHeight.normal,
+          lineHeight: textLineHeight(theme.typography, theme.typography.size[size ?? sizeKey as TextSize]),
         },
         style,
       ]}

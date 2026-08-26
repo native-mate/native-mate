@@ -1,6 +1,6 @@
 {
   "name": "payment-card",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Credit card display with gradient styling and masked numbers, or input form with validation",
   "category": "display",
   "files": [
@@ -14,7 +14,9 @@
     }
   ],
   "dependencies": {
-    "npm": [],
+    "npm": [
+      "@expo/vector-icons"
+    ],
     "components": []
   }
 }

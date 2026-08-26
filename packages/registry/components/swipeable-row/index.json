@@ -1,6 +1,6 @@
 {
   "name": "swipeable-row",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Swipe-to-reveal actions row with spring physics and destructive full-swipe",
   "category": "input",
   "files": [
@@ -14,7 +14,9 @@
     }
   ],
   "dependencies": {
-    "npm": [],
+    "npm": [
+      "expo-haptics"
+    ],
     "components": []
   }
 }

@@ -11,26 +11,26 @@ export default function CliAddPage() {
       </p>
 
       <h2 className="mt-8 mb-3 text-xl font-semibold text-zinc-50">Usage</h2>
-      <CodeBlock language="bash" code="npx native-mate add <component> [components...] [options]" />
+      <CodeBlock language="bash" code="npx @native-mate/cli add <component> [components...] [options]" />
 
       <h2 className="mt-8 mb-3 text-xl font-semibold text-zinc-50">Examples</h2>
       <CodeBlock language="bash" code={`# Add a single component
-npx native-mate add button
+npx @native-mate/cli add button
 
 # Add multiple at once
-npx native-mate add button card input badge avatar
+npx @native-mate/cli add button card input badge avatar
 
 # Use a custom registry
-npx native-mate add button --registry https://my-registry.dev
+npx @native-mate/cli add button --registry https://my-registry.dev
 
 # Overwrite existing files
-npx native-mate add button --overwrite
+npx @native-mate/cli add button --overwrite
 
 # Add all available components
-npx native-mate add --all
+npx @native-mate/cli add --all
 
 # Interactive mode — no arguments opens a multi-select picker
-npx native-mate add`} />
+npx @native-mate/cli add`} />
 
       <h2 className="mt-8 mb-3 text-xl font-semibold text-zinc-50">Options</h2>
       <div className="overflow-hidden rounded-xl border border-zinc-800">

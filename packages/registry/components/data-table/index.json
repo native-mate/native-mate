@@ -1,6 +1,6 @@
 {
   "name": "data-table",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Data table with sortable columns, horizontal scroll, sticky header, striped rows, and loading skeleton",
   "category": "display",
   "files": [
@@ -14,7 +14,10 @@
     }
   ],
   "dependencies": {
-    "npm": [],
+    "npm": [
+      "@expo/vector-icons",
+      "expo-haptics"
+    ],
     "components": []
   }
 }

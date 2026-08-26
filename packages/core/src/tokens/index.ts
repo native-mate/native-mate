@@ -76,6 +76,15 @@ export function normalizeOverrides(
   return overrides as NativeMateTokenOverrides
 }
 
+// Body-range sizes keep the normal lineHeight; larger sizes scale at 1.3× so
+// ascenders/descenders never clip (fontSize > lineHeight clips, worst on Android).
+export function textLineHeight(
+  typography: ResolvedTheme['typography'],
+  fontSize: number,
+): number {
+  return Math.max(typography.lineHeight.normal, Math.round(fontSize * 1.3))
+}
+
 // When a font family is themed, Android needs the per-weight family name alone —
 // pairing it with fontWeight makes Android fall back to a synthetic weight.
 export function fontStyle(

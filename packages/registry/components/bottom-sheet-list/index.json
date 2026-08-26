@@ -1,6 +1,6 @@
 {
   "name": "bottom-sheet-list",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Searchable bottom sheet list with single and multi-select, animated item appearance",
   "category": "overlay",
   "files": [
@@ -14,7 +14,10 @@
     }
   ],
   "dependencies": {
-    "npm": [],
+    "npm": [
+      "@expo/vector-icons",
+      "expo-haptics"
+    ],
     "components": []
   }
 }

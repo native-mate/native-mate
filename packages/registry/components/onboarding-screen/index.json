@@ -1,6 +1,6 @@
 {
   "name": "onboarding-screen",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Full-screen onboarding slide with image, text, animated dot indicator, and navigation controls",
   "category": "layout",
   "files": [
@@ -14,7 +14,9 @@
     }
   ],
   "dependencies": {
-    "npm": [],
+    "npm": [
+      "expo-haptics"
+    ],
     "components": []
   }
 }

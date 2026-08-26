@@ -1,6 +1,6 @@
 {
   "name": "modal",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Centered dialog with scale animation and backdrop",
   "category": "overlay",
   "files": [
@@ -14,9 +14,9 @@
     }
   ],
   "dependencies": {
-    "npm": [],
-    "components": [
-      "separator"
-    ]
+    "npm": [
+      "@expo/vector-icons"
+    ],
+    "components": []
   }
 }

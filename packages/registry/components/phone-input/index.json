@@ -1,6 +1,6 @@
 {
   "name": "phone-input",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "International phone number input with country picker, flag display, and auto-formatting",
   "category": "input",
   "files": [
@@ -14,7 +14,10 @@
     }
   ],
   "dependencies": {
-    "npm": [],
+    "npm": [
+      "@expo/vector-icons",
+      "expo-haptics"
+    ],
     "components": []
   }
 }

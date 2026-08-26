@@ -1,6 +1,6 @@
 {
   "name": "countdown",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Countdown timer with animated digit flip, card/inline/minimal variants",
   "category": "display",
   "files": [
@@ -14,7 +14,9 @@
     }
   ],
   "dependencies": {
-    "npm": [],
+    "npm": [
+      "expo-haptics"
+    ],
     "components": []
   }
 }

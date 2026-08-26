@@ -1,6 +1,6 @@
 {
   "name": "pin-lock",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "PIN entry screen with animated dot fill, number pad, shake on error, biometric button, and lockout timer",
   "category": "input",
   "files": [
@@ -14,7 +14,10 @@
     }
   ],
   "dependencies": {
-    "npm": [],
+    "npm": [
+      "@expo/vector-icons",
+      "expo-haptics"
+    ],
     "components": []
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "slider",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Gesture-based range slider with step and accessibility support",
   "category": "input",
   "files": [
@@ -14,7 +14,9 @@
     }
   ],
   "dependencies": {
-    "npm": [],
+    "npm": [
+      "expo-haptics"
+    ],
     "components": []
   }
 }

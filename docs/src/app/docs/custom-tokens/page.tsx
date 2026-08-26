@@ -131,6 +131,8 @@ export function App() {
               ['onSuccess', 'Text/icons on success background'],
               ['warning', 'Warning states'],
               ['onWarning', 'Text/icons on warning background'],
+              ['info', 'Informational states'],
+              ['onInfo', 'Text/icons on info background'],
               ['overlay', 'Modal/sheet backdrop scrim'],
               ['input', 'Input field background'],
               ['ring', 'Focus ring colour'],

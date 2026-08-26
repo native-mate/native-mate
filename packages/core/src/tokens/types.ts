@@ -29,6 +29,8 @@ export interface TokenColors {
   onSuccess: ColorToken
   warning: ColorToken
   onWarning: ColorToken
+  info: ColorToken
+  onInfo: ColorToken
   overlay: ColorToken
   input: ColorToken
   ring: ColorToken

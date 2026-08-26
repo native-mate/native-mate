@@ -18,6 +18,8 @@ export const zinc: TokenSet = {
     onSuccess:     { light: '#ffffff', dark: '#000000' },
     warning:       { light: '#f59e0b', dark: '#fbbf24' },
     onWarning:     { light: '#ffffff', dark: '#000000' },
+    info:          { light: '#3b82f6', dark: '#60a5fa' },
+    onInfo:        { light: '#ffffff', dark: '#000000' },
     overlay:       { light: '#09090b80', dark: '#000000b3' },
     input:         { light: '#f4f4f5', dark: '#161619' },
     ring:          { light: '#18181b', dark: '#fafafa' },

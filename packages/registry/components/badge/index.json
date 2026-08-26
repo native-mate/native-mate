@@ -1,6 +1,6 @@
 {
   "name": "badge",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Inline status badge with 5 variants",
   "category": "display",
   "files": [
@@ -14,7 +14,9 @@
     }
   ],
   "dependencies": {
-    "npm": [],
+    "npm": [
+      "@expo/vector-icons"
+    ],
     "components": []
   }
 }

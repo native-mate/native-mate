@@ -1,6 +1,6 @@
 {
   "name": "color-picker",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Color picker with preset swatches, hue/saturation/lightness sliders, and hex input",
   "category": "input",
   "files": [
@@ -14,7 +14,10 @@
     }
   ],
   "dependencies": {
-    "npm": [],
+    "npm": [
+      "@expo/vector-icons",
+      "expo-haptics"
+    ],
     "components": []
   }
 }

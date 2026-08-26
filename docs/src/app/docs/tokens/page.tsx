@@ -57,6 +57,11 @@ const TOKEN_SHAPE = `interface ResolvedTheme {
     onSuccess: string       // text/icons on success
     warning: string         // warning states
     onWarning: string       // text/icons on warning
+    info: string            // informational states
+    onInfo: string          // text/icons on info
+    overlay: string         // modal/sheet backdrop scrim
+    input: string           // input field background
+    ring: string            // focus ring
   }
   spacing: { xs: 4, sm: 8, md: 12, lg: 16, xl: 24, '2xl': 32, '3xl': 48 }
   radius: { sm: 6, md: 10, lg: 16, xl: 24, full: 9999 }

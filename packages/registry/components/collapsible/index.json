@@ -1,6 +1,6 @@
 {
   "name": "collapsible",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Simple expand/collapse section with animated height and chevron rotation",
   "category": "layout",
   "files": [
@@ -14,7 +14,10 @@
     }
   ],
   "dependencies": {
-    "npm": [],
+    "npm": [
+      "@expo/vector-icons",
+      "expo-haptics"
+    ],
     "components": []
   }
 }
