@@ -5,7 +5,6 @@ A production-grade React Native + Expo UI component library inspired by shadcn/u
 > **Status:** v1.0 — 28 components, CLI, docs site, MCP server, VS Code extension
 >
 > [![npm core](https://img.shields.io/npm/v/@native-mate/core?label=core)](https://www.npmjs.com/package/@native-mate/core) [![npm cli](https://img.shields.io/npm/v/@native-mate/cli?label=cli)](https://www.npmjs.com/package/@native-mate/cli) [![npm mcp](https://img.shields.io/npm/v/@native-mate/mcp?label=mcp)](https://www.npmjs.com/package/@native-mate/mcp)
-
 ---
 ## What it is
 
