@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npm run build --workspace=docs",
+  "buildCommand": "npm run build --workspace=@native-mate/core && npm run build --workspace=docs",
   "outputDirectory": "docs/.next",
   "installCommand": "npm install --legacy-peer-deps",
   "framework": "nextjs"
