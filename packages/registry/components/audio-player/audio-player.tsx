@@ -10,7 +10,7 @@ import Animated, {
   Easing,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles, shadow } from '@native-mate/core'
+import { useTheme, Text, makeStyles, shadow, fontStyle } from '@native-mate/core'
 import type { AudioPlayerProps } from './audio-player.types'
 
 let Haptics: any = null
@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     fontSize: theme.typography.size.lg,
-    fontWeight: theme.typography.weight.bold as any,
+    ...fontStyle(theme.typography, 'bold'),
     color: theme.colors.foreground,
     textAlign: 'center',
   },
@@ -133,7 +133,7 @@ const useStyles = makeStyles((theme) => ({
   },
   compactTitle: {
     fontSize: theme.typography.size.sm,
-    fontWeight: theme.typography.weight.semibold as any,
+    ...fontStyle(theme.typography, 'semibold'),
     color: theme.colors.foreground,
   },
   compactArtist: {

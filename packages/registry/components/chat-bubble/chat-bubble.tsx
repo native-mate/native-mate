@@ -5,7 +5,7 @@ import Animated, {
   FadeIn,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { ChatBubbleProps, MessageStatus } from './chat-bubble.types'
 
 let Haptics: any = null
@@ -201,7 +201,7 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
         <Text
           style={[
             styles.senderName,
-            { fontSize: 11, fontWeight: '600', color: theme.colors.muted },
+            { fontSize: 11, ...fontStyle(theme.typography, 'semibold'), color: theme.colors.muted },
           ]}
         >
           {senderName}

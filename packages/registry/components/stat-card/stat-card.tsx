@@ -11,7 +11,7 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { StatCardProps, ChangeType } from './stat-card.types'
 
 let Haptics: any = null
@@ -88,6 +88,7 @@ interface AnimatedValueProps {
   decimals: number
   animated: boolean
   color: string
+  typography: ReturnType<typeof useTheme>['typography']
 }
 
 const AnimatedValue: React.FC<AnimatedValueProps> = ({
@@ -98,6 +99,7 @@ const AnimatedValue: React.FC<AnimatedValueProps> = ({
   decimals,
   animated,
   color,
+  typography,
 }) => {
   const animValue = useSharedValue(animated ? 0 : targetValue)
   const [displayText, setDisplayText] = React.useState('')
@@ -144,7 +146,7 @@ const AnimatedValue: React.FC<AnimatedValueProps> = ({
     <Text
       style={{
         fontSize: 28,
-        fontWeight: '800',
+        ...fontStyle(typography, 'bold'),
         color,
         fontVariant: ['tabular-nums'],
       }}
@@ -299,7 +301,7 @@ export const StatCard: React.FC<StatCardProps> = ({
           <Text
             style={{
               fontSize: 13,
-              fontWeight: '500',
+              ...fontStyle(theme.typography, 'medium'),
               color: theme.colors.muted,
             }}
           >
@@ -327,6 +329,7 @@ export const StatCard: React.FC<StatCardProps> = ({
             decimals={decimals}
             animated={animated}
             color={theme.colors.foreground}
+            typography={theme.typography}
           />
         </View>
 
@@ -347,7 +350,7 @@ export const StatCard: React.FC<StatCardProps> = ({
               <Text
                 style={{
                   fontSize: 12,
-                  fontWeight: '600',
+                  ...fontStyle(theme.typography, 'semibold'),
                   color: changeColor,
                   fontVariant: ['tabular-nums'],
                 }}

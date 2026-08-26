@@ -7,7 +7,7 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { FileUploadProps, UploadFile } from './file-upload.types'
 
 let Haptics: any = null
@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
   },
   dropzoneTitle: {
     fontSize: theme.typography.size.md,
-    fontWeight: theme.typography.weight.semibold as any,
+    ...fontStyle(theme.typography, 'semibold'),
     color: theme.colors.foreground,
     textAlign: 'center',
   },
@@ -59,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
   browseLabel: {
     color: theme.colors.onPrimary,
     fontSize: theme.typography.size.sm,
-    fontWeight: '600',
+    ...fontStyle(theme.typography, 'semibold'),
   },
   // Button variant
   buttonVariant: {
@@ -76,7 +76,7 @@ const useStyles = makeStyles((theme) => ({
   },
   buttonLabel: {
     fontSize: theme.typography.size.sm,
-    fontWeight: '600',
+    ...fontStyle(theme.typography, 'semibold'),
     color: theme.colors.foreground,
   },
   // Compact variant
@@ -129,7 +129,7 @@ const useStyles = makeStyles((theme) => ({
   },
   fileName: {
     fontSize: theme.typography.size.sm,
-    fontWeight: '500',
+    ...fontStyle(theme.typography, 'medium'),
     color: theme.colors.foreground,
   },
   fileSize: {
@@ -342,7 +342,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
       <View style={styles.compactIcon}>
         <Ionicons name="attach-outline" size={18} color={theme.colors.primary} />
       </View>
-      <Text variant="body" style={{ color: theme.colors.primary, fontWeight: '500', fontSize: 14 }}>
+      <Text variant="body" style={{ color: theme.colors.primary, ...fontStyle(theme.typography, 'medium'), fontSize: 14 }}>
         {placeholder ?? 'Attach file'}
       </Text>
     </Pressable>

@@ -11,7 +11,7 @@ import Animated, {
   Easing,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { StepperProps, StepItem } from './stepper.types'
 
 let Haptics: any = null
@@ -241,7 +241,7 @@ const StepNode: React.FC<StepNodeProps> = ({
       <Text
         style={{
           fontSize: sz.fontSize - 2,
-          fontWeight: '700',
+          ...fontStyle(theme.typography, 'bold'),
           color: textColor,
         }}
       >
@@ -346,7 +346,7 @@ export const Stepper: React.FC<StepperProps> = ({
                   <Text
                     style={{
                       fontSize: sz.fontSize,
-                      fontWeight: status === 'active' ? '600' : '500',
+                      ...fontStyle(theme.typography, status === 'active' ? 'semibold' : 'medium'),
                       color: status === 'upcoming' ? uColor : theme.colors.foreground,
                     }}
                   >
@@ -411,7 +411,7 @@ export const Stepper: React.FC<StepperProps> = ({
                   styles.labelText,
                   {
                     fontSize: sz.fontSize,
-                    fontWeight: status === 'active' ? '600' : '500',
+                    ...fontStyle(theme.typography, status === 'active' ? 'semibold' : 'medium'),
                     color: status === 'upcoming' ? uColor : theme.colors.foreground,
                   },
                 ]}

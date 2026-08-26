@@ -28,7 +28,7 @@ function PriceTag({ amount }: { amount: number }) {
     >
       <Text
         style={{
-          color: theme.colors.successForeground,
+          color: theme.colors.onSuccess,
           fontSize: theme.typography.size.sm,
           fontWeight: theme.typography.weight.semibold,
         }}
@@ -48,6 +48,7 @@ function PriceTag({ amount }: { amount: number }) {
     size: Record<string, number>
     weight: Record<string, string>
     lineHeight: Record<string, number>
+    family?: Record<string, string>  // set when custom fonts are configured
   }
   animation: {
     speed: { fast: number; normal: number; slow: number }

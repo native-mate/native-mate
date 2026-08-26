@@ -1,1 +1,20 @@
-{ "name": "data-table", "version": "0.1.0", "description": "Data table with sortable columns, horizontal scroll, sticky header, striped rows, and loading skeleton", "category": "display", "files": [{"path": "data-table.tsx", "hash": ""}, {"path": "data-table.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }
+{
+  "name": "data-table",
+  "version": "0.1.1",
+  "description": "Data table with sortable columns, horizontal scroll, sticky header, striped rows, and loading skeleton",
+  "category": "display",
+  "files": [
+    {
+      "path": "data-table.tsx",
+      "hash": ""
+    },
+    {
+      "path": "data-table.types.ts",
+      "hash": ""
+    }
+  ],
+  "dependencies": {
+    "npm": [],
+    "components": []
+  }
+}

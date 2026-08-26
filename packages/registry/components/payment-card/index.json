@@ -1,1 +1,20 @@
-{ "name": "payment-card", "version": "0.1.0", "description": "Credit card display with gradient styling and masked numbers, or input form with validation", "category": "display", "files": [{"path": "payment-card.tsx", "hash": ""}, {"path": "payment-card.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }
+{
+  "name": "payment-card",
+  "version": "0.1.1",
+  "description": "Credit card display with gradient styling and masked numbers, or input form with validation",
+  "category": "display",
+  "files": [
+    {
+      "path": "payment-card.tsx",
+      "hash": ""
+    },
+    {
+      "path": "payment-card.types.ts",
+      "hash": ""
+    }
+  ],
+  "dependencies": {
+    "npm": [],
+    "components": []
+  }
+}

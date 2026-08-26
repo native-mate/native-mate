@@ -10,7 +10,7 @@ import Animated, {
   useAnimatedGestureHandler,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles, shadow } from '@native-mate/core'
+import { useTheme, Text, makeStyles, shadow, fontStyle } from '@native-mate/core'
 import { QuantityStepper } from '../quantity-stepper/quantity-stepper'
 import type { CartItemProps } from './cart-item.types'
 
@@ -61,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     fontSize: theme.typography.size.md,
-    fontWeight: theme.typography.weight.semibold as any,
+    ...fontStyle(theme.typography, 'semibold'),
     color: theme.colors.foreground,
   },
   variant: {
@@ -76,7 +76,7 @@ const useStyles = makeStyles((theme) => ({
   },
   price: {
     fontSize: theme.typography.size.md,
-    fontWeight: theme.typography.weight.bold as any,
+    ...fontStyle(theme.typography, 'bold'),
     color: theme.colors.foreground,
   },
   removeButton: {

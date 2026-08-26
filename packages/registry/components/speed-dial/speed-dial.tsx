@@ -10,7 +10,7 @@ import Animated, {
   interpolate,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles, shadow } from '@native-mate/core'
+import { useTheme, Text, makeStyles, shadow, fontStyle } from '@native-mate/core'
 import type { SpeedDialProps, SpeedDialAction } from './speed-dial.types'
 
 let Haptics: any = null
@@ -71,7 +71,7 @@ const useStyles = makeStyles((theme) => ({
   },
   labelText: {
     fontSize: 13,
-    fontWeight: '500',
+    ...fontStyle(theme.typography, 'medium'),
     color: theme.colors.foreground,
   },
   fab: {

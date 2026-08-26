@@ -5,7 +5,7 @@ import Animated, {
   useSharedValue, useAnimatedStyle, withSpring, withTiming, runOnJS,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, Separator, makeStyles } from '@native-mate/core'
+import { useTheme, Text, Separator, makeStyles, fontStyle } from '@native-mate/core'
 import type { ModalProps, ModalAction } from './modal.types'
 
 const sizeMap: Record<string, number | string> = {
@@ -78,7 +78,7 @@ function ActionButton({ action, theme, styles }: { action: ModalAction; theme: a
         !isPrimary && !isDestructive && { borderWidth: 1, borderColor: theme.colors.border },
       ]}
     >
-      <Text style={{ color, fontSize: 14, fontWeight: '600' }}>{action.label}</Text>
+      <Text style={{ color, fontSize: 14, ...fontStyle(theme.typography, 'semibold') }}>{action.label}</Text>
     </Pressable>
   )
 }

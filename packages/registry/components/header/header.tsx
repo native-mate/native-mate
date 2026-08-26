@@ -11,7 +11,7 @@ import Animated, {
   useDerivedValue,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { HeaderProps, HeaderAction, HapticStyle } from './header.types'
 
 let Haptics: any = null
@@ -200,7 +200,7 @@ export const Header: React.FC<HeaderProps> = ({
           <Text
             variant="label"
             numberOfLines={1}
-            style={{ color: fgColor, fontSize: 16, fontWeight: '600' }}
+            style={{ color: fgColor, fontSize: 16, ...fontStyle(theme.typography, 'semibold') }}
           >
             {title}
           </Text>
@@ -237,7 +237,7 @@ export const Header: React.FC<HeaderProps> = ({
           <Text
             variant="heading"
             numberOfLines={1}
-            style={{ color: fgColor, fontSize: 32, fontWeight: '700', letterSpacing: -0.5 }}
+            style={{ color: fgColor, fontSize: 32, ...fontStyle(theme.typography, 'bold'), letterSpacing: -0.5 }}
           >
             {title}
           </Text>

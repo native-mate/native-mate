@@ -1,1 +1,20 @@
-{ "name": "review-card", "version": "0.1.0", "description": "User review card with star rating, author info, expandable text, images, and helpful voting", "category": "display", "files": [{"path": "review-card.tsx", "hash": ""}, {"path": "review-card.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }
+{
+  "name": "review-card",
+  "version": "0.1.1",
+  "description": "User review card with star rating, author info, expandable text, images, and helpful voting",
+  "category": "display",
+  "files": [
+    {
+      "path": "review-card.tsx",
+      "hash": ""
+    },
+    {
+      "path": "review-card.types.ts",
+      "hash": ""
+    }
+  ],
+  "dependencies": {
+    "npm": [],
+    "components": []
+  }
+}

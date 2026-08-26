@@ -1,11 +1,8 @@
 import { existsSync, readFileSync, writeFileSync } from 'fs'
 import { join } from 'path'
+import type { NativeMateConfig } from '@native-mate/core'
 
-export interface NativeMateConfig {
-  preset: 'zinc' | 'slate' | 'rose' | 'midnight'
-  componentsDir: string
-  registry?: string
-}
+export type { NativeMateConfig }
 
 const CONFIG_FILE = 'native-mate.json'
 

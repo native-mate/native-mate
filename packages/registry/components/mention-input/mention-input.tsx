@@ -9,7 +9,7 @@ import Animated, {
   FadeOut,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles, shadow } from '@native-mate/core'
+import { useTheme, Text, makeStyles, shadow, fontStyle } from '@native-mate/core'
 import type { MentionInputProps, MentionUser } from './mention-input.types'
 
 let Haptics: any = null
@@ -87,7 +87,7 @@ const useStyles = makeStyles((theme) => ({
   },
   userName: {
     fontSize: theme.typography.size.sm,
-    fontWeight: theme.typography.weight.medium as any,
+    ...fontStyle(theme.typography, 'medium'),
     color: theme.colors.foreground,
   },
   userId: {
@@ -199,7 +199,7 @@ export const MentionInput: React.FC<MentionInputProps> = ({
           <View style={styles.userAvatarPlaceholder}>
             <Text
               variant="label"
-              style={{ color: theme.colors.primary, fontSize: 13, fontWeight: '700' }}
+              style={{ color: theme.colors.primary, fontSize: 13, ...fontStyle(theme.typography, 'bold') }}
             >
               {item.name.charAt(0).toUpperCase()}
             </Text>

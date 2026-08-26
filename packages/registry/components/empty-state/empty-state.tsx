@@ -7,7 +7,7 @@ import Animated, {
   withSpring,
   withDelay,
 } from 'react-native-reanimated'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { EmptyStateProps } from './empty-state.types'
 
 // ── Shared entrance animation ─────────────────────────────────────────────────
@@ -56,7 +56,7 @@ const ActionButton: React.FC<{
       <Text
         style={{
           fontSize: 13,
-          fontWeight: '600',
+          ...fontStyle(theme.typography, 'semibold'),
           color: isPrimary ? theme.colors.onPrimary : theme.colors.foreground,
         }}
       >
@@ -128,7 +128,7 @@ const DefaultEmptyState: React.FC<EmptyStateProps> = ({
       <Text
         style={{
           fontSize: 17,
-          fontWeight: '600',
+          ...fontStyle(theme.typography, 'semibold'),
           color: theme.colors.foreground,
           textAlign: 'center',
         }}
@@ -208,7 +208,7 @@ const CompactEmptyState: React.FC<EmptyStateProps> = ({
           <Text
             style={{
               fontSize: 15,
-              fontWeight: '600',
+              ...fontStyle(theme.typography, 'semibold'),
               color: theme.colors.foreground,
             }}
           >
@@ -299,7 +299,7 @@ const IllustrationEmptyState: React.FC<EmptyStateProps> = ({
       <Text
         style={{
           fontSize: 19,
-          fontWeight: '700',
+          ...fontStyle(theme.typography, 'bold'),
           color: theme.colors.foreground,
           textAlign: 'center',
         }}

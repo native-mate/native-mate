@@ -1,1 +1,20 @@
-{ "name": "onboarding-screen", "version": "0.1.0", "description": "Full-screen onboarding slide with image, text, animated dot indicator, and navigation controls", "category": "layout", "files": [{"path": "onboarding-screen.tsx", "hash": ""}, {"path": "onboarding-screen.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }
+{
+  "name": "onboarding-screen",
+  "version": "0.1.1",
+  "description": "Full-screen onboarding slide with image, text, animated dot indicator, and navigation controls",
+  "category": "layout",
+  "files": [
+    {
+      "path": "onboarding-screen.tsx",
+      "hash": ""
+    },
+    {
+      "path": "onboarding-screen.types.ts",
+      "hash": ""
+    }
+  ],
+  "dependencies": {
+    "npm": [],
+    "components": []
+  }
+}

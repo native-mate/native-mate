@@ -9,7 +9,7 @@ import Animated, {
   interpolateColor,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { TagProps, TagGroupProps, TagVariant } from './tag.types'
 
 let Haptics: any = null
@@ -102,7 +102,7 @@ export const Tag: React.FC<TagProps> = ({
       opacity: disabled ? 0.45 : 1,
     }, containerStyle, style]}>
       {icon && <View style={{ opacity: selected ? 1 : 0.7 }}>{icon}</View>}
-      <Animated.Text style={[{ fontSize: sz.fontSize, fontWeight: selected ? '600' : '500', letterSpacing: 0.1 }, textStyle]}>
+      <Animated.Text style={[{ fontSize: sz.fontSize, ...fontStyle(theme.typography, selected ? 'semibold' : 'medium'), letterSpacing: 0.1 }, textStyle]}>
         {label}
       </Animated.Text>
       {onRemove && !disabled && (

@@ -15,20 +15,16 @@ export default function ConfigurationPage() {
       <CodeBlock language="json" filename="native-mate.json" code={`{
   "preset": "zinc",
   "componentsDir": "components/ui",
-  "registry": "https://registry.native-mate.dev",
-  "tokens": {
-    "colors": {
-      "primary": "#6366f1",
-      "primaryForeground": "#ffffff"
-    },
-    "spacing": {
-      "lg": 20
-    },
-    "radius": {
-      "md": 8
-    }
-  }
+  "registry": "https://registry.native-mate.dev"
 }`} />
+
+      <p className="mt-4 mb-3 text-sm text-zinc-400">
+        These are the only fields (the <code className="text-zinc-300">NativeMateConfig</code> type,
+        shared by the CLI and core). Design tokens are <em>not</em> configured here — theme
+        customisation happens at runtime via ThemeProvider{' '}
+        <code className="text-zinc-300">overrides</code>. See{' '}
+        <a href="/docs/custom-tokens" className="text-blue-400 hover:underline">Custom tokens</a>.
+      </p>
 
       <h2 className="mt-8 mb-3 text-xl font-semibold text-zinc-50">Fields</h2>
       <div className="overflow-hidden rounded-xl border border-zinc-800">
@@ -45,10 +41,7 @@ export default function ConfigurationPage() {
             {[
               ['preset', 'string', '"zinc"', 'Active theme preset: zinc | slate | rose | midnight'],
               ['componentsDir', 'string', '"components/ui"', 'Directory where components are installed'],
-              ['registry', 'string', 'registry.native-mate.dev', 'Custom registry URL for private component libraries'],
-              ['tokens.colors', 'object', '—', 'Override specific colour tokens'],
-              ['tokens.spacing', 'object', '—', 'Override spacing scale values'],
-              ['tokens.radius', 'object', '—', 'Override border radius values'],
+              ['registry', 'string (optional)', 'registry.native-mate.dev', 'Custom registry URL for private component libraries'],
             ].map(([field, type, def, desc], i) => (
               <tr key={field} className={i % 2 === 0 ? 'bg-zinc-950' : 'bg-zinc-900/50'}>
                 <td className="px-4 py-3 font-mono text-xs text-blue-400">{field}</td>

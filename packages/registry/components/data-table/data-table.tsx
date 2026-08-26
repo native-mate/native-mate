@@ -7,7 +7,7 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { DataTableProps, DataTableColumn, SortDirection } from './data-table.types'
 
 let Haptics: any = null
@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
   },
   headerText: {
     fontSize: theme.typography.size.xs,
-    fontWeight: theme.typography.weight.semibold as any,
+    ...fontStyle(theme.typography, 'semibold'),
     color: theme.colors.muted,
     textTransform: 'uppercase',
     letterSpacing: 0.5,

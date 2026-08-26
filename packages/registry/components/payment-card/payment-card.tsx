@@ -7,7 +7,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles, shadow } from '@native-mate/core'
+import { useTheme, Text, makeStyles, shadow, fontStyle } from '@native-mate/core'
 import type { PaymentCardProps, CardBrand } from './payment-card.types'
 
 const brandColors: Record<CardBrand, [string, string]> = {
@@ -80,13 +80,13 @@ const useStyles = makeStyles((theme) => ({
   },
   brandText: {
     fontSize: 18,
-    fontWeight: '800',
+    ...fontStyle(theme.typography, 'bold'),
     color: 'rgba(255,255,255,0.9)',
     letterSpacing: 1,
   },
   cardNumberDisplay: {
     fontSize: 20,
-    fontWeight: '600',
+    ...fontStyle(theme.typography, 'semibold'),
     color: '#FFFFFF',
     letterSpacing: 2,
     fontVariant: ['tabular-nums'],
@@ -106,7 +106,7 @@ const useStyles = makeStyles((theme) => ({
   displayValue: {
     fontSize: 14,
     color: '#FFFFFF',
-    fontWeight: '500',
+    ...fontStyle(theme.typography, 'medium'),
     letterSpacing: 0.5,
   },
   // Input variant
@@ -130,7 +130,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: theme.typography.size.sm,
     color: theme.colors.muted,
     marginBottom: 4,
-    fontWeight: '500',
+    ...fontStyle(theme.typography, 'medium'),
   },
   inputRow: {
     flexDirection: 'row',

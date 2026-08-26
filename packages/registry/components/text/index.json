@@ -1,11 +1,20 @@
 {
   "name": "text",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Theme-aware text component with variant styles and sizes",
   "category": "display",
   "files": [
-    { "path": "text.tsx", "hash": "" },
-    { "path": "text.types.ts", "hash": "" }
+    {
+      "path": "text.tsx",
+      "hash": ""
+    },
+    {
+      "path": "text.types.ts",
+      "hash": ""
+    }
   ],
-  "dependencies": { "npm": [], "components": [] }
+  "dependencies": {
+    "npm": [],
+    "components": []
+  }
 }

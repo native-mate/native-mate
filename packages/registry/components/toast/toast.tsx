@@ -10,7 +10,7 @@ import Animated, {
   cancelAnimation,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { ToastProps, ToastVariant, ToastContextValue, ToastConfig, ToastAction } from './toast.types'
 
 let Haptics: any = null
@@ -245,7 +245,7 @@ export const Toast: React.FC<ToastProps> = ({
             <View style={styles.actionsRow}>
               {allActions.map((a, idx) => (
                 <Pressable key={idx} style={[styles.action, a.variant === 'primary' && { borderColor: theme.colors.primary }]} onPress={a.onPress}>
-                  <Text variant="caption" style={{ fontWeight: '600', color: a.variant === 'primary' ? theme.colors.primary : theme.colors.foreground }}>{a.label}</Text>
+                  <Text variant="caption" style={{ ...fontStyle(theme.typography, 'semibold'), color: a.variant === 'primary' ? theme.colors.primary : theme.colors.foreground }}>{a.label}</Text>
                 </Pressable>
               ))}
             </View>
@@ -305,7 +305,7 @@ export const Toast: React.FC<ToastProps> = ({
                 <Text
                   variant="caption"
                   style={{
-                    fontWeight: '600',
+                    ...fontStyle(theme.typography, 'semibold'),
                     color: a.variant === 'primary' ? theme.colors.primary : theme.colors.foreground,
                   }}
                 >

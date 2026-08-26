@@ -13,7 +13,7 @@ import Animated, {
   Easing,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { BiometricPromptProps, BiometricType } from './biometric-prompt.types'
 
 let Haptics: any = null
@@ -70,7 +70,7 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     fontSize: 20,
-    fontWeight: '700',
+    ...fontStyle(theme.typography, 'bold'),
     color: theme.colors.foreground,
     textAlign: 'center',
   },
@@ -90,7 +90,7 @@ const useStyles = makeStyles((theme) => ({
   },
   authLabel: {
     fontSize: theme.typography.size.md,
-    fontWeight: '600',
+    ...fontStyle(theme.typography, 'semibold'),
     color: theme.colors.onPrimary,
   },
   cancelButton: {
@@ -100,7 +100,7 @@ const useStyles = makeStyles((theme) => ({
   cancelLabel: {
     fontSize: theme.typography.size.md,
     color: theme.colors.muted,
-    fontWeight: '500',
+    ...fontStyle(theme.typography, 'medium'),
   },
   fallbackButton: {
     paddingVertical: 10,
@@ -108,7 +108,7 @@ const useStyles = makeStyles((theme) => ({
   fallbackLabel: {
     fontSize: theme.typography.size.sm,
     color: theme.colors.primary,
-    fontWeight: '500',
+    ...fontStyle(theme.typography, 'medium'),
   },
 }))
 

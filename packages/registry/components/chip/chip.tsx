@@ -9,7 +9,7 @@ import Animated, {
   interpolateColor,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { ChipProps, ChipGroupProps, HapticStyle } from './chip.types'
 
 let Haptics: any = null
@@ -171,7 +171,7 @@ export const Chip: React.FC<ChipProps> = ({
 
       {/* Label */}
       <Text
-        style={{ fontSize: dims.fontSize, fontWeight: '500', color: textColor }}
+        style={{ fontSize: dims.fontSize, ...fontStyle(theme.typography, 'medium'), color: textColor }}
         numberOfLines={1}
       >
         {label}

@@ -1,1 +1,22 @@
-{ "name": "cart-item", "version": "0.1.0", "description": "Shopping cart item row with image, quantity stepper, swipe-to-remove, and animated price", "category": "display", "files": [{"path": "cart-item.tsx", "hash": ""}, {"path": "cart-item.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": ["quantity-stepper"]} }
+{
+  "name": "cart-item",
+  "version": "0.1.1",
+  "description": "Shopping cart item row with image, quantity stepper, swipe-to-remove, and animated price",
+  "category": "display",
+  "files": [
+    {
+      "path": "cart-item.tsx",
+      "hash": ""
+    },
+    {
+      "path": "cart-item.types.ts",
+      "hash": ""
+    }
+  ],
+  "dependencies": {
+    "npm": [],
+    "components": [
+      "quantity-stepper"
+    ]
+  }
+}

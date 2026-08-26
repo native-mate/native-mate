@@ -1,1 +1,20 @@
-{ "name": "collapsible", "version": "0.1.0", "description": "Simple expand/collapse section with animated height and chevron rotation", "category": "layout", "files": [{"path": "collapsible.tsx", "hash": ""}, {"path": "collapsible.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }
+{
+  "name": "collapsible",
+  "version": "0.1.1",
+  "description": "Simple expand/collapse section with animated height and chevron rotation",
+  "category": "layout",
+  "files": [
+    {
+      "path": "collapsible.tsx",
+      "hash": ""
+    },
+    {
+      "path": "collapsible.types.ts",
+      "hash": ""
+    }
+  ],
+  "dependencies": {
+    "npm": [],
+    "components": []
+  }
+}

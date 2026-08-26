@@ -9,7 +9,7 @@ import Animated, {
   runOnJS,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { DialogProps, HapticStyle } from './dialog.types'
 
 let Haptics: any = null
@@ -194,7 +194,7 @@ export const Dialog: React.FC<DialogProps> = ({
                 accessibilityRole="button"
                 accessibilityLabel={cancelLabel}
               >
-                <Text style={{ fontSize: 15, fontWeight: '500', color: theme.colors.muted }}>
+                <Text style={{ fontSize: 15, ...fontStyle(theme.typography, 'medium'), color: theme.colors.muted }}>
                   {cancelLabel}
                 </Text>
               </Pressable>
@@ -205,7 +205,7 @@ export const Dialog: React.FC<DialogProps> = ({
                 accessibilityRole="button"
                 accessibilityLabel={confirmLabel}
               >
-                <Text style={{ fontSize: 15, fontWeight: '600', color: accentColor }}>
+                <Text style={{ fontSize: 15, ...fontStyle(theme.typography, 'semibold'), color: accentColor }}>
                   {confirmLabel}
                 </Text>
               </Pressable>

@@ -8,7 +8,7 @@ import Animated, {
   withTiming,
   interpolate,
 } from 'react-native-reanimated'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { OnboardingScreenProps } from './onboarding-screen.types'
 
 let Haptics: any = null
@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     fontSize: 28,
-    fontWeight: '800',
+    ...fontStyle(theme.typography, 'bold'),
     textAlign: 'center',
     lineHeight: 34,
   },
@@ -73,7 +73,7 @@ const useStyles = makeStyles((theme) => ({
   },
   skipLabel: {
     fontSize: theme.typography.size.md,
-    fontWeight: '500',
+    ...fontStyle(theme.typography, 'medium'),
   },
   nextButton: {
     paddingVertical: 14,
@@ -85,7 +85,7 @@ const useStyles = makeStyles((theme) => ({
   },
   nextLabel: {
     fontSize: theme.typography.size.md,
-    fontWeight: '600',
+    ...fontStyle(theme.typography, 'semibold'),
   },
 }))
 

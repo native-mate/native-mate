@@ -3,6 +3,15 @@ export interface ColorToken {
   dark: string
 }
 
+export type FontWeightKey = 'regular' | 'medium' | 'semibold' | 'bold'
+
+export interface FontFamilyTokens {
+  regular: string
+  medium: string
+  semibold: string
+  bold: string
+}
+
 export interface TokenColors {
   background: ColorToken
   surface: ColorToken
@@ -27,6 +36,9 @@ export interface TokenSet {
   spacing: { xs: number; sm: number; md: number; lg: number; xl: number; '2xl': number; '3xl': number }
   radius: { sm: number; md: number; lg: number; xl: number; full: number }
   typography: {
+    // Per-weight font families (e.g. "Poppins-SemiBold") — Android needs one family
+    // per weight, so when family is set components emit fontFamily and no fontWeight.
+    family?: FontFamilyTokens
     size: { xs: number; sm: number; md: number; lg: number; xl: number; '2xl': number; '3xl': number }
     weight: { regular: string; medium: string; semibold: string; bold: string }
     lineHeight: { tight: number; normal: number; relaxed: number }
@@ -58,15 +70,18 @@ export interface NativeMateTokenOverrides {
   colors?: Partial<ResolvedColors>
   spacing?: Partial<TokenSet['spacing']>
   radius?: Partial<TokenSet['radius']>
+  typography?: { family?: FontFamilyTokens }
   animation?: { speed?: Partial<TokenSet['animation']['speed']> }
 }
 
+// Per-scheme ({ light, dark }) or a flat override set applied to both schemes.
+export type ThemeOverrides =
+  | { light?: NativeMateTokenOverrides; dark?: NativeMateTokenOverrides }
+  | NativeMateTokenOverrides
+
+// Shape of native-mate.json — canonical for both the CLI and core.
 export interface NativeMateConfig {
-  theme: ThemePreset
+  preset: ThemePreset
   componentsDir: string
-  registry: string
-  tokens?: {
-    light?: NativeMateTokenOverrides
-    dark?: NativeMateTokenOverrides
-  }
+  registry?: string
 }

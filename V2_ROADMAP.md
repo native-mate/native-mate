@@ -48,7 +48,7 @@ High-impact components every mobile app needs.
 
 ### Customization
 
-- [ ] Custom font family support in token system
+- [x] Custom font family support in token system — `typography.family` token + `fontStyle()` helper (core 0.2.0)
 - [ ] Border width tokens (hairline, thin, medium, thick)
 - [ ] Opacity tokens (disabled, hover, backdrop)
 

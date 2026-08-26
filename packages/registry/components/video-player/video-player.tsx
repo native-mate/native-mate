@@ -8,7 +8,7 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { VideoPlayerProps } from './video-player.types'
 
 let Haptics: any = null
@@ -76,7 +76,7 @@ const useStyles = makeStyles((theme) => ({
   timeText: {
     fontSize: 12,
     color: '#FFFFFF',
-    fontWeight: '500',
+    ...fontStyle(theme.typography, 'medium'),
     fontVariant: ['tabular-nums'],
   },
   controlButton: {
@@ -99,7 +99,7 @@ const useStyles = makeStyles((theme) => ({
   placeholderText: {
     fontSize: 12,
     color: 'rgba(255,255,255,0.7)',
-    fontWeight: '500',
+    ...fontStyle(theme.typography, 'medium'),
   },
 }))
 

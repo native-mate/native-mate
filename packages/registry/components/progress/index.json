@@ -1,1 +1,20 @@
-{ "name": "progress", "version": "0.1.0", "description": "Animated progress bar with accessibility support", "category": "feedback", "files": [{"path": "progress.tsx", "hash": ""}, {"path": "progress.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }
+{
+  "name": "progress",
+  "version": "0.1.1",
+  "description": "Animated progress bar with accessibility support",
+  "category": "feedback",
+  "files": [
+    {
+      "path": "progress.tsx",
+      "hash": ""
+    },
+    {
+      "path": "progress.types.ts",
+      "hash": ""
+    }
+  ],
+  "dependencies": {
+    "npm": [],
+    "components": []
+  }
+}

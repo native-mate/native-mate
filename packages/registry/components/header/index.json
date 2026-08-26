@@ -1,11 +1,20 @@
 {
   "name": "header",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Custom navigation header with large title mode, animated collapse on scroll, transparent/blur modes, and safe area awareness",
   "category": "navigation",
   "files": [
-    { "path": "header.tsx", "hash": "" },
-    { "path": "header.types.ts", "hash": "" }
+    {
+      "path": "header.tsx",
+      "hash": ""
+    },
+    {
+      "path": "header.types.ts",
+      "hash": ""
+    }
   ],
-  "dependencies": { "npm": [], "components": [] }
+  "dependencies": {
+    "npm": [],
+    "components": []
+  }
 }

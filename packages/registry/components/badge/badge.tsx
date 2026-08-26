@@ -5,7 +5,7 @@ import Animated, {
   useSharedValue, useAnimatedStyle, withRepeat, withSequence, withTiming,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { BadgeProps, BadgeVariant, BadgeSize, BadgeAppearance } from './badge.types'
 
 function getColors(variant: BadgeVariant, appearance: BadgeAppearance, theme: any) {
@@ -108,7 +108,7 @@ export const Badge: React.FC<BadgeProps> = ({
           ? <PulseDot color={colors.text} size={sz.dotSize} />
           : <View style={{ width: sz.dotSize, height: sz.dotSize, borderRadius: sz.dotSize / 2, backgroundColor: colors.text, opacity: 0.85 }} />
       )}
-      <Text style={{ fontSize: sz.fontSize, fontWeight: '600', color: colors.text, letterSpacing: 0.2, lineHeight: sz.fontSize + 4 }}>
+      <Text style={{ fontSize: sz.fontSize, ...fontStyle(theme.typography, 'semibold'), color: colors.text, letterSpacing: 0.2, lineHeight: sz.fontSize + 4 }}>
         {label}
       </Text>
       {onDismiss && (

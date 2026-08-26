@@ -9,7 +9,7 @@ import Animated, {
   useSharedValue,
   Easing,
 } from 'react-native-reanimated'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { ProgressProps } from './progress.types'
 
 const linearHeights = { sm: 4, md: 8, lg: 12 }
@@ -31,6 +31,7 @@ function CircularRing({
   trackColor,
   showValue,
   innerBg,
+  typography,
 }: {
   value: number
   size: 'sm' | 'md' | 'lg'
@@ -38,6 +39,7 @@ function CircularRing({
   trackColor: string
   showValue: boolean
   innerBg: string
+  typography: ReturnType<typeof useTheme>['typography']
 }) {
   const diameter = circularSizes[size]
   const stroke = circularStroke[size]
@@ -73,7 +75,7 @@ function CircularRing({
             {
               x: cx, y: cy,
               textAnchor: 'middle', dominantBaseline: 'central',
-              fill: color, fontSize: Math.round(diameter * 0.18), fontWeight: '700',
+              fill: color, fontSize: Math.round(diameter * 0.18), ...fontStyle(typography, 'bold'),
             },
             `${Math.round(clamped)}%`,
           )
@@ -121,7 +123,7 @@ function CircularRing({
         backgroundColor: innerBg, alignItems: 'center', justifyContent: 'center', zIndex: 2,
       }}>
         {showValue && (
-          <Text style={{ fontSize: diameter * 0.18, fontWeight: '700', color }}>
+          <Text style={{ fontSize: diameter * 0.18, ...fontStyle(typography, 'bold'), color }}>
             {Math.round(clamped)}%
           </Text>
         )}
@@ -172,6 +174,7 @@ export const Progress: React.FC<ProgressProps> = ({
         trackColor={bgColor}
         showValue={showValue}
         innerBg={theme.colors.background ?? '#09090b'}
+        typography={theme.typography}
       />
     )
   }
@@ -194,7 +197,7 @@ export const Progress: React.FC<ProgressProps> = ({
         <View style={[styles.row, styles.label]}>
           {label && <Text variant="caption" style={{ flex: 1, color: theme.colors.muted }}>{label}</Text>}
           {showValue && !indeterminate && (
-            <Text variant="caption" style={{ color: fillColor, fontWeight: '600' }}>
+            <Text variant="caption" style={{ color: fillColor, ...fontStyle(theme.typography, 'semibold') }}>
               {Math.round(clampedValue)}%
             </Text>
           )}

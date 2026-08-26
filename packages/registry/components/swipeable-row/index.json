@@ -1,1 +1,20 @@
-{ "name": "swipeable-row", "version": "0.1.0", "description": "Swipe-to-reveal actions row with spring physics and destructive full-swipe", "category": "input", "files": [{"path": "swipeable-row.tsx", "hash": ""}, {"path": "swipeable-row.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }
+{
+  "name": "swipeable-row",
+  "version": "0.1.1",
+  "description": "Swipe-to-reveal actions row with spring physics and destructive full-swipe",
+  "category": "input",
+  "files": [
+    {
+      "path": "swipeable-row.tsx",
+      "hash": ""
+    },
+    {
+      "path": "swipeable-row.types.ts",
+      "hash": ""
+    }
+  ],
+  "dependencies": {
+    "npm": [],
+    "components": []
+  }
+}

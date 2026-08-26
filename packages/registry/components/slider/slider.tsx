@@ -6,7 +6,7 @@ import Animated, {
   useAnimatedStyle,
   withSpring,
 } from 'react-native-reanimated'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { SliderProps, RangeSliderProps } from './slider.types'
 
 let Haptics: any = null
@@ -138,7 +138,7 @@ export const Slider: React.FC<SliderProps> = ({
       {showValue && (
         <View style={styles.valueRow}>
           <Text variant="caption" muted>{min}</Text>
-          <Text variant="caption" style={{ color: fillColor ?? theme.colors.primary, fontWeight: '700' }}>
+          <Text variant="caption" style={{ color: fillColor ?? theme.colors.primary, ...fontStyle(theme.typography, 'bold') }}>
             {value}
           </Text>
           <Text variant="caption" muted>{max}</Text>
@@ -334,11 +334,11 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
     <View style={styles.wrapper}>
       {showValue && (
         <View style={styles.valueRow}>
-          <Text variant="caption" style={{ color: fillColor ?? theme.colors.primary, fontWeight: '700' }}>
+          <Text variant="caption" style={{ color: fillColor ?? theme.colors.primary, ...fontStyle(theme.typography, 'bold') }}>
             {low}
           </Text>
           <Text variant="caption" muted>–</Text>
-          <Text variant="caption" style={{ color: fillColor ?? theme.colors.primary, fontWeight: '700' }}>
+          <Text variant="caption" style={{ color: fillColor ?? theme.colors.primary, ...fontStyle(theme.typography, 'bold') }}>
             {high}
           </Text>
         </View>

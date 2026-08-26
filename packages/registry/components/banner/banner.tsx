@@ -9,7 +9,7 @@ import Animated, {
   runOnJS,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { BannerProps, BannerVariant, HapticStyle } from './banner.types'
 
 let Haptics: any = null
@@ -165,7 +165,7 @@ export const Banner: React.FC<BannerProps> = ({
               accessibilityRole="button"
               accessibilityLabel={action.label}
             >
-              <Text style={{ color: accentColor, fontSize: 12, fontWeight: '600' }}>
+              <Text style={{ color: accentColor, fontSize: 12, ...fontStyle(theme.typography, 'semibold') }}>
                 {action.label}
               </Text>
             </Pressable>

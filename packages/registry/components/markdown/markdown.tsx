@@ -1,7 +1,7 @@
 // native-mate: markdown@0.1.0 | hash:PLACEHOLDER
 import React, { useMemo } from 'react'
 import { View, Pressable, Image } from 'react-native'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { MarkdownProps } from './markdown.types'
 
 const useStyles = makeStyles((theme) => ({
@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
   },
   h1: {
     fontSize: 28,
-    fontWeight: '800',
+    ...fontStyle(theme.typography, 'bold'),
     color: theme.colors.foreground,
     lineHeight: 34,
     marginTop: 16,
@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
   },
   h2: {
     fontSize: 24,
-    fontWeight: '700',
+    ...fontStyle(theme.typography, 'bold'),
     color: theme.colors.foreground,
     lineHeight: 30,
     marginTop: 14,
@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
   },
   h3: {
     fontSize: 20,
-    fontWeight: '700',
+    ...fontStyle(theme.typography, 'bold'),
     color: theme.colors.foreground,
     lineHeight: 26,
     marginTop: 12,
@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
   },
   h4: {
     fontSize: 18,
-    fontWeight: '600',
+    ...fontStyle(theme.typography, 'semibold'),
     color: theme.colors.foreground,
     lineHeight: 24,
     marginTop: 10,
@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
   },
   h5: {
     fontSize: 16,
-    fontWeight: '600',
+    ...fontStyle(theme.typography, 'semibold'),
     color: theme.colors.foreground,
     lineHeight: 22,
     marginTop: 8,
@@ -55,14 +55,14 @@ const useStyles = makeStyles((theme) => ({
   },
   h6: {
     fontSize: 14,
-    fontWeight: '600',
+    ...fontStyle(theme.typography, 'semibold'),
     color: theme.colors.muted,
     lineHeight: 20,
     marginTop: 8,
     marginBottom: 2,
   },
   bold: {
-    fontWeight: '700',
+    ...fontStyle(theme.typography, 'bold'),
   },
   italic: {
     fontStyle: 'italic',

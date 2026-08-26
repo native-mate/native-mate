@@ -1,11 +1,20 @@
 {
   "name": "chip",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Selectable chip with animated selection state, icon/avatar support, closable mode, and ChipGroup layout helper",
   "category": "input",
   "files": [
-    { "path": "chip.tsx", "hash": "" },
-    { "path": "chip.types.ts", "hash": "" }
+    {
+      "path": "chip.tsx",
+      "hash": ""
+    },
+    {
+      "path": "chip.types.ts",
+      "hash": ""
+    }
   ],
-  "dependencies": { "npm": [], "components": [] }
+  "dependencies": {
+    "npm": [],
+    "components": []
+  }
 }

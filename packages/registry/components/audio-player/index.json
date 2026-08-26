@@ -1,1 +1,20 @@
-{ "name": "audio-player", "version": "0.1.0", "description": "Audio player with play/pause, progress bar, track info, artwork, and compact mode", "category": "display", "files": [{"path": "audio-player.tsx", "hash": ""}, {"path": "audio-player.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }
+{
+  "name": "audio-player",
+  "version": "0.1.1",
+  "description": "Audio player with play/pause, progress bar, track info, artwork, and compact mode",
+  "category": "display",
+  "files": [
+    {
+      "path": "audio-player.tsx",
+      "hash": ""
+    },
+    {
+      "path": "audio-player.types.ts",
+      "hash": ""
+    }
+  ],
+  "dependencies": {
+    "npm": [],
+    "components": []
+  }
+}

@@ -1,44 +1,47 @@
 // native-mate: text@0.1.0 | hash:PLACEHOLDER
 import React from 'react'
 import { Text as RNText, Platform } from 'react-native'
-import { useTheme } from '@native-mate/core'
+import { useTheme, fontStyle } from '@native-mate/core'
+import type { FontWeightKey } from '@native-mate/core'
 import type { TextProps, TextVariant, TextWeight, TextColor } from './text.types'
 
 // ─── Variant presets ───────────────────────────────────────────────────────────
 
 const VARIANTS: Record<TextVariant, {
   fontSize: number
-  fontWeight: string
+  weightKey: FontWeightKey
   lineHeight: number
   letterSpacing?: number
   textTransform?: 'uppercase' | 'lowercase' | 'capitalize' | 'none'
   fontFamily?: string
 }> = {
-  h1:        { fontSize: 36, fontWeight: '700', lineHeight: 44 },
-  h2:        { fontSize: 30, fontWeight: '700', lineHeight: 38 },
-  h3:        { fontSize: 24, fontWeight: '600', lineHeight: 32 },
-  h4:        { fontSize: 20, fontWeight: '600', lineHeight: 28 },
-  h5:        { fontSize: 17, fontWeight: '600', lineHeight: 24 },
-  h6:        { fontSize: 15, fontWeight: '600', lineHeight: 22 },
-  bodyLarge: { fontSize: 17, fontWeight: '400', lineHeight: 26 },
-  body:      { fontSize: 15, fontWeight: '400', lineHeight: 22 },
-  bodySmall: { fontSize: 13, fontWeight: '400', lineHeight: 20 },
-  label:     { fontSize: 13, fontWeight: '500', lineHeight: 18 },
-  caption:   { fontSize: 11, fontWeight: '400', lineHeight: 16 },
-  overline:  { fontSize: 10, fontWeight: '600', lineHeight: 14, letterSpacing: 1.5, textTransform: 'uppercase' },
+  h1:        { fontSize: 36, weightKey: 'bold', lineHeight: 44 },
+  h2:        { fontSize: 30, weightKey: 'bold', lineHeight: 38 },
+  h3:        { fontSize: 24, weightKey: 'semibold', lineHeight: 32 },
+  h4:        { fontSize: 20, weightKey: 'semibold', lineHeight: 28 },
+  h5:        { fontSize: 17, weightKey: 'semibold', lineHeight: 24 },
+  h6:        { fontSize: 15, weightKey: 'semibold', lineHeight: 22 },
+  bodyLarge: { fontSize: 17, weightKey: 'regular', lineHeight: 26 },
+  body:      { fontSize: 15, weightKey: 'regular', lineHeight: 22 },
+  bodySmall: { fontSize: 13, weightKey: 'regular', lineHeight: 20 },
+  label:     { fontSize: 13, weightKey: 'medium', lineHeight: 18 },
+  caption:   { fontSize: 11, weightKey: 'regular', lineHeight: 16 },
+  overline:  { fontSize: 10, weightKey: 'semibold', lineHeight: 14, letterSpacing: 1.5, textTransform: 'uppercase' },
   code:      {
-    fontSize: 13, fontWeight: '400', lineHeight: 20,
+    fontSize: 13, weightKey: 'regular', lineHeight: 20,
     fontFamily: Platform.select({ ios: 'Menlo', android: 'monospace', default: 'monospace' }),
   },
 }
 
-const WEIGHTS: Record<string, string> = {
-  light:    '300',
-  regular:  '400',
-  medium:   '500',
-  semibold: '600',
-  bold:     '700',
-  extrabold: '800',
+// TextWeight has 6 levels but the core fontStyle helper only resolves 4 keys —
+// 'light' collapses into 'regular' and 'extrabold' collapses into 'bold'.
+const WEIGHT_KEYS: Record<TextWeight, FontWeightKey> = {
+  light:    'regular',
+  regular:  'regular',
+  medium:   'medium',
+  semibold: 'semibold',
+  bold:     'bold',
+  extrabold: 'bold',
 }
 
 // ─── Color resolution ──────────────────────────────────────────────────────────
@@ -82,7 +85,7 @@ export const Text: React.FC<TextProps> = ({
   const preset = VARIANTS[variant]
 
   const resolvedColor = resolveColor(color, muted, theme.colors as Record<string, string>)
-  const resolvedWeight = weight ? WEIGHTS[weight] : preset.fontWeight
+  const weightKey: FontWeightKey = weight ? WEIGHT_KEYS[weight] : preset.weightKey
   const resolvedTransform = transform ?? preset.textTransform ?? 'none'
 
   return (
@@ -94,7 +97,7 @@ export const Text: React.FC<TextProps> = ({
       style={[
         {
           fontSize:        size ?? preset.fontSize,
-          fontWeight:      resolvedWeight as any,
+          ...fontStyle(theme.typography, weightKey),
           lineHeight:      preset.lineHeight,
           letterSpacing:   preset.letterSpacing ?? 0,
           fontFamily:      preset.fontFamily,

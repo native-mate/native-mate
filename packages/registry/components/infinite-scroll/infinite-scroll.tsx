@@ -5,7 +5,7 @@ import Animated, {
   FadeIn,
   FadeOut,
 } from 'react-native-reanimated'
-import { useTheme, Text, makeStyles, Spinner } from '@native-mate/core'
+import { useTheme, Text, makeStyles, Spinner, fontStyle } from '@native-mate/core'
 import type { InfiniteScrollProps } from './infinite-scroll.types'
 
 let Haptics: any = null
@@ -101,7 +101,7 @@ const DefaultEmpty: React.FC = () => {
       <Text
         style={{
           fontSize: 16,
-          fontWeight: '600',
+          ...fontStyle(theme.typography, 'semibold'),
           color: theme.colors.foreground,
         }}
       >

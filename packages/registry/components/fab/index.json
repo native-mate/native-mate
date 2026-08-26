@@ -1,11 +1,20 @@
 {
   "name": "fab",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Floating action button with speed dial fan-out, extended label mode, spring animations, and haptic feedback",
   "category": "input",
   "files": [
-    { "path": "fab.tsx", "hash": "" },
-    { "path": "fab.types.ts", "hash": "" }
+    {
+      "path": "fab.tsx",
+      "hash": ""
+    },
+    {
+      "path": "fab.types.ts",
+      "hash": ""
+    }
   ],
-  "dependencies": { "npm": [], "components": [] }
+  "dependencies": {
+    "npm": [],
+    "components": []
+  }
 }

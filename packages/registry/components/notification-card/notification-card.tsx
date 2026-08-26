@@ -11,7 +11,7 @@ import Animated, {
   Extrapolation,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { NotificationCardProps, NotificationCategory } from './notification-card.types'
 
 let Haptics: any = null
@@ -261,7 +261,7 @@ export const NotificationCard: React.FC<NotificationCardProps> = ({
               <Text
                 style={{
                   fontSize: 14,
-                  fontWeight: read ? '500' : '700',
+                  ...(read ? fontStyle(theme.typography, 'medium') : fontStyle(theme.typography, 'bold')),
                   color: theme.colors.foreground,
                   flex: 1,
                 }}
