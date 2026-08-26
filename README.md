@@ -14,7 +14,6 @@ native-mate gives you 30 fully-typed, themeable React Native components that you
 npx @native-mate/cli init
 npx @native-mate/cli add button card input
 ```
-
 ---
 
 ## Packages
