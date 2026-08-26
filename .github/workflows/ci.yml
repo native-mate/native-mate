@@ -67,7 +67,8 @@ jobs:
         working-directory: packages/core
         run: |
           PKG="$(npm pkg get name | tr -d '"')"; VER="$(npm pkg get version | tr -d '"')"
-          if npm view "$PKG@$VER" version >/dev/null 2>&1; then
+          ENC="$(printf '%s' "$PKG" | sed 's|/|%2F|')"
+          if curl -sf "https://registry.npmjs.org/$ENC/$VER" >/dev/null; then
             echo "$PKG@$VER already on npm — skipping"
           else
             npm publish --access public --provenance
@@ -79,7 +80,8 @@ jobs:
         working-directory: packages/cli
         run: |
           PKG="$(npm pkg get name | tr -d '"')"; VER="$(npm pkg get version | tr -d '"')"
-          if npm view "$PKG@$VER" version >/dev/null 2>&1; then
+          ENC="$(printf '%s' "$PKG" | sed 's|/|%2F|')"
+          if curl -sf "https://registry.npmjs.org/$ENC/$VER" >/dev/null; then
             echo "$PKG@$VER already on npm — skipping"
           else
             npm publish --access public --provenance
@@ -91,7 +93,8 @@ jobs:
         working-directory: packages/mcp
         run: |
           PKG="$(npm pkg get name | tr -d '"')"; VER="$(npm pkg get version | tr -d '"')"
-          if npm view "$PKG@$VER" version >/dev/null 2>&1; then
+          ENC="$(printf '%s' "$PKG" | sed 's|/|%2F|')"
+          if curl -sf "https://registry.npmjs.org/$ENC/$VER" >/dev/null; then
             echo "$PKG@$VER already on npm — skipping"
           else
             npm publish --access public --provenance
