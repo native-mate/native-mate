@@ -1,1 +1,20 @@
-{ "name": "segmented-control", "version": "0.1.0", "description": "iOS-style segmented toggle with animated sliding pill indicator", "category": "input", "files": [{"path": "segmented-control.tsx", "hash": ""}, {"path": "segmented-control.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }
+{
+  "name": "segmented-control",
+  "version": "0.1.1",
+  "description": "iOS-style segmented toggle with animated sliding pill indicator",
+  "category": "input",
+  "files": [
+    {
+      "path": "segmented-control.tsx",
+      "hash": ""
+    },
+    {
+      "path": "segmented-control.types.ts",
+      "hash": ""
+    }
+  ],
+  "dependencies": {
+    "npm": [],
+    "components": []
+  }
+}

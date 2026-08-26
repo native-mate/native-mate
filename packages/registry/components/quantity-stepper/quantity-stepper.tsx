@@ -9,7 +9,7 @@ import Animated, {
   withSequence,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { QuantityStepperProps, QuantityStepperSize } from './quantity-stepper.types'
 
 let Haptics: any = null
@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
   },
   value: {
-    fontWeight: '600',
+    ...fontStyle(theme.typography, 'semibold'),
     color: theme.colors.foreground,
     textAlign: 'center',
   },

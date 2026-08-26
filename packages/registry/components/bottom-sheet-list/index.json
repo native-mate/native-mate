@@ -1,1 +1,20 @@
-{ "name": "bottom-sheet-list", "version": "0.1.0", "description": "Searchable bottom sheet list with single and multi-select, animated item appearance", "category": "overlay", "files": [{"path": "bottom-sheet-list.tsx", "hash": ""}, {"path": "bottom-sheet-list.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }
+{
+  "name": "bottom-sheet-list",
+  "version": "0.1.1",
+  "description": "Searchable bottom sheet list with single and multi-select, animated item appearance",
+  "category": "overlay",
+  "files": [
+    {
+      "path": "bottom-sheet-list.tsx",
+      "hash": ""
+    },
+    {
+      "path": "bottom-sheet-list.types.ts",
+      "hash": ""
+    }
+  ],
+  "dependencies": {
+    "npm": [],
+    "components": []
+  }
+}

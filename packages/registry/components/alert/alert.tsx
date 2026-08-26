@@ -2,7 +2,7 @@
 import React from 'react'
 import { View, Pressable } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { AlertProps, AlertVariant } from './alert.types'
 
 type IconName = React.ComponentProps<typeof Ionicons>['name']
@@ -90,7 +90,7 @@ export const Alert: React.FC<AlertProps> = ({
               onPress={action.onPress}
               style={[styles.actionBtn, { borderColor: accentColor + '60' }]}
             >
-              <Text style={{ color: accentColor, fontSize: 12, fontWeight: '600' }}>
+              <Text style={{ color: accentColor, fontSize: 12, ...fontStyle(theme.typography, 'semibold') }}>
                 {action.label}
               </Text>
             </Pressable>

@@ -1,1 +1,20 @@
-{ "name": "speed-dial", "version": "0.1.0", "description": "FAB speed dial with rotating icon, staggered spring-animated actions, backdrop dim, and labels", "category": "input", "files": [{"path": "speed-dial.tsx", "hash": ""}, {"path": "speed-dial.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }
+{
+  "name": "speed-dial",
+  "version": "0.1.1",
+  "description": "FAB speed dial with rotating icon, staggered spring-animated actions, backdrop dim, and labels",
+  "category": "input",
+  "files": [
+    {
+      "path": "speed-dial.tsx",
+      "hash": ""
+    },
+    {
+      "path": "speed-dial.types.ts",
+      "hash": ""
+    }
+  ],
+  "dependencies": {
+    "npm": [],
+    "components": []
+  }
+}

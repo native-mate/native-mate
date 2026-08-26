@@ -9,7 +9,7 @@ import Animated, {
   withRepeat,
   interpolateColor,
 } from 'react-native-reanimated'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { OTPInputProps } from './otp-input.types'
 
 let Haptics: any = null
@@ -275,7 +275,7 @@ export const OTPInput: React.FC<OTPInputProps> = ({
           <Pressable onPress={handleResend} disabled={cooldown > 0}>
             <Text variant="caption" style={{
               color: cooldown > 0 ? theme.colors.muted : theme.colors.primary,
-              fontWeight: '600',
+              ...fontStyle(theme.typography, 'semibold'),
             }}>
               {cooldown > 0 ? `Resend in ${cooldown}s` : 'Resend'}
             </Text>

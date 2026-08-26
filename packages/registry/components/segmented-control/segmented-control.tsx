@@ -6,7 +6,7 @@ import Animated, {
   useAnimatedStyle,
   withSpring,
 } from 'react-native-reanimated'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { SegmentedControlProps } from './segmented-control.types'
 
 let Haptics: any = null
@@ -158,7 +158,7 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
             <Text
               style={{
                 fontSize: sz.fontSize,
-                fontWeight: isSelected ? '600' : '500',
+                ...fontStyle(theme.typography, isSelected ? 'semibold' : 'medium'),
                 color: isSelected ? theme.colors.foreground : theme.colors.muted,
               }}
             >

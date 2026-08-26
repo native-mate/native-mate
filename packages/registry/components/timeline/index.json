@@ -1,1 +1,20 @@
-{ "name": "timeline", "version": "0.1.0", "description": "Vertical timeline with animated stagger entrance, status nodes, and connecting lines", "category": "display", "files": [{"path": "timeline.tsx", "hash": ""}, {"path": "timeline.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }
+{
+  "name": "timeline",
+  "version": "0.1.1",
+  "description": "Vertical timeline with animated stagger entrance, status nodes, and connecting lines",
+  "category": "display",
+  "files": [
+    {
+      "path": "timeline.tsx",
+      "hash": ""
+    },
+    {
+      "path": "timeline.types.ts",
+      "hash": ""
+    }
+  ],
+  "dependencies": {
+    "npm": [],
+    "components": []
+  }
+}

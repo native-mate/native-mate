@@ -1,13 +1,13 @@
 import React, { useMemo } from 'react'
 import { useColorScheme } from 'react-native'
 import { ThemeContext } from './ThemeContext'
-import { presets, resolveTokens } from '../tokens'
-import type { ThemePreset, NativeMateTokenOverrides } from '../tokens/types'
+import { presets, resolveTokens, normalizeOverrides } from '../tokens'
+import type { ThemePreset, ThemeOverrides } from '../tokens/types'
 
 interface ThemeProviderProps {
   preset?: ThemePreset
   forcedColorScheme?: 'light' | 'dark'
-  overrides?: { light?: NativeMateTokenOverrides; dark?: NativeMateTokenOverrides }
+  overrides?: ThemeOverrides
   children: React.ReactNode
 }
 
@@ -20,7 +20,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   const systemColorScheme = useColorScheme()
   const mode = forcedColorScheme ?? systemColorScheme ?? 'light'
   const theme = useMemo(
-    () => resolveTokens(presets[preset], mode, overrides?.[mode]),
+    () => resolveTokens(presets[preset], mode, normalizeOverrides(overrides, mode)),
     [preset, mode, overrides],
   )
   return <ThemeContext.Provider value={theme}>{children}</ThemeContext.Provider>

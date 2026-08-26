@@ -7,7 +7,7 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { ReviewCardProps } from './review-card.types'
 
 let Haptics: any = null
@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
   },
   authorName: {
     fontSize: theme.typography.size.md,
-    fontWeight: theme.typography.weight.semibold as any,
+    ...fontStyle(theme.typography, 'semibold'),
     color: theme.colors.foreground,
   },
   verifiedBadge: {
@@ -67,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
   verifiedText: {
     fontSize: 10,
     color: theme.colors.success,
-    fontWeight: '600',
+    ...fontStyle(theme.typography, 'semibold'),
   },
   date: {
     fontSize: theme.typography.size.xs,
@@ -85,7 +85,7 @@ const useStyles = makeStyles((theme) => ({
   readMore: {
     fontSize: theme.typography.size.sm,
     color: theme.colors.primary,
-    fontWeight: '500',
+    ...fontStyle(theme.typography, 'medium'),
     marginTop: 2,
   },
   imagesRow: {
@@ -113,7 +113,7 @@ const useStyles = makeStyles((theme) => ({
   actionText: {
     fontSize: theme.typography.size.xs,
     color: theme.colors.muted,
-    fontWeight: '500',
+    ...fontStyle(theme.typography, 'medium'),
   },
   actionTextActive: {
     color: theme.colors.primary,
@@ -218,7 +218,7 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
             <View style={styles.avatarPlaceholder}>
               <Text
                 variant="label"
-                style={{ color: theme.colors.primary, fontSize: 16, fontWeight: '700' }}
+                style={{ color: theme.colors.primary, fontSize: 16, ...fontStyle(theme.typography, 'bold') }}
               >
                 {avatarInitial}
               </Text>

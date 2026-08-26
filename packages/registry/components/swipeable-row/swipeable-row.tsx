@@ -10,7 +10,7 @@ import Animated, {
   interpolate,
   Extrapolation,
 } from 'react-native-reanimated'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { SwipeableRowProps, SwipeAction } from './swipeable-row.types'
 
 let Haptics: any = null
@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
     gap: 4,
   },
   actionLabel: {
-    fontWeight: '600',
+    ...fontStyle(theme.typography, 'semibold'),
     fontSize: 12,
   },
 }))
@@ -65,6 +65,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
   total,
   side,
 }) => {
+  const theme = useTheme()
   const animatedStyle = useAnimatedStyle(() => {
     const scale = interpolate(
       Math.abs(progress.value),
@@ -95,7 +96,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
         {action.icon && action.icon}
         <Text
           style={{
-            fontWeight: '600',
+            ...fontStyle(theme.typography, 'semibold'),
             fontSize: 12,
             color: action.textColor ?? '#fff',
           }}

@@ -9,7 +9,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles, shadow } from '@native-mate/core'
+import { useTheme, Text, makeStyles, shadow, fontStyle } from '@native-mate/core'
 import type { ProductCardProps } from './product-card.types'
 
 let Haptics: any = null
@@ -58,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     fontSize: theme.typography.size.md,
-    fontWeight: theme.typography.weight.semibold as any,
+    ...fontStyle(theme.typography, 'semibold'),
     color: theme.colors.foreground,
   },
   priceRow: {
@@ -68,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
   },
   price: {
     fontSize: theme.typography.size.lg,
-    fontWeight: theme.typography.weight.bold as any,
+    ...fontStyle(theme.typography, 'bold'),
     color: theme.colors.foreground,
   },
   originalPrice: {
@@ -78,7 +78,7 @@ const useStyles = makeStyles((theme) => ({
   },
   discount: {
     fontSize: theme.typography.size.xs,
-    fontWeight: theme.typography.weight.semibold as any,
+    ...fontStyle(theme.typography, 'semibold'),
     color: theme.colors.success,
   },
   ratingRow: {
@@ -89,7 +89,7 @@ const useStyles = makeStyles((theme) => ({
   ratingText: {
     fontSize: theme.typography.size.sm,
     color: theme.colors.foreground,
-    fontWeight: theme.typography.weight.medium as any,
+    ...fontStyle(theme.typography, 'medium'),
   },
   reviewCount: {
     fontSize: theme.typography.size.xs,
@@ -117,12 +117,12 @@ const useStyles = makeStyles((theme) => ({
   addToCartLabel: {
     color: theme.colors.onPrimary,
     fontSize: theme.typography.size.sm,
-    fontWeight: theme.typography.weight.semibold as any,
+    ...fontStyle(theme.typography, 'semibold'),
   },
   outOfStock: {
     fontSize: theme.typography.size.sm,
     color: theme.colors.destructive,
-    fontWeight: theme.typography.weight.medium as any,
+    ...fontStyle(theme.typography, 'medium'),
   },
 }))
 
@@ -235,7 +235,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               variant="caption"
               style={{
                 color: badgeColor ? '#FFFFFF' : theme.colors.onPrimary,
-                fontWeight: theme.typography.weight.bold as any,
+                ...fontStyle(theme.typography, 'bold'),
                 fontSize: 11,
               }}
             >

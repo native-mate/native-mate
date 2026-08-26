@@ -907,7 +907,7 @@ function CardPreview() {
               title="Open settings"
               subtitle="Tap to navigate"
               leading={<Ionicons name="settings-outline" size={22} color={theme.colors.primary} />}
-              trailing={<Ionicons name="chevron-forward" size={16} color={theme.colors.mutedForeground} />}
+              trailing={<Ionicons name="chevron-forward" size={16} color={theme.colors.muted} />}
             />
           </Card>
           <Card variant="elevated" onPress={() => {}}>

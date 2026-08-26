@@ -7,7 +7,7 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles, shadow } from '@native-mate/core'
+import { useTheme, Text, makeStyles, shadow, fontStyle } from '@native-mate/core'
 import type { PricingCardProps } from './pricing-card.types'
 
 let Haptics: any = null
@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     fontSize: 20,
-    fontWeight: '700',
+    ...fontStyle(theme.typography, 'bold'),
     color: theme.colors.foreground,
     textAlign: 'center',
   },
@@ -59,13 +59,13 @@ const useStyles = makeStyles((theme) => ({
   },
   currency: {
     fontSize: 20,
-    fontWeight: '600',
+    ...fontStyle(theme.typography, 'semibold'),
     color: theme.colors.foreground,
     marginBottom: 4,
   },
   price: {
     fontSize: 48,
-    fontWeight: '800',
+    ...fontStyle(theme.typography, 'bold'),
     color: theme.colors.foreground,
     lineHeight: 52,
   },
@@ -112,7 +112,7 @@ const useStyles = makeStyles((theme) => ({
   },
   ctaLabel: {
     fontSize: theme.typography.size.md,
-    fontWeight: '600',
+    ...fontStyle(theme.typography, 'semibold'),
   },
 }))
 
@@ -177,7 +177,7 @@ export const PricingCard: React.FC<PricingCardProps> = ({
             variant="caption"
             style={{
               color: badgeColor != null ? '#FFFFFF' : theme.colors.onPrimary,
-              fontWeight: '700',
+              ...fontStyle(theme.typography, 'bold'),
               fontSize: 12,
               letterSpacing: 0.5,
               textTransform: 'uppercase',

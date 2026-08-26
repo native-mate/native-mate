@@ -42,22 +42,21 @@ function MyComponent() {
 const TOKEN_SHAPE = `interface ResolvedTheme {
   colors: {
     background: string      // page/screen background
-    surface: string         // card, input, overlay bg
-    border: string          // dividers, outlines
-    foreground: string      // primary text
-    mutedForeground: string // secondary text, placeholders
+    surface: string         // card, input, sheet background
+    surfaceRaised: string   // elevated card, popover background
+    border: string          // dividers, outlines, input borders
     primary: string         // brand/action colour
-    primaryForeground: string
-    destructive: string
-    destructiveForeground: string
-    success: string
-    successForeground: string
-    warning: string
-    warningForeground: string
-    overlay: string         // modal scrim
-    input: string
-    ring: string            // focus ring
-    // + more
+    onPrimary: string       // text/icons on primary
+    foreground: string      // primary text
+    onBackground: string    // content on the page background
+    onSurface: string       // content on surface backgrounds
+    muted: string           // secondary text, placeholders
+    destructive: string     // errors, delete actions
+    onDestructive: string   // text/icons on destructive
+    success: string         // success states
+    onSuccess: string       // text/icons on success
+    warning: string         // warning states
+    onWarning: string       // text/icons on warning
   }
   spacing: { xs: 4, sm: 8, md: 12, lg: 16, xl: 24, '2xl': 32, '3xl': 48 }
   radius: { sm: 6, md: 10, lg: 16, xl: 24, full: 9999 }
@@ -65,6 +64,7 @@ const TOKEN_SHAPE = `interface ResolvedTheme {
     size: { xs: 11, sm: 13, md: 15, lg: 17, xl: 20, '2xl': 24, '3xl': 30 }
     weight: { regular: '400', medium: '500', semibold: '600', bold: '700' }
     lineHeight: { tight: 18, normal: 22, relaxed: 28 }  // absolute px
+    family?: { regular, medium, semibold, bold }        // optional custom font families
   }
   animation: {
     speed: { fast: 150, normal: 250, slow: 400 }         // ms

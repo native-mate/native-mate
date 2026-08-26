@@ -1,11 +1,20 @@
 {
   "name": "banner",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "App banner with slide in/out animation, four variants (info/warning/success/error), action button, and auto-dismiss",
   "category": "feedback",
   "files": [
-    { "path": "banner.tsx", "hash": "" },
-    { "path": "banner.types.ts", "hash": "" }
+    {
+      "path": "banner.tsx",
+      "hash": ""
+    },
+    {
+      "path": "banner.types.ts",
+      "hash": ""
+    }
   ],
-  "dependencies": { "npm": [], "components": [] }
+  "dependencies": {
+    "npm": [],
+    "components": []
+  }
 }

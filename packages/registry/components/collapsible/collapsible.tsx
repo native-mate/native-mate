@@ -8,7 +8,7 @@ import Animated, {
   Easing,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { CollapsibleProps } from './collapsible.types'
 
 let Haptics: any = null
@@ -142,7 +142,7 @@ export const Collapsible: React.FC<CollapsibleProps> = ({
               style={[
                 {
                   fontSize: 15,
-                  fontWeight: '600',
+                  ...fontStyle(theme.typography, 'semibold'),
                   color: theme.colors.foreground,
                 },
                 titleStyle,

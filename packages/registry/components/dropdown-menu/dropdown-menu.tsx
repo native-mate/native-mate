@@ -9,7 +9,7 @@ import Animated, {
   runOnJS,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles, shadow } from '@native-mate/core'
+import { useTheme, Text, makeStyles, shadow, fontStyle } from '@native-mate/core'
 import type { DropdownMenuProps, DropdownMenuItem, HapticStyle } from './dropdown-menu.types'
 
 let Haptics: any = null
@@ -91,7 +91,7 @@ const MenuItem: React.FC<{
         style={{
           flex: 1,
           fontSize: 15,
-          fontWeight: '500',
+          ...fontStyle(theme.typography, 'medium'),
           color: item.disabled ? theme.colors.muted : textColor,
         }}
         numberOfLines={1}

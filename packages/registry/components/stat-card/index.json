@@ -1,1 +1,22 @@
-{ "name": "stat-card", "version": "0.1.0", "description": "KPI metric card with animated counter, trend indicator, and skeleton loading", "category": "display", "files": [{"path": "stat-card.tsx", "hash": ""}, {"path": "stat-card.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": ["skeleton"]} }
+{
+  "name": "stat-card",
+  "version": "0.1.1",
+  "description": "KPI metric card with animated counter, trend indicator, and skeleton loading",
+  "category": "display",
+  "files": [
+    {
+      "path": "stat-card.tsx",
+      "hash": ""
+    },
+    {
+      "path": "stat-card.types.ts",
+      "hash": ""
+    }
+  ],
+  "dependencies": {
+    "npm": [],
+    "components": [
+      "skeleton"
+    ]
+  }
+}

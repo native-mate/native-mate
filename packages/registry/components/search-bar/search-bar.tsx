@@ -8,7 +8,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { SearchBarProps, SearchBarSuggestion, HapticStyle } from './search-bar.types'
 
 let Haptics: any = null
@@ -197,7 +197,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
         {/* Cancel button */}
         <Animated.View style={[{ overflow: 'hidden' }, cancelAnimStyle]}>
           <Pressable onPress={handleCancel} accessibilityRole="button" accessibilityLabel="Cancel search">
-            <Text style={{ color: theme.colors.primary, fontSize: 15, fontWeight: '500' }}>
+            <Text style={{ color: theme.colors.primary, fontSize: 15, ...fontStyle(theme.typography, 'medium') }}>
               Cancel
             </Text>
           </Pressable>

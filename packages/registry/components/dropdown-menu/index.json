@@ -1,11 +1,20 @@
 {
   "name": "dropdown-menu",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Context menu anchored to a trigger with scale animation, icons, destructive items, and dividers",
   "category": "overlay",
   "files": [
-    { "path": "dropdown-menu.tsx", "hash": "" },
-    { "path": "dropdown-menu.types.ts", "hash": "" }
+    {
+      "path": "dropdown-menu.tsx",
+      "hash": ""
+    },
+    {
+      "path": "dropdown-menu.types.ts",
+      "hash": ""
+    }
   ],
-  "dependencies": { "npm": [], "components": [] }
+  "dependencies": {
+    "npm": [],
+    "components": []
+  }
 }

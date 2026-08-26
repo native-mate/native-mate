@@ -19,7 +19,7 @@ import Animated, {
   SlideInDown,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles, Separator } from '@native-mate/core'
+import { useTheme, Text, makeStyles, Separator, fontStyle } from '@native-mate/core'
 import type { PhoneInputProps, Country } from './phone-input.types'
 
 let Haptics: any = null
@@ -56,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
   },
   label: {
     fontSize: 14,
-    fontWeight: '500',
+    ...fontStyle(theme.typography, 'medium'),
     color: theme.colors.foreground,
     marginBottom: 2,
   },
@@ -245,7 +245,9 @@ const CountryPicker: React.FC<CountryPickerProps> = ({
                   <Text
                     style={{
                       fontSize: 15,
-                      fontWeight: item.code === selectedCode ? '600' : '400',
+                      ...(item.code === selectedCode
+                        ? fontStyle(theme.typography, 'semibold')
+                        : fontStyle(theme.typography, 'regular')),
                       color: theme.colors.foreground,
                     }}
                   >
@@ -374,7 +376,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
             <Text
               style={{
                 fontSize: 15,
-                fontWeight: '500',
+                ...fontStyle(theme.typography, 'medium'),
                 color: theme.colors.foreground,
                 fontVariant: ['tabular-nums'],
               }}

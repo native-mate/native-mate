@@ -9,7 +9,7 @@ import Animated, {
   FadeIn,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { DatePickerProps } from './date-picker.types'
 
 let Haptics: any = null
@@ -202,7 +202,7 @@ const TimeSpinner: React.FC<TimeSpinnerProps> = ({
         <Text
           style={{
             fontSize: 22,
-            fontWeight: '700',
+            ...fontStyle(theme.typography, 'bold'),
             color: theme.colors.primary,
             fontVariant: ['tabular-nums'],
           }}
@@ -283,7 +283,7 @@ const CalendarGrid: React.FC<CalendarProps> = ({
             <Text
               style={{
                 fontSize: 12,
-                fontWeight: '600',
+                ...fontStyle(theme.typography, 'semibold'),
                 color: theme.colors.muted,
               }}
             >
@@ -330,7 +330,7 @@ const CalendarGrid: React.FC<CalendarProps> = ({
                   <Text
                     style={{
                       fontSize: 14,
-                      fontWeight: isSelected || isToday ? '600' : '400',
+                      ...fontStyle(theme.typography, isSelected || isToday ? 'semibold' : 'regular'),
                       color: isDisabled
                         ? theme.colors.muted + '60'
                         : isSelected
@@ -453,7 +453,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
               <Text
                 style={{
                   fontSize: 17,
-                  fontWeight: '700',
+                  ...fontStyle(theme.typography, 'bold'),
                   color: theme.colors.foreground,
                 }}
               >
@@ -525,7 +525,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
           <Text
             style={[
               styles.timeSeparator,
-              { fontSize: 28, fontWeight: '700', color: theme.colors.foreground },
+              { fontSize: 28, ...fontStyle(theme.typography, 'bold'), color: theme.colors.foreground },
             ]}
           >
             :
@@ -555,7 +555,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
             accessibilityLabel={confirmLabel}
           >
             <Text
-              style={{ fontSize: 15, fontWeight: '600', color: theme.colors.onPrimary }}
+              style={{ fontSize: 15, ...fontStyle(theme.typography, 'semibold'), color: theme.colors.onPrimary }}
             >
               {confirmLabel}
             </Text>

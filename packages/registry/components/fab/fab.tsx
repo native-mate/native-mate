@@ -10,7 +10,7 @@ import Animated, {
   Extrapolation,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles, shadow } from '@native-mate/core'
+import { useTheme, Text, makeStyles, shadow, fontStyle } from '@native-mate/core'
 import type { FabProps, FabAction, FabSize, FabVariant, HapticStyle } from './fab.types'
 
 let Haptics: any = null
@@ -121,7 +121,7 @@ const SpeedDialAction: React.FC<{
     <Animated.View style={[styles.speedDialItem, animStyle]}>
       {action.label && (
         <View style={[styles.speedDialLabel, { backgroundColor: theme.colors.surfaceRaised ?? theme.colors.surface }]}>
-          <Text style={{ fontSize: 13, fontWeight: '500', color: theme.colors.foreground }}>
+          <Text style={{ fontSize: 13, ...fontStyle(theme.typography, 'medium'), color: theme.colors.foreground }}>
             {action.label}
           </Text>
         </View>
@@ -271,7 +271,7 @@ export const Fab: React.FC<FabProps> = ({
       >
         <Ionicons name={icon as any} size={dims.icon} color={fgColor} />
         {label && (
-          <Text style={{ color: fgColor, fontSize: 15, fontWeight: '600' }}>
+          <Text style={{ color: fgColor, fontSize: 15, ...fontStyle(theme.typography, 'semibold') }}>
             {label}
           </Text>
         )}

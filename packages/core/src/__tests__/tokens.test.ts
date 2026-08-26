@@ -1,5 +1,12 @@
 import { describe, it, expect } from 'vitest'
-import { resolveTokens, zinc, slate, rose, midnight, presets } from '../tokens'
+import { resolveTokens, normalizeOverrides, fontStyle, zinc, slate, rose, midnight, presets } from '../tokens'
+
+const POPPINS = {
+  regular: 'Poppins-Regular',
+  medium: 'Poppins-Medium',
+  semibold: 'Poppins-SemiBold',
+  bold: 'Poppins-Bold',
+}
 
 describe('resolveTokens', () => {
   it('resolves zinc dark mode correctly', () => {
@@ -56,12 +63,75 @@ describe('resolveTokens', () => {
     expect(theme.radius.full).toBe(9999) // unchanged
   })
 
+  it('applies typography family overrides', () => {
+    const theme = resolveTokens(zinc, 'dark', {
+      typography: { family: POPPINS },
+    })
+    expect(theme.typography.family).toEqual(POPPINS)
+    expect(theme.typography.size.md).toBe(15) // unchanged
+    expect(theme.typography.weight.bold).toBe('700') // unchanged
+  })
+
+  it('typography.family is undefined when not overridden', () => {
+    const theme = resolveTokens(zinc, 'dark')
+    expect(theme.typography.family).toBeUndefined()
+  })
+
   it('applies animation speed overrides', () => {
     const theme = resolveTokens(zinc, 'dark', {
       animation: { speed: { fast: 100 } },
     })
     expect(theme.animation.speed.fast).toBe(100)
     expect(theme.animation.speed.normal).toBe(250) // unchanged
+  })
+})
+
+describe('normalizeOverrides', () => {
+  it('returns undefined for undefined input', () => {
+    expect(normalizeOverrides(undefined, 'light')).toBeUndefined()
+  })
+
+  it('picks the current mode from per-scheme overrides', () => {
+    const perScheme = {
+      light: { colors: { primary: '#111111' } },
+      dark: { colors: { primary: '#222222' } },
+    }
+    expect(normalizeOverrides(perScheme, 'light')).toBe(perScheme.light)
+    expect(normalizeOverrides(perScheme, 'dark')).toBe(perScheme.dark)
+  })
+
+  it('per-scheme overrides with only one scheme yield undefined for the other', () => {
+    const perScheme = { dark: { colors: { primary: '#222222' } } }
+    expect(normalizeOverrides(perScheme, 'light')).toBeUndefined()
+    expect(normalizeOverrides(perScheme, 'dark')).toBe(perScheme.dark)
+  })
+
+  it('applies a flat overrides object to both modes', () => {
+    const flat = { colors: { primary: '#0f766e' } }
+    expect(normalizeOverrides(flat, 'light')).toBe(flat)
+    expect(normalizeOverrides(flat, 'dark')).toBe(flat)
+  })
+
+  it('flat shape works end-to-end through resolveTokens', () => {
+    const flat = { colors: { primary: '#0f766e' } }
+    const light = resolveTokens(zinc, 'light', normalizeOverrides(flat, 'light'))
+    const dark = resolveTokens(zinc, 'dark', normalizeOverrides(flat, 'dark'))
+    expect(light.colors.primary).toBe('#0f766e')
+    expect(dark.colors.primary).toBe('#0f766e')
+  })
+})
+
+describe('fontStyle', () => {
+  it('falls back to fontWeight when no family is set', () => {
+    const theme = resolveTokens(zinc, 'light')
+    expect(fontStyle(theme.typography, 'semibold')).toEqual({ fontWeight: '600' })
+    expect(fontStyle(theme.typography, 'regular')).toEqual({ fontWeight: '400' })
+  })
+
+  it('resolves fontFamily and omits fontWeight when family is set', () => {
+    const theme = resolveTokens(zinc, 'light', { typography: { family: POPPINS } })
+    expect(fontStyle(theme.typography, 'semibold')).toEqual({ fontFamily: 'Poppins-SemiBold' })
+    expect(fontStyle(theme.typography, 'bold')).toEqual({ fontFamily: 'Poppins-Bold' })
   })
 })
 

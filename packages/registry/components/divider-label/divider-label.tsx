@@ -1,7 +1,7 @@
 // native-mate: divider-label@0.1.0 | hash:PLACEHOLDER
 import React from 'react'
 import { View } from 'react-native'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { DividerLabelProps, DividerLabelPosition } from './divider-label.types'
 
 const useStyles = makeStyles((theme) => ({
@@ -59,7 +59,7 @@ export const DividerLabel: React.FC<DividerLabelProps> = ({
         <Text
           style={{
             fontSize: 12,
-            fontWeight: '500',
+            ...fontStyle(theme.typography, 'medium'),
             color: labelColor,
             textTransform: 'uppercase',
             letterSpacing: 0.5,

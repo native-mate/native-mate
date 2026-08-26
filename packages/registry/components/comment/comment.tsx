@@ -7,7 +7,7 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { CommentProps, CommentData } from './comment.types'
 
 let Haptics: any = null
@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
   },
   authorName: {
     fontSize: theme.typography.size.sm,
-    fontWeight: theme.typography.weight.semibold as any,
+    ...fontStyle(theme.typography, 'semibold'),
     color: theme.colors.foreground,
   },
   timestamp: {
@@ -76,7 +76,7 @@ const useStyles = makeStyles((theme) => ({
   actionText: {
     fontSize: 12,
     color: theme.colors.muted,
-    fontWeight: '500',
+    ...fontStyle(theme.typography, 'medium'),
   },
   actionTextActive: {
     color: theme.colors.primary,
@@ -103,7 +103,7 @@ const useStyles = makeStyles((theme) => ({
   showRepliesText: {
     fontSize: 12,
     color: theme.colors.primary,
-    fontWeight: '600',
+    ...fontStyle(theme.typography, 'semibold'),
   },
 }))
 
@@ -188,7 +188,7 @@ function CommentItem({
               <View style={styles.avatarPlaceholder}>
                 <Text
                   variant="label"
-                  style={{ color: theme.colors.primary, fontSize: 13, fontWeight: '700' }}
+                  style={{ color: theme.colors.primary, fontSize: 13, ...fontStyle(theme.typography, 'bold') }}
                 >
                   {avatarInitial}
                 </Text>

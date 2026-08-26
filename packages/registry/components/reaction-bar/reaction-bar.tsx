@@ -8,7 +8,7 @@ import Animated, {
   withSequence,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { ReactionBarProps, Reaction, ReactionBarSize } from './reaction-bar.types'
 
 let Haptics: any = null
@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
   },
   count: {
-    fontWeight: '600',
+    ...fontStyle(theme.typography, 'semibold'),
     fontVariant: ['tabular-nums'],
   },
   countReacted: {

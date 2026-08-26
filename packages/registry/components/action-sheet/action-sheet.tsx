@@ -5,7 +5,7 @@ import Animated, {
   useSharedValue, useAnimatedStyle, withSpring, withTiming, runOnJS, Easing,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { makeStyles, Text, useTheme } from '@native-mate/core'
+import { fontStyle, makeStyles, Text, useTheme } from '@native-mate/core'
 import type { ActionSheetProps } from './action-sheet.types'
 
 const useStyles = makeStyles((theme) => ({
@@ -178,7 +178,7 @@ export const ActionSheet: React.FC<ActionSheetProps> = ({
                 <>
                   <View style={styles.header}>
                     {title != null && (
-                      <Text style={{ fontSize: 13, fontWeight: '600', color: theme.colors.muted, textAlign: 'center' }}>
+                      <Text style={{ fontSize: 13, ...fontStyle(theme.typography, 'semibold'), color: theme.colors.muted, textAlign: 'center' }}>
                         {title}
                       </Text>
                     )}
@@ -212,7 +212,7 @@ export const ActionSheet: React.FC<ActionSheetProps> = ({
                       <Text
                         style={{
                           fontSize: 16,
-                          fontWeight: action.variant === 'destructive' ? '600' : '400',
+                          ...fontStyle(theme.typography, action.variant === 'destructive' ? 'semibold' : 'regular'),
                           color: action.variant === 'destructive'
                             ? theme.colors.destructive
                             : theme.colors.foreground,
@@ -243,7 +243,7 @@ export const ActionSheet: React.FC<ActionSheetProps> = ({
                 accessibilityRole="button"
                 accessibilityLabel={cancelLabel}
               >
-                <Text style={{ fontSize: 17, fontWeight: '600', color: theme.colors.foreground }}>
+                <Text style={{ fontSize: 17, ...fontStyle(theme.typography, 'semibold'), color: theme.colors.foreground }}>
                   {cancelLabel}
                 </Text>
               </Pressable>

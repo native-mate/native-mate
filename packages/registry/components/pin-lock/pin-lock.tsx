@@ -10,7 +10,7 @@ import Animated, {
   withDelay,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { PinLockProps } from './pin-lock.types'
 
 let Haptics: any = null
@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     fontSize: 24,
-    fontWeight: '700',
+    ...fontStyle(theme.typography, 'bold'),
     color: theme.colors.foreground,
     textAlign: 'center',
   },
@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: theme.typography.size.sm,
     color: theme.colors.destructive,
     textAlign: 'center',
-    fontWeight: '500',
+    ...fontStyle(theme.typography, 'medium'),
   },
   attemptsText: {
     fontSize: theme.typography.size.xs,
@@ -56,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: theme.typography.size.md,
     color: theme.colors.destructive,
     textAlign: 'center',
-    fontWeight: '600',
+    ...fontStyle(theme.typography, 'semibold'),
   },
   dotsRow: {
     flexDirection: 'row',
@@ -101,7 +101,7 @@ const useStyles = makeStyles((theme) => ({
   },
   keyText: {
     fontSize: 28,
-    fontWeight: '500',
+    ...fontStyle(theme.typography, 'medium'),
     color: theme.colors.foreground,
   },
   keySubtext: {

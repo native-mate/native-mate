@@ -8,7 +8,7 @@ import Animated, {
   withSequence,
   withTiming,
 } from 'react-native-reanimated'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { CountdownProps, CountdownFormat } from './countdown.types'
 
 let Haptics: any = null
@@ -100,6 +100,7 @@ const DigitCell: React.FC<DigitCellProps> = ({
   color,
   animated,
 }) => {
+  const theme = useTheme()
   const translateY = useSharedValue(0)
   const scale = useSharedValue(1)
 
@@ -127,7 +128,7 @@ const DigitCell: React.FC<DigitCellProps> = ({
       <Text
         style={{
           fontSize: digitSize,
-          fontWeight: '800',
+          ...fontStyle(theme.typography, 'bold'),
           color,
           fontVariant: ['tabular-nums'],
           textAlign: 'center',
@@ -188,7 +189,7 @@ const CardUnit: React.FC<CardUnitProps> = ({
       <Text
         style={{
           fontSize: sz.labelSize,
-          fontWeight: '500',
+          ...fontStyle(theme.typography, 'medium'),
           color: theme.colors.muted,
           textTransform: 'uppercase',
           letterSpacing: 0.5,
@@ -268,7 +269,7 @@ export const Countdown: React.FC<CountdownProps> = ({
         <Text
           style={{
             fontSize: sz.digitSize,
-            fontWeight: '700',
+            ...fontStyle(theme.typography, 'bold'),
             color: digitColor,
             fontVariant: ['tabular-nums'],
           }}
@@ -301,7 +302,7 @@ export const Countdown: React.FC<CountdownProps> = ({
                 <Text
                   style={{
                     fontSize: sz.sepSize,
-                    fontWeight: '700',
+                    ...fontStyle(theme.typography, 'bold'),
                     color: theme.colors.muted,
                     marginHorizontal: sz.gap,
                   }}
@@ -344,7 +345,7 @@ export const Countdown: React.FC<CountdownProps> = ({
               <Text
                 style={{
                   fontSize: sz.sepSize,
-                  fontWeight: '700',
+                  ...fontStyle(theme.typography, 'bold'),
                   color: theme.colors.muted,
                   marginBottom: sz.labelSize + 8,
                 }}

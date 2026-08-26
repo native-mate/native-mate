@@ -7,7 +7,7 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { BreadcrumbProps, BreadcrumbItem, BreadcrumbSeparator, BreadcrumbSize } from './breadcrumb.types'
 
 let Haptics: any = null
@@ -31,22 +31,22 @@ const useStyles = makeStyles((theme) => ({
   },
   itemLabel: {
     color: theme.colors.muted,
-    fontWeight: '400',
+    ...fontStyle(theme.typography, 'regular'),
   },
   itemLabelActive: {
     color: theme.colors.foreground,
-    fontWeight: '600',
+    ...fontStyle(theme.typography, 'semibold'),
   },
   itemLabelPressable: {
     color: theme.colors.primary,
-    fontWeight: '500',
+    ...fontStyle(theme.typography, 'medium'),
   },
   separator: {
     color: theme.colors.muted,
   },
   ellipsis: {
     color: theme.colors.muted,
-    fontWeight: '500',
+    ...fontStyle(theme.typography, 'medium'),
   },
 }))
 

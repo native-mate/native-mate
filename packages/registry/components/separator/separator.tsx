@@ -1,8 +1,30 @@
 // native-mate: separator@0.1.0 | hash:PLACEHOLDER
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
-import { useTheme } from '@native-mate/core'
+import { useTheme, fontStyle } from '@native-mate/core'
 import type { SeparatorProps } from './separator.types'
+
+function weightToKey(weight: SeparatorProps['labelWeight']): 'regular' | 'medium' | 'semibold' | 'bold' {
+  switch (weight) {
+    case 'normal':
+    case '100':
+    case '200':
+    case '300':
+    case '400':
+      return 'regular'
+    case '500':
+      return 'medium'
+    case '600':
+      return 'semibold'
+    case 'bold':
+    case '700':
+    case '800':
+    case '900':
+      return 'bold'
+    default:
+      return 'medium'
+  }
+}
 
 export const Separator: React.FC<SeparatorProps> = ({
   orientation = 'horizontal',
@@ -64,7 +86,7 @@ export const Separator: React.FC<SeparatorProps> = ({
           style={{
             marginHorizontal: 12,
             fontSize: labelSize,
-            fontWeight: labelWeight,
+            ...fontStyle(theme.typography, weightToKey(labelWeight)),
             color: resolvedLabelColor,
             textTransform: 'uppercase',
             letterSpacing: 0.6,

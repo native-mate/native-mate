@@ -7,7 +7,7 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { RatingProps, RatingSize, HapticStyle } from './rating.types'
 
 let Haptics: any = null
@@ -191,7 +191,7 @@ export const Rating: React.FC<RatingProps> = ({
         ))}
       </View>
       {showValue && (
-        <Text style={{ fontSize: dims.fontSize, fontWeight: '600', color: theme.colors.foreground, marginLeft: 4 }}>
+        <Text style={{ fontSize: dims.fontSize, ...fontStyle(theme.typography, 'semibold'), color: theme.colors.foreground, marginLeft: 4 }}>
           {allowHalf ? value.toFixed(1) : value}
         </Text>
       )}

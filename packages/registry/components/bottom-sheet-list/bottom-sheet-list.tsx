@@ -20,7 +20,7 @@ import Animated, {
   FadeIn,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, Separator, makeStyles } from '@native-mate/core'
+import { useTheme, Text, Separator, makeStyles, fontStyle } from '@native-mate/core'
 import type { BottomSheetListProps, BottomSheetListItem } from './bottom-sheet-list.types'
 
 let Haptics: any = null
@@ -286,7 +286,7 @@ export const BottomSheetList: React.FC<BottomSheetListProps> = ({
             <Text
               style={{
                 fontSize: 15,
-                fontWeight: selected ? '600' : '400',
+                ...fontStyle(theme.typography, selected ? 'semibold' : 'regular'),
                 color: theme.colors.foreground,
               }}
               numberOfLines={1}
@@ -428,7 +428,7 @@ export const BottomSheetList: React.FC<BottomSheetListProps> = ({
                 <Text
                   style={{
                     fontSize: 15,
-                    fontWeight: '600',
+                    ...fontStyle(theme.typography, 'semibold'),
                     color: theme.colors.onPrimary,
                   }}
                 >

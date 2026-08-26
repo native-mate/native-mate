@@ -7,7 +7,7 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { ToggleGroupProps, ToggleGroupItem, HapticStyle } from './toggle-group.types'
 
 let Haptics: any = null
@@ -172,7 +172,7 @@ export const ToggleGroup: React.FC<ToggleGroupProps> = (props) => {
             <Text
               style={{
                 fontSize: dims.fontSize,
-                fontWeight: active ? '600' : '500',
+                ...fontStyle(theme.typography, active ? 'semibold' : 'medium'),
                 color: active ? theme.colors.foreground : theme.colors.muted,
               }}
               numberOfLines={1}

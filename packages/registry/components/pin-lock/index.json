@@ -1,1 +1,20 @@
-{ "name": "pin-lock", "version": "0.1.0", "description": "PIN entry screen with animated dot fill, number pad, shake on error, biometric button, and lockout timer", "category": "input", "files": [{"path": "pin-lock.tsx", "hash": ""}, {"path": "pin-lock.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }
+{
+  "name": "pin-lock",
+  "version": "0.1.1",
+  "description": "PIN entry screen with animated dot fill, number pad, shake on error, biometric button, and lockout timer",
+  "category": "input",
+  "files": [
+    {
+      "path": "pin-lock.tsx",
+      "hash": ""
+    },
+    {
+      "path": "pin-lock.types.ts",
+      "hash": ""
+    }
+  ],
+  "dependencies": {
+    "npm": [],
+    "components": []
+  }
+}

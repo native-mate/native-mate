@@ -7,7 +7,7 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { SocialLoginButtonProps, SocialProvider, SocialLoginSize } from './social-login-button.types'
 
 let Haptics: any = null
@@ -175,7 +175,7 @@ export const SocialLoginButton: React.FC<SocialLoginButtonProps> = ({
               variant="label"
               style={{
                 fontSize: tokens.fontSize,
-                fontWeight: '600',
+                ...fontStyle(theme.typography, 'semibold'),
                 color: textColor,
               }}
             >

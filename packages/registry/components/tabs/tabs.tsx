@@ -6,7 +6,7 @@ import Animated, {
   useAnimatedStyle,
   withSpring,
 } from 'react-native-reanimated'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { TabsProps, TabItem } from './tabs.types'
 
 const sizeMap = {
@@ -38,7 +38,7 @@ const BadgeBubble: React.FC<{ value: number | string; active: boolean; size: num
       <Text
         style={{
           fontSize: size * 0.6,
-          fontWeight: '700',
+          ...fontStyle(theme.typography, 'bold'),
           color: active ? theme.colors.onPrimary : theme.colors.background,
           lineHeight: size * 0.8,
         }}
@@ -120,7 +120,7 @@ const UnderlineTabs: React.FC<TabsProps & { sz: typeof sizeMap['md'] }> = ({
             <Text
               style={{
                 fontSize: sz.fontSize,
-                fontWeight: isActive ? '600' : '500',
+                ...fontStyle(theme.typography, isActive ? 'semibold' : 'medium'),
                 color: isActive ? theme.colors.primary : theme.colors.muted,
               }}
             >
@@ -267,7 +267,7 @@ const PillTabs: React.FC<TabsProps & { sz: typeof sizeMap['md'] }> = ({
             <Text
               style={{
                 fontSize: sz.fontSize,
-                fontWeight: isActive ? '600' : '500',
+                ...fontStyle(theme.typography, isActive ? 'semibold' : 'medium'),
                 color: isActive ? theme.colors.foreground : theme.colors.muted,
               }}
             >
@@ -352,7 +352,7 @@ const CardTabs: React.FC<TabsProps & { sz: typeof sizeMap['md'] }> = ({
             <Text
               style={{
                 fontSize: sz.fontSize,
-                fontWeight: isActive ? '600' : '500',
+                ...fontStyle(theme.typography, isActive ? 'semibold' : 'medium'),
                 color: isActive ? theme.colors.foreground : theme.colors.muted,
               }}
             >

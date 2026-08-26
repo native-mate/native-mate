@@ -1,1 +1,20 @@
-{ "name": "color-picker", "version": "0.1.0", "description": "Color picker with preset swatches, hue/saturation/lightness sliders, and hex input", "category": "input", "files": [{"path": "color-picker.tsx", "hash": ""}, {"path": "color-picker.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }
+{
+  "name": "color-picker",
+  "version": "0.1.1",
+  "description": "Color picker with preset swatches, hue/saturation/lightness sliders, and hex input",
+  "category": "input",
+  "files": [
+    {
+      "path": "color-picker.tsx",
+      "hash": ""
+    },
+    {
+      "path": "color-picker.types.ts",
+      "hash": ""
+    }
+  ],
+  "dependencies": {
+    "npm": [],
+    "components": []
+  }
+}

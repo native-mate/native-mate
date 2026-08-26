@@ -4,11 +4,12 @@ export { useTheme } from './theme/useTheme'
 export { makeStyles } from './theme/makeStyles'
 
 // Tokens
-export { presets, resolveTokens, zinc, slate, rose, midnight } from './tokens'
+export { presets, resolveTokens, normalizeOverrides, fontStyle, zinc, slate, rose, midnight } from './tokens'
 export type {
   TokenSet, ResolvedTheme, ThemePreset,
-  NativeMateConfig, NativeMateTokenOverrides,
+  NativeMateConfig, NativeMateTokenOverrides, ThemeOverrides,
   TokenColors, ColorToken, ResolvedColors,
+  FontFamilyTokens, FontWeightKey,
 } from './tokens/types'
 
 // Primitives

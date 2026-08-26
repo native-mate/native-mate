@@ -8,7 +8,7 @@ import Animated, {
   withTiming,
   runOnJS,
 } from 'react-native-reanimated'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { TooltipProps, TooltipPosition } from './tooltip.types'
 
 const OFFSET = 8
@@ -217,7 +217,7 @@ function TooltipWeb({
             }}
           />
           {typeof content === 'string' ? (
-            <Text style={{ fontSize: 12, color: textColor, fontWeight: '500' }}>
+            <Text style={{ fontSize: 12, color: textColor, ...fontStyle(theme.typography, 'medium') }}>
               {content}
             </Text>
           ) : (
@@ -330,7 +330,7 @@ function TooltipNative({
               {/* Arrow */}
               <View style={[styles.arrow, layout.arrowStyle]} />
               {typeof content === 'string' ? (
-                <Text style={{ fontSize: 12, color: textColor, fontWeight: '500' }}>
+                <Text style={{ fontSize: 12, color: textColor, ...fontStyle(theme.typography, 'medium') }}>
                   {content}
                 </Text>
               ) : (

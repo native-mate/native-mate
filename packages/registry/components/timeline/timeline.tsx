@@ -13,7 +13,7 @@ import Animated, {
   FadeInDown,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { TimelineProps, TimelineItem, TimelineItemStatus } from './timeline.types'
 
 let Haptics: any = null
@@ -293,7 +293,7 @@ const TimelineItemRow: React.FC<TimelineItemRowProps> = ({
         <Text
           style={{
             fontSize: sz.fontSize,
-            fontWeight: status === 'active' ? '700' : '600',
+            ...fontStyle(theme.typography, status === 'active' ? 'bold' : 'semibold'),
             color:
               status === 'upcoming'
                 ? theme.colors.muted

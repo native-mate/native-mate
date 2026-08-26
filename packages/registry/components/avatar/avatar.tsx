@@ -1,7 +1,7 @@
 // native-mate: avatar@0.2.0 | hash:PLACEHOLDER
 import React, { useState } from 'react'
 import { View, Image } from 'react-native'
-import { useTheme, Text } from '@native-mate/core'
+import { useTheme, Text, fontStyle } from '@native-mate/core'
 import type { AvatarProps, AvatarGroupProps, AvatarSize, AvatarStatus } from './avatar.types'
 
 const sizes: Record<AvatarSize, number> = { xs: 24, sm: 32, md: 40, lg: 48, xl: 64 }
@@ -68,7 +68,7 @@ export const Avatar: React.FC<AvatarProps> = ({
             onError={() => setImgError(true)}
           />
         ) : (
-          <Text style={{ fontSize: fs, fontWeight: '600', color: '#fff', letterSpacing: 0.5 }}>
+          <Text style={{ fontSize: fs, ...fontStyle(theme.typography, 'semibold'), color: '#fff', letterSpacing: 0.5 }}>
             {initials}
           </Text>
         )}
@@ -120,7 +120,7 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
           alignItems: 'center', justifyContent: 'center',
           zIndex: 0,
         }}>
-          <Text style={{ fontSize: fs, fontWeight: '600', color: theme.colors.muted }}>
+          <Text style={{ fontSize: fs, ...fontStyle(theme.typography, 'semibold'), color: theme.colors.muted }}>
             +{overflow}
           </Text>
         </View>
