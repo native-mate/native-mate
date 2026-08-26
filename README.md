@@ -7,7 +7,6 @@ A production-grade React Native + Expo UI component library inspired by shadcn/u
 > [![npm core](https://img.shields.io/npm/v/@native-mate/core?label=core)](https://www.npmjs.com/package/@native-mate/core) [![npm cli](https://img.shields.io/npm/v/@native-mate/cli?label=cli)](https://www.npmjs.com/package/@native-mate/cli) [![npm mcp](https://img.shields.io/npm/v/@native-mate/mcp?label=mcp)](https://www.npmjs.com/package/@native-mate/mcp)
 
 ---
-
 ## What it is
 
 native-mate gives you 30 fully-typed, themeable React Native components that you copy into your own codebase via a CLI. There's no runtime dependency to update — you own the source. The token system supports four built-in presets (zinc, slate, rose, midnight) with full dark mode.
