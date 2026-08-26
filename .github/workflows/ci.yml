@@ -35,8 +35,10 @@ jobs:
         run: npx turbo run lint --filter=@native-mate/core --filter=@native-mate/cli --filter=@native-mate/mcp --filter=@native-mate/registry
 
   # ──────────────────────────────────────────────────────────
-  # npm publish — DISABLED until ready to launch
-  # To enable: remove `if: false` and add NPM_TOKEN to repo secrets
+  # npm publish — runs on every push to main. Skips versions that
+  # are already on the registry; any other failure fails the job.
+  # Requires the NPM_TOKEN repo secret: a token from a maintainer
+  # account with read-write on the whole @native-mate scope.
   # ──────────────────────────────────────────────────────────
   publish:
     name: Publish to npm
@@ -63,18 +65,36 @@ jobs:
 
       - name: Publish @native-mate/core
         working-directory: packages/core
-        run: npm publish --access public --provenance || true
+        run: |
+          PKG="$(npm pkg get name | tr -d '"')"; VER="$(npm pkg get version | tr -d '"')"
+          if npm view "$PKG@$VER" version >/dev/null 2>&1; then
+            echo "$PKG@$VER already on npm — skipping"
+          else
+            npm publish --access public --provenance
+          fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish @native-mate/cli
         working-directory: packages/cli
-        run: npm publish --access public --provenance || true
+        run: |
+          PKG="$(npm pkg get name | tr -d '"')"; VER="$(npm pkg get version | tr -d '"')"
+          if npm view "$PKG@$VER" version >/dev/null 2>&1; then
+            echo "$PKG@$VER already on npm — skipping"
+          else
+            npm publish --access public --provenance
+          fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish @native-mate/mcp
         working-directory: packages/mcp
-        run: npm publish --access public --provenance || true
+        run: |
+          PKG="$(npm pkg get name | tr -d '"')"; VER="$(npm pkg get version | tr -d '"')"
+          if npm view "$PKG@$VER" version >/dev/null 2>&1; then
+            echo "$PKG@$VER already on npm — skipping"
+          else
+            npm publish --access public --provenance
+          fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
