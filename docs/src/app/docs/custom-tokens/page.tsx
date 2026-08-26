@@ -94,6 +94,16 @@ export function App() {
         registry components use internally.
       </p>
 
+      <p className="mb-8 text-sm text-zinc-400">
+        The <code className="text-zinc-300">on*</code> tokens also resolve under their{' '}
+        <code className="text-zinc-300">*Foreground</code> aliases (e.g.{' '}
+        <code className="text-zinc-300">primaryForeground</code> ≡{' '}
+        <code className="text-zinc-300">onPrimary</code>,{' '}
+        <code className="text-zinc-300">mutedForeground</code> ≡{' '}
+        <code className="text-zinc-300">muted</code>) — both spellings work in themes and
+        overrides.
+      </p>
+
       <h2 className="mt-8 mb-3 text-xl font-semibold text-zinc-50">Available colour tokens</h2>
       <div className="overflow-hidden rounded-xl border border-zinc-800">
         <table className="w-full text-sm">
@@ -121,6 +131,9 @@ export function App() {
               ['onSuccess', 'Text/icons on success background'],
               ['warning', 'Warning states'],
               ['onWarning', 'Text/icons on warning background'],
+              ['overlay', 'Modal/sheet backdrop scrim'],
+              ['input', 'Input field background'],
+              ['ring', 'Focus ring colour'],
             ].map(([token, desc], i) => (
               <tr key={token} className={i % 2 === 0 ? 'bg-zinc-950' : 'bg-zinc-900/50'}>
                 <td className="px-4 py-3 font-mono text-xs text-blue-400">{token}</td>
