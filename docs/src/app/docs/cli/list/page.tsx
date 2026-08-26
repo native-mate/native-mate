@@ -11,10 +11,10 @@ export default function CliListPage() {
       </p>
 
       <h2 className="mt-8 mb-3 text-xl font-semibold text-zinc-50">Usage</h2>
-      <CodeBlock language="bash" code="npx native-mate list [options]" />
+      <CodeBlock language="bash" code="npx @native-mate/cli list [options]" />
 
       <h2 className="mt-8 mb-3 text-xl font-semibold text-zinc-50">Alias</h2>
-      <CodeBlock language="bash" code="npx native-mate ls" />
+      <CodeBlock language="bash" code="npx @native-mate/cli ls" />
 
       <h2 className="mt-8 mb-3 text-xl font-semibold text-zinc-50">Options</h2>
       <div className="overflow-hidden rounded-xl border border-zinc-800">

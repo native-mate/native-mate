@@ -11,7 +11,7 @@ export default function CliInitPage() {
       </p>
 
       <h2 className="mt-8 mb-3 text-xl font-semibold text-zinc-50">Usage</h2>
-      <CodeBlock language="bash" code="npx native-mate init [options]" />
+      <CodeBlock language="bash" code="npx @native-mate/cli init [options]" />
 
       <h2 className="mt-8 mb-3 text-xl font-semibold text-zinc-50">What it does</h2>
       <ol className="space-y-2 text-sm text-zinc-400 list-decimal pl-5">

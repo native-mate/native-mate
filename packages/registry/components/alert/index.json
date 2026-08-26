@@ -1,6 +1,6 @@
 {
   "name": "alert",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Inline alert box with left accent border and variants",
   "category": "feedback",
   "files": [
@@ -14,7 +14,9 @@
     }
   ],
   "dependencies": {
-    "npm": [],
+    "npm": [
+      "@expo/vector-icons"
+    ],
     "components": []
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "otp-input",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "OTP/PIN code input with individual digit boxes",
   "category": "input",
   "files": [
@@ -14,7 +14,9 @@
     }
   ],
   "dependencies": {
-    "npm": [],
+    "npm": [
+      "expo-haptics"
+    ],
     "components": []
   }
 }

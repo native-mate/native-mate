@@ -26,10 +26,10 @@ export default function GettingStartedPage() {
         Run this from your project root. It installs <code className="text-zinc-300">@native-mate/core</code>,
         creates <code className="text-zinc-300">native-mate.json</code>, and updates your <code className="text-zinc-300">.cursorrules</code>.
       </p>
-      <CodeBlock language="bash" code="npx native-mate init" />
+      <CodeBlock language="bash" code="npx @native-mate/cli init" />
 
       <h2 className="mt-10 mb-3 text-xl font-semibold text-zinc-50">2. Add your first component</h2>
-      <CodeBlock language="bash" code="npx native-mate add button" />
+      <CodeBlock language="bash" code="npx @native-mate/cli add button" />
       <p className="mt-3 mb-3 text-sm text-zinc-400">
         The component is written to <code className="text-zinc-300">components/ui/button.tsx</code> (or wherever you
         configured). No runtime imports — just source files you own completely.

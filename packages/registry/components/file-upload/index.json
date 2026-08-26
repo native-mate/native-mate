@@ -1,6 +1,6 @@
 {
   "name": "file-upload",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "File/image picker with dropzone, button, and compact variants, file previews, and progress bars",
   "category": "input",
   "files": [
@@ -14,7 +14,10 @@
     }
   ],
   "dependencies": {
-    "npm": [],
+    "npm": [
+      "@expo/vector-icons",
+      "expo-haptics"
+    ],
     "components": []
   }
 }

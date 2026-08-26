@@ -1,1 +1,22 @@
-{ "name": "pull-to-refresh", "version": "0.1.0", "description": "Custom pull-to-refresh indicator with progress arc, spring animation, and haptic feedback", "category": "feedback", "files": [{"path": "pull-to-refresh.tsx", "hash": ""}, {"path": "pull-to-refresh.types.ts", "hash": ""}], "dependencies": {"npm": [], "components": []} }
+{
+  "name": "pull-to-refresh",
+  "version": "0.1.1",
+  "description": "Custom pull-to-refresh indicator with progress arc, spring animation, and haptic feedback",
+  "category": "feedback",
+  "files": [
+    {
+      "path": "pull-to-refresh.tsx",
+      "hash": ""
+    },
+    {
+      "path": "pull-to-refresh.types.ts",
+      "hash": ""
+    }
+  ],
+  "dependencies": {
+    "npm": [
+      "expo-haptics"
+    ],
+    "components": []
+  }
+}

@@ -1,6 +1,6 @@
 {
   "name": "action-sheet",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "iOS-style action sheet with animated slide-up, destructive variants, and cancel button",
   "category": "overlay",
   "files": [
@@ -14,7 +14,9 @@
     }
   ],
   "dependencies": {
-    "npm": [],
+    "npm": [
+      "@expo/vector-icons"
+    ],
     "components": []
   }
 }

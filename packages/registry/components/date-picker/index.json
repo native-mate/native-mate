@@ -1,6 +1,6 @@
 {
   "name": "date-picker",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Custom calendar date picker with scroll wheel time selector and bottom sheet presentation",
   "category": "input",
   "files": [
@@ -14,9 +14,10 @@
     }
   ],
   "dependencies": {
-    "npm": [],
-    "components": [
-      "sheet"
-    ]
+    "npm": [
+      "@expo/vector-icons",
+      "expo-haptics"
+    ],
+    "components": []
   }
 }

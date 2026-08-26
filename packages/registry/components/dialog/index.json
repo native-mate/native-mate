@@ -1,6 +1,6 @@
 {
   "name": "dialog",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Confirm/cancel dialog with scale + fade animation, destructive variant, icon support, and backdrop dismiss",
   "category": "overlay",
   "files": [
@@ -14,7 +14,10 @@
     }
   ],
   "dependencies": {
-    "npm": [],
+    "npm": [
+      "@expo/vector-icons",
+      "expo-haptics"
+    ],
     "components": []
   }
 }

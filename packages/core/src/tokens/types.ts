@@ -29,6 +29,21 @@ export interface TokenColors {
   onSuccess: ColorToken
   warning: ColorToken
   onWarning: ColorToken
+  info: ColorToken
+  onInfo: ColorToken
+  overlay: ColorToken
+  input: ColorToken
+  ring: ColorToken
+}
+
+// Docs-canonical *Foreground aliases for the on* names. Both spellings resolve
+// to the same value on ResolvedTheme, and overrides accept either.
+export interface AliasColors {
+  primaryForeground: string
+  destructiveForeground: string
+  successForeground: string
+  warningForeground: string
+  mutedForeground: string
 }
 
 export interface TokenSet {
@@ -53,7 +68,7 @@ export interface TokenSet {
   }
 }
 
-export type ResolvedColors = { [K in keyof TokenColors]: string }
+export type ResolvedColors = { [K in keyof TokenColors]: string } & AliasColors
 
 export interface ResolvedTheme {
   colors: ResolvedColors
@@ -79,7 +94,8 @@ export type ThemeOverrides =
   | { light?: NativeMateTokenOverrides; dark?: NativeMateTokenOverrides }
   | NativeMateTokenOverrides
 
-// Shape of native-mate.json — canonical for both the CLI and core.
+// Shape of native-mate.json — canonical for both the CLI and core. It holds
+// CLI concerns only; theming happens at runtime via ThemeProvider overrides.
 export interface NativeMateConfig {
   preset: ThemePreset
   componentsDir: string

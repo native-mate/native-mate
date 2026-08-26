@@ -1,6 +1,6 @@
 {
   "name": "review-card",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "User review card with star rating, author info, expandable text, images, and helpful voting",
   "category": "display",
   "files": [
@@ -14,7 +14,10 @@
     }
   ],
   "dependencies": {
-    "npm": [],
+    "npm": [
+      "@expo/vector-icons",
+      "expo-haptics"
+    ],
     "components": []
   }
 }

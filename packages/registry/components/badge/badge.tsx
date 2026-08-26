@@ -17,7 +17,7 @@ function getColors(variant: BadgeVariant, appearance: BadgeAppearance, theme: an
     case 'destructive': baseColor = theme.colors.destructive; onColor = theme.colors.onDestructive ?? '#fff'; break
     case 'success':     baseColor = theme.colors.success; onColor = theme.colors.onSuccess ?? '#fff'; break
     case 'warning':     baseColor = theme.colors.warning; onColor = theme.colors.onWarning ?? '#fff'; break
-    case 'info':        baseColor = '#3b82f6'; onColor = '#fff'; break
+    case 'info':        baseColor = theme.colors.info ?? '#3b82f6'; onColor = theme.colors.onInfo ?? '#fff'; break
     default:            baseColor = theme.colors.primary; onColor = theme.colors.onPrimary ?? '#fff'
   }
 

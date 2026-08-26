@@ -1,6 +1,6 @@
 {
   "name": "fab",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Floating action button with speed dial fan-out, extended label mode, spring animations, and haptic feedback",
   "category": "input",
   "files": [
@@ -14,7 +14,10 @@
     }
   ],
   "dependencies": {
-    "npm": [],
+    "npm": [
+      "@expo/vector-icons",
+      "expo-haptics"
+    ],
     "components": []
   }
 }

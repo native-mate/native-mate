@@ -1,6 +1,6 @@
 {
   "name": "product-card",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "E-commerce product card with image, pricing, ratings, favorite toggle, and add-to-cart",
   "category": "display",
   "files": [
@@ -14,7 +14,10 @@
     }
   ],
   "dependencies": {
-    "npm": [],
+    "npm": [
+      "@expo/vector-icons",
+      "expo-haptics"
+    ],
     "components": []
   }
 }

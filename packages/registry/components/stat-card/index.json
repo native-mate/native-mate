@@ -1,6 +1,6 @@
 {
   "name": "stat-card",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "KPI metric card with animated counter, trend indicator, and skeleton loading",
   "category": "display",
   "files": [
@@ -14,9 +14,10 @@
     }
   ],
   "dependencies": {
-    "npm": [],
-    "components": [
-      "skeleton"
-    ]
+    "npm": [
+      "@expo/vector-icons",
+      "expo-haptics"
+    ],
+    "components": []
   }
 }

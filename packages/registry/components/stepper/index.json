@@ -1,6 +1,6 @@
 {
   "name": "stepper",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Multi-step progress indicator with animated transitions and connecting lines",
   "category": "navigation",
   "files": [
@@ -14,7 +14,10 @@
     }
   ],
   "dependencies": {
-    "npm": [],
+    "npm": [
+      "@expo/vector-icons",
+      "expo-haptics"
+    ],
     "components": []
   }
 }

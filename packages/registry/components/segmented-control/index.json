@@ -1,6 +1,6 @@
 {
   "name": "segmented-control",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "iOS-style segmented toggle with animated sliding pill indicator",
   "category": "input",
   "files": [
@@ -14,7 +14,9 @@
     }
   ],
   "dependencies": {
-    "npm": [],
+    "npm": [
+      "expo-haptics"
+    ],
     "components": []
   }
 }

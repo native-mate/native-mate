@@ -23,7 +23,7 @@ export default function CorePackagePage() {
 
       <h2 className="mt-8 mb-3 text-xl font-semibold text-zinc-50">Installation</h2>
       <p className="mb-3 text-sm text-zinc-400">
-        Installed automatically when you run <code className="text-zinc-300">npx native-mate init</code>.
+        Installed automatically when you run <code className="text-zinc-300">npx @native-mate/cli init</code>.
         You can also install it manually:
       </p>
       <CodeBlock language="bash" code={`npm install @native-mate/core

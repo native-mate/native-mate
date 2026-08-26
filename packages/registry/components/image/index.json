@@ -1,11 +1,22 @@
 {
   "name": "image",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Enhanced image with fade-in on load, shimmer/blur/color placeholders, fallback source, and error state with icon",
   "category": "display",
   "files": [
-    { "path": "image.tsx", "hash": "" },
-    { "path": "image.types.ts", "hash": "" }
+    {
+      "path": "image.tsx",
+      "hash": ""
+    },
+    {
+      "path": "image.types.ts",
+      "hash": ""
+    }
   ],
-  "dependencies": { "npm": [], "components": [] }
+  "dependencies": {
+    "npm": [
+      "@expo/vector-icons"
+    ],
+    "components": []
+  }
 }

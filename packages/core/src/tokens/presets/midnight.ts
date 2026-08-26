@@ -20,5 +20,10 @@ export const midnight: TokenSet = {
     onSuccess:     { light: '#ffffff', dark: '#000000' },
     warning:       { light: '#f59e0b', dark: '#fbbf24' },
     onWarning:     { light: '#ffffff', dark: '#000000' },
+    info:          { light: '#3b82f6', dark: '#60a5fa' },
+    onInfo:        { light: '#ffffff', dark: '#000000' },
+    overlay:       { light: '#0f172a80', dark: '#000000bf' },
+    input:         { light: '#f1f5f9', dark: '#111111' },
+    ring:          { light: '#6366f1', dark: '#818cf8' },
   },
 }

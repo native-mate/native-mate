@@ -11,17 +11,17 @@ export default function CliUpgradePage() {
       </p>
 
       <h2 className="mt-8 mb-3 text-xl font-semibold text-zinc-50">Usage</h2>
-      <CodeBlock language="bash" code="npx native-mate upgrade [components...] [options]" />
+      <CodeBlock language="bash" code="npx @native-mate/cli upgrade [components...] [options]" />
 
       <h2 className="mt-8 mb-3 text-xl font-semibold text-zinc-50">Examples</h2>
       <CodeBlock language="bash" code={`# Check all installed components
-npx native-mate upgrade
+npx @native-mate/cli upgrade
 
 # Upgrade specific components
-npx native-mate upgrade button card
+npx @native-mate/cli upgrade button card
 
 # Skip confirmation prompts
-npx native-mate upgrade -y`} />
+npx @native-mate/cli upgrade -y`} />
 
       <h2 className="mt-8 mb-3 text-xl font-semibold text-zinc-50">Local change detection</h2>
       <p className="text-sm text-zinc-400">

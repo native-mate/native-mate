@@ -1,6 +1,6 @@
 {
   "name": "cart-item",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Shopping cart item row with image, quantity stepper, swipe-to-remove, and animated price",
   "category": "display",
   "files": [
@@ -14,7 +14,10 @@
     }
   ],
   "dependencies": {
-    "npm": [],
+    "npm": [
+      "@expo/vector-icons",
+      "expo-haptics"
+    ],
     "components": [
       "quantity-stepper"
     ]

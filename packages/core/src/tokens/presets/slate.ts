@@ -20,5 +20,10 @@ export const slate: TokenSet = {
     onSuccess:     { light: '#ffffff',  dark: '#000000' },
     warning:       { light: '#f59e0b',  dark: '#fbbf24' },
     onWarning:     { light: '#ffffff',  dark: '#000000' },
+    info:          { light: '#3b82f6',  dark: '#60a5fa' },
+    onInfo:        { light: '#ffffff',  dark: '#000000' },
+    overlay:       { light: '#02061780',  dark: '#000000b3' },
+    input:         { light: '#f1f5f9',  dark: '#1e293b' },
+    ring:          { light: '#0f172a',  dark: '#f8fafc' },
   },
 }

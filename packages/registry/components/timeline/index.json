@@ -1,6 +1,6 @@
 {
   "name": "timeline",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Vertical timeline with animated stagger entrance, status nodes, and connecting lines",
   "category": "display",
   "files": [
@@ -14,7 +14,10 @@
     }
   ],
   "dependencies": {
-    "npm": [],
+    "npm": [
+      "@expo/vector-icons",
+      "expo-haptics"
+    ],
     "components": []
   }
 }
