@@ -296,7 +296,7 @@
     },
     {
       "name": "progress",
-      "version": "0.3.0",
+      "version": "0.4.0",
       "description": "Animated progress bar with accessibility support",
       "category": "feedback"
     },
@@ -356,7 +356,7 @@
     },
     {
       "name": "select",
-      "version": "0.3.0",
+      "version": "0.4.0",
       "description": "Select dropdown using Sheet with FlatList options",
       "category": "input"
     },

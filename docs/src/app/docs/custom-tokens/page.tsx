@@ -76,6 +76,7 @@ export function App() {
         medium: 'Poppins-Medium',
         semibold: 'Poppins-SemiBold',
         bold: 'Poppins-Bold',
+        mono: 'JetBrainsMono-Regular',
       },
     },
   }}
@@ -92,6 +93,12 @@ export function App() {
         returns <code className="text-zinc-300">{'{ fontFamily }'}</code> or{' '}
         <code className="text-zinc-300">{'{ fontWeight }'}</code> as appropriate, and is what all
         registry components use internally.
+      </p>
+      <p className="mt-3 mb-3 text-sm text-zinc-400">
+        <code className="text-zinc-300">mono</code> is optional and separate from the four weights —
+        it themes code spans, hex fields, and tabular figures. Resolve it with{' '}
+        <code className="text-zinc-300">monoFontFamily(theme.typography)</code>, which falls back to
+        the platform monospace face when a brand hasn&apos;t set one.
       </p>
 
       <p className="mb-8 text-sm text-zinc-400">
@@ -145,6 +152,26 @@ export function App() {
           </tbody>
         </table>
       </div>
+
+      <h2 className="mt-10 mb-3 text-xl font-semibold text-zinc-50">No literals in components</h2>
+      <p className="mb-3 text-sm text-zinc-400">
+        Hex colours and font-family strings are only ever legitimate in the{' '}
+        <code className="text-zinc-300">overrides</code> object above — an app declaring its brand.
+        Inside a component they are a bug: for a white-label app every literal is a colour or a face
+        the brand can never change. Two CI gates enforce this on the registry —{' '}
+        <code className="text-zinc-300">audit-hex</code> rejects hardcoded semantic colours and{' '}
+        <code className="text-zinc-300">audit-fonts</code> rejects{' '}
+        <code className="text-zinc-300">fontFamily</code> literals.
+      </p>
+      <p className="mb-8 text-sm text-zinc-400">
+        The usual reasons people reach for a literal have token-safe answers: a translucent tint is{' '}
+        <code className="text-zinc-300">withAlpha(theme.colors.primary, 0.15)</code>, not{' '}
+        <code className="text-zinc-300">primary + &apos;15&apos;</code>; legible text on a
+        caller-supplied fill is <code className="text-zinc-300">readableOn(background)</code>, not{' '}
+        <code className="text-zinc-300">&apos;#fff&apos;</code>; and a monospace face is{' '}
+        <code className="text-zinc-300">monoFontFamily(theme.typography)</code>. See{' '}
+        <a href="/docs/colors" className="text-blue-400 hover:text-blue-300">colour utilities</a>.
+      </p>
     </article>
   )
 }

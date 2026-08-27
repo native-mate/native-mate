@@ -11,6 +11,5 @@ export interface ProgressProps {
   label?: string
   indeterminate?: boolean
   animated?: boolean
-  striped?: boolean
   accessibilityLabel?: string
 }

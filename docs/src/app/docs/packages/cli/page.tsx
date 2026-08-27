@@ -8,7 +8,7 @@ export default function CliPackagePage() {
       <h1 className="mb-2 text-3xl font-bold text-zinc-50">@native-mate/cli</h1>
       <p className="mb-2 text-zinc-400 text-lg">
         The command-line tool for native-mate. Initialize projects, add components,
-        list the registry, and upgrade installed components.
+        list the registry, upgrade installed components, and run release codemods.
       </p>
       <p className="mb-8">
         <a
@@ -50,6 +50,7 @@ native-mate init`} />
               ['add --all', 'Install all available components at once'],
               ['list (ls)', 'List all available components grouped by category'],
               ['upgrade [components...]', 'Check for and apply component updates'],
+              ['migrate [version]', 'Apply codemods for a native-mate release (default: v0.5)'],
             ].map(([cmd, desc], i) => (
               <tr key={cmd} className={i % 2 === 0 ? 'bg-zinc-950' : 'bg-zinc-900/50'}>
                 <td className="px-4 py-3 font-mono text-xs text-blue-400">{cmd}</td>
@@ -69,6 +70,8 @@ native-mate init`} />
         <li>Custom registry support via <code className="text-zinc-300">-r</code> flag</li>
         <li>Version tracking and hash-based upgrade detection</li>
         <li>Auto-detects your package manager (npm, yarn, pnpm, bun)</li>
+        <li>Release codemods via <code className="text-zinc-300">migrate</code>, with a{' '}
+          <code className="text-zinc-300">--dry</code> preview</li>
       </ul>
 
       <h2 className="mt-8 mb-3 text-xl font-semibold text-zinc-50">Full reference</h2>
@@ -77,6 +80,7 @@ native-mate init`} />
         <li><a href="/docs/cli/add" className="text-blue-400 hover:text-blue-300">native-mate add</a></li>
         <li><a href="/docs/cli/list" className="text-blue-400 hover:text-blue-300">native-mate list</a></li>
         <li><a href="/docs/cli/upgrade" className="text-blue-400 hover:text-blue-300">native-mate upgrade</a></li>
+        <li><a href="/docs/cli/migrate" className="text-blue-400 hover:text-blue-300">native-mate migrate</a></li>
       </ul>
     </article>
   )

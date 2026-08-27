@@ -1,5 +1,5 @@
 // native-mate: select@0.2.0 | hash:PLACEHOLDER
-import React, { useState, useMemo, useCallback } from 'react'
+import React, { useState, useMemo, useCallback, useImperativeHandle } from 'react'
 import { View, Pressable, FlatList, TextInput, ActivityIndicator, SectionList } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import Animated, {
@@ -20,7 +20,7 @@ import {
 } from '@native-mate/core'
 import { Sheet } from '../sheet/sheet'
 import { Checkbox } from '../checkbox/checkbox'
-import type { SelectProps, MultiSelectProps, SelectOption } from './select.types'
+import type { SelectProps, MultiSelectProps, SelectOption, SelectHandle } from './select.types'
 
 const heightMap = { sm: 36, md: 44, lg: 52 }
 const fontMap = { sm: 13, md: 15, lg: 17 }
@@ -98,7 +98,7 @@ function ChevronIcon({ open, color }: { open: boolean; color: string }) {
 
 // ── Single Select ─────────────────────────────────────────────────
 
-export const Select: React.FC<SelectProps> = ({
+export const Select = React.forwardRef<SelectHandle, SelectProps>(({
   options,
   groups,
   value,
@@ -115,13 +115,18 @@ export const Select: React.FC<SelectProps> = ({
   loading = false,
   size = 'md',
   haptic = true,
-}) => {
+}, ref) => {
   const theme = useTheme()
   const styles = useStyles()
   const strings = useStrings()
   const haptics = useHaptics()
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
+
+  useImperativeHandle(ref, () => ({
+    open: () => setOpen(true),
+    close: () => setOpen(false),
+  }), [])
 
   const { hasError, message: errorText } = resolveError(error)
   const resolvedSearchPlaceholder = searchPlaceholder ?? strings.search
@@ -273,7 +278,9 @@ export const Select: React.FC<SelectProps> = ({
       </Sheet>
     </View>
   )
-}
+})
+
+Select.displayName = 'Select'
 
 // ── Multi Select ──────────────────────────────────────────────────
 

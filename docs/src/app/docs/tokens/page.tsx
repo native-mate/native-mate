@@ -69,12 +69,20 @@ const TOKEN_SHAPE = `interface ResolvedTheme {
     size: { xs: 11, sm: 13, md: 15, lg: 17, xl: 20, '2xl': 24, '3xl': 30 }
     weight: { regular: '400', medium: '500', semibold: '600', bold: '700' }
     lineHeight: { tight: 18, normal: 22, relaxed: 28 }  // absolute px
-    family?: { regular, medium, semibold, bold }        // optional custom font families
+    family?: {                                          // optional custom font families
+      regular, medium, semibold, bold                   //   one family per weight
+      mono?: string                                     //   optional code/tabular face
+    }
   }
   animation: {
     speed: { fast: 150, normal: 250, slow: 400 }         // ms
-    easing: { standard, decelerate, spring }
+    easing: {
+      standard:   [0.4, 0.0, 0.2, 1]
+      decelerate: [0.0, 0.0, 0.2, 1]
+      spring:     { damping: 15, stiffness: 200, mass: 1 }
+    }
   }
+  colorScheme: 'light' | 'dark'
 }`
 
 export default function TokensPage() {
@@ -103,6 +111,46 @@ export default function TokensPage() {
         calls <code className="text-zinc-300">StyleSheet.create()</code> once per theme change.
       </p>
       <CodeBlock language="tsx" code={MAKE_STYLES} />
+
+      <h2 className="mt-10 mb-3 text-xl font-semibold text-zinc-50">Typography</h2>
+      <p className="mb-3 text-sm text-zinc-400">
+        <code className="text-zinc-300">size</code>, <code className="text-zinc-300">weight</code>,
+        and <code className="text-zinc-300">lineHeight</code> always exist.{' '}
+        <code className="text-zinc-300">family</code> is optional and only present when an app themes
+        its fonts — see{' '}
+        <a href="/docs/custom-tokens" className="text-blue-400 hover:text-blue-300">custom tokens</a>.
+        Because it may be absent, read weights through{' '}
+        <code className="text-zinc-300">fontStyle(theme.typography, &apos;semibold&apos;)</code>,
+        which returns <code className="text-zinc-300">{'{ fontFamily }'}</code> when a family is
+        themed and <code className="text-zinc-300">{'{ fontWeight }'}</code> when it is not.
+      </p>
+
+      <h3 className="mt-6 mb-2 text-lg font-medium text-zinc-100">Monospace text</h3>
+      <p className="mb-3 text-sm text-zinc-400">
+        <code className="text-zinc-300">typography.family.mono</code> is the themeable monospace
+        face, used for code spans, hex fields, and tabular figures. It is optional, so never read it
+        directly — call <code className="text-zinc-300">monoFontFamily(theme.typography)</code>,
+        which returns the themed face when a brand set one and falls back to the platform default
+        (<code className="text-zinc-300">Menlo</code> on iOS,{' '}
+        <code className="text-zinc-300">monospace</code> on Android) when it did not.
+      </p>
+      <CodeBlock language="tsx" code={`import { monoFontFamily, useTheme } from '@native-mate/core'
+
+function Hex({ value }: { value: string }) {
+  const theme = useTheme()
+  return (
+    <Text style={{ fontFamily: monoFontFamily(theme.typography), color: theme.colors.foreground }}>
+      {value}
+    </Text>
+  )
+}`} />
+      <div className="mt-4 rounded-xl border border-amber-800/50 bg-amber-950/20 p-4 text-sm text-amber-300">
+        <strong>Do not hardcode <code className="text-amber-200">&apos;monospace&apos;</code>.</strong>{' '}
+        In a white-label app a font literal is a branding bug — the brand can never override it. The{' '}
+        <code className="text-amber-200">audit-fonts</code> CI gate rejects{' '}
+        <code className="text-amber-200">fontFamily</code> literals in registry components for
+        exactly this reason.
+      </div>
 
       <div className="mt-10 rounded-xl border border-amber-800/50 bg-amber-950/20 p-4 text-sm text-amber-300">
         <strong>Note on lineHeight:</strong> Values are absolute pixels (not CSS multipliers).

@@ -57,6 +57,7 @@ export const COMPONENT_DOCS: Record<string, ComponentDoc> = {
       { name: 'transform', type: '"none"|"uppercase"|"lowercase"|"capitalize"', description: 'CSS-like text transform.' },
       { name: 'muted', type: 'boolean', default: 'false', description: 'Shorthand for color="muted".' },
       { name: 'numberOfLines', type: 'number', description: 'Truncates text after N lines.' },
+      { name: 'ellipsizeMode', type: '"head" | "middle" | "tail" | "clip"', default: '"tail"', description: 'Truncation strategy used when numberOfLines is set.' },
       { name: 'selectable', type: 'boolean', default: 'false', description: 'Enables text selection and copy on long-press.' },
     ],
     usageCode: `import { Text } from '~/components/ui/text'
@@ -483,6 +484,7 @@ export function ButtonExamples() {
     addCommand: 'npx native-mate add card',
     props: [
       { name: 'variant', type: '"elevated" | "outline" | "flat" | "ghost"', default: '"elevated"', description: 'Card surface style.' },
+      { name: 'size', type: '"sm" | "md" | "lg"', default: '"md"', description: 'Padding, gap, and corner radius preset. Inherited by CardHeader / CardContent / CardFooter.' },
       { name: 'loading', type: 'boolean', default: 'false', description: 'Replaces children with an animated skeleton placeholder.' },
       { name: 'onPress', type: '() => void', description: 'Makes the card pressable with a spring scale animation.' },
       { name: 'activeScale', type: 'number', default: '0.97', description: 'Scale factor on press.' },
@@ -569,7 +571,7 @@ export function CardExample() {
     ],
     props: [
       { name: 'label', type: 'string', description: 'Label shown above the input (or floating inside when floatingLabel is true).' },
-      { name: 'error', type: 'string', description: 'Error message shown below. Turns border red and triggers shake animation.' },
+      { name: 'error', type: 'ErrorProp (string | boolean)', description: 'A string renders as the message below; true sets error styling with no text. Turns the border red and triggers a shake animation.' },
       { name: 'hint', type: 'string', description: 'Helper text shown below the input.' },
       { name: 'size', type: '"sm" | "md" | "lg"', default: '"md"', description: 'Controls height, font size, and padding.' },
       { name: 'required', type: 'boolean', default: 'false', description: 'Shows a red asterisk (*) after the label.' },
@@ -580,11 +582,13 @@ export function CardExample() {
       { name: 'suffixText', type: 'string', description: 'Text addon attached to the right (e.g. "USD", ".com"). Has a border separator.' },
       { name: 'clearable', type: 'boolean', default: 'false', description: 'Shows a clear (×) button when input has a value.' },
       { name: 'onClear', type: '() => void', description: 'Called when the clear button is pressed.' },
+      { name: 'secureTextEntry', type: 'boolean', default: 'false', description: 'Masks the entered text (password field).' },
       { name: 'showPasswordToggle', type: 'boolean', default: 'false', description: 'Shows a Show/Hide toggle for password inputs. Use with secureTextEntry.' },
       { name: 'showCount', type: 'boolean', default: 'false', description: 'Shows character count below the input. Pair with maxLength.' },
       { name: 'maxLength', type: 'number', description: 'Maximum character limit. Shown as x/max when showCount is true.' },
       { name: 'floatingLabel', type: 'boolean', default: 'false', description: 'Label animates from placeholder position to top of border on focus (Material Design style).' },
-      { name: 'hapticOnFocus', type: 'boolean', default: 'false', description: 'Triggers a light haptic tap when input is focused. Requires expo-haptics (optional).' },
+      { name: 'haptic', type: 'HapticProp (boolean | HapticStyle)', default: 'false', description: 'Haptic feedback on focus. false/"none" disables; true means "light". Requires expo-haptics (optional).' },
+      { name: 'hapticOnFocus', type: 'HapticProp (boolean | HapticStyle)', description: 'Deprecated — use haptic instead. Removed in v0.6; run npx @native-mate/cli migrate v0.5.' },
       { name: '...TextInputProps', type: 'TextInputProps', description: 'All standard React Native TextInput props are forwarded.' },
     ],
     usageCode: `import { Input } from '~/components/ui/input'
@@ -620,7 +624,7 @@ export function CardExample() {
 <Input label="Username" error="Already taken" />
 
 // Haptic on focus
-<Input label="Name" hapticOnFocus />`,
+<Input label="Name" haptic />`,
     exampleCode: `import { Input } from '~/components/ui/input'
 import { View } from 'react-native'
 
@@ -655,7 +659,7 @@ export function InputExamples() {
     ],
     props: [
       { name: 'label', type: 'string', description: 'Label above or floating inside the textarea.' },
-      { name: 'error', type: 'string', description: 'Error message. Turns border red and triggers shake.' },
+      { name: 'error', type: 'ErrorProp (string | boolean)', description: 'A string renders as the message below; true sets error styling with no text. Turns the border red and triggers a shake.' },
       { name: 'hint', type: 'string', description: 'Helper text below the textarea.' },
       { name: 'required', type: 'boolean', default: 'false', description: 'Shows a red asterisk after the label.' },
       { name: 'disabled', type: 'boolean', default: 'false', description: 'Dims and prevents editing.' },
@@ -670,6 +674,7 @@ export function InputExamples() {
       { name: 'onMention', type: '(query: string) => void', description: 'Called when user types @ followed by text. Passes the query string.' },
       { name: 'voiceInput', type: 'boolean', default: 'false', description: 'Shows a microphone button inside the textarea.' },
       { name: 'onVoicePress', type: '() => void', description: 'Called when the microphone button is pressed.' },
+      { name: 'haptic', type: 'HapticProp (boolean | HapticStyle)', default: 'true', description: 'Haptic feedback on the voice button. false/"none" disables; true means "light".' },
       { name: '...TextInputProps', type: 'TextInputProps', description: 'All standard React Native TextInput props are forwarded.' },
     ],
     usageCode: `import { Textarea } from '~/components/ui/textarea'
@@ -926,8 +931,9 @@ export function RadioExamples() {
       { name: 'marks', type: 'boolean', default: 'false', description: 'Renders tick marks below the track at each step.' },
       { name: 'fillColor', type: 'string', description: 'Custom fill and thumb color.' },
       { name: 'trackColor', type: 'string', description: 'Custom unfilled track color.' },
+      { name: 'thumbSize', type: 'number', default: '22', description: 'Diameter of the draggable thumb in dp.' },
       { name: 'disabled', type: 'boolean', default: 'false', description: 'Dims and prevents dragging.' },
-      { name: 'haptic', type: 'boolean', default: 'true', description: 'Light haptic at each step. Requires expo-haptics (optional).' },
+      { name: 'haptic', type: 'HapticProp (boolean | HapticStyle)', default: 'true', description: 'Light haptic at each step. false/"none" disables; true means "light". Requires expo-haptics (optional).' },
     ],
     usageCode: `import { Slider, RangeSlider } from '~/components/ui/slider'
 
@@ -999,13 +1005,16 @@ export function SliderExamples() {
       { name: 'onChange', type: '(value: string) => void', description: 'Called when selection changes.' },
       { name: 'placeholder', type: 'string', default: '"Select..."', description: 'Placeholder text when nothing is selected.' },
       { name: 'label', type: 'string', description: 'Label shown above the trigger.' },
-      { name: 'error', type: 'string', description: 'Error message below trigger.' },
+      { name: 'error', type: 'ErrorProp (string | boolean)', description: 'A string renders as the message below the trigger; true sets error styling with no text.' },
       { name: 'hint', type: 'string', description: 'Helper text below trigger.' },
       { name: 'required', type: 'boolean', default: 'false', description: 'Shows red asterisk next to label.' },
       { name: 'clearable', type: 'boolean', default: 'false', description: 'Shows × button to clear selection.' },
       { name: 'searchable', type: 'boolean', default: 'false', description: 'Shows a search input at the top of the sheet.' },
+      { name: 'searchPlaceholder', type: 'string', description: 'Placeholder for the search input. Defaults to useStrings().search.' },
+      { name: 'loading', type: 'boolean', default: 'false', description: 'Shows a loading state in the options sheet.' },
       { name: 'disabled', type: 'boolean', default: 'false', description: 'Dims trigger and prevents opening.' },
       { name: 'size', type: '"sm" | "md" | "lg"', default: '"md"', description: 'Trigger height.' },
+      { name: 'haptic', type: 'HapticProp (boolean | HapticStyle)', default: 'true', description: 'Haptic feedback on selection. false/"none" disables; true means "light".' },
     ],
     usageCode: `import { Select, MultiSelect } from '~/components/ui/select'
 
@@ -1081,15 +1090,15 @@ export function SelectExamples() {
       { name: 'variant', type: '"box" | "underline" | "rounded"', default: '"box"', description: 'Visual style of each cell.' },
       { name: 'type', type: '"numeric" | "alphanumeric"', default: '"numeric"', description: 'Allowed characters.' },
       { name: 'secure', type: 'boolean', default: 'false', description: 'Shows ● instead of the digit.' },
-      { name: 'error', type: 'boolean', default: 'false', description: 'Turns cells red and triggers shake animation.' },
-      { name: 'errorMessage', type: 'string', description: 'Error text shown below the cells.' },
+      { name: 'error', type: 'ErrorProp (string | boolean)', description: 'A string renders as the message below the cells; true sets error styling with no text. Turns the cells red and triggers a shake animation.' },
+      { name: 'errorMessage', type: 'string', description: 'Deprecated — pass the message as error instead. Removed in v0.6; run npx @native-mate/cli migrate v0.5.' },
       { name: 'success', type: 'boolean', default: 'false', description: 'Turns cells green.' },
       { name: 'disabled', type: 'boolean', default: 'false', description: 'Prevents input.' },
       { name: 'hint', type: 'string', description: 'Helper text below the cells.' },
       { name: 'resend', type: 'boolean', default: 'false', description: 'Shows "Resend" link with cooldown timer.' },
       { name: 'resendCooldown', type: 'number', default: '30', description: 'Seconds before resend is available again.' },
       { name: 'onResend', type: '() => void', description: 'Called when resend is pressed.' },
-      { name: 'haptic', type: 'boolean', default: 'true', description: 'Error haptic on shake, success haptic on complete.' },
+      { name: 'haptic', type: 'HapticProp (boolean | HapticStyle)', default: 'true', description: 'Error haptic on shake, success haptic on complete. false/"none" disables; true means "light".' },
     ],
     usageCode: `import { OTPInput } from '~/components/ui/otp-input'
 
@@ -1166,9 +1175,12 @@ export function OTPExample() {
     componentDeps: [],
     addCommand: 'npx native-mate add badge',
     props: [
-      { name: 'variant', type: '"default" | "secondary" | "outline" | "success" | "destructive" | "warning"', default: '"default"', description: 'Visual variant.' },
+      { name: 'variant', type: '"default" | "secondary" | "destructive" | "success" | "warning" | "info"', default: '"default"', description: 'Semantic color variant.' },
       { name: 'size', type: '"sm" | "md" | "lg"', default: '"md"', description: 'Controls padding and font size.' },
+      { name: 'appearance', type: '"solid" | "soft" | "outline"', default: '"soft"', description: 'How the variant color is applied — filled, tinted, or border-only.' },
       { name: 'dot', type: 'boolean', default: 'false', description: 'Shows a coloured dot before the label.' },
+      { name: 'pulse', type: 'boolean', default: 'false', description: 'Animates the dot with a pulsing ring, for live/online status.' },
+      { name: 'icon', type: 'React.ReactNode', description: 'Node rendered before the badge text.' },
       { name: 'count', type: 'number', description: 'Numeric count to display instead of children.' },
       { name: 'maxCount', type: 'number', default: '99', description: 'When count exceeds this, shows "{maxCount}+".' },
       { name: 'onDismiss', type: '() => void', description: 'When provided, shows a × button to dismiss the badge.' },
@@ -1211,16 +1223,25 @@ export function BadgeExamples() {
     componentDeps: [],
     addCommand: 'npx native-mate add sheet',
     props: [
-      { name: 'isOpen', type: 'boolean', description: 'Controls sheet visibility.' },
-      { name: 'onClose', type: '() => void', description: 'Called when user dismisses the sheet.' },
-      { name: 'snapPoints', type: 'Array<`${number}%`>', default: '["50%", "90%"]', description: 'Snap positions as viewport-height percentages.' },
-      { name: 'children', type: 'React.ReactNode', description: 'Sheet content.' },
+      { name: 'visible', type: 'boolean', description: 'Controls sheet visibility.' },
+      { name: 'onClose', type: '() => void', description: 'Called on the dismiss intent (backdrop press, drag-down, or close button).' },
+      { name: 'height', type: 'number', default: '400', description: 'Height of the sheet in px. Used as the single snap point when snapPoints is omitted.' },
+      { name: 'title', type: 'string', description: 'Title shown at the top of the sheet.' },
+      { name: 'showHandle', type: 'boolean', default: 'true', description: 'Shows the drag handle at the top of the sheet.' },
+      { name: 'closeOnBackdrop', type: 'boolean', default: 'true', description: 'Close the sheet when the backdrop is pressed.' },
+      { name: 'animation', type: '"slide" | "spring" | "fade"', default: '"slide"', description: 'Animation preset used for enter/exit.' },
+      { name: 'padding', type: 'number', default: '16', description: 'Horizontal padding for the content area.' },
+      { name: 'scrollable', type: 'boolean', default: 'false', description: 'Renders the content inside a ScrollView.' },
+      { name: 'onDismiss', type: '() => void', description: 'Fired after the exit animation finishes (onClose fires on the dismiss intent).' },
+      { name: 'bottomInset', type: 'number', default: '34 on iOS, 0 elsewhere', description: 'Bottom padding reserved for the home indicator — pass a safe-area inset if your app has one.' },
+      { name: 'snapPoints', type: 'number[]', description: 'Heights the sheet can rest at, in px. The first entry is the opening height; dragging down past the shortest entry dismisses. Dragging between snap points requires the optional peer react-native-gesture-handler. Omit to use height as the single snap point.' },
+      { name: 'returnFocusRef', type: 'React.RefObject<any> | null', description: 'Ref to the control that opened the sheet. Screen-reader focus is sent back to it when the sheet finishes closing. Native-only and fully guarded.' },
     ],
     usageCode: `import { Sheet } from '~/components/ui/sheet'
 
 const [open, setOpen] = useState(false)
 
-<Sheet isOpen={open} onClose={() => setOpen(false)} snapPoints={['40%', '80%']}>
+<Sheet visible={open} onClose={() => setOpen(false)} snapPoints={[400, 640]}>
   <View style={{ padding: 16 }}>
     <Text>Sheet content</Text>
   </View>
@@ -1237,7 +1258,7 @@ export function SheetExample() {
   return (
     <View style={{ padding: 16 }}>
       <Button onPress={() => setOpen(true)}>Open Sheet</Button>
-      <Sheet isOpen={open} onClose={() => setOpen(false)} snapPoints={['50%']}>
+      <Sheet visible={open} onClose={() => setOpen(false)} height={400}>
         <View style={{ padding: 24, gap: 16 }}>
           <Text size="lg" weight="semibold">Sheet title</Text>
           <Text color="muted">Some content inside the sheet.</Text>
@@ -1257,38 +1278,40 @@ export function SheetExample() {
     componentDeps: [],
     addCommand: 'npx native-mate add accordion',
     props: [
-      { name: 'items', type: 'Array<{ title: string; content: React.ReactNode }>', description: 'Array of accordion panel definitions.' },
+      { name: 'items', type: 'AccordionItem[]', description: 'Panel definitions — { key, title, content, icon?, trailing?, disabled? }.' },
       { name: 'allowMultiple', type: 'boolean', default: 'false', description: 'When true, multiple panels can be open at once.' },
-      { name: 'defaultOpen', type: 'number[]', default: '[]', description: 'Indices of panels that are open by default.' },
+      { name: 'variant', type: '"ghost" | "card" | "bordered"', default: '"ghost"', description: 'Surface style of each panel.' },
+      { name: 'size', type: '"sm" | "md" | "lg"', default: '"md"', description: 'Controls row height, padding, and font size.' },
+      { name: 'defaultOpen', type: 'string[]', default: '[]', description: 'Keys of the panels that are open by default.' },
       { name: 'style', type: 'ViewStyle', description: 'Additional styles for the accordion container.' },
     ],
     usageCode: `import { Accordion } from '~/components/ui/accordion'
 
 const items = [
-  { title: 'What is native-mate?', content: <Text>A copy-paste component library for React Native.</Text> },
-  { title: 'Is it free?', content: <Text>Yes, completely open source.</Text> },
-  { title: 'Does it support Expo?', content: <Text>Yes, Expo and bare React Native are both supported.</Text> },
+  { key: 'what', title: 'What is native-mate?', content: <Text>A copy-paste component library for React Native.</Text> },
+  { key: 'free', title: 'Is it free?', content: <Text>Yes, completely open source.</Text> },
+  { key: 'expo', title: 'Does it support Expo?', content: <Text>Yes, Expo and bare React Native are both supported.</Text> },
 ]
 
 // Single open at a time (default)
 <Accordion items={items} />
 
-// Allow multiple open panels
-<Accordion items={items} allowMultiple defaultOpen={[0]} />`,
+// Allow multiple open panels, with one open on mount
+<Accordion items={items} allowMultiple defaultOpen={['what']} variant="card" />`,
     exampleCode: `import { Accordion } from '~/components/ui/accordion'
 import { Text } from '@native-mate/core'
 import { View } from 'react-native'
 
 const FAQS = [
-  { title: 'Getting started', content: <Text>Run npx native-mate init to scaffold your project.</Text> },
-  { title: 'Customisation', content: <Text>All components are plain source files — edit them freely.</Text> },
-  { title: 'Dark mode', content: <Text>Tokens automatically adapt via the useColorScheme hook.</Text> },
+  { key: 'start', title: 'Getting started', content: <Text>Run npx native-mate init to scaffold your project.</Text> },
+  { key: 'custom', title: 'Customisation', content: <Text>All components are plain source files — edit them freely.</Text> },
+  { key: 'dark', title: 'Dark mode', content: <Text>Tokens automatically adapt via the useColorScheme hook.</Text> },
 ]
 
 export function AccordionExample() {
   return (
     <View style={{ padding: 16 }}>
-      <Accordion items={FAQS} allowMultiple defaultOpen={[0]} />
+      <Accordion items={FAQS} allowMultiple defaultOpen={['start']} />
     </View>
   )
 }`,
@@ -1302,25 +1325,27 @@ export function AccordionExample() {
     componentDeps: [],
     addCommand: 'npx native-mate add tabs',
     props: [
-      { name: 'tabs', type: 'Array<{ key: string; label: string; content: React.ReactNode }>', description: 'Tab definitions including their content panels.' },
+      { name: 'items', type: 'TabItem[]', description: 'Tab definitions — { key, label, icon?, badge?, disabled? }.' },
       { name: 'activeKey', type: 'string', description: 'Controlled active tab key.' },
-      { name: 'defaultActiveKey', type: 'string', description: 'Uncontrolled initial active tab key.' },
       { name: 'onChange', type: '(key: string) => void', description: 'Called when the active tab changes.' },
+      { name: 'variant', type: '"underline" | "pill" | "card"', default: '"underline"', description: 'Visual style of the tab bar.' },
+      { name: 'size', type: '"sm" | "md" | "lg"', default: '"md"', description: 'Controls tab height, padding, and font size.' },
+      { name: 'scrollable', type: 'boolean', default: 'false', description: 'Renders the tab bar in a horizontal ScrollView for long tab lists.' },
       { name: 'style', type: 'ViewStyle', description: 'Additional styles for the outer container.' },
     ],
     usageCode: `import { Tabs } from '~/components/ui/tabs'
 
-const tabs = [
-  { key: 'overview', label: 'Overview', content: <OverviewPanel /> },
-  { key: 'activity', label: 'Activity', content: <ActivityPanel /> },
-  { key: 'settings', label: 'Settings', content: <SettingsPanel /> },
+const items = [
+  { key: 'overview', label: 'Overview' },
+  { key: 'activity', label: 'Activity', badge: 3 },
+  { key: 'settings', label: 'Settings' },
 ]
 
-// Uncontrolled
-<Tabs tabs={tabs} defaultActiveKey="overview" />
+// Tabs is a controlled tab bar — you render the active panel yourself
+<Tabs items={items} activeKey={active} onChange={setActive} />
 
-// Controlled
-<Tabs tabs={tabs} activeKey={active} onChange={setActive} />`,
+// Variants and scrolling
+<Tabs items={items} activeKey={active} onChange={setActive} variant="pill" size="sm" scrollable />`,
     exampleCode: `import { useState } from 'react'
 import { Tabs } from '~/components/ui/tabs'
 import { Text } from '@native-mate/core'
@@ -1329,15 +1354,18 @@ import { View } from 'react-native'
 export function TabsExample() {
   const [active, setActive] = useState('posts')
 
-  const tabs = [
-    { key: 'posts', label: 'Posts', content: <View style={{ padding: 16 }}><Text>Posts content</Text></View> },
-    { key: 'likes', label: 'Likes', content: <View style={{ padding: 16 }}><Text>Likes content</Text></View> },
-    { key: 'saved', label: 'Saved', content: <View style={{ padding: 16 }}><Text>Saved content</Text></View> },
+  const items = [
+    { key: 'posts', label: 'Posts' },
+    { key: 'likes', label: 'Likes' },
+    { key: 'saved', label: 'Saved' },
   ]
 
   return (
     <View style={{ flex: 1 }}>
-      <Tabs tabs={tabs} activeKey={active} onChange={setActive} />
+      <Tabs items={items} activeKey={active} onChange={setActive} />
+      <View style={{ padding: 16 }}>
+        <Text>{active} content</Text>
+      </View>
     </View>
   )
 }`,
@@ -1456,7 +1484,7 @@ export function SwitchExample() {
       { name: 'showValue', type: 'boolean', default: 'false', description: 'Renders percentage text (inside ring for circular).' },
       { name: 'label', type: 'string', description: 'Text label shown above the bar (linear only).' },
       { name: 'indeterminate', type: 'boolean', default: 'false', description: 'Shows an animated shimmer instead of a fixed value.' },
-      { name: 'animated', type: 'boolean', default: 'true', description: 'Animate value transitions.' },
+      { name: 'animated', type: 'boolean', default: 'true', description: 'Animate value transitions.' },
     ],
     usageCode: `import { Progress } from '~/components/ui/progress'
 
@@ -1498,6 +1526,8 @@ export function ProgressExample() {
       { name: 'width', type: 'number | string', description: 'Width of the skeleton element.' },
       { name: 'height', type: 'number', description: 'Height of the skeleton element.' },
       { name: 'borderRadius', type: 'number', default: '8', description: 'Corner radius.' },
+      { name: 'variant', type: '"pulse" | "shimmer"', default: '"shimmer"', description: 'Placeholder animation style.' },
+      { name: 'nonce', type: 'string', description: 'CSP nonce applied to the injected <style> tag (web only).' },
       { name: 'style', type: 'ViewStyle', description: 'Additional styles forwarded to the animated container.' },
     ],
     usageCode: `import { Skeleton } from '~/components/ui/skeleton'
@@ -1545,9 +1575,15 @@ export function SkeletonExample() {
       { name: 'variant', type: '"default" | "success" | "destructive" | "warning"', default: '"default"', description: 'Sets the icon and color scheme.' },
       { name: 'duration', type: 'number', default: '3000', description: 'Auto-dismiss delay in milliseconds.' },
       { name: 'position', type: '"top" | "bottom"', default: '"bottom"', description: 'Screen edge.' },
-      { name: 'action', type: '{ label: string; onPress: () => void }', description: 'Optional action button shown in the toast.' },
+      { name: 'action', type: 'ToastAction', description: 'Single action button shown in the toast — { label, onPress, variant? }. Kept for backwards compatibility.' },
+      { name: 'actions', type: 'ToastAction[]', description: 'Multiple action buttons shown in the toast.' },
+      { name: 'icon', type: 'React.ReactNode', description: 'Node rendered in place of the automatic variant icon.' },
+      { name: 'avatar', type: 'ImageSourcePropType', description: 'Image source rendered as an avatar, for social-notification style toasts.' },
       { name: 'showProgress', type: 'boolean', default: 'false', description: 'Shows a countdown progress bar at the bottom.' },
       { name: 'persistent', type: 'boolean', default: 'false', description: 'Disables auto-dismiss. Shows a close × button.' },
+      { name: 'haptic', type: 'HapticProp (boolean | HapticStyle)', default: 'true', description: 'Notification haptic fired when a success/destructive/warning toast appears. false/"none" disables it.' },
+      { name: 'offset', type: 'number', default: '0', description: 'Extra distance from the screen edge, added to the platform inset (Android status bar / iOS notch).' },
+      { name: 'id', type: 'string | number', description: 'Unique id for this toast instance; used to restart the auto-dismiss timer when a new toast replaces a visible one.' },
       { name: 'visible', type: 'boolean', description: 'Controls visibility.' },
       { name: 'onHide', type: '() => void', description: 'Called when dismissed.' },
     ],
@@ -1607,7 +1643,10 @@ export function ToastExample() {
       { name: 'actions', type: 'Array<ActionSheetAction>', description: 'List of action items. Each action has label, onPress, optional variant ("destructive"), icon, and disabled.' },
       { name: 'title', type: 'string', description: 'Short title shown at the top of the sheet.' },
       { name: 'message', type: 'string', description: 'Secondary message shown below the title.' },
-      { name: 'cancelLabel', type: 'string', default: '"Cancel"', description: 'Label for the cancel button.' },
+      { name: 'cancelLabel', type: 'string', default: 'the themed `cancel` string', description: 'Label for the cancel button.' },
+      { name: 'animation', type: '"slide" | "spring" | "fade"', default: '"slide"', description: 'Animation preset used for enter/exit.' },
+      { name: 'showDividers', type: 'boolean', default: 'true', description: 'Shows separators between actions.' },
+      { name: 'returnFocusRef', type: 'React.RefObject<any> | null', description: 'Ref to the control that opened the sheet. Screen-reader focus is sent back to it when the sheet finishes closing. Native-only and fully guarded.' },
     ],
     usageCode: `import { ActionSheet } from '~/components/ui/action-sheet'
 import { useState } from 'react'
@@ -1669,6 +1708,7 @@ export function ActionSheetExample() {
       { name: 'variant', type: '"default" | "primary" | "success" | "warning" | "destructive" | "info"', default: '"default"', description: 'Color accent applied in selected state.' },
       { name: 'icon', type: 'React.ReactNode', description: 'Element rendered before the label (e.g. an Ionicon).' },
       { name: 'size', type: '"sm" | "md" | "lg"', default: '"md"', description: 'Controls padding and font size.' },
+      { name: 'haptic', type: 'HapticProp (boolean | HapticStyle)', default: 'true', description: 'Haptic feedback on press. false/"none" disables; true means "light".' },
       { name: 'disabled', type: 'boolean', default: 'false', description: 'Reduces opacity and prevents interaction.' },
     ],
     usageCode: `import { Tag, TagGroup } from '~/components/ui/tag'
@@ -1738,9 +1778,11 @@ export function TagExample() {
     addCommand: 'npx native-mate add empty-state',
     props: [
       { name: 'icon', type: 'React.ReactNode', description: 'Illustration or icon displayed at the top.' },
-      { name: 'title', type: 'string', description: 'Primary heading text.' },
+      { name: 'title', type: 'string', default: 'the themed `empty` string ("No items yet")', description: 'Primary heading text.' },
       { name: 'description', type: 'string', description: 'Secondary body text explaining the empty state.' },
-      { name: 'action', type: '{ label: string; onPress: () => void }', description: 'Optional call-to-action button configuration.' },
+      { name: 'action', type: 'EmptyStateAction', description: 'Primary call-to-action — { label, onPress, variant? }.' },
+      { name: 'secondaryAction', type: '{ label: string; onPress: () => void }', description: 'Secondary, lower-emphasis action rendered below the primary one.' },
+      { name: 'variant', type: '"default" | "compact" | "illustration"', default: '"default"', description: 'Layout density and presentation of the empty state.' },
     ],
     usageCode: `import { EmptyState } from '~/components/ui/empty-state'
 import { InboxIcon } from 'lucide-react-native'
@@ -1847,10 +1889,9 @@ export function AlertExamples() {
     addCommand: 'npx native-mate add screen',
     props: [
       { name: 'children', type: 'React.ReactNode', description: 'Screen content.' },
-      { name: 'scroll', type: 'boolean', default: 'false', description: 'Wraps content in a ScrollView for scrollable screens.' },
-      { name: 'keyboardAware', type: 'boolean', default: 'true', description: 'Adjusts layout when the software keyboard appears.' },
-      { name: 'style', type: 'ViewStyle', description: 'Additional styles applied to the inner content container.' },
-      { name: 'edges', type: 'Array<"top" | "bottom" | "left" | "right">', default: '["top","bottom"]', description: 'Which safe area edges to apply insets for.' },
+      { name: 'backgroundColor', type: 'string', default: 'theme.colors.background', description: 'Background color of the safe-area container.' },
+      { name: 'style', type: 'ViewStyle', description: 'Additional styles applied to the safe-area container.' },
+      { name: 'edges', type: 'Array<"top" | "bottom" | "left" | "right">', description: 'Which safe area edges to apply insets for. Forwarded to SafeAreaView.' },
     ],
     usageCode: `import { Screen } from '~/components/ui/screen'
 
@@ -1859,9 +1900,16 @@ export function AlertExamples() {
   <YourContent />
 </Screen>
 
-// Scrollable screen
-<Screen scroll>
-  <LongFormContent />
+// Scrollable screen — Screen is a safe-area wrapper, bring your own ScrollView
+<Screen>
+  <ScrollView>
+    <LongFormContent />
+  </ScrollView>
+</Screen>
+
+// Custom background
+<Screen backgroundColor="#0b0b0f">
+  <YourContent />
 </Screen>
 
 // Custom edges (e.g. tab screen — no top inset)
@@ -1874,7 +1922,7 @@ import { View } from 'react-native'
 
 export function ProfileScreen() {
   return (
-    <Screen scroll style={{ paddingHorizontal: 16 }}>
+    <Screen style={{ paddingHorizontal: 16 }}>
       <View style={{ paddingTop: 24, gap: 16 }}>
         <Text size="2xl" weight="bold">Profile</Text>
         <Text color="muted">Manage your account settings and preferences.</Text>
@@ -2866,7 +2914,11 @@ export function BrandColorPicker() {
       { name: 'onClose', type: '() => void', description: 'Called when the picker is dismissed (e.g. after confirming).' },
       { name: 'title', type: 'string', description: 'Title text shown above the calendar/time UI.' },
       { name: 'showConfirmButton', type: 'boolean', default: 'false', description: 'Requires an explicit confirm tap instead of committing changes immediately.' },
-      { name: 'confirmLabel', type: 'string', default: '"Done"', description: 'Label for the confirm button.' },
+      { name: 'confirmLabel', type: 'string', default: 'the `done` string from useStrings()', description: 'Label for the confirm button.' },
+      { name: 'cancelLabel', type: 'string', default: 'the `cancel` string from useStrings()', description: 'Label for the cancel button.' },
+      { name: 'firstDayOfWeek', type: 'Weekday (0 | 1 | 2 | 3 | 4 | 5 | 6)', default: '0', description: 'First column of the calendar grid — 0 = Sunday. Not derived from the locale: Intl.Locale.prototype.weekInfo does not exist in Hermes.' },
+      { name: 'locale', type: 'string', description: 'BCP-47 tag used to resolve month and weekday names, and to pick the default for hour12, via Intl. Falls back to useStrings() whenever Intl is missing or throws.' },
+      { name: 'hour12', type: 'boolean', default: 'whatever Intl reports for locale, else false', description: '12-hour time spinner with an AM/PM selector. Falls back to 24-hour when Intl cannot answer.' },
       { name: 'haptic', type: 'boolean', default: 'true', description: 'Enables selection/impact haptics for navigation and day/time selection.' },
       { name: 'disabled', type: 'boolean', default: 'false', description: 'Dims and disables the entire picker.' },
       { name: 'sheetHeight', type: 'number', default: '420', description: 'Suggested height when presenting inside a bottom sheet.' },
@@ -3031,16 +3083,18 @@ export function CommentComposer() {
     props: [
       { name: 'value', type: 'string', description: 'Current phone number as digits only (no dial code).' },
       { name: 'onChangeText', type: '(value: string) => void', description: 'Called with the raw digit string when the number changes.' },
-      { name: 'defaultCountry', type: 'string', default: '"US"', description: 'ISO 3166-1 alpha-2 code for the initially selected country.' },
+      { name: 'onChangeFormatted', type: '(e164: string, isValid: boolean) => void', description: 'Called alongside onChangeText with the E.164 number (+<dialCode><digits>) and whether the digit count matches the mask of the selected country.' },
+      { name: 'country', type: 'string', description: 'Controlled country code (ISO 3166-1 alpha-2). When provided it wins over internal state and later changes are respected.' },
+      { name: 'defaultCountry', type: 'string', default: '"US"', description: 'Uncontrolled initial country code (ISO 3166-1 alpha-2).' },
       { name: 'onCountryChange', type: '(country: Country) => void', description: 'Called when the user selects a different country.' },
       { name: 'countries', type: 'Country[]', default: '20 built-in countries', description: 'Custom country list to use instead of the built-in one.' },
       { name: 'showFlag', type: 'boolean', default: 'true', description: 'Shows the country flag emoji in the selector button.' },
       { name: 'showDialCode', type: 'boolean', default: 'true', description: 'Shows the dial code (e.g. "+1") in the selector button.' },
       { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the input and country picker.' },
-      { name: 'error', type: 'string', description: 'Error message rendered below the input; also colors the border red.' },
+      { name: 'error', type: 'ErrorProp (string | boolean)', description: 'A string renders as the message below the input; true sets error styling with no text. Also colors the border red.' },
       { name: 'label', type: 'string', description: 'Label rendered above the input.' },
       { name: 'placeholder', type: 'string', default: '"Phone number"', description: 'Placeholder text for the number field.' },
-      { name: 'haptic', type: 'boolean', default: 'true', description: 'Enables selection/impact haptics on country change and picker open.' },
+      { name: 'haptic', type: 'HapticProp (boolean | HapticStyle)', default: 'true', description: 'Haptics on country change and picker open. false/"none" disables; true means "light".' },
     ],
     usageCode: `import { PhoneInput } from '~/components/ui/phone-input'
 
@@ -3283,17 +3337,20 @@ export function ProductReviewForm() {
     props: [
       { name: 'value', type: 'string', description: 'Current search text.' },
       { name: 'onChangeText', type: '(text: string) => void', description: 'Called when the text changes.' },
-      { name: 'placeholder', type: 'string', default: '"Search..."', description: 'Placeholder text.' },
+      { name: 'placeholder', type: 'string', default: 'useStrings().search', description: 'Placeholder text.' },
       { name: 'onFocus', type: '() => void', description: 'Called when the input gains focus.' },
       { name: 'onBlur', type: '() => void', description: 'Called when the input loses focus.' },
       { name: 'onCancel', type: '() => void', description: 'Called when the Cancel button is pressed (clears text and blurs).' },
       { name: 'showCancel', type: 'boolean', description: 'Forces the Cancel button visible/hidden. Defaults to showing on focus.' },
       { name: 'suggestions', type: 'SearchBarSuggestion[]', default: '[]', description: 'Suggestion items — { id, label, icon? } — shown in a dropdown while focused.' },
       { name: 'onSuggestionPress', type: '(suggestion: SearchBarSuggestion) => void', description: 'Called when a suggestion row is tapped.' },
+      { name: 'onSubmitEditing', type: '(text: string) => void', description: 'Called when the keyboard search/submit key is pressed.' },
+      { name: 'onDebouncedChangeText', type: '(text: string) => void', description: 'Called debounceMs after the user stops typing.' },
+      { name: 'debounceMs', type: 'number', default: '300', description: 'Debounce window for onDebouncedChangeText. Only takes effect when onDebouncedChangeText is provided.' },
       { name: 'loading', type: 'boolean', default: 'false', description: 'Replaces the search icon with a spinner.' },
       { name: 'autoFocus', type: 'boolean', default: 'false', description: 'Focuses the input automatically on mount.' },
       { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the input.' },
-      { name: 'haptic', type: '"light" | "medium" | "heavy" | "none"', default: '"light"', description: 'Haptic feedback on clear, cancel, and suggestion tap.' },
+      { name: 'haptic', type: 'HapticProp (boolean | HapticStyle)', default: '"light"', description: 'Haptic feedback on clear, cancel, and suggestion tap. false/"none" disables; true means "light".' },
     ],
     usageCode: `import { SearchBar } from '~/components/ui/search-bar'
 

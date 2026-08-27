@@ -22,12 +22,29 @@ const sidebarItems = [
     ],
   },
   {
+    group: 'Building',
+    items: [
+      { label: 'Prop contracts', href: '/docs/prop-contracts' },
+      { label: 'Motion', href: '/docs/motion' },
+      { label: 'Color utilities', href: '/docs/colors' },
+    ],
+  },
+  {
+    group: 'Reach',
+    items: [
+      { label: 'Accessibility', href: '/docs/accessibility' },
+      { label: 'Internationalization', href: '/docs/i18n' },
+      { label: 'Right-to-left', href: '/docs/rtl' },
+    ],
+  },
+  {
     group: 'CLI',
     items: [
       { label: 'native-mate init', href: '/docs/cli/init' },
       { label: 'native-mate add', href: '/docs/cli/add' },
       { label: 'native-mate list', href: '/docs/cli/list' },
       { label: 'native-mate upgrade', href: '/docs/cli/upgrade' },
+      { label: 'native-mate migrate', href: '/docs/cli/migrate' },
     ],
   },
   {

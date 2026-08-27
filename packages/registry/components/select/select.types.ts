@@ -1,5 +1,11 @@
 import type { ErrorProp, HapticProp, IconProp } from '@native-mate/core'
 
+/** Imperative handle exposed via ref — opens and closes the option sheet. */
+export interface SelectHandle {
+  open(): void
+  close(): void
+}
+
 export interface SelectOption {
   label: string
   value: string

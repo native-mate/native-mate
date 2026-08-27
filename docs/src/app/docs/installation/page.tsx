@@ -47,6 +47,30 @@ npx @native-mate/cli init`} />
         and fails with <code className="text-amber-100">MODULE_NOT_FOUND</code>.
       </div>
 
+      <h2 className="mt-8 mb-3 text-xl font-semibold text-zinc-50">What init installs</h2>
+      <p className="mb-3 text-sm text-zinc-400">
+        <code className="text-zinc-300">init</code> installs{' '}
+        <code className="text-zinc-300">@native-mate/core</code> together with{' '}
+        <code className="text-zinc-300">expo-haptics</code>. Haptics is an{' '}
+        <em>optional</em> peer of core — package managers never install optional peers, and since
+        v0.5 components get haptics through core&apos;s{' '}
+        <code className="text-zinc-300">useHaptics()</code> rather than importing it themselves, so
+        nothing else would pull it in. Installing it here means haptics work out of the box; turn
+        them off app-wide with{' '}
+        <code className="text-zinc-300">{'<ThemeProvider haptics={false}>'}</code>.
+      </p>
+      <p className="mb-3 text-sm text-zinc-400">
+        <code className="text-zinc-300">react-native-gesture-handler</code> is deliberately{' '}
+        <strong className="text-zinc-200">not</strong> installed — it needs a native rebuild. It is
+        only required for sheet drag-to-dismiss (and snap points) and toast swipe-to-dismiss. Without
+        it, the sheet still opens and closes via its backdrop and the toast still auto-dismisses; a
+        dev-only warning names the install command. Add it yourself if you want those gestures:
+      </p>
+      <CodeBlock language="bash" code={`npx expo install react-native-gesture-handler
+
+# bare React Native
+npm install react-native-gesture-handler`} />
+
       <h2 className="mt-8 mb-3 text-xl font-semibold text-zinc-50">Wrap your root with ThemeProvider</h2>
       <CodeBlock language="tsx" filename="App.tsx" code={`import { ThemeProvider } from '@native-mate/core'
 
