@@ -126,11 +126,15 @@ export const Input: React.FC<InputProps> = ({
     transform: [{ translateX: shakeAnim.value }],
   }))
 
+  // Computed OUTSIDE the worklet: `prefix` is a React element, and a worklet
+  // closure must never capture one. Only this plain number crosses threads.
+  const labelLeft = config.paddingH - 6 + (prefixText || prefix ? 40 : 0)
+
   const floatingLabelStyle = useAnimatedStyle(() => {
     if (!floatingLabel) return {}
     return {
       position: 'absolute' as const,
-      left: config.paddingH - 6 + (prefixText || prefix ? 40 : 0),
+      left: labelLeft,
       top: interpolate(floatAnim.value, [0, 1], [config.minHeight / 2 - 8, -9]),
       fontSize: interpolate(floatAnim.value, [0, 1], [config.fontSize, 11]),
       color: interpolateColor(
