@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
     letterSpacing: 0.5,
   },
   sortIcon: {
-    marginLeft: 2,
+    marginStart: 2,
   },
   row: {
     flexDirection: 'row',
@@ -64,8 +64,8 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
   },
   cellBordered: {
-    borderRightWidth: 1,
-    borderRightColor: theme.colors.border,
+    borderEndWidth: 1,
+    borderEndColor: theme.colors.border,
   },
   cellText: {
     fontSize: theme.typography.size.sm,

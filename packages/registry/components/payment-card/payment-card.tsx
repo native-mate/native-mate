@@ -260,14 +260,14 @@ export const PaymentCard: React.FC<PaymentCardProps> = ({
             style={[
               styles.inputField,
               errors.cardNumber != null && styles.inputError,
-              { paddingRight: 44 },
+              { paddingEnd: 44 },
             ]}
             accessibilityLabel="Card number"
           />
           <View
             style={{
               position: 'absolute',
-              right: 12,
+              end: 12,
               top: 0,
               bottom: 0,
               justifyContent: 'center',

@@ -15,6 +15,13 @@ const COMPONENTS_DIR = path.join(__dirname, '../components')
 // core itself. Everything else a component imports must be declared.
 const BASELINE = new Set(['react', 'react-native', 'react-native-reanimated', '@native-mate/core'])
 
+// Packages a component loads inside `try { require(...) } catch {}` to light up
+// an extra capability. The CLI installs whatever this metadata declares, so
+// listing these would force a native rebuild on every consumer for a feature
+// that already degrades gracefully. They may be declared, but are never
+// required — the component works without them.
+const OPTIONAL = new Set(['react-native-gesture-handler', 'expo-haptics'])
+
 const IMPORT_RE = /(?:from\s*|import\s*\(\s*|require\(\s*)['"]([^'"]+)['"]/g
 
 function packageName(spec: string): string {
@@ -57,7 +64,7 @@ function auditComponent(name: string): AuditResult | null {
         continue
       }
       const pkg = packageName(spec)
-      if (!BASELINE.has(pkg)) npm.push(pkg)
+      if (!BASELINE.has(pkg) && !OPTIONAL.has(pkg)) npm.push(pkg)
     }
   }
 
@@ -65,7 +72,9 @@ function auditComponent(name: string): AuditResult | null {
     name,
     expectedNpm: sortedUnique(npm),
     expectedComponents: sortedUnique(components),
-    declaredNpm: sortedUnique(meta.dependencies?.npm ?? []),
+    // Optional packages are tolerated in metadata but never demanded, so an
+    // existing declaration doesn't read as drift either way.
+    declaredNpm: sortedUnique((meta.dependencies?.npm ?? []).filter((d: string) => !OPTIONAL.has(d))),
     declaredComponents: sortedUnique(meta.dependencies?.components ?? []),
   }
 }

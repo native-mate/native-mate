@@ -57,7 +57,7 @@ export const Separator: React.FC<SeparatorProps> = ({
             width: thickness,
             alignSelf: 'stretch',
             marginHorizontal: spacing,
-            borderLeftWidth: thickness,
+            borderStartWidth: thickness,
             borderColor: lineColor,
             borderStyle: dashed ? 'dashed' : 'solid',
           },

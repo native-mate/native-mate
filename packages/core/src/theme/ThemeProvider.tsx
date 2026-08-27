@@ -3,6 +3,10 @@ import { useColorScheme } from 'react-native'
 import { ThemeContext } from './ThemeContext'
 import { presets, resolveTokens, normalizeOverrides, collapseMotion } from '../tokens'
 import { useReducedMotion } from '../utils/useReducedMotion'
+import { HapticsEnabledContext } from '../utils/useHaptics'
+import { StringsContext } from '../i18n/StringsContext'
+import { mergeStrings } from '../i18n/strings'
+import type { NativeMateStrings } from '../i18n/strings'
 import type { ThemePreset, ThemeOverrides } from '../tokens/types'
 
 interface ThemeProviderProps {
@@ -12,6 +16,10 @@ interface ThemeProviderProps {
   // When the OS reduce-motion setting is on, animation.speed collapses to 0 so
   // timing-based animations across the registry become instant. Opt out per app.
   respectReducedMotion?: boolean
+  /** App-wide haptics kill switch. Components can still opt out individually. */
+  haptics?: boolean
+  /** Overrides for the library's user-facing copy, merged over English. */
+  strings?: Partial<NativeMateStrings>
   children: React.ReactNode
 }
 
@@ -20,6 +28,8 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   forcedColorScheme,
   overrides,
   respectReducedMotion = true,
+  haptics = true,
+  strings,
   children,
 }) => {
   const systemColorScheme = useColorScheme()
@@ -34,5 +44,15 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
     return respectReducedMotion && reducedMotion ? collapseMotion(resolved) : resolved
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [preset, mode, overridesKey, respectReducedMotion, reducedMotion])
-  return <ThemeContext.Provider value={theme}>{children}</ThemeContext.Provider>
+  const resolvedStrings = useMemo(() => mergeStrings(strings), [strings])
+
+  return (
+    <ThemeContext.Provider value={theme}>
+      <StringsContext.Provider value={resolvedStrings}>
+        <HapticsEnabledContext.Provider value={haptics}>
+          {children}
+        </HapticsEnabledContext.Provider>
+      </StringsContext.Provider>
+    </ThemeContext.Provider>
+  )
 }

@@ -198,7 +198,7 @@ export const Rating = React.memo<RatingProps>(({
         ))}
       </View>
       {showValue && (
-        <Text style={{ fontSize: dims.fontSize, ...fontStyle(theme.typography, 'semibold'), color: theme.colors.foreground, marginLeft: 4 }}>
+        <Text style={{ fontSize: dims.fontSize, ...fontStyle(theme.typography, 'semibold'), color: theme.colors.foreground, marginStart: 4 }}>
           {allowHalf ? value.toFixed(1) : value}
         </Text>
       )}

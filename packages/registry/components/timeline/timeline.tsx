@@ -34,7 +34,7 @@ const MAX_STAGGER_TOTAL = 600
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    paddingLeft: 4,
+    paddingStart: 4,
   },
   itemRow: {
     flexDirection: 'row',
@@ -269,7 +269,7 @@ const TimelineItemRow = React.memo<TimelineItemRowProps>(({
   return (
     <Animated.View style={[styles.itemRow, animStyle]} testID={testID}>
       {/* Node column */}
-      <View style={[styles.nodeColumn, { marginRight: sz.gap }]}>
+      <View style={[styles.nodeColumn, { marginEnd: sz.gap }]}>
         <TimelineNode
           status={status}
           size={size}

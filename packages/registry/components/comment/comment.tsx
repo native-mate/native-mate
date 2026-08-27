@@ -83,7 +83,7 @@ const useStyles = makeStyles((theme) => ({
   },
   threadLine: {
     position: 'absolute',
-    left: 15,
+    start: 15,
     top: 42,
     bottom: 0,
     width: 2,
@@ -91,14 +91,14 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 1,
   },
   repliesContainer: {
-    marginLeft: INDENT_WIDTH,
+    marginStart: INDENT_WIDTH,
   },
   showRepliesButton: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
     paddingVertical: 6,
-    marginLeft: 42,
+    marginStart: 42,
   },
   showRepliesText: {
     fontSize: 12,

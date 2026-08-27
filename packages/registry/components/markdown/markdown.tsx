@@ -99,9 +99,9 @@ const useStyles = makeStyles((theme) => ({
     textDecorationLine: 'underline',
   },
   blockquote: {
-    borderLeftWidth: 3,
-    borderLeftColor: theme.colors.primary,
-    paddingLeft: 14,
+    borderStartWidth: 3,
+    borderStartColor: theme.colors.primary,
+    paddingStart: 14,
     paddingVertical: 4,
     marginVertical: 4,
     backgroundColor: theme.colors.primary + '08',
@@ -115,7 +115,7 @@ const useStyles = makeStyles((theme) => ({
   },
   listItem: {
     flexDirection: 'row',
-    paddingLeft: 8,
+    paddingStart: 8,
     gap: 8,
     marginVertical: 2,
   },

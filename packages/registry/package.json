@@ -4,9 +4,9 @@
   "private": true,
   "description": "Internal — component source and registry build scripts",
   "scripts": {
-    "build": "ts-node scripts/audit-deps.ts && ts-node scripts/audit-worklets.ts && ts-node scripts/audit-hex.ts && ts-node scripts/audit-fonts.ts && ts-node scripts/audit-availability.ts && ts-node scripts/build-registry.ts",
+    "build": "ts-node scripts/audit-deps.ts && ts-node scripts/audit-worklets.ts && ts-node scripts/audit-hex.ts && ts-node scripts/audit-fonts.ts && ts-node scripts/audit-rtl.ts && ts-node scripts/audit-availability.ts && ts-node scripts/build-registry.ts",
     "test": "cd ../.. && npx vitest run --config vitest.config.ts packages/registry",
-    "lint": "tsc --noEmit && ts-node scripts/audit-deps.ts && ts-node scripts/audit-worklets.ts && ts-node scripts/audit-hex.ts && ts-node scripts/audit-fonts.ts && ts-node scripts/audit-availability.ts"
+    "lint": "tsc --noEmit && ts-node scripts/audit-deps.ts && ts-node scripts/audit-worklets.ts && ts-node scripts/audit-hex.ts && ts-node scripts/audit-fonts.ts && ts-node scripts/audit-rtl.ts && ts-node scripts/audit-availability.ts"
   },
   "devDependencies": {
     "ts-node": "^10.9.0",

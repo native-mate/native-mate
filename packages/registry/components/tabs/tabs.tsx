@@ -337,8 +337,8 @@ const CardTabs: React.FC<TabsProps & { sz: typeof sizeMap['md'] }> = ({
                 opacity: item.disabled ? 0.4 : 1,
               },
               i < items.length - 1 && {
-                borderRightWidth: 1,
-                borderRightColor: theme.colors.border,
+                borderEndWidth: 1,
+                borderEndColor: theme.colors.border,
               },
             ]}
             onPress={item.disabled ? undefined : () => onChange(item.key)}

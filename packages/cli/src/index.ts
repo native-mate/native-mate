@@ -4,6 +4,7 @@ import { init } from './commands/init'
 import { add } from './commands/add'
 import { list } from './commands/list'
 import { upgrade } from './commands/upgrade'
+import { migrate } from './commands/migrate'
 
 const program = new Command()
 
@@ -40,5 +41,12 @@ program
   .option('-r, --registry <url>', 'Custom registry URL')
   .option('-y, --yes', 'Skip confirmation prompts')
   .action((components, options) => upgrade(components, options))
+
+program
+  .command('migrate [version]')
+  .description('Apply codemods for a native-mate release (default: v0.5)')
+  .option('--dry', 'Report what would change without writing files')
+  .option('-p, --path <dir>', 'Limit the scan to a subdirectory')
+  .action((version, options) => migrate(version, options))
 
 program.parse()

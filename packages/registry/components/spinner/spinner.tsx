@@ -264,7 +264,7 @@ export const Spinner: React.FC<SpinnerProps> = ({
       <View
         style={{
           position: 'absolute',
-          top: 0, right: 0, bottom: 0, left: 0,
+          top: 0, end: 0, bottom: 0, start: 0,
           alignItems: 'center',
           justifyContent: 'center',
           backgroundColor: `rgba(0,0,0,${overlayOpacity})`,

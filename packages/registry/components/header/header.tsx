@@ -11,7 +11,7 @@ import Animated, {
   useDerivedValue,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle, directionalIcon } from '@native-mate/core'
 import type { HeaderProps, HeaderAction, HapticStyle } from './header.types'
 
 let Haptics: any = null
@@ -106,7 +106,8 @@ const IconButton: React.FC<{
 export const Header: React.FC<HeaderProps> = ({
   title,
   subtitle,
-  leftIcon = 'chevron-back',
+  // "Back" points toward the start edge, which is the right edge under RTL.
+  leftIcon = directionalIcon('chevron-back', 'chevron-forward'),
   onLeftPress,
   hideLeft = false,
   rightActions = [],

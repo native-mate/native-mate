@@ -34,8 +34,8 @@ const useStyles = makeStyles((theme) => ({
   hiddenMeasurer: {
     position: 'absolute',
     top: -9999,
-    left: 0,
-    right: 0,
+    start: 0,
+    end: 0,
     opacity: 0,
   },
 }))

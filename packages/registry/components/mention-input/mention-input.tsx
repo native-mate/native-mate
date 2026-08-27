@@ -42,8 +42,8 @@ const useStyles = makeStyles((theme) => ({
   },
   dropdown: {
     position: 'absolute',
-    left: 0,
-    right: 0,
+    start: 0,
+    end: 0,
     bottom: '100%',
     marginBottom: 4,
     backgroundColor: theme.colors.surface,

@@ -81,7 +81,7 @@ export const Avatar = React.memo<AvatarProps>(({
       {status && (
         <View style={{
           position: 'absolute',
-          bottom: 0, right: 0,
+          bottom: 0, end: 0,
           width: statusSizes[size],
           height: statusSizes[size],
           borderRadius: theme.radius.full,
@@ -113,13 +113,13 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center' }} testID={testID}>
       {visible.map((av, i) => (
-        <View key={i} style={{ marginLeft: i === 0 ? 0 : -overlap, zIndex: visible.length - i }}>
+        <View key={i} style={{ marginStart: i === 0 ? 0 : -overlap, zIndex: visible.length - i }}>
           <Avatar {...av} size={size} />
         </View>
       ))}
       {overflow > 0 && (
         <View style={{
-          marginLeft: -overlap,
+          marginStart: -overlap,
           width: px, height: px,
           borderRadius: theme.radius.full,
           backgroundColor: theme.colors.surface,

@@ -76,7 +76,14 @@ export async function init(options: { preset?: string; yes?: boolean }) {
   s.start('Installing @native-mate/core')
   try {
     const pm = detectPackageManager()
-    runInstall(pm, ['@native-mate/core'])
+    // expo-haptics is an OPTIONAL peer of core — package managers never install
+    // optional peers, and since v0.5 components get haptics through core's
+    // useHaptics() rather than importing it themselves, nothing else would pull
+    // it in. Installing it here keeps haptics working out of the box.
+    // react-native-gesture-handler is deliberately NOT installed: it needs a
+    // native rebuild, and the only feature that wants it (sheet drag) degrades
+    // gracefully with a dev warning naming the install command.
+    runInstall(pm, ['@native-mate/core', 'expo-haptics'])
     s.stop(pc.green('@native-mate/core installed'))
   } catch {
     s.stop(pc.red('Failed to install @native-mate/core — install it manually'))

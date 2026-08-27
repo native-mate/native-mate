@@ -382,7 +382,7 @@ export const Stepper = React.memo<StepperProps>(({
                   />
                 )}
               </View>
-              <View style={{ flex: 1, marginLeft: 12, paddingTop: 4, paddingBottom: isLast ? 0 : 24 }}>
+              <View style={{ flex: 1, marginStart: 12, paddingTop: 4, paddingBottom: isLast ? 0 : 24 }}>
                 <Text
                   style={{
                     fontSize: sz.fontSize,

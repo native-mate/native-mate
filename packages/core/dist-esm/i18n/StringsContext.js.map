@@ -1,0 +1,1 @@
+{"version":3,"file":"StringsContext.js","sourceRoot":"","sources":["../../src/i18n/StringsContext.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,aAAa,EAAE,UAAU,EAAE,MAAM,OAAO,CAAA;AACjD,OAAO,EAAE,cAAc,EAAE,MAAM,WAAW,CAAA;AAG1C,MAAM,CAAC,MAAM,cAAc,GAAG,aAAa,CAAoB,cAAc,CAAC,CAAA;AAE9E,kFAAkF;AAClF,MAAM,UAAU,UAAU;IACxB,OAAO,UAAU,CAAC,cAAc,CAAC,CAAA;AACnC,CAAC"}

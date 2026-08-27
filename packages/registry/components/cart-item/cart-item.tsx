@@ -28,13 +28,13 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     top: 0,
     bottom: 0,
-    right: 0,
+    end: 0,
     width: 100,
     backgroundColor: theme.colors.destructive,
     alignItems: 'center',
     justifyContent: 'center',
-    borderTopRightRadius: theme.radius.md,
-    borderBottomRightRadius: theme.radius.md,
+    borderTopEndRadius: theme.radius.md,
+    borderBottomEndRadius: theme.radius.md,
   },
   container: {
     flexDirection: 'row',
@@ -81,7 +81,7 @@ const useStyles = makeStyles((theme) => ({
   },
   removeButton: {
     padding: 6,
-    marginLeft: 4,
+    marginStart: 4,
   },
 }))
 

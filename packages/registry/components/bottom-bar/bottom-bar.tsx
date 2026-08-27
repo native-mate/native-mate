@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
   badgeDot: {
     position: 'absolute',
     top: 0,
-    right: 0,
+    end: 0,
     minWidth: 16,
     height: 16,
     borderRadius: 8,
@@ -100,7 +100,7 @@ const Badge: React.FC<{ badge: BottomBarBadge; theme: any }> = ({ badge, theme }
           backgroundColor: bgColor,
           minWidth: hasValue ? 16 : 8,
           height: hasValue ? 16 : 8,
-          right: hasValue ? -4 : 2,
+          end: hasValue ? -4 : 2,
           top: hasValue ? -2 : 2,
         },
         animStyle,

@@ -83,7 +83,7 @@ const useStyles = makeStyles((theme) => ({
   },
   senderName: {
     marginBottom: 2,
-    marginLeft: 36,
+    marginStart: 36,
   },
 }))
 

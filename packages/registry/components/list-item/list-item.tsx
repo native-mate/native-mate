@@ -8,7 +8,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, directionalIcon } from '@native-mate/core'
 import type { ListItemProps, HapticStyle } from './list-item.types'
 
 let Haptics: any = null
@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
   divider: {
     height: 1,
     backgroundColor: theme.colors.border,
-    marginLeft: theme.spacing.lg,
+    marginStart: theme.spacing.lg,
   },
   disabled: {
     opacity: 0.5,
@@ -156,7 +156,8 @@ export const ListItem = React.memo<ListItemProps>(({
           importantForAccessibility="no-hide-descendants"
         >
           <Ionicons
-            name="chevron-forward"
+            // Disclosure points toward the end edge, which flips under RTL.
+            name={directionalIcon('chevron-forward', 'chevron-back')}
             size={18}
             color={theme.colors.muted}
             style={{ opacity: 0.6 }}

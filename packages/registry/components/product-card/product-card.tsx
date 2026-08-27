@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
   badge: {
     position: 'absolute',
     top: 10,
-    left: 10,
+    start: 10,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: theme.radius.sm,
@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
   favoriteButton: {
     position: 'absolute',
     top: 10,
-    right: 10,
+    end: 10,
     width: 36,
     height: 36,
     borderRadius: 18,

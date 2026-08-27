@@ -40,8 +40,8 @@ const useStyles = makeStyles((theme) => ({
   topBar: {
     position: 'absolute',
     top: 0,
-    left: 0,
-    right: 0,
+    start: 0,
+    end: 0,
     flexDirection: 'row',
     justifyContent: 'flex-end',
     padding: 12,
@@ -107,8 +107,8 @@ function absoluteFill() {
   return {
     position: 'absolute' as const,
     top: 0,
-    left: 0,
-    right: 0,
+    start: 0,
+    end: 0,
     bottom: 0,
   }
 }

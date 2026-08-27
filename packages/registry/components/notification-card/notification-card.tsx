@@ -11,7 +11,7 @@ import Animated, {
   Extrapolation,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, useMotion, withAlpha, Text, makeStyles, fontStyle } from '@native-mate/core'
+import { useTheme, useMotion, withAlpha, Text, makeStyles, fontStyle, useDirection } from '@native-mate/core'
 import type { NotificationCardProps, NotificationCategory } from './notification-card.types'
 
 let Haptics: any = null
@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
     borderColor: theme.colors.border,
   },
   unreadCard: {
-    borderLeftWidth: 3,
+    borderStartWidth: 3,
   },
   iconContainer: {
     width: 40,
@@ -85,7 +85,7 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     top: 0,
     bottom: 0,
-    right: 0,
+    end: 0,
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
@@ -132,6 +132,8 @@ export const NotificationCard = React.memo<NotificationCardProps>(({
   const theme = useTheme()
   const motion = useMotion()
   const styles = useStyles()
+  // Dismiss travels toward the *start* edge, so it mirrors under RTL.
+  const { sign } = useDirection()
 
   const translateX = useSharedValue(0)
   const rowOpacity = useSharedValue(1)
@@ -161,12 +163,12 @@ export const NotificationCard = React.memo<NotificationCardProps>(({
       },
       onPanResponderMove: (_, gs) => {
         const dx = grantX.current + gs.dx
-        // Only allow left swipe for dismiss
-        translateX.value = Math.min(0, dx)
+        // Only allow a swipe toward the start edge (left in LTR, right in RTL)
+        translateX.value = sign * Math.min(0, sign * dx)
       },
       onPanResponderRelease: (_, gs) => {
         if (Math.abs(translateX.value) > DISMISS_THRESHOLD) {
-          translateX.value = withTiming(-500, motion.timing('normal'))
+          translateX.value = withTiming(-500 * sign, motion.timing('normal'))
           rowOpacity.value = withTiming(0, motion.timing('normal'), () => {
             runOnJS(handleDismissRef.current)()
           })
@@ -182,20 +184,25 @@ export const NotificationCard = React.memo<NotificationCardProps>(({
     opacity: rowOpacity.value,
   }))
 
-  const dismissBgStyle = useAnimatedStyle(() => ({
-    opacity: interpolate(
-      translateX.value,
-      [-DISMISS_THRESHOLD, -30, 0],
-      [1, 0.4, 0],
-      Extrapolation.CLAMP
-    ),
-    width: interpolate(
-      translateX.value,
-      [-200, 0],
-      [200, 0],
-      Extrapolation.CLAMP
-    ),
-  }))
+  const dismissBgStyle = useAnimatedStyle(() => {
+    // Travel is one-directional; drive from the magnitude so the ranges below
+    // stay ascending (and correct) whichever way the card actually moves.
+    const travel = -Math.abs(translateX.value)
+    return {
+      opacity: interpolate(
+        travel,
+        [-DISMISS_THRESHOLD, -30, 0],
+        [1, 0.4, 0],
+        Extrapolation.CLAMP
+      ),
+      width: interpolate(
+        travel,
+        [-200, 0],
+        [200, 0],
+        Extrapolation.CLAMP
+      ),
+    }
+  })
 
   const handlePress = () => {
     if (haptic && Haptics) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
@@ -222,7 +229,7 @@ export const NotificationCard = React.memo<NotificationCardProps>(({
           style={[
             styles.card,
             !read && styles.unreadCard,
-            !read && { borderLeftColor: catConfig.color },
+            !read && { borderStartColor: catConfig.color },
           ]}
           onPress={onPress ? handlePress : undefined}
           accessibilityRole="button"

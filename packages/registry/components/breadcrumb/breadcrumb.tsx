@@ -7,7 +7,7 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle, directionalIcon } from '@native-mate/core'
 import type { BreadcrumbProps, BreadcrumbItem, BreadcrumbSeparator, BreadcrumbSize } from './breadcrumb.types'
 
 let Haptics: any = null
@@ -64,7 +64,8 @@ function SeparatorIcon({
   if (type === 'chevron') {
     return (
       <Ionicons
-        name="chevron-forward"
+        // The separator points the way the trail is read.
+        name={directionalIcon('chevron-forward', 'chevron-back')}
         size={tokens.iconSize}
         color={theme.colors.muted}
       />

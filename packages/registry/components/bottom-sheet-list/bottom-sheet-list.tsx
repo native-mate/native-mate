@@ -37,14 +37,14 @@ const useStyles = makeStyles((theme) => ({
   sheet: {
     position: 'absolute',
     bottom: 0,
-    left: 0,
-    right: 0,
+    start: 0,
+    end: 0,
     backgroundColor: theme.colors.surfaceRaised ?? theme.colors.surface,
     borderTopLeftRadius: theme.radius.xl,
     borderTopRightRadius: theme.radius.xl,
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderLeftWidth: StyleSheet.hairlineWidth,
-    borderRightWidth: StyleSheet.hairlineWidth,
+    borderStartWidth: StyleSheet.hairlineWidth,
+    borderEndWidth: StyleSheet.hairlineWidth,
     borderColor: theme.colors.border + '50',
     overflow: 'hidden',
   },
@@ -81,7 +81,7 @@ const useStyles = makeStyles((theme) => ({
   },
   searchIcon: {
     position: 'absolute',
-    left: 28,
+    start: 28,
     top: Platform.OS === 'ios' ? 10 : 8,
   },
   itemRow: {
@@ -369,7 +369,7 @@ export const BottomSheetList: React.FC<BottomSheetListProps> = ({
               <TextInput
                 style={[
                   styles.searchInput,
-                  { paddingLeft: 36 },
+                  { paddingStart: 36 },
                 ]}
                 placeholder={searchPlaceholder}
                 placeholderTextColor={theme.colors.muted}

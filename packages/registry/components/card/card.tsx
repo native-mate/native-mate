@@ -185,7 +185,7 @@ export const Card = React.memo<CardProps>(({
     transform: [{ scale: scale.value }],
   }))
 
-  const accentStyle = accent != null ? { borderLeftWidth: 3, borderLeftColor: accent } : {}
+  const accentStyle = accent != null ? { borderStartWidth: 3, borderStartColor: accent } : {}
   const containerStyle = [styles[variant], { borderRadius: theme.radius[config.radius] }, accentStyle, style]
 
   const inner = loading ? (

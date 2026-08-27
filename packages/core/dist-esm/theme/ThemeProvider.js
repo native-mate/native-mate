@@ -4,7 +4,10 @@ import { useColorScheme } from 'react-native';
 import { ThemeContext } from './ThemeContext';
 import { presets, resolveTokens, normalizeOverrides, collapseMotion } from '../tokens';
 import { useReducedMotion } from '../utils/useReducedMotion';
-export const ThemeProvider = ({ preset = 'zinc', forcedColorScheme, overrides, respectReducedMotion = true, children, }) => {
+import { HapticsEnabledContext } from '../utils/useHaptics';
+import { StringsContext } from '../i18n/StringsContext';
+import { mergeStrings } from '../i18n/strings';
+export const ThemeProvider = ({ preset = 'zinc', forcedColorScheme, overrides, respectReducedMotion = true, haptics = true, strings, children, }) => {
     const systemColorScheme = useColorScheme();
     const mode = forcedColorScheme ?? systemColorScheme ?? 'light';
     // Overrides are small plain-JSON objects; keying the memo on their content
@@ -17,6 +20,7 @@ export const ThemeProvider = ({ preset = 'zinc', forcedColorScheme, overrides, r
         return respectReducedMotion && reducedMotion ? collapseMotion(resolved) : resolved;
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [preset, mode, overridesKey, respectReducedMotion, reducedMotion]);
-    return _jsx(ThemeContext.Provider, { value: theme, children: children });
+    const resolvedStrings = useMemo(() => mergeStrings(strings), [strings]);
+    return (_jsx(ThemeContext.Provider, { value: theme, children: _jsx(StringsContext.Provider, { value: resolvedStrings, children: _jsx(HapticsEnabledContext.Provider, { value: haptics, children: children }) }) }));
 };
 //# sourceMappingURL=ThemeProvider.js.map

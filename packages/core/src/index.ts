@@ -30,4 +30,19 @@ export { useMotion } from './utils/useMotion'
 export type { Motion, SpeedKey } from './utils/useMotion'
 export { withAlpha, parseColor } from './utils/withAlpha'
 export { readableOn, relativeLuminance } from './utils/readableOn'
+
+// Shared prop contracts (v0.5)
+export type { ErrorProp, HapticProp, HapticStyle, IconProp } from './types/props'
+export { resolveError, resolveHaptic } from './types/props'
+export { useHaptics, HapticsEnabledContext } from './utils/useHaptics'
+export type { HapticsApi } from './utils/useHaptics'
+export { devWarn, deprecatedProp } from './utils/devWarn'
+
+// i18n
+export { useStrings, StringsContext } from './i18n/StringsContext'
+export { defaultStrings, mergeStrings } from './i18n/strings'
+export type { NativeMateStrings } from './i18n/strings'
+
+// RTL
+export { isRTL, directionalIcon, useDirection } from './utils/direction'
 export type { Breakpoint } from './utils/useBreakpoint'

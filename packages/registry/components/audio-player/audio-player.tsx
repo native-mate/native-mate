@@ -156,8 +156,8 @@ const useStyles = makeStyles((theme) => ({
   compactProgressBar: {
     position: 'absolute',
     bottom: 0,
-    left: 0,
-    right: 0,
+    start: 0,
+    end: 0,
     height: 2,
     backgroundColor: theme.colors.border,
   },

@@ -16,4 +16,12 @@ export { useReducedMotion } from './utils/useReducedMotion';
 export { useMotion } from './utils/useMotion';
 export { withAlpha, parseColor } from './utils/withAlpha';
 export { readableOn, relativeLuminance } from './utils/readableOn';
+export { resolveError, resolveHaptic } from './types/props';
+export { useHaptics, HapticsEnabledContext } from './utils/useHaptics';
+export { devWarn, deprecatedProp } from './utils/devWarn';
+// i18n
+export { useStrings, StringsContext } from './i18n/StringsContext';
+export { defaultStrings, mergeStrings } from './i18n/strings';
+// RTL
+export { isRTL, directionalIcon, useDirection } from './utils/direction';
 //# sourceMappingURL=index.js.map

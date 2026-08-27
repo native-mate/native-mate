@@ -136,7 +136,7 @@ const AccordionItemComponent: React.FC<AccordionItemComponentProps> = ({
         disabled={item.disabled}
       >
         {item.icon && (
-          <View style={{ marginRight: 4, opacity: 0.75 }}>{item.icon}</View>
+          <View style={{ marginEnd: 4, opacity: 0.75 }}>{item.icon}</View>
         )}
         <Text
           variant="label"
@@ -145,7 +145,7 @@ const AccordionItemComponent: React.FC<AccordionItemComponentProps> = ({
           {item.title}
         </Text>
         {item.trailing && (
-          <View style={{ marginRight: 6 }}>{item.trailing}</View>
+          <View style={{ marginEnd: 6 }}>{item.trailing}</View>
         )}
         <Animated.View style={chevronStyle}>
           <Ionicons name="chevron-down" size={sz.chevronSize} color={theme.colors.muted} />
@@ -154,7 +154,7 @@ const AccordionItemComponent: React.FC<AccordionItemComponentProps> = ({
 
       {/* Hidden measurer — always rendered, positioned off-screen to get real height */}
       <View
-        style={{ position: 'absolute', top: -9999, left: 0, right: 0, opacity: 0 }}
+        style={{ position: 'absolute', top: -9999, start: 0, end: 0, opacity: 0 }}
         pointerEvents="none"
         onLayout={handleMeasure}
       >
