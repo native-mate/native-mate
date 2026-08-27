@@ -18,6 +18,7 @@ export interface CardProps extends Omit<ViewProps, 'style'> {
   /** Accent color painted as a left border stripe */
   accent?: string
   style?: StyleProp<ViewStyle>
+  testID?: string
 }
 
 export interface CardHeaderProps {

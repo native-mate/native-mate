@@ -20,4 +20,12 @@ export interface OTPInputProps {
   resendCooldown?: number
   onResend?: () => void
   haptic?: boolean
+  testID?: string
+}
+
+/** Imperative handle exposed via ref. */
+export interface OTPInputHandle {
+  focus(): void
+  blur(): void
+  clear(): void
 }

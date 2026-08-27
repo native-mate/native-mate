@@ -36,4 +36,5 @@ export interface StatCardProps {
   /** Called when the card is pressed */
   onPress?: () => void
   style?: StyleProp<ViewStyle>
+  testID?: string
 }

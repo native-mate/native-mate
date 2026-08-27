@@ -1,6 +1,6 @@
 {
   "name": "infinite-scroll",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "description": "Infinite scroll list wrapper with load-more trigger, loading indicator, and empty state",
   "category": "layout",
   "files": [

@@ -38,9 +38,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
+const AnimatedView = Animated.View
 
-export const Chip: React.FC<ChipProps> = ({
+export const Chip = React.memo<ChipProps>(({
   label,
   selected = false,
   onPress,
@@ -54,6 +54,7 @@ export const Chip: React.FC<ChipProps> = ({
   color,
   haptic = 'light',
   style,
+  testID,
 }) => {
   const theme = useTheme()
   const styles = useStyles()
@@ -129,14 +130,8 @@ export const Chip: React.FC<ChipProps> = ({
   }, [haptic, onClose])
 
   return (
-    <AnimatedPressable
-      onPress={onPress}
-      onPressIn={handlePressIn}
-      onPressOut={handlePressOut}
-      disabled={disabled}
-      accessibilityRole="button"
-      accessibilityLabel={label}
-      accessibilityState={{ selected, disabled }}
+    <AnimatedView
+      testID={testID}
       style={[
         styles.chip,
         {
@@ -154,44 +149,65 @@ export const Chip: React.FC<ChipProps> = ({
         style,
       ]}
     >
-      {/* Avatar */}
-      {avatar && (
-        <View style={{ marginRight: -2 }}>{avatar}</View>
-      )}
-
-      {/* Icon */}
-      {icon && !avatar && (
-        <Ionicons name={icon as any} size={dims.iconSize} color={iconColor} />
-      )}
-
-      {/* Checkmark for selected state */}
-      {selected && !icon && !avatar && (
-        <Ionicons name="checkmark" size={dims.iconSize} color={iconColor} />
-      )}
-
-      {/* Label */}
-      <Text
-        style={{ fontSize: dims.fontSize, ...fontStyle(theme.typography, 'medium'), color: textColor }}
-        numberOfLines={1}
+      {/* Main pressable content — the close button below is a sibling, not a
+          descendant, so the parent's press-in scale/haptic can't be stolen by it. */}
+      <Pressable
+        onPress={onPress}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+        disabled={disabled}
+        accessibilityRole="button"
+        accessibilityLabel={label}
+        accessibilityState={{ selected, disabled }}
+        style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}
       >
-        {label}
-      </Text>
+        {/* Avatar */}
+        {avatar && (
+          <View style={{ marginRight: -2 }}>{avatar}</View>
+        )}
 
-      {/* Close button */}
+        {/* Icon */}
+        {icon && !avatar && (
+          <Ionicons name={icon as any} size={dims.iconSize} color={iconColor} />
+        )}
+
+        {/* Checkmark for selected state */}
+        {selected && !icon && !avatar && (
+          <Ionicons name="checkmark" size={dims.iconSize} color={iconColor} />
+        )}
+
+        {/* Label */}
+        <Text
+          style={{ fontSize: dims.fontSize, ...fontStyle(theme.typography, 'medium'), color: textColor }}
+          numberOfLines={1}
+        >
+          {label}
+        </Text>
+      </Pressable>
+
+      {/* Close button — sibling of the main Pressable, outside its subtree */}
       {closable && (
-        <Pressable onPress={handleClose} hitSlop={4} accessibilityLabel={`Remove ${label}`}>
+        <Pressable
+          onPress={handleClose}
+          hitSlop={8}
+          accessibilityLabel={`Remove ${label}`}
+          testID={testID ? `${testID}-close` : undefined}
+        >
           <Ionicons name="close-circle" size={dims.closeSize} color={iconColor} style={{ opacity: 0.7 }} />
         </Pressable>
       )}
-    </AnimatedPressable>
+    </AnimatedView>
   )
-}
+})
+
+Chip.displayName = 'Chip'
 
 export const ChipGroup: React.FC<ChipGroupProps> = ({
   children,
   wrap = true,
   gap = 8,
   style,
+  testID,
 }) => (
   <View
     style={[
@@ -203,6 +219,7 @@ export const ChipGroup: React.FC<ChipGroupProps> = ({
       style,
     ]}
     accessibilityRole="radiogroup"
+    testID={testID}
   >
     {children}
   </View>

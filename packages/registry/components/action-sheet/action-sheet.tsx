@@ -5,7 +5,7 @@ import Animated, {
   useSharedValue, useAnimatedStyle, withSpring, withTiming, runOnJS, Easing,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { fontStyle, makeStyles, Text, useTheme } from '@native-mate/core'
+import { fontStyle, makeStyles, Text, useTheme, useMotion, withAlpha, type Motion } from '@native-mate/core'
 import type { ActionSheetProps } from './action-sheet.types'
 
 const useStyles = makeStyles((theme) => ({
@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: theme.radius.xl,
     overflow: 'hidden',
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: theme.colors.border + '60',
+    borderColor: withAlpha(theme.colors.border, 0.38),
   },
   handle: {
     alignSelf: 'center',
@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
   },
   sep: {
     height: StyleSheet.hairlineWidth,
-    backgroundColor: theme.colors.border + '80',
+    backgroundColor: withAlpha(theme.colors.border, 0.5),
     marginHorizontal: 0,
   },
   actionRow: {
@@ -62,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: theme.radius.xl,
     overflow: 'hidden',
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: theme.colors.border + '60',
+    borderColor: withAlpha(theme.colors.border, 0.38),
   },
   cancelRow: {
     alignItems: 'center',
@@ -77,30 +77,31 @@ function buildAnimations(
   sheetScale: Animated.SharedValue<number>,
   dismissY: number,
   onDismiss: () => void,
+  motion: Motion,
 ) {
   const show = () => {
-    backdropOpacity.value = withTiming(1, { duration: 220 })
+    backdropOpacity.value = withTiming(1, motion.timing('normal'))
     if (animation === 'fade') {
-      sheetScale.value = withTiming(1, { duration: 280, easing: Easing.out(Easing.cubic) })
-      translateY.value = withTiming(0, { duration: 280, easing: Easing.out(Easing.cubic) })
+      sheetScale.value = withTiming(1, { ...motion.timing('normal'), easing: Easing.out(Easing.cubic) })
+      translateY.value = withTiming(0, { ...motion.timing('normal'), easing: Easing.out(Easing.cubic) })
     } else if (animation === 'spring') {
-      translateY.value = withSpring(0, { damping: 20, stiffness: 220, mass: 0.8 })
+      translateY.value = withSpring(0, motion.spring())
     } else {
       // slide (default) — same smooth cubic as Sheet
-      translateY.value = withTiming(0, { duration: 360, easing: Easing.out(Easing.cubic) })
+      translateY.value = withTiming(0, { ...motion.timing('slow'), easing: Easing.out(Easing.cubic) })
     }
   }
 
   const hide = (cb?: () => void) => {
-    backdropOpacity.value = withTiming(0, { duration: 220 })
+    backdropOpacity.value = withTiming(0, motion.timing('normal'))
     if (animation === 'fade') {
-      sheetScale.value = withTiming(0.95, { duration: 240 })
-      translateY.value = withTiming(dismissY, { duration: 240, easing: Easing.in(Easing.cubic) }, () => {
+      sheetScale.value = withTiming(0.95, motion.timing('normal'))
+      translateY.value = withTiming(dismissY, { ...motion.timing('normal'), easing: Easing.in(Easing.cubic) }, () => {
         runOnJS(onDismiss)()
         if (cb) runOnJS(cb)()
       })
     } else {
-      translateY.value = withTiming(dismissY, { duration: 260, easing: Easing.in(Easing.cubic) }, () => {
+      translateY.value = withTiming(dismissY, { ...motion.timing('normal'), easing: Easing.in(Easing.cubic) }, () => {
         runOnJS(onDismiss)()
         if (cb) runOnJS(cb)()
       })
@@ -121,6 +122,7 @@ export const ActionSheet: React.FC<ActionSheetProps> = ({
   showDividers = true,
 }) => {
   const theme = useTheme()
+  const motion = useMotion()
   const styles = useStyles()
   const [modalOpen, setModalOpen] = useState(isOpen)
   const [sheetHeight, setSheetHeight] = useState(0)
@@ -133,7 +135,8 @@ export const ActionSheet: React.FC<ActionSheetProps> = ({
 
   const { show, hide } = buildAnimations(
     animation, translateY, backdropOpacity, sheetScale, dismissY,
-    () => setModalOpen(false)
+    () => setModalOpen(false),
+    motion,
   )
 
   React.useEffect(() => {
@@ -207,7 +210,7 @@ export const ActionSheet: React.FC<ActionSheetProps> = ({
                     ]}
                     onPress={() => { handleClose(); setTimeout(action.onPress, 50) }}
                     disabled={action.disabled}
-                    android_ripple={{ color: theme.colors.border + '40' }}
+                    android_ripple={{ color: withAlpha(theme.colors.border, 0.25) }}
                     accessibilityRole="button"
                   >
                     {action.icon != null && (
@@ -244,7 +247,7 @@ export const ActionSheet: React.FC<ActionSheetProps> = ({
               <Pressable
                 style={({ pressed }) => [styles.cancelRow, { opacity: pressed ? 0.6 : 1 }]}
                 onPress={handleClose}
-                android_ripple={{ color: theme.colors.border + '40' }}
+                android_ripple={{ color: withAlpha(theme.colors.border, 0.25) }}
                 accessibilityRole="button"
                 accessibilityLabel={cancelLabel}
               >

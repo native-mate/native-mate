@@ -8,7 +8,7 @@ import Animated, {
   withTiming,
   interpolate,
 } from 'react-native-reanimated'
-import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
+import { useTheme, useMotion, withAlpha, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { OnboardingScreenProps } from './onboarding-screen.types'
 
 let Haptics: any = null
@@ -96,12 +96,13 @@ function Dot({
   active: boolean
   color: string
 }) {
+  const motion = useMotion()
   const width = useSharedValue(active ? 24 : 8)
   const opacity = useSharedValue(active ? 1 : 0.3)
 
   React.useEffect(() => {
-    width.value = withSpring(active ? 24 : 8, { damping: 15, stiffness: 200 })
-    opacity.value = withTiming(active ? 1 : 0.3, { duration: 200 })
+    width.value = withSpring(active ? 24 : 8, motion.spring())
+    opacity.value = withTiming(active ? 1 : 0.3, motion.timing('normal'))
   }, [active])
 
   const animStyle = useAnimatedStyle(() => ({
@@ -143,6 +144,7 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
   ...rest
 }) => {
   const theme = useTheme()
+  const motion = useMotion()
   const styles = useStyles()
   const buttonScale = useSharedValue(1)
 
@@ -156,16 +158,16 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
     if (haptic && Haptics) {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
     }
-    buttonScale.value = withSpring(0.95, { damping: 15, stiffness: 400 })
+    buttonScale.value = withSpring(0.95, motion.spring())
     setTimeout(() => {
-      buttonScale.value = withSpring(1, { damping: 12, stiffness: 300 })
+      buttonScale.value = withSpring(1, motion.spring())
     }, 100)
     if (isLast) {
       onFinish?.()
     } else {
       onNext?.()
     }
-  }, [haptic, isLast, onFinish, onNext])
+  }, [haptic, isLast, onFinish, onNext, motion])
 
   const handleSkip = useCallback(() => {
     if (haptic && Haptics) {
@@ -176,7 +178,7 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
 
   const bg = backgroundColor ?? theme.colors.background
   const fg = textColor ?? theme.colors.foreground
-  const mutedColor = textColor ? textColor + '99' : theme.colors.muted
+  const mutedColor = textColor ? withAlpha(textColor, 0.6) : theme.colors.muted
 
   const renderImage = () => {
     if (image == null) return null

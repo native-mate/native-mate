@@ -1,11 +1,14 @@
 {
   "name": "@native-mate/core",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Token system, ThemeProvider, and primitive components for native-mate",
   "main": "./dist/index.js",
+  "module": "./dist-esm/index.js",
+  "react-native": "./dist-esm/index.js",
   "types": "./dist/index.d.ts",
   "files": [
     "dist",
+    "dist-esm",
     "src"
   ],
   "license": "MIT",
@@ -23,7 +26,7 @@
     "native-mate"
   ],
   "scripts": {
-    "build": "tsc --project tsconfig.json",
+    "build": "tsc --project tsconfig.json && tsc --project tsconfig.esm.json",
     "test": "cd ../.. && npx vitest run --config vitest.config.ts packages/core",
     "lint": "tsc --noEmit"
   },

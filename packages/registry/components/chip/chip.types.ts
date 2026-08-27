@@ -23,6 +23,7 @@ export interface ChipProps {
   color?: string
   haptic?: HapticStyle
   style?: StyleProp<ViewStyle>
+  testID?: string
 }
 
 export interface ChipGroupProps {
@@ -32,4 +33,5 @@ export interface ChipGroupProps {
   /** Gap between chips */
   gap?: number
   style?: StyleProp<ViewStyle>
+  testID?: string
 }

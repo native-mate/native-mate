@@ -1,6 +1,6 @@
 {
   "name": "toast",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "description": "Floating toast notification with auto-dismiss and position",
   "category": "feedback",
   "files": [

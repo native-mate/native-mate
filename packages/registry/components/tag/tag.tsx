@@ -33,7 +33,7 @@ const sizeMap = {
   lg: { py: 7,  px: 16, fontSize: 15, iconSize: 16, removeSize: 18 },
 }
 
-export const Tag: React.FC<TagProps> = ({
+export const Tag = React.memo<TagProps>(({
   label,
   selected = false,
   onPress,
@@ -43,6 +43,7 @@ export const Tag: React.FC<TagProps> = ({
   disabled = false,
   size = 'md',
   style,
+  testID,
 }) => {
   const theme = useTheme()
   const sz = sizeMap[size]
@@ -102,13 +103,13 @@ export const Tag: React.FC<TagProps> = ({
       paddingRight: onRemove ? sz.px - 4 : sz.px,
       gap: 5,
       opacity: disabled ? 0.45 : 1,
-    }, containerStyle, style]}>
+    }, containerStyle, style]} testID={testID}>
       {icon && <View style={{ opacity: selected ? 1 : 0.7 }}>{icon}</View>}
       <Animated.Text style={[{ fontSize: sz.fontSize, ...fontStyle(theme.typography, selected ? 'semibold' : 'medium'), letterSpacing: 0.1 }, textStyle]}>
         {label}
       </Animated.Text>
       {onRemove && !disabled && (
-        <Pressable onPress={handleRemove} hitSlop={8}>
+        <Pressable onPress={handleRemove} hitSlop={8} testID={testID ? `${testID}-remove` : undefined}>
           <Ionicons name="close" size={sz.removeSize} color={selected ? resolvedActiveText : idleText} style={{ opacity: 0.7 }} />
         </Pressable>
       )}
@@ -122,7 +123,9 @@ export const Tag: React.FC<TagProps> = ({
       {inner}
     </Pressable>
   )
-}
+})
+
+Tag.displayName = 'Tag'
 
 export const TagGroup: React.FC<TagGroupProps> = ({
   tags,
@@ -130,6 +133,7 @@ export const TagGroup: React.FC<TagGroupProps> = ({
   selected = [],
   onChange,
   style,
+  testID,
 }) => {
   const handlePress = (label: string) => {
     if (multiSelect) {

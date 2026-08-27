@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const Star: React.FC<{
+const Star = React.memo<{
   index: number
   value: number
   iconSize: number
@@ -52,7 +52,8 @@ const Star: React.FC<{
   disabled: boolean
   haptic: HapticStyle
   onRate: (v: number) => void
-}> = ({
+  testID?: string
+}>(({
   index,
   value,
   iconSize,
@@ -65,6 +66,7 @@ const Star: React.FC<{
   disabled,
   haptic,
   onRate,
+  testID,
 }) => {
   const scale = useSharedValue(1)
   const starIndex = index + 1
@@ -114,22 +116,24 @@ const Star: React.FC<{
 
   if (readonly || disabled) {
     return (
-      <View style={{ padding: 1 }}>
+      <View style={{ padding: 1 }} testID={testID}>
         <Ionicons name={iconName as any} size={iconSize} color={iconColor} />
       </View>
     )
   }
 
   return (
-    <Pressable onPress={handlePress} hitSlop={2}>
+    <Pressable onPress={handlePress} hitSlop={2} testID={testID}>
       <Animated.View style={[{ padding: 1 }, animStyle]}>
         <Ionicons name={iconName as any} size={iconSize} color={iconColor} />
       </Animated.View>
     </Pressable>
   )
-}
+})
 
-export const Rating: React.FC<RatingProps> = ({
+Star.displayName = 'RatingStar'
+
+export const Rating = React.memo<RatingProps>(({
   value,
   onChange,
   maxStars = 5,
@@ -145,6 +149,7 @@ export const Rating: React.FC<RatingProps> = ({
   disabled = false,
   accessibilityLabel,
   style,
+  testID,
 }) => {
   const theme = useTheme()
   const styles = useStyles()
@@ -170,6 +175,7 @@ export const Rating: React.FC<RatingProps> = ({
       accessibilityRole="adjustable"
       accessibilityLabel={accessibilityLabel ?? `Rating: ${value} of ${maxStars} stars`}
       accessibilityValue={{ min: 0, max: maxStars, now: value }}
+      testID={testID}
     >
       <View style={[styles.starsRow, { gap: dims.gap }]}>
         {stars.map((i) => (
@@ -187,6 +193,7 @@ export const Rating: React.FC<RatingProps> = ({
             disabled={disabled}
             haptic={haptic}
             onRate={handleRate}
+            testID={testID ? `${testID}-star-${i}` : undefined}
           />
         ))}
       </View>
@@ -197,4 +204,6 @@ export const Rating: React.FC<RatingProps> = ({
       )}
     </View>
   )
-}
+})
+
+Rating.displayName = 'Rating'

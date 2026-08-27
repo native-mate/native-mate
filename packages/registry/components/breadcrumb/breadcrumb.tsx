@@ -95,13 +95,83 @@ function SeparatorIcon({
   )
 }
 
-export const Breadcrumb: React.FC<BreadcrumbProps> = ({
+const BreadcrumbItemView = React.memo(function BreadcrumbItemView({
+  item,
+  isLast,
+  size,
+  onPress,
+  testID,
+}: {
+  item: BreadcrumbItem
+  isLast: boolean
+  size: BreadcrumbSize
+  onPress?: (item: BreadcrumbItem) => void
+  testID?: string
+}) {
+  const theme = useTheme()
+  const styles = useStyles()
+  const tokens = sizeTokens[size]
+  const hasPressHandler = item.onPress != null && !isLast
+
+  if (hasPressHandler) {
+    return (
+      <Pressable
+        onPress={() => onPress?.(item)}
+        style={[styles.itemButton, { paddingVertical: tokens.padding }]}
+        accessibilityRole="link"
+        accessibilityLabel={item.label}
+        testID={testID}
+      >
+        {item.icon != null && (
+          <Ionicons
+            name={item.icon as any}
+            size={tokens.iconSize}
+            color={theme.colors.primary}
+          />
+        )}
+        <Text
+          variant="body"
+          style={[styles.itemLabelPressable, { fontSize: tokens.fontSize }]}
+          numberOfLines={1}
+        >
+          {item.label}
+        </Text>
+      </Pressable>
+    )
+  }
+
+  return (
+    <View style={[styles.itemButton, { paddingVertical: tokens.padding }]} testID={testID}>
+      {item.icon != null && (
+        <Ionicons
+          name={item.icon as any}
+          size={tokens.iconSize}
+          color={isLast ? theme.colors.foreground : theme.colors.muted}
+        />
+      )}
+      <Text
+        variant="body"
+        style={[
+          isLast ? styles.itemLabelActive : styles.itemLabel,
+          { fontSize: tokens.fontSize },
+        ]}
+        numberOfLines={1}
+      >
+        {item.label}
+      </Text>
+    </View>
+  )
+})
+BreadcrumbItemView.displayName = 'BreadcrumbItemView'
+
+export const Breadcrumb = React.memo<BreadcrumbProps>(({
   items,
   separator = 'chevron',
   maxItems,
   size = 'md',
   haptic = true,
   style,
+  testID,
   ...rest
 }) => {
   const theme = useTheme()
@@ -216,4 +286,6 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
       })}
     </View>
   )
-}
+})
+
+Breadcrumb.displayName = 'Breadcrumb'

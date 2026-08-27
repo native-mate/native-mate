@@ -13,10 +13,6 @@ import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withSpring,
-  withTiming,
-  Easing,
-  FadeIn,
-  SlideInDown,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
 import { useTheme, Text, makeStyles, Separator, fontStyle } from '@native-mate/core'
@@ -165,6 +161,13 @@ function stripNonDigits(text: string): string {
   return text.replace(/\D/g, '')
 }
 
+// Number of digit slots ('#') a mask can hold — the display truncates to this
+// many digits, so the underlying value must be truncated to match.
+function maskDigitCapacity(format?: string): number | undefined {
+  if (!format) return undefined
+  return (format.match(/#/g) ?? []).length
+}
+
 // ── Country Picker Sheet ─────────────────────────────────────────────────────
 
 interface CountryPickerProps {
@@ -204,7 +207,7 @@ const CountryPicker: React.FC<CountryPickerProps> = ({
   }
 
   return (
-    <Modal visible={visible} transparent animationType="none" onRequestClose={onClose}>
+    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
       <Pressable style={styles.sheetBackdrop} onPress={onClose}>
         <Pressable
           style={styles.sheetContainer}
@@ -334,9 +337,10 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
   const handleChangeText = useCallback(
     (text: string) => {
       const digits = stripNonDigits(text)
-      onChangeText(digits)
+      const capacity = maskDigitCapacity(selectedCountry.format)
+      onChangeText(capacity != null ? digits.slice(0, capacity) : digits)
     },
-    [onChangeText]
+    [onChangeText, selectedCountry.format]
   )
 
   const formattedValue = useMemo(
@@ -400,6 +404,9 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
           placeholder={placeholder}
           placeholderTextColor={theme.colors.muted}
           keyboardType="phone-pad"
+          autoComplete="tel"
+          textContentType="telephoneNumber"
+          maxLength={selectedCountry.format?.length}
           editable={!disabled}
           onFocus={handleFocus}
           onBlur={handleBlur}

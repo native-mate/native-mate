@@ -125,7 +125,7 @@ function formatTimestamp(timestamp: string | Date): string {
   return 'now'
 }
 
-function CommentItem({
+const CommentItem = React.memo<CommentProps>(({
   author,
   avatar,
   content,
@@ -139,7 +139,8 @@ function CommentItem({
   maxDepth = 3,
   onAuthorPress,
   haptic = true,
-}: CommentProps) {
+  testID,
+}) => {
   const theme = useTheme()
   const styles = useStyles()
   const [showReplies, setShowReplies] = useState(depth < 1)
@@ -181,6 +182,7 @@ function CommentItem({
             onPress={() => onAuthorPress?.(author)}
             disabled={onAuthorPress == null}
             accessibilityRole={onAuthorPress != null ? 'button' : undefined}
+            testID={testID ? `${testID}-avatar` : undefined}
           >
             {avatar != null ? (
               <Image source={avatar} style={styles.avatar} />
@@ -220,6 +222,7 @@ function CommentItem({
                   accessibilityRole="button"
                   accessibilityLabel={`Like, ${likes} likes`}
                   accessibilityState={{ selected: liked }}
+                  testID={testID ? `${testID}-like-action` : undefined}
                 >
                   <Animated.View style={likeAnimStyle}>
                     <Ionicons
@@ -244,6 +247,7 @@ function CommentItem({
                   style={styles.actionButton}
                   accessibilityRole="button"
                   accessibilityLabel="Reply"
+                  testID={testID ? `${testID}-reply-action` : undefined}
                 >
                   <Ionicons name="chatbubble-outline" size={13} color={theme.colors.muted} />
                   <Text variant="caption" style={styles.actionText}>
@@ -294,16 +298,21 @@ function CommentItem({
       )}
     </View>
   )
-}
+})
 
-export const Comment: React.FC<CommentProps> = (props) => {
+CommentItem.displayName = 'CommentItem'
+
+export const Comment = React.memo<CommentProps>((props) => {
   return (
     <View
       accessibilityRole="summary"
       accessibilityLabel={`Comment by ${props.author}`}
       style={props.style}
+      testID={props.testID}
     >
       <CommentItem {...props} />
     </View>
   )
-}
+})
+
+Comment.displayName = 'Comment'

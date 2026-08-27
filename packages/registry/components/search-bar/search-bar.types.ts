@@ -28,4 +28,13 @@ export interface SearchBarProps {
   disabled?: boolean
   haptic?: HapticStyle
   style?: StyleProp<ViewStyle>
+  testID?: string
+}
+
+/** Imperative handle exposed via ref. */
+export interface SearchBarHandle {
+  focus(): void
+  blur(): void
+  clear(): void
+  isFocused(): boolean
 }

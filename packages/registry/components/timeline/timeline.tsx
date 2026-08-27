@@ -65,7 +65,7 @@ interface TimelineNodeProps {
   icon?: React.ReactNode
 }
 
-const TimelineNode: React.FC<TimelineNodeProps> = ({
+const TimelineNode = React.memo<TimelineNodeProps>(({
   status,
   size,
   completedColor,
@@ -175,7 +175,9 @@ const TimelineNode: React.FC<TimelineNodeProps> = ({
       </View>
     </View>
   )
-}
+})
+
+TimelineNode.displayName = 'TimelineNode'
 
 // ── Timeline item row ────────────────────────────────────────────────────────
 
@@ -192,9 +194,10 @@ interface TimelineItemRowProps {
   upcomingColor: string
   onPress?: (key: string) => void
   haptic: boolean
+  testID?: string
 }
 
-const TimelineItemRow: React.FC<TimelineItemRowProps> = ({
+const TimelineItemRow = React.memo<TimelineItemRowProps>(({
   item,
   index,
   isLast,
@@ -207,6 +210,7 @@ const TimelineItemRow: React.FC<TimelineItemRowProps> = ({
   upcomingColor,
   onPress,
   haptic: enableHaptic,
+  testID,
 }) => {
   const theme = useTheme()
   const styles = useStyles()
@@ -256,7 +260,7 @@ const TimelineItemRow: React.FC<TimelineItemRowProps> = ({
     : undefined
 
   return (
-    <Animated.View style={[styles.itemRow, animStyle]}>
+    <Animated.View style={[styles.itemRow, animStyle]} testID={testID}>
       {/* Node column */}
       <View style={[styles.nodeColumn, { marginRight: sz.gap }]}>
         <TimelineNode
@@ -337,11 +341,13 @@ const TimelineItemRow: React.FC<TimelineItemRowProps> = ({
       </Pressable>
     </Animated.View>
   )
-}
+})
+
+TimelineItemRow.displayName = 'TimelineItemRow'
 
 // ── Timeline ─────────────────────────────────────────────────────────────────
 
-export const Timeline: React.FC<TimelineProps> = ({
+export const Timeline = React.memo<TimelineProps>(({
   items,
   animated = true,
   staggerDelay = 100,
@@ -352,6 +358,7 @@ export const Timeline: React.FC<TimelineProps> = ({
   haptic = true,
   onItemPress,
   style,
+  testID,
 }) => {
   const theme = useTheme()
   const styles = useStyles()
@@ -365,6 +372,7 @@ export const Timeline: React.FC<TimelineProps> = ({
     <View
       style={[styles.container, style]}
       accessibilityRole="list"
+      testID={testID}
     >
       {items.map((item, i) => (
         <TimelineItemRow
@@ -381,8 +389,11 @@ export const Timeline: React.FC<TimelineProps> = ({
           upcomingColor={uColor}
           onPress={onItemPress}
           haptic={haptic}
+          testID={testID ? `${testID}-item-${i}` : undefined}
         />
       ))}
     </View>
   )
-}
+})
+
+Timeline.displayName = 'Timeline'

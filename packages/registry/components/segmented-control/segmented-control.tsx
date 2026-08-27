@@ -6,7 +6,7 @@ import Animated, {
   useAnimatedStyle,
   withSpring,
 } from 'react-native-reanimated'
-import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
+import { useTheme, useMotion, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { SegmentedControlProps } from './segmented-control.types'
 
 let Haptics: any = null
@@ -17,8 +17,6 @@ const sizeMap = {
   md: { py: 6, px: 14, fontSize: 14, containerPadding: 3, height: 38 },
   lg: { py: 8, px: 18, fontSize: 16, containerPadding: 4, height: 46 },
 }
-
-const SPRING = { damping: 18, stiffness: 200, mass: 0.7 }
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -57,6 +55,7 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
   style,
 }) => {
   const theme = useTheme()
+  const motion = useMotion()
   const styles = useStyles()
   const sz = sizeMap[size]
 
@@ -70,16 +69,16 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
   const handleLayout = (key: string, x: number, width: number) => {
     setSegLayouts((prev) => ({ ...prev, [key]: { x, width } }))
     if (key === selectedKey) {
-      indicatorX.value = withSpring(x, SPRING)
-      indicatorW.value = withSpring(width, SPRING)
+      indicatorX.value = withSpring(x, motion.spring())
+      indicatorW.value = withSpring(width, motion.spring())
     }
   }
 
   useEffect(() => {
     const layout = segLayouts[selectedKey]
     if (layout) {
-      indicatorX.value = withSpring(layout.x, SPRING)
-      indicatorW.value = withSpring(layout.width, SPRING)
+      indicatorX.value = withSpring(layout.x, motion.spring())
+      indicatorW.value = withSpring(layout.width, motion.spring())
     }
   }, [selectedKey, segLayouts])
 

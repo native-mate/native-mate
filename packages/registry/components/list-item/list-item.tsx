@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export const ListItem: React.FC<ListItemProps> = ({
+export const ListItem = React.memo<ListItemProps>(({
   title,
   subtitle,
   description,
@@ -72,6 +72,7 @@ export const ListItem: React.FC<ListItemProps> = ({
   haptic = 'light',
   showChevron,
   style,
+  testID,
 }) => {
   const theme = useTheme()
   const styles = useStyles()
@@ -144,7 +145,7 @@ export const ListItem: React.FC<ListItemProps> = ({
       {/* Trailing */}
       {trailing && <View style={styles.trailing}>{trailing}</View>}
       {shouldShowChevron && (
-        <View style={styles.trailing}>
+        <View style={styles.trailing} testID={testID ? `${testID}-action` : undefined}>
           <Ionicons
             name="chevron-forward"
             size={18}
@@ -157,7 +158,7 @@ export const ListItem: React.FC<ListItemProps> = ({
   )
 
   return (
-    <View style={[styles.container, style]}>
+    <View style={[styles.container, style]} testID={testID}>
       {onPress || onLongPress ? (
         <Pressable
           onPress={onPress}
@@ -177,4 +178,6 @@ export const ListItem: React.FC<ListItemProps> = ({
       {divider && <View style={styles.divider} />}
     </View>
   )
-}
+})
+
+ListItem.displayName = 'ListItem'

@@ -1,6 +1,6 @@
 // native-mate: toast@0.3.0 | hash:PLACEHOLDER
 import React, { useEffect, useRef, createContext, useContext, useState, useCallback, useMemo } from 'react'
-import { View, Pressable, PanResponder, Image, Modal, Platform } from 'react-native'
+import { View, Pressable, PanResponder, Image, Modal, Platform, AccessibilityInfo, StatusBar } from 'react-native'
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -82,6 +82,7 @@ export const Toast: React.FC<ToastProps> = ({
   persistent = false,
   icon,
   avatar,
+  id,
 }) => {
   const theme = useTheme()
   const styles = useStyles()
@@ -107,6 +108,16 @@ export const Toast: React.FC<ToastProps> = ({
     destructive: theme.colors.onDestructive,
     warning: theme.colors.onWarning,
   }[variant]
+
+  // Distance from the screen edge to the toast, without relying on
+  // react-native-safe-area-context (not a declared dependency of this
+  // component) — Android accounts for the status bar, iOS uses a sane
+  // default that clears the notch/Dynamic Island on modern devices.
+  const edgeOffset = Platform.select({
+    android: (StatusBar.currentHeight ?? 24) + 8,
+    ios: 56,
+    default: 48,
+  }) as number
 
   const hide = useCallback(() => onHide(), [onHide])
   // Used to cancel stale exit-animation callbacks (race condition when fire() is called rapidly)
@@ -140,6 +151,12 @@ export const Toast: React.FC<ToastProps> = ({
       opacity.value = withTiming(1, { duration: 200 })
       progressWidth.value = 100
 
+      if (Platform.OS === 'ios') {
+        AccessibilityInfo.announceForAccessibility(
+          description ? `${message}. ${description}` : message
+        )
+      }
+
       if (!persistent && duration > 0) {
         progressWidth.value = withTiming(0, { duration })
         const timer = setTimeout(() => dismiss(), duration)
@@ -153,7 +170,11 @@ export const Toast: React.FC<ToastProps> = ({
         if (exitGenRef.current === gen) runOnJS(setModalOpen)(false)
       })
     }
-  }, [visible])
+    // `id` is included so a new toast shown while one is already visible
+    // (visible stays true, only the content/id changes) restarts this
+    // effect — clearing the previous auto-dismiss timer and starting a
+    // fresh one for the new content instead of inheriting the old timer.
+  }, [visible, id])
 
   // Swipe-to-dismiss — supports left/right AND vertical (up for bottom toast, down for top toast)
   const activeAxis = useRef<'x' | 'y' | null>(null)
@@ -225,12 +246,13 @@ export const Toast: React.FC<ToastProps> = ({
           styles.container,
           {
             position: 'fixed' as any,
-            [position === 'top' ? 'top' : 'bottom']: 48,
+            [position === 'top' ? 'top' : 'bottom']: edgeOffset,
             zIndex: 9999,
           },
           animatedStyle,
         ]}
         accessibilityRole="alert"
+        accessibilityLiveRegion="polite"
       >
         {/* Left side: avatar image OR icon badge */}
         {avatar ? (
@@ -271,8 +293,9 @@ export const Toast: React.FC<ToastProps> = ({
     <Modal visible={modalOpen} transparent animationType="none" onRequestClose={dismiss} statusBarTranslucent>
     <View pointerEvents="box-none" style={{ flex: 1 }}>
     <Animated.View
-      style={[styles.container, { [position === 'top' ? 'top' : 'bottom']: 48 }, animatedStyle]}
+      style={[styles.container, { [position === 'top' ? 'top' : 'bottom']: edgeOffset }, animatedStyle]}
       accessibilityRole="alert"
+      accessibilityLiveRegion="polite"
       {...panResponder.panHandlers}
     >
       {/* Left side: avatar image OR icon badge */}
@@ -353,8 +376,15 @@ const ToastContext = createContext<ToastContextValue | null>(null)
 export function ToastProvider({ children }: { children: React.ReactNode }) {
   const [toast, setToast] = useState<ToastConfig | null>(null)
   const [visible, setVisible] = useState(false)
+  // Monotonically increasing id so a show() call while a toast is already
+  // visible is recognized as a distinct toast instance (see toast.tsx's
+  // auto-dismiss effect, which is keyed on this id).
+  const nextIdRef = useRef(0)
+  const [toastId, setToastId] = useState(0)
 
   const show = useCallback((config: ToastConfig) => {
+    nextIdRef.current += 1
+    setToastId(nextIdRef.current)
     setToast(config)
     setVisible(true)
   }, [])
@@ -369,6 +399,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
       {toast && (
         <Toast
           {...toast}
+          id={toast.id ?? toastId}
           visible={visible}
           onHide={hide}
         />

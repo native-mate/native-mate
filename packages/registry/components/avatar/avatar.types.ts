@@ -10,6 +10,7 @@ export interface AvatarProps {
   shape?: 'circle' | 'square'
   color?: string
   accessibilityLabel?: string
+  testID?: string
 }
 
 export interface AvatarGroupProps {
@@ -17,4 +18,5 @@ export interface AvatarGroupProps {
   size?: AvatarSize
   max?: number
   spacing?: number
+  testID?: string
 }

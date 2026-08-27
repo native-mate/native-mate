@@ -32,7 +32,7 @@ function getInitials(name: string): string {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
 }
 
-export const Avatar: React.FC<AvatarProps> = ({
+export const Avatar = React.memo<AvatarProps>(({
   src,
   name,
   fallback,
@@ -41,6 +41,7 @@ export const Avatar: React.FC<AvatarProps> = ({
   shape = 'circle',
   color,
   accessibilityLabel,
+  testID,
 }) => {
   const theme = useTheme()
   const [imgError, setImgError] = useState(false)
@@ -52,7 +53,7 @@ export const Avatar: React.FC<AvatarProps> = ({
   const bgColor = color ?? (name ? nameToColor(name) : theme.colors.surface)
 
   return (
-    <View style={{ position: 'relative', width: px, height: px }}>
+    <View style={{ position: 'relative', width: px, height: px }} testID={testID}>
       <View
         style={{
           width: px, height: px,
@@ -62,6 +63,7 @@ export const Avatar: React.FC<AvatarProps> = ({
           alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
         }}
         accessibilityLabel={accessibilityLabel ?? name}
+        testID={testID ? `${testID}-avatar` : undefined}
       >
         {src && !imgError ? (
           <Image
@@ -90,13 +92,16 @@ export const Avatar: React.FC<AvatarProps> = ({
       )}
     </View>
   )
-}
+})
+
+Avatar.displayName = 'Avatar'
 
 export const AvatarGroup: React.FC<AvatarGroupProps> = ({
   avatars,
   size = 'md',
   max = 4,
   spacing,
+  testID,
 }) => {
   const theme = useTheme()
   const px = sizes[size]
@@ -106,7 +111,7 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
   const fs = fontSizes[size]
 
   return (
-    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+    <View style={{ flexDirection: 'row', alignItems: 'center' }} testID={testID}>
       {visible.map((av, i) => (
         <View key={i} style={{ marginLeft: i === 0 ? 0 : -overlap, zIndex: visible.length - i }}>
           <Avatar {...av} size={size} />

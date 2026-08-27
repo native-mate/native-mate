@@ -1,21 +1,13 @@
 // native-mate: date-picker@0.1.0 | hash:PLACEHOLDER
 import React, { useState, useMemo, useCallback, useEffect } from 'react'
 import { View, Pressable, ScrollView, Platform } from 'react-native'
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withSpring,
-  withTiming,
-  FadeIn,
-} from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle, withAlpha } from '@native-mate/core'
 import type { DatePickerProps } from './date-picker.types'
 
 let Haptics: any = null
 try { Haptics = require('expo-haptics') } catch {}
 
-const SPRING = { damping: 18, stiffness: 200, mass: 0.7 }
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 const MONTHS = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -196,7 +188,7 @@ const TimeSpinner: React.FC<TimeSpinnerProps> = ({
       <View
         style={[
           styles.timeValue,
-          { backgroundColor: theme.colors.primary + '15' },
+          { backgroundColor: withAlpha(theme.colors.primary, 0.08) },
         ]}
       >
         <Text
@@ -232,6 +224,7 @@ interface CalendarProps {
   minimumDate?: Date
   maximumDate?: Date
   haptic?: boolean
+  visible?: boolean
 }
 
 const CalendarGrid: React.FC<CalendarProps> = ({
@@ -242,11 +235,14 @@ const CalendarGrid: React.FC<CalendarProps> = ({
   minimumDate,
   maximumDate,
   haptic: enableHaptic = true,
+  visible = true,
 }) => {
   const theme = useTheme()
   const styles = useStyles()
 
-  const today = useMemo(() => new Date(), [])
+  // Recompute "today" whenever the picker becomes visible so a long-lived
+  // screen doesn't keep showing yesterday's date after midnight.
+  const today = useMemo(() => new Date(), [visible])
 
   const weeks = useMemo(() => {
     const daysInMonth = getDaysInMonth(viewYear, viewMonth)
@@ -332,7 +328,7 @@ const CalendarGrid: React.FC<CalendarProps> = ({
                       fontSize: 14,
                       ...fontStyle(theme.typography, isSelected || isToday ? 'semibold' : 'regular'),
                       color: isDisabled
-                        ? theme.colors.muted + '60'
+                        ? withAlpha(theme.colors.muted, 0.38)
                         : isSelected
                           ? theme.colors.onPrimary
                           : theme.colors.foreground,
@@ -441,7 +437,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
 
   return (
     <View
-      style={[styles.container, { opacity: disabled ? 0.5 : 1 }, style]}
+      style={[styles.container, { minHeight: sheetHeight, opacity: disabled ? 0.5 : 1 }, style]}
       pointerEvents={disabled ? 'none' : 'auto'}
     >
       {title && (

@@ -9,14 +9,11 @@ import Animated, {
   runOnJS,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, Separator, makeStyles } from '@native-mate/core'
+import { useTheme, useMotion, Text, Separator, makeStyles } from '@native-mate/core'
 import type { DraggableListProps } from './draggable-list.types'
 
 let Haptics: any = null
 try { Haptics = require('expo-haptics') } catch {}
-
-const SPRING = { damping: 20, stiffness: 220, mass: 0.8 }
-const FAST_SPRING = { damping: 22, stiffness: 280, mass: 0.6 }
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -81,6 +78,7 @@ function DraggableItem<T>({
   hapticOnDrag,
 }: DraggableItemProps<T>) {
   const theme = useTheme()
+  const motion = useMotion()
   const styles = useStyles()
 
   const scale = useSharedValue(1)
@@ -90,23 +88,23 @@ function DraggableItem<T>({
 
   React.useEffect(() => {
     if (isBeingDragged) {
-      scale.value = withSpring(1.03, SPRING)
-      elevation.value = withTiming(12, { duration: 150 })
+      scale.value = withSpring(1.03, motion.spring())
+      elevation.value = withTiming(12, motion.timing('fast'))
       opacity.value = 1
     } else {
-      scale.value = withSpring(1, FAST_SPRING)
-      elevation.value = withTiming(0, { duration: 150 })
-      opacity.value = isDragging ? withTiming(0.7, { duration: 100 }) : withTiming(1, { duration: 150 })
+      scale.value = withSpring(1, motion.spring())
+      elevation.value = withTiming(0, motion.timing('fast'))
+      opacity.value = isDragging ? withTiming(0.7, motion.timing('fast')) : withTiming(1, motion.timing('fast'))
     }
-  }, [isBeingDragged, isDragging])
+  }, [isBeingDragged, isDragging, motion])
 
   React.useEffect(() => {
     if (isBeingDragged) {
       translateY.value = dragOffset
     } else {
-      translateY.value = withSpring(0, FAST_SPRING)
+      translateY.value = withSpring(0, motion.spring())
     }
-  }, [dragOffset, isBeingDragged])
+  }, [dragOffset, isBeingDragged, motion])
 
   const animStyle = useAnimatedStyle(() => ({
     transform: [

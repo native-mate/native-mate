@@ -126,7 +126,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export const ProductCard: React.FC<ProductCardProps> = ({
+export const ProductCard = React.memo<ProductCardProps>(({
   image,
   title,
   price,
@@ -145,6 +145,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   disabled = false,
   haptic = true,
   style,
+  testID,
   ...rest
 }) => {
   const theme = useTheme()
@@ -320,6 +321,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               accessibilityRole="button"
               accessibilityLabel="Add to cart"
               accessibilityState={{ disabled: disabled || !inStock }}
+              testID={testID ? `${testID}-action` : undefined}
             >
               <Ionicons name="cart-outline" size={16} color={theme.colors.onPrimary} />
               <Text variant="caption" style={styles.addToCartLabel}>
@@ -348,6 +350,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         accessibilityLabel={`${title}, ${formatPrice(price)}`}
         accessibilityState={{ disabled }}
         style={[styles.container, cardAnimStyle, disabled && { opacity: 0.5 }, style]}
+        testID={testID}
         {...(rest as any)}
       >
         {cardContent}
@@ -359,9 +362,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     <Animated.View
       style={[styles.container, disabled && { opacity: 0.5 }, style]}
       accessibilityRole="summary"
+      testID={testID}
       {...rest}
     >
       {cardContent}
     </Animated.View>
   )
-}
+})
+
+ProductCard.displayName = 'ProductCard'

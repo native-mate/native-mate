@@ -6,7 +6,7 @@ import Animated, {
   useAnimatedStyle,
   withSpring,
 } from 'react-native-reanimated'
-import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
+import { useTheme, useMotion, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { SliderProps, RangeSliderProps } from './slider.types'
 
 let Haptics: any = null
@@ -51,6 +51,7 @@ export const Slider: React.FC<SliderProps> = ({
   accessibilityLabel,
 }) => {
   const theme = useTheme()
+  const motion = useMotion()
   const styles = useStyles()
   const [width, setWidth] = useState(0)
 
@@ -230,6 +231,7 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
   accessibilityLabel,
 }) => {
   const theme = useTheme()
+  const motion = useMotion()
   const styles = useStyles()
   const [width, setWidth] = useState(0)
 

@@ -8,7 +8,7 @@ import Animated, {
   Easing,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, Separator } from '@native-mate/core'
+import { useTheme, useMotion, Text, Separator } from '@native-mate/core'
 import type { AccordionProps, AccordionItem } from './accordion.types'
 
 const sizeMap = {
@@ -16,8 +16,6 @@ const sizeMap = {
   md: { py: 14, px: 16, fontSize: 15, iconSize: 16, chevronSize: 16 },
   lg: { py: 18, px: 20, fontSize: 17, iconSize: 18, chevronSize: 18 },
 }
-
-const TIMING = { duration: 250, easing: Easing.out(Easing.cubic) }
 
 // ── Single accordion item ─────────────────────────────────────────────────────
 
@@ -41,7 +39,9 @@ const AccordionItemComponent: React.FC<AccordionItemComponentProps> = ({
   isLast,
 }) => {
   const theme = useTheme()
+  const motion = useMotion()
   const sz = sizeMap[size]
+  const timing = { ...motion.timing('normal'), easing: Easing.out(Easing.cubic) }
 
   const rotation = useSharedValue(isOpen ? 180 : 0)
   const heightAnim = useSharedValue(isOpen ? 0 : 0)
@@ -62,12 +62,12 @@ const AccordionItemComponent: React.FC<AccordionItemComponentProps> = ({
   }, [contentH, isOpen])
 
   React.useEffect(() => {
-    rotation.value = withTiming(isOpen ? 180 : 0, TIMING)
-    opacityAnim.value = withTiming(isOpen ? 1 : 0, { duration: isOpen ? 250 : 150 })
+    rotation.value = withTiming(isOpen ? 180 : 0, timing)
+    opacityAnim.value = withTiming(isOpen ? 1 : 0, motion.timing(isOpen ? 'normal' : 'fast'))
     if (isOpen && contentH > 0) {
-      heightAnim.value = withTiming(contentH, TIMING)
+      heightAnim.value = withTiming(contentH, timing)
     } else if (!isOpen) {
-      heightAnim.value = withTiming(0, TIMING)
+      heightAnim.value = withTiming(0, timing)
     }
   }, [isOpen, contentH])
 

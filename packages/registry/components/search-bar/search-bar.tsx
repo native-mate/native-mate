@@ -1,5 +1,5 @@
 // native-mate: search-bar@0.1.0 | hash:PLACEHOLDER
-import React, { useState, useRef, useCallback, useEffect } from 'react'
+import React, { useState, useRef, useCallback, useEffect, useImperativeHandle } from 'react'
 import { View, TextInput, Pressable, ActivityIndicator, Platform } from 'react-native'
 import Animated, {
   useSharedValue,
@@ -9,7 +9,7 @@ import Animated, {
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
 import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
-import type { SearchBarProps, SearchBarSuggestion, HapticStyle } from './search-bar.types'
+import type { SearchBarProps, SearchBarSuggestion, HapticStyle, SearchBarHandle } from './search-bar.types'
 
 let Haptics: any = null
 try { Haptics = require('expo-haptics') } catch {}
@@ -80,7 +80,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export const SearchBar: React.FC<SearchBarProps> = ({
+export const SearchBar = React.forwardRef<SearchBarHandle, SearchBarProps>(({
   value,
   onChangeText,
   placeholder = 'Search...',
@@ -95,7 +95,8 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   disabled = false,
   haptic = 'light',
   style,
-}) => {
+  testID,
+}, ref) => {
   const theme = useTheme()
   const styles = useStyles()
   const inputRef = useRef<TextInput>(null)
@@ -153,10 +154,17 @@ export const SearchBar: React.FC<SearchBarProps> = ({
     onSuggestionPress?.(suggestion)
   }, [haptic, onSuggestionPress])
 
+  useImperativeHandle(ref, () => ({
+    focus: () => inputRef.current?.focus(),
+    blur: () => inputRef.current?.blur(),
+    clear: handleClear,
+    isFocused: () => inputRef.current?.isFocused() ?? false,
+  }))
+
   const showSuggestions = focused && suggestions.length > 0
 
   return (
-    <View style={[styles.container, disabled && { opacity: 0.5 }, style]}>
+    <View style={[styles.container, disabled && { opacity: 0.5 }, style]} testID={testID}>
       <View style={styles.row}>
         {/* Search input */}
         <View style={[styles.inputWrap, focused && styles.inputWrapFocused]}>
@@ -167,6 +175,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
           )}
           <TextInput
             ref={inputRef}
+            testID={testID ? `${testID}-input` : undefined}
             style={[
               styles.input,
               Platform.OS === 'web' && { outlineStyle: 'none' } as any,
@@ -186,7 +195,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
             accessibilityLabel={placeholder}
           />
           {value.length > 0 && (
-            <Pressable onPress={handleClear} hitSlop={6} accessibilityLabel="Clear search">
+            <Pressable onPress={handleClear} hitSlop={6} accessibilityLabel="Clear search" testID={testID ? `${testID}-clear` : undefined}>
               <View style={styles.clearBtn}>
                 <Ionicons name="close" size={12} color={theme.colors.muted} />
               </View>
@@ -235,4 +244,6 @@ export const SearchBar: React.FC<SearchBarProps> = ({
       )}
     </View>
   )
-}
+})
+
+SearchBar.displayName = 'SearchBar'

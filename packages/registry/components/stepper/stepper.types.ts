@@ -28,4 +28,5 @@ export interface StepperProps {
   /** Enable haptic feedback on step press. Default: true */
   haptic?: boolean
   style?: StyleProp<ViewStyle>
+  testID?: string
 }

@@ -2,37 +2,37 @@
   "components": [
     {
       "name": "accordion",
-      "version": "0.1.2",
+      "version": "0.2.0",
       "description": "Collapsible accordion with animated height and chevron",
       "category": "layout"
     },
     {
       "name": "action-sheet",
-      "version": "0.1.3",
+      "version": "0.2.0",
       "description": "iOS-style action sheet with animated slide-up, destructive variants, and cancel button",
       "category": "overlay"
     },
     {
       "name": "alert",
-      "version": "0.1.3",
+      "version": "0.2.0",
       "description": "Inline alert box with left accent border and variants",
       "category": "feedback"
     },
     {
       "name": "audio-player",
-      "version": "0.1.2",
+      "version": "0.2.0",
       "description": "Audio player with play/pause, progress bar, track info, artwork, and compact mode",
       "category": "display"
     },
     {
       "name": "avatar",
-      "version": "0.1.2",
+      "version": "0.2.0",
       "description": "Circular avatar with image + initials fallback",
       "category": "display"
     },
     {
       "name": "badge",
-      "version": "0.1.2",
+      "version": "0.2.0",
       "description": "Inline status badge with 5 variants",
       "category": "display"
     },
@@ -62,7 +62,7 @@
     },
     {
       "name": "breadcrumb",
-      "version": "0.1.3",
+      "version": "0.2.0",
       "description": "Navigation breadcrumb path with configurable separators, middle truncation, and icon support",
       "category": "navigation"
     },
@@ -74,7 +74,7 @@
     },
     {
       "name": "card",
-      "version": "0.1.1",
+      "version": "0.2.0",
       "description": "Surface container with border and shadow",
       "category": "display"
     },
@@ -86,13 +86,13 @@
     },
     {
       "name": "cart-item",
-      "version": "0.1.3",
+      "version": "0.2.0",
       "description": "Shopping cart item row with image, quantity stepper, swipe-to-remove, and animated price",
       "category": "display"
     },
     {
       "name": "chat-bubble",
-      "version": "0.1.3",
+      "version": "0.2.0",
       "description": "Chat message bubble with sender alignment, delivery status, avatar, and bubble tail",
       "category": "display"
     },
@@ -104,7 +104,7 @@
     },
     {
       "name": "chip",
-      "version": "0.1.2",
+      "version": "0.2.0",
       "description": "Selectable chip with animated selection state, icon/avatar support, closable mode, and ChipGroup layout helper",
       "category": "input"
     },
@@ -122,31 +122,31 @@
     },
     {
       "name": "comment",
-      "version": "0.1.2",
+      "version": "0.2.0",
       "description": "Threaded comment with nested replies, like/reply actions, relative timestamps, and author interaction",
       "category": "display"
     },
     {
       "name": "countdown",
-      "version": "0.1.3",
+      "version": "0.2.0",
       "description": "Countdown timer with animated digit flip, card/inline/minimal variants",
       "category": "display"
     },
     {
       "name": "data-table",
-      "version": "0.1.3",
+      "version": "0.2.0",
       "description": "Data table with sortable columns, horizontal scroll, sticky header, striped rows, and loading skeleton",
       "category": "display"
     },
     {
       "name": "date-picker",
-      "version": "0.1.3",
+      "version": "0.2.0",
       "description": "Custom calendar date picker with scroll wheel time selector and bottom sheet presentation",
       "category": "input"
     },
     {
       "name": "dialog",
-      "version": "0.1.3",
+      "version": "0.2.0",
       "description": "Confirm/cancel dialog with scale + fade animation, destructive variant, icon support, and backdrop dismiss",
       "category": "overlay"
     },
@@ -158,13 +158,13 @@
     },
     {
       "name": "draggable-list",
-      "version": "0.1.2",
+      "version": "0.2.0",
       "description": "Reorderable list with long-press drag, shadow lift, and smooth 60fps reorder animations",
       "category": "input"
     },
     {
       "name": "dropdown-menu",
-      "version": "0.1.3",
+      "version": "0.2.0",
       "description": "Context menu anchored to a trigger with scale animation, icons, destructive items, and dividers",
       "category": "overlay"
     },
@@ -206,19 +206,19 @@
     },
     {
       "name": "infinite-scroll",
-      "version": "0.1.3",
+      "version": "0.2.0",
       "description": "Infinite scroll list wrapper with load-more trigger, loading indicator, and empty state",
       "category": "layout"
     },
     {
       "name": "input",
-      "version": "0.2.3",
+      "version": "0.3.0",
       "description": "Feature-rich text input with 3 sizes, prefix/suffix, floating label, password toggle, clearable, character count, shake on error, haptic on focus",
       "category": "input"
     },
     {
       "name": "list-item",
-      "version": "0.1.1",
+      "version": "0.2.0",
       "description": "Universal list row with leading/trailing slots, press animation, destructive variant, compact mode, and divider support",
       "category": "display"
     },
@@ -242,19 +242,19 @@
     },
     {
       "name": "notification-card",
-      "version": "0.1.3",
+      "version": "0.2.0",
       "description": "Notification list item with category accent, unread indicator, relative time, and swipe dismiss",
       "category": "display"
     },
     {
       "name": "onboarding-screen",
-      "version": "0.1.2",
+      "version": "0.2.0",
       "description": "Full-screen onboarding slide with image, text, animated dot indicator, and navigation controls",
       "category": "layout"
     },
     {
       "name": "otp-input",
-      "version": "0.1.3",
+      "version": "0.2.0",
       "description": "OTP/PIN code input with individual digit boxes",
       "category": "input"
     },
@@ -266,7 +266,7 @@
     },
     {
       "name": "phone-input",
-      "version": "0.1.3",
+      "version": "0.2.0",
       "description": "International phone number input with country picker, flag display, and auto-formatting",
       "category": "input"
     },
@@ -290,7 +290,7 @@
     },
     {
       "name": "product-card",
-      "version": "0.1.2",
+      "version": "0.2.0",
       "description": "E-commerce product card with image, pricing, ratings, favorite toggle, and add-to-cart",
       "category": "display"
     },
@@ -320,19 +320,19 @@
     },
     {
       "name": "rating",
-      "version": "0.1.2",
+      "version": "0.2.0",
       "description": "Star rating with animated fill, half-star support, haptic feedback per star, and read-only display mode",
       "category": "input"
     },
     {
       "name": "reaction-bar",
-      "version": "0.1.2",
+      "version": "0.2.0",
       "description": "Emoji reaction bar with animated count change, own-reaction highlight, and add reaction button",
       "category": "input"
     },
     {
       "name": "review-card",
-      "version": "0.1.3",
+      "version": "0.2.0",
       "description": "User review card with star rating, author info, expandable text, images, and helpful voting",
       "category": "display"
     },
@@ -344,19 +344,19 @@
     },
     {
       "name": "search-bar",
-      "version": "0.1.2",
+      "version": "0.2.0",
       "description": "Animated search input with slide-in cancel button, suggestions dropdown, loading state, and clear button",
       "category": "input"
     },
     {
       "name": "segmented-control",
-      "version": "0.1.2",
+      "version": "0.2.0",
       "description": "iOS-style segmented toggle with animated sliding pill indicator",
       "category": "input"
     },
     {
       "name": "select",
-      "version": "0.1.2",
+      "version": "0.2.0",
       "description": "Select dropdown using Sheet with FlatList options",
       "category": "input"
     },
@@ -368,19 +368,19 @@
     },
     {
       "name": "sheet",
-      "version": "0.1.1",
+      "version": "0.2.0",
       "description": "Animated bottom sheet with snap points",
       "category": "overlay"
     },
     {
       "name": "skeleton",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "description": "Pulsing skeleton loader placeholder",
       "category": "feedback"
     },
     {
       "name": "slider",
-      "version": "0.1.3",
+      "version": "0.2.0",
       "description": "Gesture-based range slider with step and accessibility support",
       "category": "input"
     },
@@ -404,13 +404,13 @@
     },
     {
       "name": "stat-card",
-      "version": "0.1.3",
+      "version": "0.2.0",
       "description": "KPI metric card with animated counter, trend indicator, and skeleton loading",
       "category": "display"
     },
     {
       "name": "stepper",
-      "version": "0.1.2",
+      "version": "0.2.0",
       "description": "Multi-step progress indicator with animated transitions and connecting lines",
       "category": "navigation"
     },
@@ -434,7 +434,7 @@
     },
     {
       "name": "tag",
-      "version": "0.1.3",
+      "version": "0.2.0",
       "description": "Compact dismissible label chip with spring animation on remove",
       "category": "display"
     },
@@ -446,19 +446,19 @@
     },
     {
       "name": "textarea",
-      "version": "0.1.2",
+      "version": "0.2.0",
       "description": "Multiline text input with label and error state",
       "category": "input"
     },
     {
       "name": "timeline",
-      "version": "0.1.2",
+      "version": "0.2.0",
       "description": "Vertical timeline with animated stagger entrance, status nodes, and connecting lines",
       "category": "display"
     },
     {
       "name": "toast",
-      "version": "0.1.3",
+      "version": "0.2.0",
       "description": "Floating toast notification with auto-dismiss and position",
       "category": "feedback"
     },

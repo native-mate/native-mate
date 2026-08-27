@@ -33,4 +33,5 @@ export interface NotificationCardProps {
   /** Enable swipe to dismiss. Default: true */
   swipeToDismiss?: boolean
   style?: StyleProp<ViewStyle>
+  testID?: string
 }

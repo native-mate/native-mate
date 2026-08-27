@@ -60,16 +60,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-function ReactionPill({
+const ReactionPill = React.memo(function ReactionPill({
   reaction,
   size,
   onReact,
   haptic,
+  testID,
 }: {
   reaction: Reaction
   size: ReactionBarSize
   onReact?: (emoji: string) => void
   haptic: boolean
+  testID?: string
 }) {
   const theme = useTheme()
   const styles = useStyles()
@@ -97,6 +99,7 @@ function ReactionPill({
       accessibilityRole="button"
       accessibilityLabel={`${reaction.emoji} ${reaction.count} reactions${reaction.reacted ? ', you reacted' : ''}`}
       accessibilityState={{ selected: reaction.reacted }}
+      testID={testID}
     >
       <Animated.View
         style={[
@@ -128,9 +131,10 @@ function ReactionPill({
       </Animated.View>
     </Pressable>
   )
-}
+})
+ReactionPill.displayName = 'ReactionPill'
 
-export const ReactionBar: React.FC<ReactionBarProps> = ({
+export const ReactionBar = React.memo<ReactionBarProps>(({
   reactions,
   onReact,
   onLongPress,
@@ -138,6 +142,7 @@ export const ReactionBar: React.FC<ReactionBarProps> = ({
   size = 'md',
   haptic = true,
   style,
+  testID,
   ...rest
 }) => {
   const theme = useTheme()
@@ -159,15 +164,17 @@ export const ReactionBar: React.FC<ReactionBarProps> = ({
       style={[styles.container, style]}
       accessibilityRole="toolbar"
       accessibilityLabel="Reactions"
+      testID={testID}
       {...rest}
     >
-      {visibleReactions.map((reaction) => (
+      {visibleReactions.map((reaction, index) => (
         <ReactionPill
           key={reaction.emoji}
           reaction={reaction}
           size={size}
           onReact={onReact}
           haptic={haptic}
+          testID={testID ? `${testID}-reaction-${index}` : undefined}
         />
       ))}
       {overflowCount > 0 && (
@@ -193,6 +200,7 @@ export const ReactionBar: React.FC<ReactionBarProps> = ({
           onPress={handleAddPress}
           accessibilityRole="button"
           accessibilityLabel="Add reaction"
+          testID={testID ? `${testID}-action` : undefined}
         >
           <View
             style={[
@@ -213,4 +221,5 @@ export const ReactionBar: React.FC<ReactionBarProps> = ({
       )}
     </View>
   )
-}
+})
+ReactionBar.displayName = 'ReactionBar'

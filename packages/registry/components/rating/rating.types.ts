@@ -26,4 +26,5 @@ export interface RatingProps {
   disabled?: boolean
   accessibilityLabel?: string
   style?: StyleProp<ViewStyle>
+  testID?: string
 }

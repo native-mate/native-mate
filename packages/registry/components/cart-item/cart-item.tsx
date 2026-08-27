@@ -85,7 +85,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export const CartItem: React.FC<CartItemProps> = ({
+export const CartItem = React.memo<CartItemProps>(({
   image,
   title,
   variant,
@@ -99,6 +99,7 @@ export const CartItem: React.FC<CartItemProps> = ({
   disabled = false,
   haptic = true,
   style,
+  testID,
   ...rest
 }) => {
   const theme = useTheme()
@@ -133,7 +134,7 @@ export const CartItem: React.FC<CartItemProps> = ({
   const totalPrice = price * quantity
 
   return (
-    <View style={[styles.outerContainer, style]} {...rest}>
+    <View style={[styles.outerContainer, style]} testID={testID} {...rest}>
       {onRemove != null && (
         <View style={styles.deleteBackground}>
           <Ionicons name="trash-outline" size={22} color={theme.colors.onDestructive} />
@@ -180,6 +181,7 @@ export const CartItem: React.FC<CartItemProps> = ({
             accessibilityRole="button"
             accessibilityLabel="Remove item"
             hitSlop={8}
+            testID={testID ? `${testID}-action` : undefined}
           >
             <Ionicons
               name="close-circle-outline"
@@ -191,4 +193,6 @@ export const CartItem: React.FC<CartItemProps> = ({
       </View>
     </View>
   )
-}
+})
+
+CartItem.displayName = 'CartItem'

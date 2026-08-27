@@ -1,6 +1,6 @@
 {
   "name": "onboarding-screen",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Full-screen onboarding slide with image, text, animated dot indicator, and navigation controls",
   "category": "layout",
   "files": [

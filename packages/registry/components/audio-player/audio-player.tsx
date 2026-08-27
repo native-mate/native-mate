@@ -10,7 +10,7 @@ import Animated, {
   Easing,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles, shadow, fontStyle } from '@native-mate/core'
+import { useTheme, useMotion, Text, makeStyles, shadow, fontStyle, withAlpha } from '@native-mate/core'
 import type { AudioPlayerProps } from './audio-player.types'
 
 let Haptics: any = null
@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
     width: 200,
     height: 200,
     borderRadius: theme.radius.lg,
-    backgroundColor: theme.colors.primary + '12',
+    backgroundColor: withAlpha(theme.colors.primary, 0.07),
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -123,7 +123,7 @@ const useStyles = makeStyles((theme) => ({
     width: 48,
     height: 48,
     borderRadius: theme.radius.sm,
-    backgroundColor: theme.colors.primary + '12',
+    backgroundColor: withAlpha(theme.colors.primary, 0.07),
     alignItems: 'center',
     justifyContent: 'center',
   },

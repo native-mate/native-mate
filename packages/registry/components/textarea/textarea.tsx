@@ -1,5 +1,5 @@
 // native-mate: textarea@0.2.0 | hash:PLACEHOLDER
-import React, { useState, useRef, useEffect, useCallback } from 'react'
+import React, { useState, useRef, useEffect, useCallback, useImperativeHandle } from 'react'
 import { View, TextInput, Pressable, NativeSyntheticEvent, TextInputKeyPressEventData } from 'react-native'
 import Animated, {
   useSharedValue,
@@ -10,7 +10,7 @@ import Animated, {
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
 import { useTheme, Text, makeStyles } from '@native-mate/core'
-import type { TextareaProps } from './textarea.types'
+import type { TextareaProps, TextareaHandle } from './textarea.types'
 
 let Haptics: any = null
 try { Haptics = require('expo-haptics') } catch {}
@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export const Textarea: React.FC<TextareaProps> = ({
+export const Textarea = React.forwardRef<TextareaHandle, TextareaProps>(({
   label,
   error,
   hint,
@@ -74,8 +74,9 @@ export const Textarea: React.FC<TextareaProps> = ({
   onBlur: onBlurProp,
   placeholder,
   maxLength,
+  testID,
   ...rest
-}) => {
+}, ref) => {
   const theme = useTheme()
   const styles = useStyles()
   const inputRef = useRef<TextInput>(null)
@@ -181,6 +182,18 @@ export const Textarea: React.FC<TextareaProps> = ({
     setInputHeight(Math.min(Math.max(newHeight, minH), maxH))
   }, [minRows, maxRows])
 
+  const handleClear = useCallback(() => {
+    if (value === undefined) setInternalValue('')
+    onChangeText?.('')
+  }, [value, onChangeText])
+
+  useImperativeHandle(ref, () => ({
+    focus: () => inputRef.current?.focus(),
+    blur: () => inputRef.current?.blur(),
+    clear: handleClear,
+    isFocused: () => inputRef.current?.isFocused() ?? false,
+  }))
+
   const countColor = isAtLimit
     ? theme.colors.destructive
     : isNearLimit
@@ -188,11 +201,11 @@ export const Textarea: React.FC<TextareaProps> = ({
     : theme.colors.muted
 
   return (
-    <View style={styles.wrapper}>
+    <View style={styles.wrapper} testID={testID}>
       {/* Label row (non-floating) */}
       {label && !floatingLabel && (
         <View style={styles.labelRow}>
-          <Text variant="label">
+          <Text variant="label" testID={testID ? `${testID}-label` : undefined}>
             {label}
             {required && <Text variant="label" color={theme.colors.destructive}> *</Text>}
           </Text>
@@ -215,6 +228,7 @@ export const Textarea: React.FC<TextareaProps> = ({
         <View style={styles.inputRow}>
           <TextInput
             ref={inputRef}
+            testID={testID ? `${testID}-input` : undefined}
             multiline
             style={[
               styles.input,
@@ -261,7 +275,7 @@ export const Textarea: React.FC<TextareaProps> = ({
       {/* Bottom row: error/hint + count */}
       <View style={styles.bottomRow}>
         <View style={{ flex: 1 }}>
-          {error && <Text variant="caption" style={styles.error}>{error}</Text>}
+          {error && <Text variant="caption" style={styles.error} testID={testID ? `${testID}-error` : undefined}>{error}</Text>}
           {!error && hint && <Text variant="caption" style={styles.hint}>{hint}</Text>}
         </View>
         {showCount && (
@@ -272,4 +286,6 @@ export const Textarea: React.FC<TextareaProps> = ({
       </View>
     </View>
   )
-}
+})
+
+Textarea.displayName = 'Textarea'

@@ -1,5 +1,5 @@
 // native-mate: otp-input@0.2.0 | hash:PLACEHOLDER
-import React, { useRef, useState, useEffect, useCallback } from 'react'
+import React, { useRef, useState, useEffect, useCallback, useImperativeHandle } from 'react'
 import { View, TextInput, Pressable } from 'react-native'
 import Animated, {
   useSharedValue,
@@ -9,8 +9,8 @@ import Animated, {
   withRepeat,
   interpolateColor,
 } from 'react-native-reanimated'
-import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
-import type { OTPInputProps } from './otp-input.types'
+import { useTheme, useMotion, withAlpha, Text, makeStyles, fontStyle } from '@native-mate/core'
+import type { OTPInputProps, OTPInputHandle } from './otp-input.types'
 
 let Haptics: any = null
 try { Haptics = require('expo-haptics') } catch {}
@@ -43,47 +43,55 @@ function Cell({
   secure: boolean
 }) {
   const theme = useTheme()
+  const motion = useMotion()
 
   // Cursor blink
   const cursorOpacity = useSharedValue(isActive ? 1 : 0)
   useEffect(() => {
     if (isActive) {
-      cursorOpacity.value = withRepeat(
-        withSequence(
-          withTiming(1, { duration: 0 }),
-          withTiming(1, { duration: 500 }),
-          withTiming(0, { duration: 200 }),
-          withTiming(0, { duration: 300 }),
-        ),
-        -1,
-        false,
-      )
+      if (motion.reduced) {
+        // Decorative-only loop: leave the cursor visible and steady instead of blinking.
+        cursorOpacity.value = 1
+      } else {
+        cursorOpacity.value = withRepeat(
+          withSequence(
+            withTiming(1, { duration: 0 }),
+            withTiming(1, { duration: 500 }),
+            withTiming(0, { duration: 200 }),
+            withTiming(0, { duration: 300 }),
+          ),
+          motion.loops(-1),
+          false,
+        )
+      }
     } else {
-      cursorOpacity.value = withTiming(0, { duration: 100 })
+      cursorOpacity.value = withTiming(0, motion.timing('fast'))
     }
-  }, [isActive])
+  }, [isActive, motion])
 
   // Border/bg color animation
   const borderAnim = useSharedValue(0)
   useEffect(() => {
     borderAnim.value = withTiming(
       error ? 2 : success ? 3 : isActive ? 1 : isFilled ? 0.5 : 0,
-      { duration: 180 }
+      motion.timing('normal')
     )
-  }, [isActive, isFilled, error, success])
+  }, [isActive, isFilled, error, success, motion])
 
   const borderAnimStyle = useAnimatedStyle(() => {
     if (variant === 'underline') return {}
     return {
-      borderColor: error
-        ? theme.colors.destructive
-        : success
-        ? theme.colors.success
-        : isActive
-        ? theme.colors.primary
-        : isFilled
-        ? theme.colors.onSurface ?? theme.colors.border
-        : theme.colors.border,
+      borderColor: interpolateColor(
+        borderAnim.value,
+        [0, 0.5, 1, 2, 3],
+        [
+          theme.colors.border,
+          theme.colors.onSurface ?? theme.colors.border,
+          theme.colors.primary,
+          theme.colors.destructive,
+          theme.colors.success,
+        ],
+      ),
     }
   })
 
@@ -123,7 +131,7 @@ function Cell({
         alignItems: 'center' as const,
         justifyContent: 'center' as const,
         borderColor: theme.colors.border,
-        backgroundColor: isActive ? theme.colors.primary + '0D' : theme.colors.background,
+        backgroundColor: isActive ? withAlpha(theme.colors.primary, 0.05) : theme.colors.background,
       }
 
   const displayChar = isFilled && secure ? '●' : char
@@ -196,12 +204,26 @@ export const OTPInput: React.FC<OTPInputProps> = ({
     }
   }, [success])
 
-  // Resend cooldown timer
+  // Resend cooldown timer — driven off a deadline timestamp so backgrounding
+  // the app can't drift the count (a chained setTimeout would lose time
+  // while suspended).
+  const cooldownDeadline = useRef<number | null>(null)
   useEffect(() => {
-    if (cooldown <= 0) return
-    const t = setTimeout(() => setCooldown((c) => c - 1), 1000)
-    return () => clearTimeout(t)
-  }, [cooldown])
+    if (cooldown <= 0) {
+      cooldownDeadline.current = null
+      return
+    }
+    cooldownDeadline.current = Date.now() + cooldown * 1000
+    const tick = () => {
+      const deadline = cooldownDeadline.current
+      if (deadline == null) return
+      const remaining = Math.max(0, Math.ceil((deadline - Date.now()) / 1000))
+      setCooldown(remaining)
+    }
+    const id = setInterval(tick, 1000)
+    return () => clearInterval(id)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cooldown > 0])
 
   const handleChange = useCallback((text: string) => {
     const clean = type === 'numeric'

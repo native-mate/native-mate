@@ -31,4 +31,5 @@ export interface ReviewCardProps extends Omit<ViewProps, 'style'> {
   /** Enable haptic feedback */
   haptic?: boolean
   style?: StyleProp<ViewStyle>
+  testID?: string
 }

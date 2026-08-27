@@ -1,6 +1,6 @@
 {
   "name": "reaction-bar",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Emoji reaction bar with animated count change, own-reaction highlight, and add reaction button",
   "category": "input",
   "files": [

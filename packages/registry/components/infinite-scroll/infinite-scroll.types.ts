@@ -1,5 +1,5 @@
 import type React from 'react'
-import type { StyleProp, ViewStyle } from 'react-native'
+import type { FlatListProps, StyleProp, ViewStyle } from 'react-native'
 
 export interface InfiniteScrollProps<T = any> {
   /** Data array */
@@ -20,8 +20,12 @@ export interface InfiniteScrollProps<T = any> {
   ListEmptyComponent?: React.ReactNode
   /** Component rendered between items */
   ItemSeparatorComponent?: React.ReactNode
-  /** Distance from the bottom (in px) to trigger load more. Default: 200 */
+  /** Distance from the bottom (in px) to trigger load more via the manual
+   * onScroll distance check. Default: 200 */
   threshold?: number
+  /** Ratio (in screen-lengths) passed to FlatList's onEndReachedThreshold.
+   * Default: 0.5 */
+  endReachedThreshold?: number
   /** Custom loading indicator at the bottom */
   loadingIndicator?: React.ReactNode
   /** End-of-list message. Default: none */
@@ -32,4 +36,9 @@ export interface InfiniteScrollProps<T = any> {
   numColumns?: number
   style?: StyleProp<ViewStyle>
   contentContainerStyle?: StyleProp<ViewStyle>
+  /** Additional FlatList props passed through (e.g. getItemLayout,
+   * refreshControl, windowSize, initialNumToRender). Applied after the
+   * component's own props, but cannot override data, renderItem, key, or
+   * onEndReached. */
+  flatListProps?: Partial<FlatListProps<T>>
 }

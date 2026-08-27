@@ -13,6 +13,7 @@ export interface TagProps {
   disabled?: boolean
   size?: 'sm' | 'md' | 'lg'
   style?: ViewStyle
+  testID?: string
 }
 
 export interface TagGroupProps {
@@ -21,4 +22,5 @@ export interface TagGroupProps {
   selected?: string[]
   onChange?: (selected: string[]) => void
   style?: ViewStyle
+  testID?: string
 }

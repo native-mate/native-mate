@@ -1,0 +1,1 @@
+{"version":3,"file":"useReducedMotion.js","sourceRoot":"","sources":["../../src/utils/useReducedMotion.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,UAAU,MAAM,yBAAyB,CAAA;AAErD,8EAA8E;AAC9E,8CAA8C;AAC9C,MAAM,UAAU,gBAAgB;IAC9B,MAAM,IAAI,GAAI,UAAmD,CAAC,gBAAgB,CAAA;IAClF,OAAO,IAAI,CAAC,CAAC,CAAC,IAAI,EAAE,CAAC,CAAC,CAAC,KAAK,CAAA;AAC9B,CAAC"}

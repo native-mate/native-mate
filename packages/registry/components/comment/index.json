@@ -1,6 +1,6 @@
 {
   "name": "comment",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Threaded comment with nested replies, like/reply actions, relative timestamps, and author interaction",
   "category": "display",
   "files": [

@@ -9,7 +9,7 @@ import Animated, {
   runOnJS,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles, shadow, fontStyle } from '@native-mate/core'
+import { useTheme, useMotion, Text, makeStyles, shadow, fontStyle, withAlpha } from '@native-mate/core'
 import type { DropdownMenuProps, DropdownMenuItem, HapticStyle } from './dropdown-menu.types'
 
 let Haptics: any = null

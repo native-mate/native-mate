@@ -2,7 +2,7 @@
 import React from 'react'
 import { View, Pressable } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle, withAlpha } from '@native-mate/core'
 import type { AlertProps, AlertVariant } from './alert.types'
 
 type IconName = React.ComponentProps<typeof Ionicons>['name']
@@ -64,8 +64,8 @@ export const Alert: React.FC<AlertProps> = ({
       style={[
         styles.inner,
         {
-          backgroundColor: accentColor + '14',
-          borderColor: accentColor + '45',
+          backgroundColor: withAlpha(accentColor, 0.08),
+          borderColor: withAlpha(accentColor, 0.27),
         },
       ]}
       accessibilityRole="alert"
@@ -88,7 +88,7 @@ export const Alert: React.FC<AlertProps> = ({
           <View style={styles.footer}>
             <Pressable
               onPress={action.onPress}
-              style={[styles.actionBtn, { borderColor: accentColor + '60' }]}
+              style={[styles.actionBtn, { borderColor: withAlpha(accentColor, 0.38) }]}
             >
               <Text style={{ color: accentColor, fontSize: 12, ...fontStyle(theme.typography, 'semibold') }}>
                 {action.label}

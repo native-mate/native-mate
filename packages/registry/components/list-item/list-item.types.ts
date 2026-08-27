@@ -28,4 +28,5 @@ export interface ListItemProps {
   /** Show chevron as trailing element by default when onPress is defined */
   showChevron?: boolean
   style?: StyleProp<ViewStyle>
+  testID?: string
 }

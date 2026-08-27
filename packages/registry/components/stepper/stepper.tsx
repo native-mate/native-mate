@@ -158,9 +158,10 @@ interface StepNodeProps {
   activeColor: string
   upcomingColor: string
   onPress?: () => void
+  testID?: string
 }
 
-const StepNode: React.FC<StepNodeProps> = ({
+const StepNode = React.memo<StepNodeProps>(({
   step,
   index,
   status,
@@ -170,6 +171,7 @@ const StepNode: React.FC<StepNodeProps> = ({
   activeColor,
   upcomingColor,
   onPress,
+  testID,
 }) => {
   const theme = useTheme()
   const sz = sizeMap[size]
@@ -259,6 +261,7 @@ const StepNode: React.FC<StepNodeProps> = ({
       accessibilityRole="button"
       accessibilityLabel={`Step ${index + 1}: ${step.label}${status === 'completed' ? ', completed' : status === 'active' ? ', current' : ', upcoming'}`}
       accessibilityState={{ disabled: !isInteractive }}
+      testID={testID}
     >
       <Animated.View
         style={[
@@ -279,11 +282,13 @@ const StepNode: React.FC<StepNodeProps> = ({
       </Animated.View>
     </Pressable>
   )
-}
+})
+
+StepNode.displayName = 'StepNode'
 
 // ── Stepper ──────────────────────────────────────────────────────────────────
 
-export const Stepper: React.FC<StepperProps> = ({
+export const Stepper = React.memo<StepperProps>(({
   steps,
   currentStep,
   orientation = 'horizontal',
@@ -295,6 +300,7 @@ export const Stepper: React.FC<StepperProps> = ({
   size = 'md',
   haptic = true,
   style,
+  testID,
 }) => {
   const theme = useTheme()
   const styles = useStyles()
@@ -319,7 +325,7 @@ export const Stepper: React.FC<StepperProps> = ({
 
   if (orientation === 'vertical') {
     return (
-      <View style={[styles.verticalContainer, style]}>
+      <View style={[styles.verticalContainer, style]} testID={testID}>
         {steps.map((step, i) => {
           const status = getStatus(i)
           return (
@@ -340,6 +346,7 @@ export const Stepper: React.FC<StepperProps> = ({
                         ? () => handleStepPress(i)
                         : undefined
                     }
+                    testID={testID ? `${testID}-item-${i}` : undefined}
                   />
                 </View>
                 <View style={{ flex: 1, marginLeft: 12, paddingTop: 4, paddingBottom: i < steps.length - 1 ? 4 : 0 }}>
@@ -385,7 +392,7 @@ export const Stepper: React.FC<StepperProps> = ({
 
   // Horizontal
   return (
-    <View style={[styles.horizontalContainer, style]}>
+    <View style={[styles.horizontalContainer, style]} testID={testID}>
       {steps.map((step, i) => {
         const status = getStatus(i)
         return (
@@ -405,6 +412,7 @@ export const Stepper: React.FC<StepperProps> = ({
                     ? () => handleStepPress(i)
                     : undefined
                 }
+                testID={testID ? `${testID}-item-${i}` : undefined}
               />
               <Text
                 style={[
@@ -448,4 +456,6 @@ export const Stepper: React.FC<StepperProps> = ({
       })}
     </View>
   )
-}
+})
+
+Stepper.displayName = 'Stepper'

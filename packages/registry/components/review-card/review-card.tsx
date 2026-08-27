@@ -142,7 +142,7 @@ function formatDate(date: string | Date): string {
   return 'Just now'
 }
 
-export const ReviewCard: React.FC<ReviewCardProps> = ({
+export const ReviewCard = React.memo<ReviewCardProps>(({
   author,
   avatar,
   rating,
@@ -158,6 +158,7 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
   maxLines = 3,
   haptic = true,
   style,
+  testID,
   ...rest
 }) => {
   const theme = useTheme()
@@ -207,6 +208,7 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
       style={[styles.container, style]}
       accessibilityRole="summary"
       accessibilityLabel={`Review by ${author}, ${rating} stars`}
+      testID={testID}
       {...rest}
     >
       <View style={styles.header}>
@@ -215,6 +217,7 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
           disabled={onAuthorPress == null}
           accessibilityRole={onAuthorPress != null ? 'button' : undefined}
           accessibilityLabel={`View ${author}'s profile`}
+          testID={testID ? `${testID}-avatar` : undefined}
         >
           {avatar != null ? (
             <Image source={avatar} style={styles.avatar} />
@@ -311,6 +314,7 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
             accessibilityRole="button"
             accessibilityLabel={`Helpful, ${helpful} votes`}
             accessibilityState={{ selected: isHelpful }}
+            testID={testID ? `${testID}-action` : undefined}
           >
             <Animated.View style={helpfulAnimStyle}>
               <Ionicons
@@ -336,6 +340,7 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
             style={styles.actionButton}
             accessibilityRole="button"
             accessibilityLabel="Report review"
+            testID={testID ? `${testID}-report` : undefined}
           >
             <Ionicons name="flag-outline" size={14} color={theme.colors.muted} />
             <Text variant="caption" style={styles.actionText}>
@@ -346,4 +351,6 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
       </View>
     </View>
   )
-}
+})
+
+ReviewCard.displayName = 'ReviewCard'

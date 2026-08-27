@@ -21,4 +21,13 @@ export interface InputProps extends Omit<TextInputProps, 'style'> {
   suffixText?: string
   floatingLabel?: boolean
   hapticOnFocus?: boolean
+  testID?: string
+}
+
+/** Imperative handle exposed via ref. */
+export interface InputHandle {
+  focus(): void
+  blur(): void
+  clear(): void
+  isFocused(): boolean
 }

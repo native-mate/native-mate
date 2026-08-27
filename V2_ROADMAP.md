@@ -51,6 +51,12 @@ High-impact components every mobile app needs.
 - [x] Custom font family support in token system — `typography.family` token + `fontStyle()` helper (core 0.2.0)
 - [ ] Border width tokens (hairline, thin, medium, thick)
 - [ ] Opacity tokens (disabled, hover, backdrop)
+- [x] Reduced-motion support — `useMotion()` + ThemeProvider collapses `animation.speed` (core 0.4.0)
+- [x] `withAlpha()` color helper replacing hex-string concatenation (core 0.4.0)
+- [ ] **v0.5 breaking wave** — see `docs/superpowers/specs/2026-08-27-v05-contracts-i18n-a11y-design.md`:
+      standardized `error`/`haptic`/`icon` prop contracts + codemod, i18n `strings` slot,
+      RTL logical-property sweep + `audit-rtl` CI gate, date-picker locale support,
+      RNGH gestures for sheet/toast, full a11y wave (44pt targets, live regions, modal focus)
 
 ---
 

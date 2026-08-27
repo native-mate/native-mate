@@ -39,4 +39,5 @@ export interface TimelineProps {
   /** Called when a node is pressed */
   onItemPress?: (key: string) => void
   style?: StyleProp<ViewStyle>
+  testID?: string
 }

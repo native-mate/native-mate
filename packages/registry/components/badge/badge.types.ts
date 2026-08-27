@@ -15,4 +15,5 @@ export interface BadgeProps {
   maxCount?: number
   onDismiss?: () => void
   children?: React.ReactNode
+  testID?: string
 }

@@ -11,14 +11,13 @@ import Animated, {
   Extrapolation,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
+import { useTheme, useMotion, withAlpha, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { NotificationCardProps, NotificationCategory } from './notification-card.types'
 
 let Haptics: any = null
 try { Haptics = require('expo-haptics') } catch {}
 
 const DISMISS_THRESHOLD = 120
-const SPRING = { damping: 18, stiffness: 200, mass: 0.7 }
 
 function getCategoryConfig(
   theme: any
@@ -115,7 +114,7 @@ function relativeTime(date: Date): string {
 
 // ── NotificationCard ─────────────────────────────────────────────────────────
 
-export const NotificationCard: React.FC<NotificationCardProps> = ({
+export const NotificationCard = React.memo<NotificationCardProps>(({
   title,
   message,
   timestamp,
@@ -128,8 +127,10 @@ export const NotificationCard: React.FC<NotificationCardProps> = ({
   haptic = true,
   swipeToDismiss = true,
   style,
+  testID,
 }) => {
   const theme = useTheme()
+  const motion = useMotion()
   const styles = useStyles()
 
   const translateX = useSharedValue(0)
@@ -165,12 +166,12 @@ export const NotificationCard: React.FC<NotificationCardProps> = ({
       },
       onPanResponderRelease: (_, gs) => {
         if (Math.abs(translateX.value) > DISMISS_THRESHOLD) {
-          translateX.value = withTiming(-500, { duration: 200 })
-          rowOpacity.value = withTiming(0, { duration: 200 }, () => {
+          translateX.value = withTiming(-500, motion.timing('normal'))
+          rowOpacity.value = withTiming(0, motion.timing('normal'), () => {
             runOnJS(handleDismissRef.current)()
           })
         } else {
-          translateX.value = withSpring(0, SPRING)
+          translateX.value = withSpring(0, motion.spring())
         }
       },
     })
@@ -202,7 +203,7 @@ export const NotificationCard: React.FC<NotificationCardProps> = ({
   }
 
   return (
-    <View style={[styles.container, style]}>
+    <View style={[styles.container, style]} testID={testID}>
       {/* Dismiss background */}
       {swipeToDismiss && onDismiss && (
         <Animated.View
@@ -235,7 +236,7 @@ export const NotificationCard: React.FC<NotificationCardProps> = ({
             <View
               style={[
                 styles.iconContainer,
-                { backgroundColor: catConfig.color + '18' },
+                { backgroundColor: withAlpha(catConfig.color, 0.09) },
               ]}
             >
               {icon ?? (
@@ -299,4 +300,6 @@ export const NotificationCard: React.FC<NotificationCardProps> = ({
       </Animated.View>
     </View>
   )
-}
+})
+
+NotificationCard.displayName = 'NotificationCard'

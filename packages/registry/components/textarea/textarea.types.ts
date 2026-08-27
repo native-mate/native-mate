@@ -27,4 +27,13 @@ export interface TextareaProps extends Omit<TextInputProps, 'style' | 'multiline
   onVoicePress?: () => void
   /** Floating label style (Material Design) */
   floatingLabel?: boolean
+  testID?: string
+}
+
+/** Imperative handle exposed via ref. */
+export interface TextareaHandle {
+  focus(): void
+  blur(): void
+  clear(): void
+  isFocused(): boolean
 }

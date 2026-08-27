@@ -8,7 +8,7 @@ import Animated, {
   withSequence,
   withTiming,
 } from 'react-native-reanimated'
-import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
+import { useTheme, useMotion, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { CountdownProps, CountdownFormat } from './countdown.types'
 
 let Haptics: any = null
@@ -101,21 +101,22 @@ const DigitCell: React.FC<DigitCellProps> = ({
   animated,
 }) => {
   const theme = useTheme()
+  const motion = useMotion()
   const translateY = useSharedValue(0)
   const scale = useSharedValue(1)
 
   useEffect(() => {
     if (animated && value !== prevValue) {
       translateY.value = withSequence(
-        withTiming(-4, { duration: 80 }),
+        withTiming(-4, motion.timing('fast')),
         withSpring(0, { damping: 12, stiffness: 200, mass: 0.5 })
       )
       scale.value = withSequence(
-        withTiming(1.1, { duration: 80 }),
+        withTiming(1.1, motion.timing('fast')),
         withSpring(1, { damping: 12, stiffness: 200, mass: 0.5 })
       )
     }
-  }, [value, prevValue, animated])
+  }, [value, prevValue, animated, motion])
 
   const animStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: translateY.value }, { scale: scale.value }],

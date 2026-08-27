@@ -1,6 +1,6 @@
 {
   "name": "chat-bubble",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "description": "Chat message bubble with sender alignment, delivery status, avatar, and bubble tail",
   "category": "display",
   "files": [

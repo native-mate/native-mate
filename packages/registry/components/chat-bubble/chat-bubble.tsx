@@ -122,7 +122,7 @@ function formatTime(date: Date): string {
 
 // ── ChatBubble ───────────────────────────────────────────────────────────────
 
-export const ChatBubble: React.FC<ChatBubbleProps> = ({
+export const ChatBubble = React.memo<ChatBubbleProps>(({
   message,
   timestamp,
   sender = 'other',
@@ -140,6 +140,7 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
   haptic = true,
   onLongPress,
   style,
+  testID,
 }) => {
   const theme = useTheme()
   const styles = useStyles()
@@ -166,7 +167,7 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
   // ── System message ──
   if (type === 'system') {
     return (
-      <View style={[styles.systemContainer, style]}>
+      <View style={[styles.systemContainer, style]} testID={testID}>
         <View
           style={[
             styles.systemBubble,
@@ -196,6 +197,7 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
         isSelf ? styles.selfContainer : styles.otherContainer,
         style,
       ]}
+      testID={testID}
     >
       {/* Sender name for other's messages */}
       {!isSelf && senderName && (
@@ -212,13 +214,14 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
       <View style={[styles.row, isSelf && styles.selfRow]}>
         {/* Avatar */}
         {shouldShowAvatar && avatar ? (
-          <Image source={avatar} style={styles.avatar} />
+          <Image source={avatar} style={styles.avatar} testID={testID ? `${testID}-avatar` : undefined} />
         ) : shouldShowAvatar ? (
           <View
             style={[
               styles.avatarPlaceholder,
               { backgroundColor: theme.colors.surface },
             ]}
+            testID={testID ? `${testID}-avatar` : undefined}
           >
             <Ionicons name="person" size={14} color={theme.colors.muted} />
           </View>
@@ -297,4 +300,6 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
       </View>
     </Animated.View>
   )
-}
+})
+
+ChatBubble.displayName = 'ChatBubble'

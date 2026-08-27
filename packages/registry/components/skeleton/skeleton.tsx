@@ -1,6 +1,6 @@
 // native-mate: skeleton@0.2.0 | hash:PLACEHOLDER
 import React, { useEffect } from 'react'
-import { View, Platform, StyleSheet } from 'react-native'
+import { View, Platform, StyleSheet, LayoutChangeEvent } from 'react-native'
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -9,7 +9,7 @@ import Animated, {
   withTiming,
   Easing,
 } from 'react-native-reanimated'
-import { useTheme } from '@native-mate/core'
+import { useTheme, useMotion, withAlpha } from '@native-mate/core'
 import type { SkeletonProps, SkeletonTextProps, SkeletonAvatarProps, SkeletonCardProps } from './skeleton.types'
 
 // ─── CSS injection (web only) ──────────────────────────────────────────────────
@@ -35,7 +35,7 @@ function injectSkeletonCSS() {
 // ─── Web bone ─────────────────────────────────────────────────────────────────
 
 function WebSkeleton({
-  width, height, borderRadius, variant, baseColor, shimmerColor,
+  width, height, borderRadius, variant, baseColor, shimmerColor, style,
 }: {
   width: string | number
   height: number
@@ -43,6 +43,7 @@ function WebSkeleton({
   variant: 'shimmer' | 'pulse'
   baseColor: string
   shimmerColor: string
+  style?: any
 }) {
   useEffect(() => { injectSkeletonCSS() }, [])
 
@@ -60,6 +61,7 @@ function WebSkeleton({
         animation: variant === 'pulse'
           ? 'nm-skeleton-pulse 1.2s ease-in-out infinite'
           : undefined,
+        ...(style as React.CSSProperties),
       } as React.CSSProperties,
     },
     variant === 'shimmer'
@@ -87,17 +89,33 @@ function NativeSkeleton({
   shimmerColor: string
   style?: any
 }) {
+  const motion = useMotion()
   const opacity  = useSharedValue(1)
   const shimmerX = useSharedValue(-1)
+  // Sweep distance for the shimmer highlight, measured from the bone's
+  // actual rendered width so wide/narrow bones shimmer proportionally
+  // instead of always sweeping a hardcoded 300px.
+  const [boneWidth, setBoneWidth] = React.useState(300)
+  const handleLayout = (e: LayoutChangeEvent) => {
+    const w = e.nativeEvent.layout.width
+    if (w > 0 && w !== boneWidth) setBoneWidth(w)
+  }
 
   useEffect(() => {
+    // Purely decorative loading loops: under reduce-motion, leave the bone
+    // in its resting state instead of animating even once.
+    if (motion.reduced) {
+      opacity.value = 0.85
+      shimmerX.value = -1
+      return
+    }
     if (variant === 'pulse') {
       opacity.value = withRepeat(
         withSequence(
           withTiming(0.4,  { duration: 600, easing: Easing.inOut(Easing.ease) }),
           withTiming(0.85, { duration: 600, easing: Easing.inOut(Easing.ease) }),
         ),
-        -1, false,
+        motion.loops(-1), false,
       )
     } else {
       shimmerX.value = withRepeat(
@@ -105,18 +123,19 @@ function NativeSkeleton({
           withTiming(-1, { duration: 0 }),
           withTiming(1,  { duration: 1200, easing: Easing.inOut(Easing.ease) }),
         ),
-        -1, false,
+        motion.loops(-1), false,
       )
     }
-  }, [variant])
+  }, [variant, motion.reduced])
 
   const pulseStyle   = useAnimatedStyle(() => ({ opacity: opacity.value }))
   const shimmerStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: shimmerX.value * 300 }],
-  }))
+    transform: [{ translateX: shimmerX.value * boneWidth }],
+  }), [boneWidth])
 
   return (
     <Animated.View
+      onLayout={handleLayout}
       style={[
         {
           width: width as any, height, borderRadius,
@@ -154,7 +173,7 @@ export const Skeleton: React.FC<SkeletonProps> = ({
   const theme = useTheme()
   const br          = borderRadius ?? theme.radius.md
   const baseColor   = theme.colors.surfaceRaised ?? theme.colors.surface ?? '#27272a'
-  const shimmerColor = (theme.colors.border ?? '#3f3f46') + '90'
+  const shimmerColor = withAlpha(theme.colors.border ?? '#3f3f46', 0.56)
 
   if (Platform.OS === 'web') {
     return (
@@ -165,6 +184,7 @@ export const Skeleton: React.FC<SkeletonProps> = ({
         variant={variant}
         baseColor={baseColor}
         shimmerColor={shimmerColor}
+        style={style}
       />
     )
   }
@@ -237,7 +257,7 @@ export const SkeletonCard: React.FC<SkeletonCardProps> = ({
       <Skeleton width="100%" height={imageHeight} borderRadius={0} variant={variant} />
       <View style={{ padding: 12, gap: 8 }}>
         <Skeleton width="75%" height={14} variant={variant} />
-        {Array.from({ length: lines - 1 }).map((_, i) => (
+        {Array.from({ length: Math.max(0, lines - 1) }).map((_, i) => (
           <Skeleton key={i} width={i === lines - 2 ? '50%' : '90%'} height={11} variant={variant} />
         ))}
       </View>

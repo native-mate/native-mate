@@ -1,6 +1,6 @@
 {
   "name": "product-card",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "E-commerce product card with image, pricing, ratings, favorite toggle, and add-to-cart",
   "category": "display",
   "files": [

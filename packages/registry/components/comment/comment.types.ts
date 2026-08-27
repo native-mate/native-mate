@@ -48,4 +48,5 @@ export interface CommentProps extends Omit<ViewProps, 'style'> {
   /** Enable haptic feedback */
   haptic?: boolean
   style?: StyleProp<ViewStyle>
+  testID?: string
 }

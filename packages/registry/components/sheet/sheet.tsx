@@ -4,7 +4,7 @@ import { Modal, View, Pressable, StyleSheet, Keyboard, Platform } from 'react-na
 import Animated, {
   useSharedValue, useAnimatedStyle, withTiming, withSpring, runOnJS, Easing,
 } from 'react-native-reanimated'
-import { useTheme, Text, Separator, makeStyles } from '@native-mate/core'
+import { useTheme, useMotion, withAlpha, Text, Separator, makeStyles } from '@native-mate/core'
 import type { SheetProps } from './sheet.types'
 
 const useStyles = makeStyles((theme) => ({
@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
     borderTopWidth: StyleSheet.hairlineWidth,
     borderLeftWidth: StyleSheet.hairlineWidth,
     borderRightWidth: StyleSheet.hairlineWidth,
-    borderColor: theme.colors.border + '50',
+    borderColor: withAlpha(theme.colors.border, 0.31),
     overflow: 'hidden',
   },
   handle: {
@@ -51,6 +51,7 @@ export const Sheet: React.FC<SheetProps> = ({
   snapPoints,
 }) => {
   const theme = useTheme()
+  const motion = useMotion()
   const styles = useStyles()
 
   // Support legacy snapPoints prop
@@ -63,26 +64,26 @@ export const Sheet: React.FC<SheetProps> = ({
   const bottomOffset = useSharedValue(0)
 
   const runShow = () => {
-    backdropOpacity.value = withTiming(1, { duration: 220 })
+    backdropOpacity.value = withTiming(1, motion.timing('normal'))
     if (animation === 'spring') {
       sheetScale.value = 1
-      translateY.value = withSpring(0, { damping: 20, stiffness: 220, mass: 0.8 })
+      translateY.value = withSpring(0, motion.spring())
     } else if (animation === 'fade') {
-      sheetScale.value = withTiming(1, { duration: 300, easing: Easing.out(Easing.cubic) })
-      translateY.value = withTiming(0, { duration: 300, easing: Easing.out(Easing.cubic) })
+      sheetScale.value = withTiming(1, { ...motion.timing('normal'), easing: Easing.out(Easing.cubic) })
+      translateY.value = withTiming(0, { ...motion.timing('normal'), easing: Easing.out(Easing.cubic) })
     } else {
       // slide (default)
       sheetScale.value = 1
-      translateY.value = withTiming(0, { duration: 360, easing: Easing.out(Easing.cubic) })
+      translateY.value = withTiming(0, { ...motion.timing('slow'), easing: Easing.out(Easing.cubic) })
     }
   }
 
   const runHide = (cb?: () => void) => {
-    backdropOpacity.value = withTiming(0, { duration: 220 })
+    backdropOpacity.value = withTiming(0, motion.timing('normal'))
     if (animation === 'fade') {
-      sheetScale.value = withTiming(0.97, { duration: 240 })
+      sheetScale.value = withTiming(0.97, motion.timing('normal'))
     }
-    translateY.value = withTiming(sheetHeight, { duration: 260, easing: Easing.in(Easing.cubic) }, () => {
+    translateY.value = withTiming(sheetHeight, { ...motion.timing('normal'), easing: Easing.in(Easing.cubic) }, () => {
       runOnJS(setModalOpen)(false)
       if (cb) runOnJS(cb)()
     })

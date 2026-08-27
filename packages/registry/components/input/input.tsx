@@ -1,5 +1,5 @@
 // native-mate: input@0.3.0 | hash:PLACEHOLDER
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useImperativeHandle } from 'react'
 import { View, TextInput, Pressable } from 'react-native'
 import Animated, {
   useSharedValue,
@@ -12,7 +12,7 @@ import Animated, {
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
 import { useTheme, Text, makeStyles } from '@native-mate/core'
-import type { InputProps } from './input.types'
+import type { InputProps, InputHandle } from './input.types'
 
 let Haptics: any = null
 try { Haptics = require('expo-haptics') } catch {}
@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export const Input: React.FC<InputProps> = ({
+export const Input = React.forwardRef<InputHandle, InputProps>(({
   label,
   error,
   hint,
@@ -76,8 +76,9 @@ export const Input: React.FC<InputProps> = ({
   onFocus: onFocusProp,
   onBlur: onBlurProp,
   placeholder,
+  testID,
   ...rest
-}) => {
+}, ref) => {
   const theme = useTheme()
   const styles = useStyles()
   const config = sizeConfig[size]
@@ -173,14 +174,21 @@ export const Input: React.FC<InputProps> = ({
     inputRef.current?.focus()
   }
 
+  useImperativeHandle(ref, () => ({
+    focus: () => inputRef.current?.focus(),
+    blur: () => inputRef.current?.blur(),
+    clear: handleClear,
+    isFocused: () => inputRef.current?.isFocused() ?? false,
+  }))
+
   const charCount = (currentValue || '').length
 
   return (
-    <View style={styles.wrapper}>
+    <View style={styles.wrapper} testID={testID}>
       {/* Label row */}
       {label && !floatingLabel && (
         <View style={styles.row}>
-          <Text variant="label">
+          <Text variant="label" testID={testID ? `${testID}-label` : undefined}>
             {label}
             {required && <Text variant="label" color={theme.colors.destructive}> *</Text>}
           </Text>
@@ -195,7 +203,7 @@ export const Input: React.FC<InputProps> = ({
       ]}>
         {/* Floating label */}
         {floatingLabel && label && (
-          <Animated.Text style={[{ fontFamily: undefined }, floatingLabelStyle]}>
+          <Animated.Text style={[theme.typography.family?.regular ? { fontFamily: theme.typography.family.regular } : null, floatingLabelStyle]}>
             {label}{required ? ' *' : ''}
           </Animated.Text>
         )}
@@ -217,6 +225,7 @@ export const Input: React.FC<InputProps> = ({
         {/* TextInput */}
         <TextInput
           ref={inputRef}
+          testID={testID ? `${testID}-input` : undefined}
           style={[
             styles.input,
             {
@@ -226,23 +235,23 @@ export const Input: React.FC<InputProps> = ({
               opacity: disabled ? 0.5 : 1,
             },
           ]}
-          value={currentValue}
-          onChangeText={handleChangeText}
           placeholderTextColor={theme.colors.muted}
           placeholder={floatingLabel && !focused && !currentValue ? undefined : placeholder}
+          {...rest}
+          value={currentValue}
+          onChangeText={handleChangeText}
           editable={!disabled}
+          accessibilityLabel={label}
+          accessibilityState={{ disabled }}
           onFocus={handleFocus}
           onBlur={handleBlur}
           secureTextEntry={secureTextEntryProp && !showPassword}
           maxLength={maxLength}
-          accessibilityLabel={label}
-          accessibilityState={{ disabled }}
-          {...rest}
         />
 
         {/* Clear button */}
         {clearable && currentValue ? (
-          <Pressable onPress={handleClear} style={{ paddingRight: config.paddingH }}>
+          <Pressable onPress={handleClear} style={{ paddingRight: config.paddingH }} testID={testID ? `${testID}-clear` : undefined}>
             <View style={styles.clearBtn}>
               <Ionicons name="close" size={11} color={theme.colors.onSurface} />
             </View>
@@ -257,6 +266,7 @@ export const Input: React.FC<InputProps> = ({
               setTimeout(() => inputRef.current?.focus(), 10)
             }}
             style={{ paddingRight: config.paddingH }}
+            testID={testID ? `${testID}-toggle` : undefined}
           >
             <Text variant="caption" color={theme.colors.muted}>{showPassword ? 'Hide' : 'Show'}</Text>
           </Pressable>
@@ -280,7 +290,7 @@ export const Input: React.FC<InputProps> = ({
       {/* Bottom row: error/hint + count */}
       <View style={styles.row}>
         <View style={{ flex: 1 }}>
-          {error && <Text variant="caption" style={styles.error}>{error}</Text>}
+          {error && <Text variant="caption" style={styles.error} testID={testID ? `${testID}-error` : undefined}>{error}</Text>}
           {!error && hint && <Text variant="caption" style={styles.hint}>{hint}</Text>}
         </View>
         {showCount && (
@@ -291,4 +301,6 @@ export const Input: React.FC<InputProps> = ({
       </View>
     </View>
   )
-}
+})
+
+Input.displayName = 'Input'

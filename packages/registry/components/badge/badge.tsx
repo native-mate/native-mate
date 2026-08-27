@@ -69,7 +69,7 @@ function PulseDot({ color, size }: { color: string; size: number }) {
   )
 }
 
-export const Badge: React.FC<BadgeProps> = ({
+export const Badge = React.memo<BadgeProps>(({
   variant = 'default',
   size = 'md',
   appearance = 'soft',
@@ -80,6 +80,7 @@ export const Badge: React.FC<BadgeProps> = ({
   maxCount = 99,
   onDismiss,
   children,
+  testID,
 }) => {
   const theme = useTheme()
   const colors = getColors(variant, appearance, theme)
@@ -90,7 +91,9 @@ export const Badge: React.FC<BadgeProps> = ({
     : children
 
   return (
-    <View style={{
+    <View
+      testID={testID}
+      style={{
       flexDirection: 'row',
       alignItems: 'center',
       alignSelf: 'flex-start',
@@ -118,4 +121,6 @@ export const Badge: React.FC<BadgeProps> = ({
       )}
     </View>
   )
-}
+})
+
+Badge.displayName = 'Badge'

@@ -170,7 +170,7 @@ function formatValue(
 
 // ── StatCard ─────────────────────────────────────────────────────────────────
 
-export const StatCard: React.FC<StatCardProps> = ({
+export const StatCard = React.memo<StatCardProps>(({
   title,
   value,
   previousValue,
@@ -187,6 +187,7 @@ export const StatCard: React.FC<StatCardProps> = ({
   haptic = true,
   onPress,
   style,
+  testID,
 }) => {
   const theme = useTheme()
   const styles = useStyles()
@@ -249,7 +250,7 @@ export const StatCard: React.FC<StatCardProps> = ({
   // ── Loading skeleton ──
   if (loading) {
     return (
-      <View style={[styles.card, style]}>
+      <View style={[styles.card, style]} testID={testID}>
         <View
           style={[
             styles.skeletonTitle,
@@ -283,6 +284,7 @@ export const StatCard: React.FC<StatCardProps> = ({
         onPressOut={onPress ? handlePressOut : undefined}
         accessibilityRole={onPress ? 'button' : 'text'}
         accessibilityLabel={`${title}: ${effectivePrefix}${value}${effectiveSuffix}${changeAmount !== undefined ? `, ${changeType === 'increase' ? 'up' : changeType === 'decrease' ? 'down' : ''} ${Math.abs(changeAmount).toFixed(1)}%` : ''}`}
+        testID={testID}
       >
         {/* Header */}
         <View style={styles.headerRow}>
@@ -361,4 +363,5 @@ export const StatCard: React.FC<StatCardProps> = ({
       </Wrapper>
     </Animated.View>
   )
-}
+})
+StatCard.displayName = 'StatCard'

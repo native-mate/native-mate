@@ -38,4 +38,5 @@ export interface ChatBubbleProps {
   /** Called on long press */
   onLongPress?: () => void
   style?: StyleProp<ViewStyle>
+  testID?: string
 }

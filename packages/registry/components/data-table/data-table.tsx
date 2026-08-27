@@ -7,7 +7,7 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle, withAlpha } from '@native-mate/core'
 import type { DataTableProps, DataTableColumn, SortDirection } from './data-table.types'
 
 let Haptics: any = null
@@ -53,10 +53,10 @@ const useStyles = makeStyles((theme) => ({
     borderBottomColor: theme.colors.border,
   },
   rowStriped: {
-    backgroundColor: theme.colors.background + '80',
+    backgroundColor: withAlpha(theme.colors.background, 0.5),
   },
   rowPressed: {
-    backgroundColor: theme.colors.primary + '08',
+    backgroundColor: withAlpha(theme.colors.primary, 0.03),
   },
   cell: {
     paddingHorizontal: 12,

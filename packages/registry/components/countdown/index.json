@@ -1,6 +1,6 @@
 {
   "name": "countdown",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "description": "Countdown timer with animated digit flip, card/inline/minimal variants",
   "category": "display",
   "files": [

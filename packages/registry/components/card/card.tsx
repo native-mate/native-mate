@@ -15,31 +15,28 @@ const sizeTokens = {
 const useStyles = makeStyles((theme) => ({
   elevated: {
     backgroundColor: theme.colors.surfaceRaised ?? theme.colors.surface,
-    borderRadius: 14,
+    borderRadius: theme.radius.lg,
     overflow: 'hidden',
     ...shadow(2),
   },
   outline: {
     backgroundColor: theme.colors.surface,
-    borderRadius: 14,
+    borderRadius: theme.radius.lg,
     borderWidth: 1,
     borderColor: theme.colors.border,
     overflow: 'hidden',
   },
   flat: {
     backgroundColor: theme.colors.surface,
-    borderRadius: 14,
+    borderRadius: theme.radius.lg,
     overflow: 'hidden',
   },
   ghost: {
     backgroundColor: 'transparent',
-    borderRadius: 14,
+    borderRadius: theme.radius.lg,
     overflow: 'hidden',
   },
-  skeletonWrap: {
-    padding: 16,
-    gap: 10,
-  },
+  skeletonWrap: {},
 }))
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
@@ -141,7 +138,7 @@ export const CardFooter: React.FC<CardFooterProps> = ({
 
 // ─── Card ─────────────────────────────────────────────────────────────────────
 
-export const Card: React.FC<CardProps> = ({
+export const Card = React.memo<CardProps>(({
   children,
   variant = 'elevated',
   size = 'md',
@@ -151,11 +148,13 @@ export const Card: React.FC<CardProps> = ({
   activeScale = 0.97,
   accent,
   style,
+  testID,
   ...rest
 }) => {
   const theme = useTheme()
   const styles = useStyles()
   const scale = useSharedValue(1)
+  const config = sizeTokens[size]
 
   const animStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
@@ -165,7 +164,7 @@ export const Card: React.FC<CardProps> = ({
   const containerStyle = [styles[variant], accentStyle, style]
 
   const inner = loading ? (
-    <View style={styles.skeletonWrap}>
+    <View style={[styles.skeletonWrap, { padding: config.pad, gap: config.gap }]}>
       <Skeleton width="45%" height={13} />
       <Skeleton width="85%" height={11} style={{ marginTop: 2 }} />
       <Skeleton width="70%" height={11} />
@@ -185,6 +184,7 @@ export const Card: React.FC<CardProps> = ({
         android_ripple={{ color: theme.colors.border + '50', borderless: false }}
         accessibilityRole="button"
         style={[containerStyle, animStyle, disabled && { opacity: 0.5 }]}
+        testID={testID}
         {...(rest as any)}
       >
         {inner}
@@ -193,8 +193,10 @@ export const Card: React.FC<CardProps> = ({
   }
 
   return (
-    <View style={containerStyle} {...rest}>
+    <View style={containerStyle} testID={testID} {...rest}>
       {inner}
     </View>
   )
-}
+})
+
+Card.displayName = 'Card'

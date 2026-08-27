@@ -8,7 +8,7 @@ import Animated, {
   withTiming,
   interpolate,
 } from 'react-native-reanimated'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, useMotion, withAlpha, Text, makeStyles } from '@native-mate/core'
 import { Sheet } from '../sheet/sheet'
 import { Checkbox } from '../checkbox/checkbox'
 import type { SelectProps, MultiSelectProps, SelectOption } from './select.types'
@@ -77,8 +77,9 @@ const useStyles = makeStyles((theme) => ({
 // ── Arrow icon ────────────────────────────────────────────────────
 
 function ChevronIcon({ open, color }: { open: boolean; color: string }) {
+  const motion = useMotion()
   const rot = useSharedValue(0)
-  React.useEffect(() => { rot.value = withTiming(open ? 1 : 0, { duration: 200 }) }, [open])
+  React.useEffect(() => { rot.value = withTiming(open ? 1 : 0, motion.timing('normal')) }, [open])
   const style = useAnimatedStyle(() => ({
     transform: [{ rotate: `${interpolate(rot.value, [0, 1], [0, 180])}deg` }],
   }))
@@ -325,7 +326,7 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
           {selectedOptions.length > 0 ? (
             <View style={styles.chipRow}>
               {selectedOptions.map((opt) => (
-                <View key={opt.value} style={[styles.chip, { backgroundColor: theme.colors.primary + '20' }]}>
+                <View key={opt.value} style={[styles.chip, { backgroundColor: withAlpha(theme.colors.primary, 0.13) }]}>
                   <Text variant="caption" style={{ color: theme.colors.primary }}>{opt.label}</Text>
                   <Pressable onPress={() => toggleOption(opt.value)} hitSlop={6}>
                     <Ionicons name="close" size={12} color={theme.colors.primary} />

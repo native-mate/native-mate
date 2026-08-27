@@ -114,7 +114,7 @@ const DefaultEmpty: React.FC = () => {
           textAlign: 'center',
         }}
       >
-        Pull down to refresh or check back later.
+        Check back later.
       </Text>
     </View>
   )
@@ -133,12 +133,14 @@ export function InfiniteScroll<T>({
   ListEmptyComponent,
   ItemSeparatorComponent,
   threshold = 200,
+  endReachedThreshold = 0.5,
   loadingIndicator,
   endMessage,
   haptic = false,
   numColumns = 1,
   style,
   contentContainerStyle,
+  flatListProps,
 }: InfiniteScrollProps<T>) {
   const theme = useTheme()
   const styles = useStyles()
@@ -203,10 +205,6 @@ export function InfiniteScroll<T>({
   return (
     <View style={[styles.container, style]}>
       <FlatList
-        key={`cols-${numColumns}`}
-        data={data}
-        renderItem={renderFlatItem}
-        keyExtractor={keyExtractor ?? defaultKeyExtractor}
         numColumns={numColumns}
         ListHeaderComponent={ListHeaderComponent ? <>{ListHeaderComponent}</> : null}
         ListEmptyComponent={
@@ -233,14 +231,19 @@ export function InfiniteScroll<T>({
         }
         onScroll={handleScroll}
         scrollEventThrottle={16}
-        onEndReached={handleEndReached}
-        onEndReachedThreshold={threshold / 1000}
+        onEndReachedThreshold={endReachedThreshold}
         contentContainerStyle={[
           data.length === 0 && { flexGrow: 1 },
           contentContainerStyle,
         ]}
         showsVerticalScrollIndicator={true}
         accessibilityRole="list"
+        {...flatListProps}
+        key={`cols-${numColumns}`}
+        data={data}
+        renderItem={renderFlatItem}
+        keyExtractor={keyExtractor ?? defaultKeyExtractor}
+        onEndReached={handleEndReached}
       />
     </View>
   )

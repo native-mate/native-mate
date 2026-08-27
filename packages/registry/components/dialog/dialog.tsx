@@ -9,7 +9,7 @@ import Animated, {
   runOnJS,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
+import { useTheme, useMotion, Text, makeStyles, fontStyle, withAlpha } from '@native-mate/core'
 import type { DialogProps, HapticStyle } from './dialog.types'
 
 let Haptics: any = null
@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.colors.surfaceRaised ?? theme.colors.surface,
     borderRadius: theme.radius.xl,
     borderWidth: 1,
-    borderColor: theme.colors.border + '60',
+    borderColor: withAlpha(theme.colors.border, 0.38),
     width: '100%',
     maxWidth: 340,
     overflow: 'hidden',
@@ -86,6 +86,7 @@ export const Dialog: React.FC<DialogProps> = ({
   style,
 }) => {
   const theme = useTheme()
+  const motion = useMotion()
   const styles = useStyles()
   const [modalVisible, setModalVisible] = useState(visible)
 
@@ -97,16 +98,16 @@ export const Dialog: React.FC<DialogProps> = ({
     if (visible) {
       setModalVisible(true)
       scale.value = withSpring(1, { damping: 18, stiffness: 260 })
-      opacity.value = withTiming(1, { duration: 180 })
-      backdropOpacity.value = withTiming(1, { duration: 200 })
+      opacity.value = withTiming(1, motion.timing('normal'))
+      backdropOpacity.value = withTiming(1, motion.timing('normal'))
     } else {
       scale.value = withSpring(0.9, { damping: 18, stiffness: 260 })
-      backdropOpacity.value = withTiming(0, { duration: 160 })
-      opacity.value = withTiming(0, { duration: 140 }, () => {
+      backdropOpacity.value = withTiming(0, motion.timing('fast'))
+      opacity.value = withTiming(0, motion.timing('fast'), () => {
         runOnJS(setModalVisible)(false)
       })
     }
-  }, [visible])
+  }, [visible, motion])
 
   const cardAnim = useAnimatedStyle(() => ({
     opacity: opacity.value,
@@ -131,7 +132,7 @@ export const Dialog: React.FC<DialogProps> = ({
 
   const isDestructive = variant === 'destructive'
   const accentColor = isDestructive ? theme.colors.destructive : theme.colors.primary
-  const iconBg = accentColor + '18'
+  const iconBg = withAlpha(accentColor, 0.09)
 
   const defaultIcon = isDestructive ? 'alert-circle' : 'information-circle'
 
