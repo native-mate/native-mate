@@ -1,8 +1,10 @@
 import type { TextInputProps } from 'react-native'
+import type { ErrorProp, HapticProp } from '@native-mate/core'
 
 export interface TextareaProps extends Omit<TextInputProps, 'style' | 'multiline'> {
   label?: string
-  error?: string
+  /** A string renders as the message; `true` sets error styling with no text. */
+  error?: ErrorProp
   hint?: string
   disabled?: boolean
   readOnly?: boolean
@@ -27,6 +29,11 @@ export interface TextareaProps extends Omit<TextInputProps, 'style' | 'multiline
   onVoicePress?: () => void
   /** Floating label style (Material Design) */
   floatingLabel?: boolean
+  /**
+   * Haptic feedback on the voice button. `false`/`'none'` disables;
+   * `true` means `'light'`.
+   */
+  haptic?: HapticProp
   testID?: string
 }
 

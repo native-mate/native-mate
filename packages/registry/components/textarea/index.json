@@ -1,6 +1,6 @@
 {
   "name": "textarea",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Multiline text input with label and error state",
   "category": "input",
   "files": [
@@ -15,8 +15,7 @@
   ],
   "dependencies": {
     "npm": [
-      "@expo/vector-icons",
-      "expo-haptics"
+      "@expo/vector-icons"
     ],
     "components": []
   }

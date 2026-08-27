@@ -1,4 +1,5 @@
 import type { StyleProp, ViewStyle } from 'react-native'
+import type { ErrorProp, HapticProp } from '@native-mate/core'
 
 export interface Country {
   code: string
@@ -36,14 +37,14 @@ export interface PhoneInputProps {
   showDialCode?: boolean
   /** Disable input. Default: false */
   disabled?: boolean
-  /** Error message to display */
-  error?: string
+  /** A string renders as the message; `true` sets error styling with no text. */
+  error?: ErrorProp
   /** Label above the input */
   label?: string
   /** Placeholder text. Default: 'Phone number' */
   placeholder?: string
-  /** Enable haptic feedback. Default: true */
-  haptic?: boolean
+  /** Haptic feedback. `false`/`'none'` disables; `true` means `'light'`. Default: true */
+  haptic?: HapticProp
   /** Test identifier for the root; children derive `-input` / `-country`. */
   testID?: string
   style?: StyleProp<ViewStyle>

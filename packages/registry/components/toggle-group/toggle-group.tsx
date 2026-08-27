@@ -7,17 +7,8 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
-import type { ToggleGroupProps, ToggleGroupItem, HapticStyle } from './toggle-group.types'
-
-let Haptics: any = null
-try { Haptics = require('expo-haptics') } catch {}
-
-const triggerHaptic = (style: HapticStyle) => {
-  if (!Haptics || style === 'none') return
-  const map = { light: 'Light', medium: 'Medium', heavy: 'Heavy' } as const
-  Haptics.impactAsync(Haptics.ImpactFeedbackStyle[map[style]])
-}
+import { useTheme, Text, makeStyles, fontStyle, useHaptics, deprecatedProp } from '@native-mate/core'
+import type { ToggleGroupProps, ToggleGroupItem } from './toggle-group.types'
 
 const sizeMap = {
   sm: { height: 32, px: 10, fontSize: 12, iconSize: 14, gap: 4 },
@@ -69,6 +60,7 @@ export const ToggleGroup: React.FC<ToggleGroupProps> = (props) => {
 
   const theme = useTheme()
   const styles = useStyles()
+  const haptics = useHaptics()
   const dims = sizeMap[size]
 
   const [itemLayouts, setItemLayouts] = useState<Record<string, { x: number; width: number }>>({})
@@ -107,7 +99,7 @@ export const ToggleGroup: React.FC<ToggleGroupProps> = (props) => {
 
   const handlePress = useCallback((key: string) => {
     if (disabled) return
-    triggerHaptic(haptic)
+    haptics.trigger(haptic)
     if (isSingle) {
       ;(props as any).onChange(key)
     } else {
@@ -117,7 +109,7 @@ export const ToggleGroup: React.FC<ToggleGroupProps> = (props) => {
         : [...current, key]
       ;(props as any).onChangeMultiple(next)
     }
-  }, [disabled, haptic, isSingle, props])
+  }, [disabled, haptic, isSingle, props, haptics])
 
   return (
     <View
@@ -162,12 +154,16 @@ export const ToggleGroup: React.FC<ToggleGroupProps> = (props) => {
               itemDisabled && { opacity: 0.4 },
             ]}
           >
-            {item.icon && (
-              <Ionicons
-                name={item.icon as any}
-                size={dims.iconSize}
-                color={active ? theme.colors.foreground : theme.colors.muted}
-              />
+            {item.icon != null && (
+              typeof item.icon === 'string'
+                ? (
+                  <Ionicons
+                    name={deprecatedProp('ToggleGroup item icon (string)', 'ToggleGroup item icon (ReactNode)', item.icon) as any}
+                    size={dims.iconSize}
+                    color={active ? theme.colors.foreground : theme.colors.muted}
+                  />
+                )
+                : item.icon
             )}
             <Text
               style={{

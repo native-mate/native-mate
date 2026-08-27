@@ -1,3 +1,5 @@
+import type { HapticProp } from '@native-mate/core'
+
 export interface SliderProps {
   value: number
   min?: number
@@ -11,7 +13,8 @@ export interface SliderProps {
   fillColor?: string
   thumbSize?: number
   marks?: boolean
-  haptic?: boolean
+  /** `false`/`'none'` disables; `true` means `'light'`. Default: true */
+  haptic?: HapticProp
   accessibilityLabel?: string
 }
 
@@ -29,6 +32,7 @@ export interface RangeSliderProps {
   fillColor?: string
   thumbSize?: number
   marks?: boolean
-  haptic?: boolean
+  /** `false`/`'none'` disables; `true` means `'light'`. Default: true */
+  haptic?: HapticProp
   accessibilityLabel?: string
 }

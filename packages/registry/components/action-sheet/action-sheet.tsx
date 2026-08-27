@@ -5,7 +5,7 @@ import Animated, {
   useSharedValue, useAnimatedStyle, withSpring, withTiming, runOnJS, Easing,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { fontStyle, makeStyles, Text, useTheme, useMotion, withAlpha, type Motion } from '@native-mate/core'
+import { fontStyle, makeStyles, Text, useTheme, useMotion, useStrings, withAlpha, type Motion } from '@native-mate/core'
 import type { ActionSheetProps } from './action-sheet.types'
 
 const useStyles = makeStyles((theme) => ({
@@ -117,13 +117,16 @@ export const ActionSheet: React.FC<ActionSheetProps> = ({
   title,
   message,
   actions,
-  cancelLabel = 'Cancel',
+  cancelLabel,
   animation = 'slide',
   showDividers = true,
 }) => {
   const theme = useTheme()
   const motion = useMotion()
   const styles = useStyles()
+  const strings = useStrings()
+  // The per-component label prop stays the higher-priority override.
+  const cancelText = cancelLabel ?? strings.cancel
   const [modalOpen, setModalOpen] = useState(isOpen)
   const [sheetHeight, setSheetHeight] = useState(0)
 
@@ -249,10 +252,10 @@ export const ActionSheet: React.FC<ActionSheetProps> = ({
                 onPress={handleClose}
                 android_ripple={{ color: withAlpha(theme.colors.border, 0.25) }}
                 accessibilityRole="button"
-                accessibilityLabel={cancelLabel}
+                accessibilityLabel={cancelText}
               >
                 <Text style={{ fontSize: 17, ...fontStyle(theme.typography, 'semibold'), color: theme.colors.foreground }}>
-                  {cancelLabel}
+                  {cancelText}
                 </Text>
               </Pressable>
             </View>

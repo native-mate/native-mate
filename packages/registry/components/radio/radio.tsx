@@ -9,11 +9,8 @@ import Animated, {
   Easing,
   interpolateColor,
 } from 'react-native-reanimated'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, resolveError, useHaptics } from '@native-mate/core'
 import type { RadioProps, RadioGroupProps } from './radio.types'
-
-let Haptics: any = null
-try { Haptics = require('expo-haptics') } catch {}
 
 const sizeMap = {
   sm: { outer: 16, inner: 7 },
@@ -52,6 +49,7 @@ export const Radio: React.FC<RadioProps> = ({
 }) => {
   const theme = useTheme()
   const styles = useStyles()
+  const haptics = useHaptics()
   const cfg = sizeMap[size]
   const activeColor = color ?? theme.colors.primary
 
@@ -90,9 +88,9 @@ export const Radio: React.FC<RadioProps> = ({
 
   const handlePress = useCallback(() => {
     if (disabled || selected) return
-    if (haptic && Haptics) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+    haptics.trigger(haptic)
     onSelect()
-  }, [disabled, selected, onSelect, haptic])
+  }, [disabled, selected, onSelect, haptic, haptics])
 
   const radioIndicator = (
     <Animated.View style={[{
@@ -168,6 +166,8 @@ export const RadioGroup: React.FC<RadioGroupProps> = ({
   const theme = useTheme()
   const styles = useStyles()
 
+  const { message: errorText } = resolveError(error)
+
   return (
     <View style={styles.groupWrapper}>
       {label && (
@@ -190,9 +190,9 @@ export const RadioGroup: React.FC<RadioGroupProps> = ({
           />
         ))}
       </View>
-      {error && (
+      {errorText && (
         <Text variant="caption" style={{ color: theme.colors.destructive, marginTop: 2 }}>
-          {error}
+          {errorText}
         </Text>
       )}
     </View>

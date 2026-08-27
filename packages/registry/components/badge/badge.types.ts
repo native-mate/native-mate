@@ -1,4 +1,8 @@
 import type React from 'react'
+import type { IconProp } from '@native-mate/core'
+
+// Canonical home is '@native-mate/core'; re-exported for source compatibility.
+export type { IconProp } from '@native-mate/core'
 
 export type BadgeVariant = 'default' | 'secondary' | 'destructive' | 'success' | 'warning' | 'info'
 export type BadgeSize = 'sm' | 'md' | 'lg'
@@ -10,7 +14,7 @@ export interface BadgeProps {
   appearance?: BadgeAppearance
   dot?: boolean
   pulse?: boolean          // animated pulsing dot (for live/online status)
-  icon?: React.ReactNode   // node before text
+  icon?: IconProp          // node before text
   count?: number
   maxCount?: number
   onDismiss?: () => void

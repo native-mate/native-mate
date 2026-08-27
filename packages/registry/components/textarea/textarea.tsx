@@ -9,11 +9,15 @@ import Animated, {
   interpolateColor,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
+import {
+  useTheme,
+  Text,
+  makeStyles,
+  fontStyle,
+  resolveError,
+  useHaptics,
+} from '@native-mate/core'
 import type { TextareaProps, TextareaHandle } from './textarea.types'
-
-let Haptics: any = null
-try { Haptics = require('expo-haptics') } catch {}
 
 const LINE_HEIGHT = 22
 
@@ -68,6 +72,7 @@ export const Textarea = React.forwardRef<TextareaHandle, TextareaProps>(({
   voiceInput = false,
   onVoicePress,
   floatingLabel = false,
+  haptic = true,
   value,
   onChangeText,
   onFocus: onFocusProp,
@@ -79,7 +84,12 @@ export const Textarea = React.forwardRef<TextareaHandle, TextareaProps>(({
 }, ref) => {
   const theme = useTheme()
   const styles = useStyles()
+  const haptics = useHaptics()
   const inputRef = useRef<TextInput>(null)
+
+  // `hasError` (a plain boolean) is what the border worklet captures — `error`
+  // itself may be a string and must never cross into one.
+  const { hasError, message: errorText } = resolveError(error)
 
   const [focused, setFocused] = useState(false)
   const [internalValue, setInternalValue] = useState(value || '')
@@ -106,7 +116,7 @@ export const Textarea = React.forwardRef<TextareaHandle, TextareaProps>(({
   }, [focused, currentValue, floatingLabel])
 
   useEffect(() => {
-    if (error) {
+    if (hasError) {
       shakeAnim.value = withSequence(
         withTiming(-8, { duration: 50 }),
         withTiming(8, { duration: 50 }),
@@ -115,10 +125,10 @@ export const Textarea = React.forwardRef<TextareaHandle, TextareaProps>(({
         withTiming(0, { duration: 50 }),
       )
     }
-  }, [error])
+  }, [hasError])
 
   const containerAnimStyle = useAnimatedStyle(() => ({
-    borderColor: error
+    borderColor: hasError
       ? theme.colors.destructive
       : interpolateColor(focusAnim.value, [0, 1], [theme.colors.border, theme.colors.primary]),
     transform: [{ translateX: shakeAnim.value }],
@@ -261,7 +271,7 @@ export const Textarea = React.forwardRef<TextareaHandle, TextareaProps>(({
           {voiceInput && (
             <Pressable
               onPress={() => {
-                Haptics?.impactAsync(Haptics?.ImpactFeedbackStyle?.Light)
+                haptics.trigger(haptic)
                 onVoicePress?.()
               }}
               style={[
@@ -278,8 +288,8 @@ export const Textarea = React.forwardRef<TextareaHandle, TextareaProps>(({
       {/* Bottom row: error/hint + count */}
       <View style={styles.bottomRow}>
         <View style={{ flex: 1 }}>
-          {error && <Text variant="caption" style={styles.error} testID={testID ? `${testID}-error` : undefined}>{error}</Text>}
-          {!error && hint && <Text variant="caption" style={styles.hint}>{hint}</Text>}
+          {errorText && <Text variant="caption" style={styles.error} testID={testID ? `${testID}-error` : undefined}>{errorText}</Text>}
+          {!hasError && hint && <Text variant="caption" style={styles.hint}>{hint}</Text>}
         </View>
         {showCount && (
           <Text variant="caption" style={{ color: countColor }}>

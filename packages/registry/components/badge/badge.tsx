@@ -5,7 +5,7 @@ import Animated, {
   useSharedValue, useAnimatedStyle, withRepeat, withSequence, withTiming,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle, useStrings } from '@native-mate/core'
 import type { BadgeProps, BadgeVariant, BadgeSize, BadgeAppearance } from './badge.types'
 
 function getColors(variant: BadgeVariant, appearance: BadgeAppearance, theme: any) {
@@ -94,6 +94,7 @@ export const Badge = React.memo<BadgeProps>(({
   testID,
 }) => {
   const theme = useTheme()
+  const strings = useStrings()
   const colors = getColors(variant, appearance, theme)
   const sz = sizeMap[size]
 
@@ -149,7 +150,7 @@ export const Badge = React.memo<BadgeProps>(({
           onPress={onDismiss}
           hitSlop={16}
           accessibilityRole="button"
-          accessibilityLabel={spokenContent ? `Dismiss ${spokenContent}` : 'Dismiss'}
+          accessibilityLabel={spokenContent ? `${strings.dismiss} ${spokenContent}` : strings.dismiss}
           style={{ marginLeft: -2 }}>
           <Ionicons name="close" size={sz.fontSize + 2} color={colors.text} style={{ opacity: 0.6 }} />
         </Pressable>

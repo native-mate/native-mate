@@ -6,11 +6,8 @@ import Animated, {
   useAnimatedStyle,
   withSpring,
 } from 'react-native-reanimated'
-import { useTheme, useMotion, Text, makeStyles, fontStyle } from '@native-mate/core'
+import { useTheme, useMotion, Text, makeStyles, fontStyle, useHaptics } from '@native-mate/core'
 import type { SliderProps, RangeSliderProps } from './slider.types'
-
-let Haptics: any = null
-try { Haptics = require('expo-haptics') } catch {}
 
 const TRACK_HEIGHT = 4
 const DEFAULT_THUMB = 22
@@ -53,6 +50,10 @@ export const Slider: React.FC<SliderProps> = ({
   const theme = useTheme()
   const motion = useMotion()
   const styles = useStyles()
+  // Hook at the top level; the PanResponder handlers below read it through a
+  // ref because they are created once and would otherwise close over a stale
+  // copy.
+  const haptics = useHaptics()
   const [width, setWidth] = useState(0)
 
   // ── Refs for everything PanResponder needs (avoids stale closures) ──
@@ -63,12 +64,14 @@ export const Slider: React.FC<SliderProps> = ({
   const onChangeRef = useRef(onChange)
   const onChangeEndRef = useRef(onChangeEnd)
   const hapticRef = useRef(haptic)
+  const hapticsRef = useRef(haptics)
 
   // Sync refs every render
   disabledRef.current = disabled
   onChangeRef.current = onChange
   onChangeEndRef.current = onChangeEnd
   hapticRef.current = haptic
+  hapticsRef.current = haptics
 
   const thumbScale = useSharedValue(1)
   const trackH = TRACK_HEIGHT
@@ -102,8 +105,8 @@ export const Slider: React.FC<SliderProps> = ({
         grantOffsetRef.current = px
         thumbScale.value = withSpring(1.3, { mass: 0.3, damping: 10 })
         const newVal = resolveRef.current(px)
-        if (hapticRef.current && Haptics && newVal !== lastHapticVal.current) {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+        if (newVal !== lastHapticVal.current) {
+          hapticsRef.current.trigger(hapticRef.current)
           lastHapticVal.current = newVal
         }
         onChangeRef.current?.(newVal)
@@ -114,8 +117,8 @@ export const Slider: React.FC<SliderProps> = ({
         if (tw <= 0) return
         const px = clamp(grantOffsetRef.current + gestureState.dx, 0, tw)
         const newVal = resolveRef.current(px)
-        if (hapticRef.current && Haptics && newVal !== lastHapticVal.current) {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+        if (newVal !== lastHapticVal.current) {
+          hapticsRef.current.trigger(hapticRef.current)
           lastHapticVal.current = newVal
         }
         onChangeRef.current?.(newVal)
@@ -233,6 +236,10 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
   const theme = useTheme()
   const motion = useMotion()
   const styles = useStyles()
+  // Hook at the top level; the PanResponder handlers below read it through a
+  // ref because they are created once and would otherwise close over a stale
+  // copy.
+  const haptics = useHaptics()
   const [width, setWidth] = useState(0)
 
   // ── Refs for everything PanResponder needs (avoids stale closures) ──
@@ -247,6 +254,7 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
   const onChangeRef = useRef(onChange)
   const onChangeEndRef = useRef(onChangeEnd)
   const hapticRef = useRef(haptic)
+  const hapticsRef = useRef(haptics)
 
   // Sync refs every render
   disabledRef.current = disabled
@@ -255,6 +263,7 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
   onChangeRef.current = onChange
   onChangeEndRef.current = onChangeEnd
   hapticRef.current = haptic
+  hapticsRef.current = haptics
 
   const lowScale = useSharedValue(1)
   const highScale = useSharedValue(1)
@@ -301,15 +310,15 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
         if (activeThumb.current === 'low') {
           const l = Math.min(newVal, highRef.current - step)
           onChangeRef.current?.(l, highRef.current)
-          if (hapticRef.current && Haptics && l !== lastHapticLow.current) {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+          if (l !== lastHapticLow.current) {
+            hapticsRef.current.trigger(hapticRef.current)
             lastHapticLow.current = l
           }
         } else {
           const h = Math.max(newVal, lowRef.current + step)
           onChangeRef.current?.(lowRef.current, h)
-          if (hapticRef.current && Haptics && h !== lastHapticHigh.current) {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+          if (h !== lastHapticHigh.current) {
+            hapticsRef.current.trigger(hapticRef.current)
             lastHapticHigh.current = h
           }
         }

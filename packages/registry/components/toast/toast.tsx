@@ -10,7 +10,7 @@ import Animated, {
   cancelAnimation,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, useMotion, withAlpha, Text, makeStyles, fontStyle } from '@native-mate/core'
+import { useTheme, useMotion, withAlpha, Text, makeStyles, fontStyle, useHaptics, useStrings } from '@native-mate/core'
 import type {
   ToastProps,
   ToastVariant,
@@ -19,9 +19,6 @@ import type {
   ToastAction,
   ToastProviderProps,
 } from './toast.types'
-
-let Haptics: any = null
-try { Haptics = require('expo-haptics') } catch {}
 
 const variantIconName: Record<ToastVariant, keyof typeof Ionicons.glyphMap> = {
   default:     'information-circle',
@@ -112,6 +109,7 @@ const ToastBody: React.FC<ToastBodyProps> = ({
 }) => {
   const theme = useTheme()
   const styles = useStyles()
+  const strings = useStrings()
 
   return (
     <>
@@ -166,7 +164,7 @@ const ToastBody: React.FC<ToastBodyProps> = ({
           onPress={onClose}
           hitSlop={8}
           accessibilityRole="button"
-          accessibilityLabel="Dismiss"
+          accessibilityLabel={strings.dismiss}
         >
           <Ionicons name="close" size={18} color={theme.colors.muted} />
         </Pressable>
@@ -208,6 +206,7 @@ export const Toast: React.FC<ToastProps> = ({
   persistent = false,
   icon,
   avatar,
+  haptic = true,
   offset = 0,
   testID,
   id,
@@ -215,6 +214,7 @@ export const Toast: React.FC<ToastProps> = ({
   const theme = useTheme()
   const styles = useStyles()
   const motion = useMotion()
+  const haptics = useHaptics()
   // Keep Modal mounted while animating out so the exit animation plays fully
   const [modalOpen, setModalOpen] = useState(false)
   const translateY = useSharedValue(position === 'bottom' ? 120 : -120)
@@ -289,10 +289,11 @@ export const Toast: React.FC<ToastProps> = ({
       cancelAnimation(opacity)
       cancelAnimation(translateY)
       setModalOpen(true)
-      if (Haptics) {
-        if (variant === 'success') Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
-        else if (variant === 'destructive') Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
-        else if (variant === 'warning') Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning)
+      // Notification feedback, not an impact — `haptic` only gates it on/off.
+      if (haptic !== false && haptic !== 'none') {
+        if (variant === 'success') haptics.notify('success')
+        else if (variant === 'destructive') haptics.notify('error')
+        else if (variant === 'warning') haptics.notify('warning')
       }
       translateX.value = 0
       translateY.value = withSpring(0, spring)

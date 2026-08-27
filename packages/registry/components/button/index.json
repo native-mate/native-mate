@@ -1,6 +1,6 @@
 {
   "name": "button",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Feature-rich button with 7 variants including gradient, icon-only mode, button group, rounded pill shape, custom colors, haptic feedback, and spring animation",
   "category": "input",
   "files": [
@@ -14,9 +14,7 @@
     }
   ],
   "dependencies": {
-    "npm": [
-      "expo-haptics"
-    ],
+    "npm": [],
     "components": []
   }
 }

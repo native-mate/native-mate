@@ -1,10 +1,12 @@
 import type { TextInputProps } from 'react-native'
+import type { ErrorProp, HapticProp } from '@native-mate/core'
 
 export type InputSize = 'sm' | 'md' | 'lg'
 
 export interface InputProps extends Omit<TextInputProps, 'style'> {
   label?: string
-  error?: string
+  /** A string renders as the message; `true` sets error styling with no text. */
+  error?: ErrorProp
   hint?: string
   disabled?: boolean
   size?: InputSize
@@ -20,7 +22,13 @@ export interface InputProps extends Omit<TextInputProps, 'style'> {
   prefixText?: string
   suffixText?: string
   floatingLabel?: boolean
-  hapticOnFocus?: boolean
+  /** Haptic feedback on focus. `false`/`'none'` disables; `true` means `'light'`. */
+  haptic?: HapticProp
+  /**
+   * @deprecated Use `haptic`. Removed in v0.6.
+   * Run `npx @native-mate/cli migrate v0.5`.
+   */
+  hapticOnFocus?: HapticProp
   testID?: string
 }
 

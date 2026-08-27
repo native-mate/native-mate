@@ -7,11 +7,8 @@ import Animated, {
   withSpring,
   interpolateColor,
 } from 'react-native-reanimated'
-import { useTheme, Text, makeStyles, readableOn } from '@native-mate/core'
+import { useTheme, Text, makeStyles, readableOn, useHaptics } from '@native-mate/core'
 import type { SwitchProps } from './switch.types'
-
-let Haptics: any = null
-try { Haptics = require('expo-haptics') } catch {}
 
 const sizeMap = {
   sm: { trackW: 38, trackH: 22, thumb: 16, padding: 3 },
@@ -41,6 +38,7 @@ export const Switch: React.FC<SwitchProps> = ({
 }) => {
   const theme = useTheme()
   const styles = useStyles()
+  const haptics = useHaptics()
   const cfg = sizeMap[size]
   const activeColor = color ?? theme.colors.success
   // The thumb rides the filled track, whose color is either a caller-supplied
@@ -68,9 +66,9 @@ export const Switch: React.FC<SwitchProps> = ({
 
   const handlePress = useCallback(() => {
     if (disabled || loading) return
-    if (haptic && Haptics) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+    haptics.trigger(haptic)
     onValueChange(!value)
-  }, [disabled, loading, value, onValueChange, haptic])
+  }, [disabled, loading, value, onValueChange, haptic, haptics])
 
   const switchEl = (
     <Animated.View

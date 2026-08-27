@@ -9,11 +9,8 @@ import Animated, {
   withSpring,
   interpolateColor,
 } from 'react-native-reanimated'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, resolveError, useHaptics } from '@native-mate/core'
 import type { CheckboxProps, CheckboxGroupProps } from './checkbox.types'
-
-let Haptics: any = null
-try { Haptics = require('expo-haptics') } catch {}
 
 const sizeMap = {
   sm: { box: 16, radius: 4, icon: 8, iconStroke: 1.5 },
@@ -48,8 +45,13 @@ export const Checkbox: React.FC<CheckboxProps> = ({
 }) => {
   const theme = useTheme()
   const styles = useStyles()
+  const haptics = useHaptics()
   const cfg = sizeMap[size]
   const activeColor = color ?? theme.colors.primary
+
+  // Plain booleans only past this point: the box worklet captures the error
+  // state, and `error` itself may be a string.
+  const { hasError, message: errorText } = resolveError(error)
 
   const scale = useSharedValue(1)
   const fill = useSharedValue(checked || indeterminate ? 1 : 0)
@@ -62,8 +64,8 @@ export const Checkbox: React.FC<CheckboxProps> = ({
   }, [checked, indeterminate])
 
   const boxAnimStyle = useAnimatedStyle(() => ({
-    backgroundColor: interpolateColor(fill.value, [0, 1], ['transparent', error ? theme.colors.destructive : activeColor]),
-    borderColor: interpolateColor(fill.value, [0, 1], [error ? theme.colors.destructive : theme.colors.border, error ? theme.colors.destructive : activeColor]),
+    backgroundColor: interpolateColor(fill.value, [0, 1], ['transparent', hasError ? theme.colors.destructive : activeColor]),
+    borderColor: interpolateColor(fill.value, [0, 1], [hasError ? theme.colors.destructive : theme.colors.border, hasError ? theme.colors.destructive : activeColor]),
     transform: [{ scale: scale.value }],
   }))
 
@@ -76,11 +78,9 @@ export const Checkbox: React.FC<CheckboxProps> = ({
     scale.value = withTiming(0.85, { duration: 70 }, () => {
       scale.value = withSpring(1, { mass: 0.4, damping: 10, stiffness: 300 })
     })
-    if (haptic && Haptics) {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
-    }
+    haptics.trigger(haptic)
     onChange(!checked)
-  }, [disabled, checked, onChange, haptic])
+  }, [disabled, checked, onChange, haptic, haptics])
 
   const box = (
     <Animated.View style={[{
@@ -129,7 +129,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
         {box}
         {labelContent}
       </Pressable>
-      {error && <Text variant="caption" style={[styles.error, { marginTop: 4 }]}>{error}</Text>}
+      {errorText && <Text variant="caption" style={[styles.error, { marginTop: 4 }]}>{errorText}</Text>}
     </View>
   )
 }
@@ -143,9 +143,12 @@ export const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
   disabled = false,
   size = 'md',
   horizontal = false,
+  haptic = true,
 }) => {
   const styles = useStyles()
   const theme = useTheme()
+
+  const { message: groupErrorText } = resolveError(error)
 
   const toggle = useCallback((optVal: string) => {
     if (value.includes(optVal)) {
@@ -172,10 +175,11 @@ export const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
             description={opt.description}
             disabled={disabled || opt.disabled}
             size={size}
+            haptic={haptic}
           />
         ))}
       </View>
-      {error && <Text variant="caption" style={{ color: theme.colors.destructive, marginTop: 2 }}>{error}</Text>}
+      {groupErrorText && <Text variant="caption" style={{ color: theme.colors.destructive, marginTop: 2 }}>{groupErrorText}</Text>}
     </View>
   )
 }

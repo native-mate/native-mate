@@ -1,20 +1,24 @@
 import type { StyleProp, ViewStyle } from 'react-native'
+import type { HapticProp, IconProp } from '@native-mate/core'
+
+// Canonical home is '@native-mate/core'; re-exported for source compatibility.
+export type { HapticStyle, HapticProp, IconProp } from '@native-mate/core'
 
 export type FabSize = 'sm' | 'md' | 'lg'
 export type FabVariant = 'default' | 'secondary' | 'destructive'
 export type FabPosition = 'bottom-right' | 'bottom-left' | 'bottom-center'
-export type HapticStyle = 'light' | 'medium' | 'heavy' | 'none'
 
 export interface FabAction {
-  icon: string
+  /** Icon node. A string still renders through Ionicons for one minor. */
+  icon: IconProp
   label?: string
   onPress: () => void
   color?: string
 }
 
 export interface FabProps {
-  /** Ionicons icon name */
-  icon: string
+  /** Icon node. A string still renders through Ionicons for one minor. */
+  icon: IconProp
   onPress?: () => void
   /** Absolute position on screen */
   position?: FabPosition
@@ -25,8 +29,8 @@ export interface FabProps {
   /** Speed dial actions (fan out on press) */
   actions?: FabAction[]
   disabled?: boolean
-  /** Haptic feedback on press */
-  haptic?: HapticStyle
+  /** `false` (or 'none') disables haptics for this FAB; `true` means 'light'. */
+  haptic?: HapticProp
   /** Custom background color */
   color?: string
   /** Distance from bottom edge */

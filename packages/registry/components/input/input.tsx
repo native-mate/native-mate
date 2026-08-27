@@ -11,11 +11,17 @@ import Animated, {
   interpolateColor,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
+import {
+  useTheme,
+  Text,
+  makeStyles,
+  fontStyle,
+  resolveError,
+  useHaptics,
+  useStrings,
+  deprecatedProp,
+} from '@native-mate/core'
 import type { InputProps, InputHandle } from './input.types'
-
-let Haptics: any = null
-try { Haptics = require('expo-haptics') } catch {}
 
 const AnimatedView = Animated.View
 
@@ -70,7 +76,8 @@ export const Input = React.forwardRef<InputHandle, InputProps>(({
   prefixText,
   suffixText,
   floatingLabel = false,
-  hapticOnFocus = false,
+  haptic = false,
+  hapticOnFocus,
   value,
   onChangeText,
   onFocus: onFocusProp,
@@ -81,8 +88,21 @@ export const Input = React.forwardRef<InputHandle, InputProps>(({
 }, ref) => {
   const theme = useTheme()
   const styles = useStyles()
+  const haptics = useHaptics()
+  const strings = useStrings()
   const config = sizeConfig[size]
   const inputRef = useRef<TextInput>(null)
+
+  // `hapticOnFocus` is the pre-v0.5 name for the same switch. Honoured for one
+  // minor, and it wins when explicitly passed so old call sites don't change
+  // behaviour.
+  const hapticSetting = hapticOnFocus !== undefined
+    ? deprecatedProp('hapticOnFocus', 'haptic', hapticOnFocus)
+    : haptic
+
+  // `hasError` (a plain boolean) is what crosses into the worklet below —
+  // `error` itself may be a string and must never be captured there.
+  const { hasError, message: errorText } = resolveError(error)
 
   const [focused, setFocused] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
@@ -104,7 +124,7 @@ export const Input = React.forwardRef<InputHandle, InputProps>(({
 
   // Shake on error
   useEffect(() => {
-    if (error) {
+    if (hasError) {
       shakeAnim.value = withSequence(
         withTiming(-8, { duration: 50 }),
         withTiming(8, { duration: 50 }),
@@ -113,7 +133,7 @@ export const Input = React.forwardRef<InputHandle, InputProps>(({
         withTiming(0, { duration: 50 }),
       )
     }
-  }, [error])
+  }, [hasError])
 
   // Focus border animation
   useEffect(() => {
@@ -121,7 +141,7 @@ export const Input = React.forwardRef<InputHandle, InputProps>(({
   }, [focused])
 
   const containerAnimStyle = useAnimatedStyle(() => ({
-    borderColor: error
+    borderColor: hasError
       ? theme.colors.destructive
       : interpolateColor(focusAnim.value, [0, 1], [theme.colors.border, theme.colors.primary]),
     transform: [{ translateX: shakeAnim.value }],
@@ -151,9 +171,7 @@ export const Input = React.forwardRef<InputHandle, InputProps>(({
 
   const handleFocus = (e: any) => {
     setFocused(true)
-    if (hapticOnFocus && Haptics) {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
-    }
+    haptics.trigger(hapticSetting)
     onFocusProp?.(e)
   }
 
@@ -249,7 +267,7 @@ export const Input = React.forwardRef<InputHandle, InputProps>(({
           onChangeText={handleChangeText}
           editable={!disabled}
           accessibilityLabel={label ?? rest.accessibilityLabel}
-          accessibilityHint={error || hint || rest.accessibilityHint}
+          accessibilityHint={errorText || hint || rest.accessibilityHint}
           accessibilityState={{ disabled }}
           onFocus={handleFocus}
           onBlur={handleBlur}
@@ -263,7 +281,7 @@ export const Input = React.forwardRef<InputHandle, InputProps>(({
             onPress={handleClear}
             hitSlop={12}
             accessibilityRole="button"
-            accessibilityLabel={label ? `Clear ${label}` : 'Clear text'}
+            accessibilityLabel={label ? `${strings.clear} ${label}` : strings.clear}
             style={{ paddingRight: config.paddingH }}
             testID={testID ? `${testID}-clear` : undefined}
           >
@@ -282,7 +300,7 @@ export const Input = React.forwardRef<InputHandle, InputProps>(({
             }}
             hitSlop={12}
             accessibilityRole="button"
-            accessibilityLabel={showPassword ? 'Hide password' : 'Show password'}
+            accessibilityLabel={showPassword ? strings.hidePassword : strings.showPassword}
             style={{ paddingRight: config.paddingH }}
             testID={testID ? `${testID}-toggle` : undefined}
           >
@@ -309,8 +327,8 @@ export const Input = React.forwardRef<InputHandle, InputProps>(({
       <View style={styles.row}>
         {/* Validation errors must announce the moment they change — an
             assertive live region interrupts so the message isn't missed. */}
-        <View style={{ flex: 1 }} accessibilityLiveRegion={error ? 'assertive' : 'none'}>
-          {error && (
+        <View style={{ flex: 1 }} accessibilityLiveRegion={hasError ? 'assertive' : 'none'}>
+          {errorText && (
             <Text
               variant="caption"
               style={styles.error}
@@ -318,10 +336,10 @@ export const Input = React.forwardRef<InputHandle, InputProps>(({
               accessibilityRole="alert"
               testID={testID ? `${testID}-error` : undefined}
             >
-              {error}
+              {errorText}
             </Text>
           )}
-          {!error && hint && <Text variant="caption" style={styles.hint}>{hint}</Text>}
+          {!hasError && hint && <Text variant="caption" style={styles.hint}>{hint}</Text>}
         </View>
         {showCount && (
           <Text variant="caption" style={styles.hint}>

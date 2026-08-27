@@ -5,7 +5,7 @@ import Animated, {
   useSharedValue, useAnimatedStyle, withSpring, withTiming, runOnJS,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, Separator, makeStyles, fontStyle } from '@native-mate/core'
+import { useTheme, Text, Separator, makeStyles, fontStyle, useStrings } from '@native-mate/core'
 import type { ModalProps, ModalAction } from './modal.types'
 
 const sizeMap: Record<string, number | string> = {
@@ -96,6 +96,7 @@ export const Modal: React.FC<ModalProps> = ({
 }) => {
   const theme = useTheme()
   const styles = useStyles()
+  const strings = useStrings()
   const [modalOpen, setModalOpen] = useState(visible)
 
   const scale = useSharedValue(0.94)
@@ -154,7 +155,13 @@ export const Modal: React.FC<ModalProps> = ({
                     )}
                   </View>
                   {showCloseButton && (
-                    <Pressable onPress={onClose} hitSlop={8} style={{ marginTop: 2 }}>
+                    <Pressable
+                      onPress={onClose}
+                      hitSlop={8}
+                      style={{ marginTop: 2 }}
+                      accessibilityRole="button"
+                      accessibilityLabel={strings.close}
+                    >
                       <Ionicons name="close" size={20} color={theme.colors.muted} />
                     </Pressable>
                   )}

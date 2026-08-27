@@ -1,5 +1,9 @@
 import type React from 'react'
 import type { ImageSourcePropType } from 'react-native'
+import type { HapticProp, IconProp } from '@native-mate/core'
+
+// Canonical home is '@native-mate/core'; re-exported for source compatibility.
+export type { HapticStyle, HapticProp, IconProp } from '@native-mate/core'
 
 export type ToastVariant = 'default' | 'success' | 'destructive' | 'warning'
 
@@ -21,8 +25,13 @@ export interface ToastProps {
   actions?: ToastAction[]    // multiple actions
   showProgress?: boolean
   persistent?: boolean
-  icon?: React.ReactNode
+  icon?: IconProp
   avatar?: ImageSourcePropType   // image source for social notification style
+  /**
+   * Notification haptic fired when a success/destructive/warning toast appears.
+   * `false` (or 'none') disables it. Defaults to `true`.
+   */
+  haptic?: HapticProp
   /** Extra distance from the screen edge, added to the platform inset
    * (Android status bar / iOS notch). Defaults to 0. */
   offset?: number

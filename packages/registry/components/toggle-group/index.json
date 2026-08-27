@@ -1,6 +1,6 @@
 {
   "name": "toggle-group",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Multi-option toggle with animated sliding indicator, single/multiple selection modes, and icon support",
   "category": "input",
   "files": [

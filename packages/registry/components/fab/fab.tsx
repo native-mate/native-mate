@@ -10,16 +10,28 @@ import Animated, {
   Extrapolation,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles, shadow, fontStyle, readableOn } from '@native-mate/core'
-import type { FabProps, FabAction, FabSize, FabVariant, HapticStyle } from './fab.types'
+import {
+  useTheme, Text, makeStyles, shadow, fontStyle, readableOn,
+  useHaptics, deprecatedProp,
+} from '@native-mate/core'
+import type { FabProps, FabAction, FabSize, FabVariant } from './fab.types'
+import type { HapticProp, IconProp } from '@native-mate/core'
 
-let Haptics: any = null
-try { Haptics = require('expo-haptics') } catch {}
-
-const triggerHaptic = (style: HapticStyle) => {
-  if (!Haptics || style === 'none') return
-  const map = { light: 'Light', medium: 'Medium', heavy: 'Heavy' } as const
-  Haptics.impactAsync(Haptics.ImpactFeedbackStyle[map[style]])
+/**
+ * Renders the icon slot. A string is still accepted for one minor and routed
+ * through Ionicons; anything else is a node the caller owns.
+ */
+function renderIcon(icon: IconProp, size: number, color: string, where: string) {
+  if (typeof icon === 'string') {
+    return (
+      <Ionicons
+        name={deprecatedProp(`${where} (string)`, `${where} (ReactNode)`, icon) as any}
+        size={size}
+        color={color}
+      />
+    )
+  }
+  return icon
 }
 
 const sizeMap: Record<FabSize, { size: number; icon: number; padding: number }> = {
@@ -77,9 +89,10 @@ const SpeedDialAction: React.FC<{
   index: number
   expanded: boolean
   theme: any
-  haptic: HapticStyle
+  haptic: HapticProp
 }> = ({ action, index, expanded, theme, haptic }) => {
   const styles = useStyles()
+  const haptics = useHaptics()
   const progress = useSharedValue(0)
   const scale = useSharedValue(1)
 
@@ -107,8 +120,8 @@ const SpeedDialAction: React.FC<{
 
   const handlePressIn = useCallback(() => {
     scale.value = withSpring(0.9, { damping: 15, stiffness: 300 })
-    triggerHaptic(haptic)
-  }, [haptic])
+    haptics.trigger(haptic)
+  }, [haptic, haptics])
 
   const handlePressOut = useCallback(() => {
     scale.value = withSpring(1, { damping: 15, stiffness: 300 })
@@ -133,9 +146,9 @@ const SpeedDialAction: React.FC<{
         onPressOut={handlePressOut}
         style={[styles.speedDialBtn, { backgroundColor: btnColor }]}
         accessibilityRole="button"
-        accessibilityLabel={action.label ?? action.icon}
+        accessibilityLabel={action.label ?? (typeof action.icon === 'string' ? action.icon : undefined)}
       >
-        <Ionicons name={action.icon as any} size={20} color={iconColor} />
+        {renderIcon(action.icon, 20, iconColor, 'Fab action icon')}
       </AnimatedPressable>
     </Animated.View>
   )
@@ -158,6 +171,7 @@ export const Fab: React.FC<FabProps> = ({
 }) => {
   const theme = useTheme()
   const styles = useStyles()
+  const haptics = useHaptics()
   const [expanded, setExpanded] = useState(false)
 
   const scale = useSharedValue(1)
@@ -194,8 +208,8 @@ export const Fab: React.FC<FabProps> = ({
 
   const handlePressIn = useCallback(() => {
     scale.value = withSpring(0.9, { damping: 12, stiffness: 260 })
-    triggerHaptic(haptic)
-  }, [haptic])
+    haptics.trigger(haptic)
+  }, [haptic, haptics])
 
   const handlePressOut = useCallback(() => {
     scale.value = withSpring(1, { damping: 12, stiffness: 260 })
@@ -272,7 +286,7 @@ export const Fab: React.FC<FabProps> = ({
           fabAnimStyle,
         ]}
       >
-        <Ionicons name={icon as any} size={dims.icon} color={fgColor} />
+        {renderIcon(icon, dims.icon, fgColor, 'Fab icon')}
         {label && (
           <Text style={{ color: fgColor, fontSize: 15, ...fontStyle(theme.typography, 'semibold') }}>
             {label}

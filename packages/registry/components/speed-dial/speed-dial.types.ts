@@ -1,12 +1,16 @@
 import type React from 'react'
 import type { ViewProps, StyleProp, ViewStyle } from 'react-native'
+import type { HapticProp, IconProp } from '@native-mate/core'
+
+// Canonical home is '@native-mate/core'; re-exported for source compatibility.
+export type { HapticStyle, HapticProp, IconProp } from '@native-mate/core'
 
 export type SpeedDialDirection = 'up' | 'left'
 export type SpeedDialPosition = 'bottom-right' | 'bottom-left' | 'bottom-center'
 
 export interface SpeedDialAction {
-  /** Icon name from Ionicons */
-  icon: string
+  /** Icon node. A string still renders through Ionicons for one minor. */
+  icon: IconProp
   /** Label text shown alongside the FAB */
   label: string
   /** Called when this action is pressed */
@@ -18,8 +22,8 @@ export interface SpeedDialAction {
 }
 
 export interface SpeedDialProps extends Omit<ViewProps, 'style'> {
-  /** Main button icon name from Ionicons */
-  icon?: string
+  /** Main button icon node. A string still renders through Ionicons. */
+  icon?: IconProp
   /** Array of action items */
   actions: SpeedDialAction[]
   /** Controlled open state */
@@ -34,7 +38,7 @@ export interface SpeedDialProps extends Omit<ViewProps, 'style'> {
   color?: string
   /** Main FAB icon color */
   iconColor?: string
-  /** Enable haptic feedback */
-  haptic?: boolean
+  /** `false` (or 'none') disables haptics; `true` keeps the default feedback. */
+  haptic?: HapticProp
   style?: StyleProp<ViewStyle>
 }

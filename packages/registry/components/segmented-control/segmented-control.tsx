@@ -6,11 +6,8 @@ import Animated, {
   useAnimatedStyle,
   withSpring,
 } from 'react-native-reanimated'
-import { useTheme, useMotion, Text, makeStyles, fontStyle } from '@native-mate/core'
+import { useTheme, useMotion, Text, makeStyles, fontStyle, useHaptics } from '@native-mate/core'
 import type { SegmentedControlProps } from './segmented-control.types'
-
-let Haptics: any = null
-try { Haptics = require('expo-haptics') } catch {}
 
 const sizeMap = {
   sm: { py: 4, px: 10, fontSize: 12, containerPadding: 2, height: 30 },
@@ -57,6 +54,7 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
   const theme = useTheme()
   const motion = useMotion()
   const styles = useStyles()
+  const haptics = useHaptics()
   const sz = sizeMap[size]
 
   const [segLayouts, setSegLayouts] = useState<Record<string, { x: number; width: number }>>({})
@@ -99,9 +97,7 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
 
   const handlePress = (key: string) => {
     if (disabled) return
-    if (haptic && Haptics) {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
-    }
+    haptics.trigger(haptic)
     onChange(key)
   }
 

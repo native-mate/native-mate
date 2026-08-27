@@ -1,18 +1,13 @@
 // native-mate: date-picker@0.1.0 | hash:PLACEHOLDER
 import React, { useState, useMemo, useCallback, useEffect } from 'react'
-import { View, Pressable, ScrollView, Platform } from 'react-native'
+import { View, Pressable } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles, fontStyle, withAlpha } from '@native-mate/core'
-import type { DatePickerProps } from './date-picker.types'
+import { useTheme, useStrings, Text, makeStyles, fontStyle, withAlpha } from '@native-mate/core'
+import { Sheet } from '../sheet/sheet'
+import type { DatePickerProps, Weekday } from './date-picker.types'
 
 let Haptics: any = null
 try { Haptics = require('expo-haptics') } catch {}
-
-const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-const MONTHS = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December',
-]
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -97,15 +92,34 @@ const useStyles = makeStyles((theme) => ({
   timeSeparator: {
     paddingBottom: 4,
   },
+  periodColumn: {
+    gap: 6,
+    paddingLeft: 4,
+  },
+  periodButton: {
+    minWidth: 44,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   confirmRow: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
+    alignItems: 'center',
+    gap: 8,
     paddingTop: 12,
     borderTopWidth: 1,
   },
   confirmButton: {
     paddingVertical: 10,
     paddingHorizontal: 24,
+    borderRadius: 10,
+  },
+  cancelButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 16,
     borderRadius: 10,
   },
 }))
@@ -132,6 +146,11 @@ function isDateInRange(date: Date, min?: Date, max?: Date): boolean {
   if (min && date < new Date(min.getFullYear(), min.getMonth(), min.getDate())) return false
   if (max && date > new Date(max.getFullYear(), max.getMonth(), max.getDate())) return false
   return true
+}
+
+/** Rotate a Sunday-first 7-element array so `first` becomes index 0. */
+function rotateWeek<T>(week: T[], first: number): T[] {
+  return week.map((_, i) => week[(i + first) % 7])
 }
 
 // ── Time Spinner ─────────────────────────────────────────────────────────────
@@ -225,6 +244,12 @@ interface CalendarProps {
   maximumDate?: Date
   haptic?: boolean
   visible?: boolean
+  /** Weekday abbreviations, already rotated to start at `firstDayOfWeek`. */
+  weekdays: string[]
+  /** Full month names, Jan-first, for accessibility labels. */
+  months: string[]
+  firstDayOfWeek: number
+  todayLabel: string
 }
 
 const CalendarGrid: React.FC<CalendarProps> = ({
@@ -236,6 +261,10 @@ const CalendarGrid: React.FC<CalendarProps> = ({
   maximumDate,
   haptic: enableHaptic = true,
   visible = true,
+  weekdays,
+  months,
+  firstDayOfWeek,
+  todayLabel,
 }) => {
   const theme = useTheme()
   const styles = useStyles()
@@ -246,7 +275,8 @@ const CalendarGrid: React.FC<CalendarProps> = ({
 
   const weeks = useMemo(() => {
     const daysInMonth = getDaysInMonth(viewYear, viewMonth)
-    const firstDay = getFirstDayOfWeek(viewYear, viewMonth)
+    // Offset of the 1st within a week that starts on `firstDayOfWeek`.
+    const firstDay = (getFirstDayOfWeek(viewYear, viewMonth) - firstDayOfWeek + 7) % 7
     const rows: (number | null)[][] = []
     let currentWeek: (number | null)[] = []
 
@@ -268,14 +298,14 @@ const CalendarGrid: React.FC<CalendarProps> = ({
     }
 
     return rows
-  }, [viewYear, viewMonth])
+  }, [viewYear, viewMonth, firstDayOfWeek])
 
   return (
     <View style={styles.calendarGrid}>
       {/* Week day headers */}
       <View style={styles.weekRow}>
-        {DAYS.map((day) => (
-          <View key={day} style={styles.weekDay}>
+        {weekdays.map((day, i) => (
+          <View key={`${day}-${i}`} style={styles.weekDay}>
             <Text
               style={{
                 fontSize: 12,
@@ -294,7 +324,7 @@ const CalendarGrid: React.FC<CalendarProps> = ({
         <View key={wi} style={styles.weekRowDays}>
           {week.map((day, di) => {
             if (day === null) {
-              return <View key={`empty-${di}`} style={styles.dayCell} />
+              return <View key={`empty-${wi}-${di}`} style={styles.dayCell} />
             }
 
             const date = new Date(viewYear, viewMonth, day)
@@ -320,7 +350,7 @@ const CalendarGrid: React.FC<CalendarProps> = ({
                   }}
                   disabled={isDisabled}
                   accessibilityRole="button"
-                  accessibilityLabel={`${MONTHS[viewMonth]} ${day}, ${viewYear}${isSelected ? ', selected' : ''}${isToday ? ', today' : ''}`}
+                  accessibilityLabel={`${months[viewMonth]} ${day}, ${viewYear}${isSelected ? ', selected' : ''}${isToday ? `, ${todayLabel}` : ''}`}
                   accessibilityState={{ selected: isSelected, disabled: isDisabled }}
                 >
                   <Text
@@ -346,6 +376,73 @@ const CalendarGrid: React.FC<CalendarProps> = ({
   )
 }
 
+// ── Locale resolution ────────────────────────────────────────────────────────
+
+interface CalendarNames {
+  months: string[]
+  monthsShort: string[]
+  weekdaysShort: string[]
+  am: string
+  pm: string
+}
+
+// 2021-08-01 (UTC) is a Sunday — the anchor for weekday-name extraction.
+const WEEK_ANCHOR_UTC = Date.UTC(2021, 7, 1)
+
+/**
+ * Resolve calendar copy for `locale`, falling back to the strings slot.
+ *
+ * NOTE ON HERMES: `Intl` exists in Hermes, but the Android build only carries
+ * the locale DATA the app was compiled with. A tag Hermes has no data for does
+ * not throw — it silently formats in English. So this is a best-effort
+ * enhancement, not a guarantee: apps that must render non-English month and
+ * weekday names should pass their own `strings` to `StringsContext` rather than
+ * relying on `locale`.
+ */
+function resolveNames(locale: string | undefined, fallback: CalendarNames): CalendarNames {
+  if (!locale) return fallback
+  try {
+    const longFmt = new Intl.DateTimeFormat(locale, { month: 'long', timeZone: 'UTC' })
+    const shortFmt = new Intl.DateTimeFormat(locale, { month: 'short', timeZone: 'UTC' })
+    const weekdayFmt = new Intl.DateTimeFormat(locale, { weekday: 'short', timeZone: 'UTC' })
+
+    const months: string[] = []
+    const monthsShort: string[] = []
+    for (let i = 0; i < 12; i++) {
+      const d = new Date(Date.UTC(2021, i, 15))
+      months.push(longFmt.format(d))
+      monthsShort.push(shortFmt.format(d))
+    }
+
+    const weekdaysShort: string[] = []
+    for (let i = 0; i < 7; i++) {
+      weekdaysShort.push(weekdayFmt.format(new Date(WEEK_ANCHOR_UTC + i * 86400000)))
+    }
+
+    let { am, pm } = fallback
+    try {
+      const hourFmt = new Intl.DateTimeFormat(locale, { hour: 'numeric', hour12: true, timeZone: 'UTC' })
+      const period = (d: Date) =>
+        hourFmt.formatToParts(d).find((p) => p.type === 'dayPeriod')?.value
+      const resolvedAm = period(new Date(Date.UTC(2021, 0, 1, 9)))
+      const resolvedPm = period(new Date(Date.UTC(2021, 0, 1, 21)))
+      if (resolvedAm && resolvedPm && resolvedAm !== resolvedPm) {
+        am = resolvedAm
+        pm = resolvedPm
+      }
+    } catch {
+      // formatToParts is missing in some Intl-less builds — keep the fallback.
+    }
+
+    if (months.every(Boolean) && weekdaysShort.every(Boolean)) {
+      return { months, monthsShort, weekdaysShort, am, pm }
+    }
+  } catch {
+    // Unknown tag, or no Intl at all. Never throw — fall through to strings.
+  }
+  return fallback
+}
+
 // ── DatePicker ───────────────────────────────────────────────────────────────
 
 export const DatePicker: React.FC<DatePickerProps> = ({
@@ -354,11 +451,15 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   mode = 'date',
   minimumDate,
   maximumDate,
-  visible = true,
+  visible = false,
   onClose,
   title,
   showConfirmButton = false,
-  confirmLabel = 'Done',
+  confirmLabel,
+  cancelLabel,
+  firstDayOfWeek = 0,
+  locale,
+  hour12,
   haptic = true,
   disabled = false,
   sheetHeight = 420,
@@ -366,10 +467,39 @@ export const DatePicker: React.FC<DatePickerProps> = ({
 }) => {
   const theme = useTheme()
   const styles = useStyles()
+  const strings = useStrings()
 
   const [viewYear, setViewYear] = useState(value.getFullYear())
   const [viewMonth, setViewMonth] = useState(value.getMonth())
   const [pendingDate, setPendingDate] = useState(value)
+
+  const names = useMemo(
+    () =>
+      resolveNames(locale, {
+        months: strings.months,
+        monthsShort: strings.monthsShort,
+        weekdaysShort: strings.weekdaysShort,
+        am: 'AM',
+        pm: 'PM',
+      }),
+    [locale, strings]
+  )
+
+  const weekdays = useMemo(
+    () => rotateWeek(names.weekdaysShort, firstDayOfWeek as Weekday),
+    [names, firstDayOfWeek]
+  )
+
+  // 12h/24h: the caller wins, then whatever Intl reports for the locale, then
+  // 24-hour (the safe default when Intl cannot answer).
+  const use12Hour = useMemo(() => {
+    if (typeof hour12 === 'boolean') return hour12
+    try {
+      return !!new Intl.DateTimeFormat(locale, { hour: 'numeric' }).resolvedOptions().hour12
+    } catch {
+      return false
+    }
+  }, [hour12, locale])
 
   useEffect(() => {
     if (visible) {
@@ -384,7 +514,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
     (direction: -1 | 1) => {
       if (haptic && Haptics) Haptics.selectionAsync()
       setViewMonth((prev) => {
-        let newMonth = prev + direction
+        const newMonth = prev + direction
         if (newMonth < 0) {
           setViewYear((y) => y - 1)
           return 11
@@ -403,12 +533,8 @@ export const DatePicker: React.FC<DatePickerProps> = ({
     (date: Date) => {
       const newDate = new Date(pendingDate)
       newDate.setFullYear(date.getFullYear(), date.getMonth(), date.getDate())
-      if (showConfirmButton) {
-        setPendingDate(newDate)
-      } else {
-        setPendingDate(newDate)
-        onChange(newDate)
-      }
+      setPendingDate(newDate)
+      if (!showConfirmButton) onChange(newDate)
     },
     [pendingDate, showConfirmButton, onChange]
   )
@@ -430,146 +556,221 @@ export const DatePicker: React.FC<DatePickerProps> = ({
     onClose?.()
   }
 
-  if (!visible) return null
+  const handleCancel = () => {
+    if (haptic && Haptics) Haptics.selectionAsync()
+    onClose?.()
+  }
 
   const showCalendar = mode === 'date' || mode === 'datetime'
   const showTime = mode === 'time' || mode === 'datetime'
 
-  return (
-    <View
-      style={[styles.container, { minHeight: sheetHeight, opacity: disabled ? 0.5 : 1 }, style]}
-      pointerEvents={disabled ? 'none' : 'auto'}
-    >
-      {title && (
-        <Text
-          variant="heading"
-          style={{ marginBottom: 12, textAlign: 'center' }}
-        >
-          {title}
-        </Text>
-      )}
+  const hours24 = pendingDate.getHours()
+  const isPm = hours24 >= 12
+  // 12h boundaries: 0 → 12 AM, 12 → 12 PM.
+  const displayHour = use12Hour ? (hours24 % 12 === 0 ? 12 : hours24 % 12) : hours24
 
-      {showCalendar && (
-        <>
-          {/* Month/Year navigation */}
-          <View style={styles.header}>
+  const setHour12 = (h12: number) => {
+    // 12 AM is hour 0, 12 PM is hour 12.
+    handleTimeChange('hours', (h12 % 12) + (isPm ? 12 : 0))
+  }
+
+  const setPeriod = (pm: boolean) => {
+    if (pm === isPm) return
+    handleTimeChange('hours', pm ? hours24 + 12 : hours24 - 12)
+  }
+
+  const resolvedConfirmLabel = confirmLabel ?? strings.done
+  const resolvedCancelLabel = cancelLabel ?? strings.cancel
+
+  return (
+    <Sheet
+      visible={visible}
+      onClose={() => onClose?.()}
+      height={sheetHeight}
+      title={title}
+      // datetime stacks a calendar and a time row — let it scroll on short screens.
+      scrollable={mode === 'datetime'}
+    >
+      <View
+        style={[styles.container, { opacity: disabled ? 0.5 : 1 }, style]}
+        pointerEvents={disabled ? 'none' : 'auto'}
+      >
+        {showCalendar && (
+          <>
+            {/* Month/Year navigation */}
+            <View style={styles.header}>
+              <Pressable
+                style={styles.monthYearButton}
+                accessibilityRole="text"
+                accessibilityLabel={`${names.months[viewMonth]} ${viewYear}`}
+              >
+                <Text
+                  style={{
+                    fontSize: 17,
+                    ...fontStyle(theme.typography, 'bold'),
+                    color: theme.colors.foreground,
+                  }}
+                >
+                  {names.months[viewMonth]} {viewYear}
+                </Text>
+              </Pressable>
+
+              <View style={styles.navButtons}>
+                <Pressable
+                  style={[
+                    styles.navButton,
+                    { backgroundColor: theme.colors.surface },
+                  ]}
+                  onPress={() => navigateMonth(-1)}
+                  accessibilityLabel="Previous month"
+                  accessibilityRole="button"
+                >
+                  <Ionicons
+                    name="chevron-back"
+                    size={18}
+                    color={theme.colors.foreground}
+                  />
+                </Pressable>
+                <Pressable
+                  style={[
+                    styles.navButton,
+                    { backgroundColor: theme.colors.surface },
+                  ]}
+                  onPress={() => navigateMonth(1)}
+                  accessibilityLabel="Next month"
+                  accessibilityRole="button"
+                >
+                  <Ionicons
+                    name="chevron-forward"
+                    size={18}
+                    color={theme.colors.foreground}
+                  />
+                </Pressable>
+              </View>
+            </View>
+
+            <CalendarGrid
+              value={pendingDate}
+              viewYear={viewYear}
+              viewMonth={viewMonth}
+              onSelect={handleDaySelect}
+              minimumDate={minimumDate}
+              maximumDate={maximumDate}
+              haptic={haptic}
+              visible={visible}
+              weekdays={weekdays}
+              months={names.months}
+              firstDayOfWeek={firstDayOfWeek}
+              todayLabel={strings.today}
+            />
+          </>
+        )}
+
+        {showTime && (
+          <View
+            style={[
+              styles.timeContainer,
+              showCalendar && { borderTopColor: theme.colors.border },
+            ]}
+          >
+            <TimeSpinner
+              value={displayHour}
+              min={use12Hour ? 1 : 0}
+              max={use12Hour ? 12 : 23}
+              onChange={(v) => (use12Hour ? setHour12(v) : handleTimeChange('hours', v))}
+              label="Hour"
+              pad={!use12Hour}
+              haptic={haptic}
+            />
+            <Text
+              style={[
+                styles.timeSeparator,
+                { fontSize: 28, ...fontStyle(theme.typography, 'bold'), color: theme.colors.foreground },
+              ]}
+            >
+              :
+            </Text>
+            <TimeSpinner
+              value={pendingDate.getMinutes()}
+              min={0}
+              max={59}
+              onChange={(v) => handleTimeChange('minutes', v)}
+              label="Min"
+              haptic={haptic}
+            />
+
+            {use12Hour && (
+              <View style={styles.periodColumn}>
+                {[false, true].map((pm) => {
+                  const active = pm === isPm
+                  const label = pm ? names.pm : names.am
+                  return (
+                    <Pressable
+                      key={label}
+                      style={[
+                        styles.periodButton,
+                        {
+                          backgroundColor: active
+                            ? withAlpha(theme.colors.primary, 0.13)
+                            : theme.colors.surface,
+                        },
+                      ]}
+                      onPress={() => setPeriod(pm)}
+                      accessibilityRole="radio"
+                      accessibilityState={{ selected: active }}
+                      accessibilityLabel={label}
+                    >
+                      <Text
+                        style={{
+                          fontSize: 13,
+                          ...fontStyle(theme.typography, active ? 'semibold' : 'regular'),
+                          color: active ? theme.colors.primary : theme.colors.muted,
+                        }}
+                      >
+                        {label}
+                      </Text>
+                    </Pressable>
+                  )
+                })}
+              </View>
+            )}
+          </View>
+        )}
+
+        {showConfirmButton && (
+          <View
+            style={[styles.confirmRow, { borderTopColor: theme.colors.border }]}
+          >
             <Pressable
-              style={styles.monthYearButton}
-              accessibilityRole="text"
-              accessibilityLabel={`${MONTHS[viewMonth]} ${viewYear}`}
+              style={styles.cancelButton}
+              onPress={handleCancel}
+              accessibilityRole="button"
+              accessibilityLabel={resolvedCancelLabel}
             >
               <Text
-                style={{
-                  fontSize: 17,
-                  ...fontStyle(theme.typography, 'bold'),
-                  color: theme.colors.foreground,
-                }}
+                style={{ fontSize: 15, ...fontStyle(theme.typography, 'semibold'), color: theme.colors.muted }}
               >
-                {MONTHS[viewMonth]} {viewYear}
+                {resolvedCancelLabel}
               </Text>
             </Pressable>
-
-            <View style={styles.navButtons}>
-              <Pressable
-                style={[
-                  styles.navButton,
-                  { backgroundColor: theme.colors.surface },
-                ]}
-                onPress={() => navigateMonth(-1)}
-                accessibilityLabel="Previous month"
-                accessibilityRole="button"
-              >
-                <Ionicons
-                  name="chevron-back"
-                  size={18}
-                  color={theme.colors.foreground}
-                />
-              </Pressable>
-              <Pressable
-                style={[
-                  styles.navButton,
-                  { backgroundColor: theme.colors.surface },
-                ]}
-                onPress={() => navigateMonth(1)}
-                accessibilityLabel="Next month"
-                accessibilityRole="button"
-              >
-                <Ionicons
-                  name="chevron-forward"
-                  size={18}
-                  color={theme.colors.foreground}
-                />
-              </Pressable>
-            </View>
-          </View>
-
-          <CalendarGrid
-            value={pendingDate}
-            viewYear={viewYear}
-            viewMonth={viewMonth}
-            onSelect={handleDaySelect}
-            minimumDate={minimumDate}
-            maximumDate={maximumDate}
-            haptic={haptic}
-          />
-        </>
-      )}
-
-      {showTime && (
-        <View
-          style={[
-            styles.timeContainer,
-            showCalendar && { borderTopColor: theme.colors.border },
-          ]}
-        >
-          <TimeSpinner
-            value={pendingDate.getHours()}
-            min={0}
-            max={23}
-            onChange={(v) => handleTimeChange('hours', v)}
-            label="Hour"
-            haptic={haptic}
-          />
-          <Text
-            style={[
-              styles.timeSeparator,
-              { fontSize: 28, ...fontStyle(theme.typography, 'bold'), color: theme.colors.foreground },
-            ]}
-          >
-            :
-          </Text>
-          <TimeSpinner
-            value={pendingDate.getMinutes()}
-            min={0}
-            max={59}
-            onChange={(v) => handleTimeChange('minutes', v)}
-            label="Min"
-            haptic={haptic}
-          />
-        </View>
-      )}
-
-      {showConfirmButton && (
-        <View
-          style={[styles.confirmRow, { borderTopColor: theme.colors.border }]}
-        >
-          <Pressable
-            style={[
-              styles.confirmButton,
-              { backgroundColor: theme.colors.primary },
-            ]}
-            onPress={handleConfirm}
-            accessibilityRole="button"
-            accessibilityLabel={confirmLabel}
-          >
-            <Text
-              style={{ fontSize: 15, ...fontStyle(theme.typography, 'semibold'), color: theme.colors.onPrimary }}
+            <Pressable
+              style={[
+                styles.confirmButton,
+                { backgroundColor: theme.colors.primary },
+              ]}
+              onPress={handleConfirm}
+              accessibilityRole="button"
+              accessibilityLabel={resolvedConfirmLabel}
             >
-              {confirmLabel}
-            </Text>
-          </Pressable>
-        </View>
-      )}
-    </View>
+              <Text
+                style={{ fontSize: 15, ...fontStyle(theme.typography, 'semibold'), color: theme.colors.onPrimary }}
+              >
+                {resolvedConfirmLabel}
+              </Text>
+            </Pressable>
+          </View>
+        )}
+      </View>
+    </Sheet>
   )
 }

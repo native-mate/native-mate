@@ -1,3 +1,5 @@
+import type { HapticProp } from '@native-mate/core'
+
 export type SwitchSize = 'sm' | 'md' | 'lg'
 
 export interface SwitchProps {
@@ -9,7 +11,8 @@ export interface SwitchProps {
   size?: SwitchSize
   color?: string
   loading?: boolean
-  haptic?: boolean
+  /** `false`/`'none'` disables; `true` means `'light'`. Default: true */
+  haptic?: HapticProp
   labelPosition?: 'left' | 'right'
   accessibilityLabel?: string
 }

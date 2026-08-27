@@ -1,6 +1,6 @@
 {
   "name": "fab",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Floating action button with speed dial fan-out, extended label mode, spring animations, and haptic feedback",
   "category": "input",
   "files": [

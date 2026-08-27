@@ -1,6 +1,6 @@
 {
   "name": "input",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Feature-rich text input with 3 sizes, prefix/suffix, floating label, password toggle, clearable, character count, shake on error, haptic on focus",
   "category": "input",
   "files": [
@@ -15,8 +15,7 @@
   ],
   "dependencies": {
     "npm": [
-      "@expo/vector-icons",
-      "expo-haptics"
+      "@expo/vector-icons"
     ],
     "components": []
   }

@@ -22,6 +22,16 @@ export interface SheetProps {
    * 0 elsewhere — pass a safe-area inset here if your app has one.
    */
   bottomInset?: number
-  /** @deprecated use height instead */
+  /**
+   * Heights the sheet can rest at, in px. The first entry is the height the
+   * sheet opens at; the sheet is laid out at the tallest entry so it can be
+   * dragged up to it. Dragging down past the shortest entry dismisses.
+   *
+   * Dragging between snap points requires the optional peer
+   * `react-native-gesture-handler`. Without it the sheet opens at
+   * `snapPoints[0]` and stays there (tap-to-dismiss only) and a one-time dev
+   * warning names the missing capability. Omit to use `height` as the single
+   * snap point.
+   */
   snapPoints?: number[]
 }

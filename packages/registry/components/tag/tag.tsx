@@ -9,11 +9,8 @@ import Animated, {
   interpolateColor,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle, useHaptics } from '@native-mate/core'
 import type { TagProps, TagGroupProps, TagVariant } from './tag.types'
-
-let Haptics: any = null
-try { Haptics = require('expo-haptics') } catch {}
 
 // Each variant: [activeColor, activeBg, activeText] - used when selected
 function getVariantPalette(theme: any): Record<TagVariant, [string, string, string]> {
@@ -42,10 +39,12 @@ export const Tag = React.memo<TagProps>(({
   icon,
   disabled = false,
   size = 'md',
+  haptic = true,
   style,
   testID,
 }) => {
   const theme = useTheme()
+  const haptics = useHaptics()
   const sz = sizeMap[size]
 
   // Resolve colors
@@ -76,12 +75,12 @@ export const Tag = React.memo<TagProps>(({
 
   const handlePress = useCallback(() => {
     if (disabled) return
-    Haptics?.impactAsync(Haptics?.ImpactFeedbackStyle?.Light)
+    haptics.trigger(haptic)
     scale.value = withSpring(0.94, { mass: 0.3, damping: 10 }, () => {
       scale.value = withSpring(1, { mass: 0.3, damping: 12 })
     })
     onPress?.()
-  }, [disabled, onPress])
+  }, [disabled, onPress, haptic, haptics])
 
   const handleRemove = useCallback(() => {
     if (disabled) return

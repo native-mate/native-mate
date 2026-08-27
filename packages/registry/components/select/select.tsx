@@ -8,13 +8,19 @@ import Animated, {
   withTiming,
   interpolate,
 } from 'react-native-reanimated'
-import { useTheme, useMotion, withAlpha, Text, makeStyles } from '@native-mate/core'
+import {
+  useTheme,
+  useMotion,
+  withAlpha,
+  Text,
+  makeStyles,
+  resolveError,
+  useHaptics,
+  useStrings,
+} from '@native-mate/core'
 import { Sheet } from '../sheet/sheet'
 import { Checkbox } from '../checkbox/checkbox'
 import type { SelectProps, MultiSelectProps, SelectOption } from './select.types'
-
-let Haptics: any = null
-try { Haptics = require('expo-haptics') } catch {}
 
 const heightMap = { sm: 36, md: 44, lg: 52 }
 const fontMap = { sm: 13, md: 15, lg: 17 }
@@ -105,14 +111,20 @@ export const Select: React.FC<SelectProps> = ({
   required = false,
   clearable = false,
   searchable = false,
-  searchPlaceholder = 'Search...',
+  searchPlaceholder,
   loading = false,
   size = 'md',
+  haptic = true,
 }) => {
   const theme = useTheme()
   const styles = useStyles()
+  const strings = useStrings()
+  const haptics = useHaptics()
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
+
+  const { hasError, message: errorText } = resolveError(error)
+  const resolvedSearchPlaceholder = searchPlaceholder ?? strings.search
 
   const allOptions: SelectOption[] = useMemo(() => {
     if (groups) return groups.flatMap((g) => g.options)
@@ -138,20 +150,20 @@ export const Select: React.FC<SelectProps> = ({
 
   const handleOpen = useCallback(() => {
     if (disabled) return
-    Haptics?.impactAsync(Haptics?.ImpactFeedbackStyle?.Light)
+    haptics.trigger(haptic)
     setQuery('')
     setOpen(true)
-  }, [disabled])
+  }, [disabled, haptic, haptics])
 
   const handleSelect = useCallback((optVal: string) => {
-    Haptics?.impactAsync(Haptics?.ImpactFeedbackStyle?.Light)
+    haptics.trigger(haptic)
     onChange(optVal)
     setOpen(false)
-  }, [onChange])
+  }, [onChange, haptic, haptics])
 
   const triggerH = heightMap[size]
   const triggerFs = fontMap[size]
-  const borderColor = error ? theme.colors.destructive : theme.colors.border
+  const borderColor = hasError ? theme.colors.destructive : theme.colors.border
 
   const renderOption = useCallback(({ item }: { item: SelectOption }) => (
     <Pressable
@@ -214,14 +226,14 @@ export const Select: React.FC<SelectProps> = ({
         </View>
       </Pressable>
 
-      {error && <Text variant="caption" style={styles.error}>{error}</Text>}
-      {!error && hint && <Text variant="caption" style={styles.hint}>{hint}</Text>}
+      {errorText && <Text variant="caption" style={styles.error}>{errorText}</Text>}
+      {!hasError && hint && <Text variant="caption" style={styles.hint}>{hint}</Text>}
 
       <Sheet visible={open} onClose={() => setOpen(false)} title={label} height={snapHeight}>
         {searchable && (
           <TextInput
             style={styles.searchBar}
-            placeholder={searchPlaceholder}
+            placeholder={resolvedSearchPlaceholder}
             placeholderTextColor={theme.colors.muted}
             value={query}
             onChangeText={setQuery}
@@ -277,14 +289,20 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
   required = false,
   clearable = false,
   searchable = false,
-  searchPlaceholder = 'Search...',
+  searchPlaceholder,
   maxSelections,
   size = 'md',
+  haptic = true,
 }) => {
   const theme = useTheme()
   const styles = useStyles()
+  const strings = useStrings()
+  const haptics = useHaptics()
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
+
+  const { hasError, message: errorText } = resolveError(error)
+  const resolvedSearchPlaceholder = searchPlaceholder ?? strings.search
 
   const selectedOptions = options.filter((o) => value.includes(o.value))
 
@@ -295,17 +313,17 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
   }, [options, query])
 
   const toggleOption = useCallback((optVal: string) => {
-    Haptics?.impactAsync(Haptics?.ImpactFeedbackStyle?.Light)
+    haptics.trigger(haptic)
     if (value.includes(optVal)) {
       onChange(value.filter((v) => v !== optVal))
     } else {
       if (maxSelections && value.length >= maxSelections) return
       onChange([...value, optVal])
     }
-  }, [value, onChange, maxSelections])
+  }, [value, onChange, maxSelections, haptic, haptics])
 
   const triggerH = heightMap[size]
-  const borderColor = error ? theme.colors.destructive : theme.colors.border
+  const borderColor = hasError ? theme.colors.destructive : theme.colors.border
 
   return (
     <View style={styles.wrapper}>
@@ -348,14 +366,14 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
         </View>
       </Pressable>
 
-      {error && <Text variant="caption" style={styles.error}>{error}</Text>}
-      {!error && hint && <Text variant="caption" style={styles.hint}>{hint}</Text>}
+      {errorText && <Text variant="caption" style={styles.error}>{errorText}</Text>}
+      {!hasError && hint && <Text variant="caption" style={styles.hint}>{hint}</Text>}
 
       <Sheet visible={open} onClose={() => setOpen(false)} title={label}>
         {searchable && (
           <TextInput
             style={styles.searchBar}
-            placeholder={searchPlaceholder}
+            placeholder={resolvedSearchPlaceholder}
             placeholderTextColor={theme.colors.muted}
             value={query}
             onChangeText={setQuery}

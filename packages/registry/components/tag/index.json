@@ -1,6 +1,6 @@
 {
   "name": "tag",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Compact dismissible label chip with spring animation on remove",
   "category": "display",
   "files": [
@@ -15,8 +15,7 @@
   ],
   "dependencies": {
     "npm": [
-      "@expo/vector-icons",
-      "expo-haptics"
+      "@expo/vector-icons"
     ],
     "components": []
   }

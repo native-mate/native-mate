@@ -7,7 +7,7 @@ import Animated, {
   withSpring,
   withDelay,
 } from 'react-native-reanimated'
-import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle, useStrings } from '@native-mate/core'
 import { Button } from '../button/button'
 import type { EmptyStateProps } from './empty-state.types'
 
@@ -330,8 +330,13 @@ const IllustrationEmptyState: React.FC<EmptyStateProps> = ({
 
 export const EmptyState: React.FC<EmptyStateProps> = (props) => {
   const { variant = 'default' } = props
+  const strings = useStrings()
 
-  if (variant === 'compact') return <CompactEmptyState {...props} />
-  if (variant === 'illustration') return <IllustrationEmptyState {...props} />
-  return <DefaultEmptyState {...props} />
+  // `title` stays the higher-priority override; the themed string is only the
+  // fallback, so existing call sites render exactly what they did before.
+  const resolved = { ...props, title: props.title ?? strings.empty }
+
+  if (variant === 'compact') return <CompactEmptyState {...resolved} />
+  if (variant === 'illustration') return <IllustrationEmptyState {...resolved} />
+  return <DefaultEmptyState {...resolved} />
 }

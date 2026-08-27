@@ -1,10 +1,12 @@
+import type { ErrorProp, HapticProp, IconProp } from '@native-mate/core'
+
 export type RadioSize = 'sm' | 'md' | 'lg'
 
 export interface RadioOption {
   label: string
   value: string
   description?: string
-  icon?: React.ReactNode
+  icon?: IconProp
   disabled?: boolean
 }
 
@@ -17,7 +19,8 @@ export interface RadioProps {
   size?: RadioSize
   color?: string
   card?: boolean
-  haptic?: boolean
+  /** `false`/`'none'` disables; `true` means `'light'`. Default: true */
+  haptic?: HapticProp
   accessibilityLabel?: string
 }
 
@@ -26,10 +29,12 @@ export interface RadioGroupProps {
   value?: string
   onChange: (value: string) => void
   label?: string
-  error?: string
+  /** A string renders as the message; `true` sets error styling with no text. */
+  error?: ErrorProp
   disabled?: boolean
   size?: RadioSize
   horizontal?: boolean
   card?: boolean
-  haptic?: boolean
+  /** `false`/`'none'` disables; `true` means `'light'`. Default: true */
+  haptic?: HapticProp
 }

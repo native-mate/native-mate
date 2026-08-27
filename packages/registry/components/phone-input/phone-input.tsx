@@ -22,11 +22,11 @@ import {
   makeStyles,
   Separator,
   fontStyle,
+  resolveError,
+  useHaptics,
+  useStrings,
 } from '@native-mate/core'
 import type { PhoneInputProps, PhoneInputHandle, Country } from './phone-input.types'
-
-let Haptics: any = null
-try { Haptics = require('expo-haptics') } catch {}
 
 // ── Built-in country data ────────────────────────────────────────────────────
 
@@ -194,6 +194,7 @@ const CountryPicker: React.FC<CountryPickerProps> = ({
 }) => {
   const theme = useTheme()
   const styles = useStyles()
+  const strings = useStrings()
   const [search, setSearch] = useState('')
 
   const filtered = useMemo(() => {
@@ -233,7 +234,7 @@ const CountryPicker: React.FC<CountryPickerProps> = ({
             value={search}
             onChangeText={setSearch}
             autoCorrect={false}
-            accessibilityLabel="Search countries"
+            accessibilityLabel={strings.search}
           />
           <Separator />
           <FlatList
@@ -316,7 +317,10 @@ export const PhoneInput = forwardRef<PhoneInputHandle, PhoneInputProps>(function
   const theme = useTheme()
   const motion = useMotion()
   const styles = useStyles()
+  const haptics = useHaptics()
   const inputRef = useRef<TextInput>(null)
+
+  const { hasError, message: errorText } = resolveError(error)
 
   const countryList = countries && countries.length > 0 ? countries : DEFAULT_COUNTRIES
   const [internalCountry, setInternalCountry] = useState<Country>(
@@ -365,7 +369,7 @@ export const PhoneInput = forwardRef<PhoneInputHandle, PhoneInputProps>(function
 
   const handleCountrySelect = useCallback(
     (nextCountry: Country) => {
-      if (haptic && Haptics) Haptics.selectionAsync()
+      haptics.trigger(haptic)
       if (!isControlled) setInternalCountry(nextCountry)
       onCountryChange?.(nextCountry)
     },
@@ -397,7 +401,7 @@ export const PhoneInput = forwardRef<PhoneInputHandle, PhoneInputProps>(function
 
   const openPicker = () => {
     if (disabled) return
-    if (haptic && Haptics) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+    haptics.trigger(haptic)
     setPickerVisible(true)
   }
 
@@ -408,7 +412,7 @@ export const PhoneInput = forwardRef<PhoneInputHandle, PhoneInputProps>(function
       <Animated.View
         style={[
           styles.inputRow,
-          error ? styles.inputRowError : undefined,
+          hasError ? styles.inputRowError : undefined,
           containerAnimStyle,
         ]}
       >
@@ -464,7 +468,7 @@ export const PhoneInput = forwardRef<PhoneInputHandle, PhoneInputProps>(function
         />
       </Animated.View>
 
-      {error && <Text style={styles.errorText}>{error}</Text>}
+      {errorText && <Text style={styles.errorText}>{errorText}</Text>}
 
       <CountryPicker
         visible={pickerVisible}

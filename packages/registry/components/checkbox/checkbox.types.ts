@@ -1,3 +1,5 @@
+import type { ErrorProp, HapticProp } from '@native-mate/core'
+
 export type CheckboxSize = 'sm' | 'md' | 'lg'
 
 export interface CheckboxProps {
@@ -7,11 +9,13 @@ export interface CheckboxProps {
   label?: string
   description?: string
   disabled?: boolean
-  error?: string
+  /** A string renders as the message; `true` sets error styling with no text. */
+  error?: ErrorProp
   size?: CheckboxSize
   color?: string
   labelPosition?: 'right' | 'left'
-  haptic?: boolean
+  /** `false`/`'none'` disables; `true` means `'light'`. Default: true */
+  haptic?: HapticProp
   accessibilityLabel?: string
 }
 
@@ -27,8 +31,11 @@ export interface CheckboxGroupProps {
   value: string[]
   onChange: (value: string[]) => void
   label?: string
-  error?: string
+  /** A string renders as the message; `true` sets error styling with no text. */
+  error?: ErrorProp
   disabled?: boolean
   size?: CheckboxSize
   horizontal?: boolean
+  /** `false`/`'none'` disables; `true` means `'light'`. Default: true */
+  haptic?: HapticProp
 }

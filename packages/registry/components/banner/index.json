@@ -1,6 +1,6 @@
 {
   "name": "banner",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "App banner with slide in/out animation, four variants (info/warning/success/error), action button, and auto-dismiss",
   "category": "feedback",
   "files": [
@@ -15,8 +15,7 @@
   ],
   "dependencies": {
     "npm": [
-      "@expo/vector-icons",
-      "expo-haptics"
+      "@expo/vector-icons"
     ],
     "components": []
   }

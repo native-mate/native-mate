@@ -1,15 +1,18 @@
 import type React from 'react'
 import type { StyleProp, ViewStyle } from 'react-native'
+import type { HapticProp, IconProp } from '@native-mate/core'
 
 export type ToggleGroupSize = 'sm' | 'md' | 'lg'
 export type ToggleGroupType = 'single' | 'multiple'
-export type HapticStyle = 'light' | 'medium' | 'heavy' | 'none'
+
+// Canonical home is '@native-mate/core'; re-exported for source compatibility.
+export type { HapticStyle, HapticProp, IconProp } from '@native-mate/core'
 
 export interface ToggleGroupItem {
   key: string
   label: string
-  /** Ionicons icon name */
-  icon?: string
+  /** Icon node. A string still renders through Ionicons for one minor. */
+  icon?: IconProp
   disabled?: boolean
 }
 
@@ -22,7 +25,8 @@ export interface ToggleGroupSingleProps {
   onChangeMultiple?: never
   size?: ToggleGroupSize
   fullWidth?: boolean
-  haptic?: HapticStyle
+  /** `false` (or 'none') disables haptics; `true` means 'light'. */
+  haptic?: HapticProp
   disabled?: boolean
   style?: StyleProp<ViewStyle>
 }
@@ -36,7 +40,8 @@ export interface ToggleGroupMultipleProps {
   onChange?: never
   size?: ToggleGroupSize
   fullWidth?: boolean
-  haptic?: HapticStyle
+  /** `false` (or 'none') disables haptics; `true` means 'light'. */
+  haptic?: HapticProp
   disabled?: boolean
   style?: StyleProp<ViewStyle>
 }

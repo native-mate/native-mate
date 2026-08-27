@@ -9,17 +9,8 @@ import Animated, {
   runOnJS,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
-import type { BannerProps, BannerVariant, HapticStyle } from './banner.types'
-
-let Haptics: any = null
-try { Haptics = require('expo-haptics') } catch {}
-
-const triggerHaptic = (style: HapticStyle) => {
-  if (!Haptics || style === 'none') return
-  const map = { light: 'Light', medium: 'Medium', heavy: 'Heavy' } as const
-  Haptics.impactAsync(Haptics.ImpactFeedbackStyle[map[style]])
-}
+import { useTheme, Text, makeStyles, fontStyle, useHaptics, useStrings, deprecatedProp } from '@native-mate/core'
+import type { BannerProps, BannerVariant } from './banner.types'
 
 type IconName = React.ComponentProps<typeof Ionicons>['name']
 
@@ -71,6 +62,8 @@ export const Banner: React.FC<BannerProps> = ({
 }) => {
   const theme = useTheme()
   const styles = useStyles()
+  const haptics = useHaptics()
+  const strings = useStrings()
   const [mounted, setMounted] = useState(visible)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -115,18 +108,16 @@ export const Banner: React.FC<BannerProps> = ({
   }))
 
   const handleDismiss = useCallback(() => {
-    triggerHaptic(haptic)
+    haptics.trigger(haptic)
     onDismiss?.()
-  }, [haptic, onDismiss])
+  }, [haptic, onDismiss, haptics])
 
   const handleAction = useCallback(() => {
-    triggerHaptic(haptic)
+    haptics.trigger(haptic)
     action?.onPress()
-  }, [haptic, action])
+  }, [haptic, action, haptics])
 
   if (!mounted) return null
-
-  const iconName = icon ?? config.icon
 
   return (
     <Animated.View
@@ -145,8 +136,19 @@ export const Banner: React.FC<BannerProps> = ({
       accessibilityLiveRegion="polite"
     >
       <View style={styles.inner}>
-        {/* Icon */}
-        <Ionicons name={iconName as any} size={20} color={accentColor} style={{ marginTop: 1 }} />
+        {/* Icon — a string still renders through Ionicons for one minor. */}
+        {icon == null ? (
+          <Ionicons name={config.icon} size={20} color={accentColor} style={{ marginTop: 1 }} />
+        ) : typeof icon === 'string' ? (
+          <Ionicons
+            name={deprecatedProp('Banner icon (string)', 'Banner icon (ReactNode)', icon) as any}
+            size={20}
+            color={accentColor}
+            style={{ marginTop: 1 }}
+          />
+        ) : (
+          <View style={{ marginTop: 1 }}>{icon}</View>
+        )}
 
         {/* Content */}
         <View style={styles.content}>
@@ -178,7 +180,7 @@ export const Banner: React.FC<BannerProps> = ({
             onPress={handleDismiss}
             hitSlop={8}
             accessibilityRole="button"
-            accessibilityLabel="Dismiss"
+            accessibilityLabel={strings.dismiss}
           >
             <Ionicons name="close" size={18} color={accentColor} style={{ opacity: 0.7, marginTop: 1 }} />
           </Pressable>

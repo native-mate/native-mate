@@ -1,6 +1,6 @@
 {
   "name": "sheet",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Animated bottom sheet with snap points",
   "category": "overlay",
   "files": [
@@ -14,7 +14,9 @@
     }
   ],
   "dependencies": {
-    "npm": [],
+    "npm": [
+      "react-native-gesture-handler"
+    ],
     "components": []
   }
 }

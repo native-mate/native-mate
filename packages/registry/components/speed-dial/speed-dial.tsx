@@ -10,11 +10,26 @@ import Animated, {
   interpolate,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles, shadow, fontStyle } from '@native-mate/core'
+import { useTheme, Text, makeStyles, shadow, fontStyle, useHaptics, deprecatedProp } from '@native-mate/core'
 import type { SpeedDialProps, SpeedDialAction } from './speed-dial.types'
+import type { HapticProp, IconProp } from '@native-mate/core'
 
-let Haptics: any = null
-try { Haptics = require('expo-haptics') } catch {}
+/**
+ * Renders the icon slot. A string is still accepted for one minor and routed
+ * through Ionicons; anything else is a node the caller owns.
+ */
+function renderIcon(icon: IconProp, size: number, color: string, where: string) {
+  if (typeof icon === 'string') {
+    return (
+      <Ionicons
+        name={deprecatedProp(`${where} (string)`, `${where} (ReactNode)`, icon) as any}
+        size={size}
+        color={color}
+      />
+    )
+  }
+  return icon
+}
 
 const FAB_SIZE = 56
 const MINI_FAB_SIZE = 44
@@ -106,11 +121,12 @@ function ActionItem({
   progress: Animated.SharedValue<number>
   direction: 'up' | 'left'
   position: string
-  haptic: boolean
+  haptic: HapticProp
   onPress: () => void
 }) {
   const theme = useTheme()
   const styles = useStyles()
+  const haptics = useHaptics()
   const itemScale = useSharedValue(0)
   const itemOpacity = useSharedValue(0)
 
@@ -140,12 +156,10 @@ function ActionItem({
   })
 
   const handlePress = useCallback(() => {
-    if (haptic && Haptics) {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
-    }
+    haptics.trigger(haptic)
     action.onPress()
     onPress()
-  }, [haptic, action.onPress, onPress])
+  }, [haptic, action.onPress, onPress, haptics])
 
   const isLeft = position === 'bottom-left'
 
@@ -173,11 +187,7 @@ function ActionItem({
             { backgroundColor: action.color ?? theme.colors.surface },
           ]}
         >
-          <Ionicons
-            name={action.icon as any}
-            size={22}
-            color={action.iconColor ?? theme.colors.foreground}
-          />
+          {renderIcon(action.icon, 22, action.iconColor ?? theme.colors.foreground, 'SpeedDial action icon')}
         </View>
       </Pressable>
     </Animated.View>
@@ -199,6 +209,7 @@ export const SpeedDial: React.FC<SpeedDialProps> = ({
 }) => {
   const theme = useTheme()
   const styles = useStyles()
+  const haptics = useHaptics()
   const [internalOpen, setInternalOpen] = useState(false)
   const isOpen = controlledOpen ?? internalOpen
   const progress = useSharedValue(0)
@@ -219,15 +230,15 @@ export const SpeedDial: React.FC<SpeedDialProps> = ({
   }))
 
   const toggle = useCallback(() => {
-    if (haptic && Haptics) {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
-    }
+    // The main FAB has always been the heavier tap: `true` keeps that 'medium'
+    // default, while an explicit style (or false) from the caller wins.
+    haptics.trigger(haptic === true ? 'medium' : haptic)
     const nextOpen = !isOpen
     if (controlledOpen == null) {
       setInternalOpen(nextOpen)
     }
     onToggle?.(nextOpen)
-  }, [haptic, isOpen, controlledOpen, onToggle])
+  }, [haptic, isOpen, controlledOpen, onToggle, haptics])
 
   const close = useCallback(() => {
     if (controlledOpen == null) {
@@ -288,7 +299,7 @@ export const SpeedDial: React.FC<SpeedDialProps> = ({
         accessibilityState={{ expanded: isOpen }}
       >
         <Animated.View style={[styles.fab, { backgroundColor: fabBg }, fabAnimStyle]}>
-          <Ionicons name={icon as any} size={26} color={fabIconColor} />
+          {renderIcon(icon, 26, fabIconColor, 'SpeedDial icon')}
         </Animated.View>
       </Pressable>
 

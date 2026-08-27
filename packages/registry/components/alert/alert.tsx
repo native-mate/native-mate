@@ -2,7 +2,7 @@
 import React from 'react'
 import { View, Pressable } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles, fontStyle, withAlpha } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle, withAlpha, useStrings } from '@native-mate/core'
 import type { AlertProps, AlertVariant } from './alert.types'
 
 type IconName = React.ComponentProps<typeof Ionicons>['name']
@@ -56,6 +56,7 @@ export const Alert: React.FC<AlertProps> = ({
 }) => {
   const theme = useTheme()
   const styles = useStyles()
+  const strings = useStrings()
   const meta = variantMeta[variant]
   const accentColor = meta.hardColor ?? (theme.colors[meta.colorKey as keyof typeof theme.colors] as string)
 
@@ -100,7 +101,13 @@ export const Alert: React.FC<AlertProps> = ({
 
       {/* Dismiss */}
       {onDismiss != null && (
-        <Pressable onPress={onDismiss} hitSlop={8} style={{ paddingTop: 1 }}>
+        <Pressable
+          onPress={onDismiss}
+          hitSlop={8}
+          style={{ paddingTop: 1 }}
+          accessibilityRole="button"
+          accessibilityLabel={strings.dismiss}
+        >
           <Ionicons name="close" size={16} color={accentColor} style={{ opacity: 0.7 }} />
         </Pressable>
       )}

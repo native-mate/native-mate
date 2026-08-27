@@ -9,11 +9,20 @@ import Animated, {
   withRepeat,
   interpolateColor,
 } from 'react-native-reanimated'
-import { useTheme, useMotion, withAlpha, Text, makeStyles, fontStyle } from '@native-mate/core'
+import {
+  useTheme,
+  useMotion,
+  withAlpha,
+  Text,
+  makeStyles,
+  fontStyle,
+  resolveError,
+  resolveHaptic,
+  useHaptics,
+  useStrings,
+  deprecatedProp,
+} from '@native-mate/core'
 import type { OTPInputProps, OTPInputHandle } from './otp-input.types'
-
-let Haptics: any = null
-try { Haptics = require('expo-haptics') } catch {}
 
 const useStyles = makeStyles((theme) => ({
   wrapper: { gap: theme.spacing.sm },
@@ -171,7 +180,7 @@ export const OTPInput = React.forwardRef<OTPInputHandle, OTPInputProps>(({
   onChange,
   onComplete,
   error = false,
-  errorMessage,
+  errorMessage: errorMessageProp,
   success = false,
   disabled = false,
   loading = false,
@@ -185,12 +194,25 @@ export const OTPInput = React.forwardRef<OTPInputHandle, OTPInputProps>(({
   initialCooldown = 0,
   onResend,
   haptic = true,
-  accessibilityLabel = 'Verification code',
+  accessibilityLabel,
   testID,
 }, ref) => {
   const theme = useTheme()
   const styles = useStyles()
+  const strings = useStrings()
+  const haptics = useHaptics()
   const inputRef = useRef<TextInput>(null)
+
+  // `error` used to be a boolean paired with `errorMessage`; it now carries the
+  // message itself. `errorMessage` still wins for one minor so existing call
+  // sites keep rendering their copy.
+  const { hasError, message } = resolveError(error)
+  const errorText = errorMessageProp !== undefined
+    ? deprecatedProp('errorMessage', 'error', errorMessageProp)
+    : message
+
+  // Resolved once, outside every callback: `false`/`'none'` means silent.
+  const hapticsWanted = resolveHaptic(haptic) !== null
   const [focused, setFocused] = useState(false)
   // Seeded once: a code is typically already in flight when this mounts.
   const [cooldown, setCooldown] = useState(() => Math.max(0, initialCooldown))
@@ -198,7 +220,7 @@ export const OTPInput = React.forwardRef<OTPInputHandle, OTPInputProps>(({
   // Shake on error
   const shakeAnim = useSharedValue(0)
   useEffect(() => {
-    if (error) {
+    if (hasError) {
       shakeAnim.value = withSequence(
         withTiming(-8, { duration: 50 }),
         withTiming(8, { duration: 50 }),
@@ -206,14 +228,14 @@ export const OTPInput = React.forwardRef<OTPInputHandle, OTPInputProps>(({
         withTiming(6, { duration: 50 }),
         withTiming(0, { duration: 50 }),
       )
-      if (haptic && Haptics) Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
+      if (hapticsWanted) haptics.notify('error')
     }
-  }, [error])
+  }, [hasError])
 
   // Success haptic
   useEffect(() => {
-    if (success && haptic && Haptics) {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
+    if (success && hapticsWanted) {
+      haptics.notify('success')
     }
   }, [success])
 
@@ -244,10 +266,10 @@ export const OTPInput = React.forwardRef<OTPInputHandle, OTPInputProps>(({
       : text.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, length)
     onChange(clean)
     if (clean.length === length) {
-      if (haptic && Haptics) Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
+      if (hapticsWanted) haptics.notify('success')
       onComplete?.(clean)
     }
-  }, [length, type, onChange, onComplete, haptic])
+  }, [length, type, onChange, onComplete, hapticsWanted, haptics])
 
   useImperativeHandle(ref, () => ({
     focus: () => inputRef.current?.focus(),
@@ -278,7 +300,7 @@ export const OTPInput = React.forwardRef<OTPInputHandle, OTPInputProps>(({
               char={value[i] ?? ''}
               isActive={focused && i === value.length && !disabled}
               isFilled={i < value.length}
-              error={error}
+              error={hasError}
               success={success && value.length === length}
               variant={variant}
               secure={secure}
@@ -300,7 +322,7 @@ export const OTPInput = React.forwardRef<OTPInputHandle, OTPInputProps>(({
         autoFocus={autoFocus}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
-        accessibilityLabel={accessibilityLabel}
+        accessibilityLabel={accessibilityLabel ?? strings.verificationCode}
         accessibilityHint={`Enter the ${length}-character code`}
         accessibilityValue={{ text: value.split('').join(' ') }}
         textContentType="oneTimeCode"
@@ -308,22 +330,22 @@ export const OTPInput = React.forwardRef<OTPInputHandle, OTPInputProps>(({
         testID={testID ? `${testID}-input` : undefined}
       />
 
-      {errorMessage && error && (
-        <Text variant="caption" style={styles.error}>{errorMessage}</Text>
+      {errorText && hasError && (
+        <Text variant="caption" style={styles.error}>{errorText}</Text>
       )}
-      {!error && hint && (
+      {!hasError && hint && (
         <Text variant="caption" style={styles.hint}>{hint}</Text>
       )}
 
       {resend && (
         <View style={styles.resendRow}>
-          <Text variant="caption" muted>Didn't receive the code?</Text>
+          <Text variant="caption" muted>{strings.resendPrompt}</Text>
           <Pressable onPress={handleResend} disabled={cooldown > 0}>
             <Text variant="caption" style={{
               color: cooldown > 0 ? theme.colors.muted : theme.colors.primary,
               ...fontStyle(theme.typography, 'semibold'),
             }}>
-              {cooldown > 0 ? `Resend in ${cooldown}s` : 'Resend'}
+              {cooldown > 0 ? strings.resendIn(cooldown) : strings.resend}
             </Text>
           </Pressable>
         </View>

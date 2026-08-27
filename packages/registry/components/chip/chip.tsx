@@ -9,17 +9,8 @@ import Animated, {
   interpolateColor,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
-import type { ChipProps, ChipGroupProps, HapticStyle } from './chip.types'
-
-let Haptics: any = null
-try { Haptics = require('expo-haptics') } catch {}
-
-const triggerHaptic = (style: HapticStyle) => {
-  if (!Haptics || style === 'none') return
-  const map = { light: 'Light', medium: 'Medium', heavy: 'Heavy' } as const
-  Haptics.impactAsync(Haptics.ImpactFeedbackStyle[map[style]])
-}
+import { useTheme, Text, makeStyles, fontStyle, useHaptics, deprecatedProp } from '@native-mate/core'
+import type { ChipProps, ChipGroupProps } from './chip.types'
 
 const sizeMap = {
   sm: { height: 28, px: 10, fontSize: 12, iconSize: 14, closeSize: 14 },
@@ -58,6 +49,7 @@ export const Chip = React.memo<ChipProps>(({
 }) => {
   const theme = useTheme()
   const styles = useStyles()
+  const haptics = useHaptics()
   const dims = sizeMap[size]
 
   const selectionProgress = useSharedValue(selected ? 1 : 0)
@@ -117,8 +109,8 @@ export const Chip = React.memo<ChipProps>(({
 
   const handlePressIn = useCallback(() => {
     scale.value = withSpring(0.93, { damping: 15, stiffness: 300 })
-    triggerHaptic(haptic)
-  }, [haptic])
+    haptics.trigger(haptic)
+  }, [haptic, haptics])
 
   const handlePressOut = useCallback(() => {
     scale.value = withSpring(1, { damping: 15, stiffness: 300 })
@@ -145,9 +137,9 @@ export const Chip = React.memo<ChipProps>(({
   }
 
   const handleClose = useCallback(() => {
-    triggerHaptic(haptic)
+    haptics.trigger(haptic)
     onClose?.()
-  }, [haptic, onClose])
+  }, [haptic, onClose, haptics])
 
   return (
     <AnimatedView
@@ -187,9 +179,17 @@ export const Chip = React.memo<ChipProps>(({
           <View style={{ marginRight: -2 }}>{avatar}</View>
         )}
 
-        {/* Icon */}
-        {icon && !avatar && (
-          <Ionicons name={icon as any} size={dims.iconSize} color={iconColor} />
+        {/* Icon — a string still renders through Ionicons for one minor. */}
+        {icon != null && !avatar && (
+          typeof icon === 'string'
+            ? (
+              <Ionicons
+                name={deprecatedProp('Chip icon (string)', 'Chip icon (ReactNode)', icon) as any}
+                size={dims.iconSize}
+                color={iconColor}
+              />
+            )
+            : icon
         )}
 
         {/* Checkmark for selected state */}

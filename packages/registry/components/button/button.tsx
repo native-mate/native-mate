@@ -7,17 +7,8 @@ import Animated, {
   withSpring,
   withTiming,
 } from 'react-native-reanimated'
-import { useTheme, Text, makeStyles, withAlpha, readableOn } from '@native-mate/core'
-import type { ButtonProps, ButtonVariant, ButtonGroupProps, HapticStyle } from './button.types'
-
-let Haptics: any = null
-try { Haptics = require('expo-haptics') } catch {}
-
-const triggerHaptic = (style: HapticStyle) => {
-  if (!Haptics || style === 'none') return
-  const map = { light: 'Light', medium: 'Medium', heavy: 'Heavy' } as const
-  Haptics.impactAsync(Haptics.ImpactFeedbackStyle[map[style]])
-}
+import { useTheme, Text, makeStyles, withAlpha, readableOn, useHaptics, devWarn } from '@native-mate/core'
+import type { ButtonProps, ButtonVariant, ButtonGroupProps } from './button.types'
 
 // A custom `color` can be anything, so the label is contrast-picked against it
 // (core's readableOn) rather than assumed to be white.
@@ -77,12 +68,25 @@ export const Button: React.FC<ButtonProps & { _groupStyle?: any }> = ({
 }) => {
   const theme = useTheme()
   const styles = useStyles()
+  const haptics = useHaptics()
   const scale = useSharedValue(1)
   const pressOpacity = useSharedValue(1)
   const rippleScale = useSharedValue(0)
   const rippleOpacity = useSharedValue(0)
 
   const isDisabled = disabled || loading
+
+  // An icon-only button renders no text, so without a label a screen reader
+  // announces "button" and nothing else. The discriminated union in
+  // button.types.ts enforces this at compile time; this is the runtime half,
+  // which is what actually protects JavaScript consumers.
+  if (iconOnly && !accessibilityLabel) {
+    devWarn(
+      'button:iconOnly-without-accessibilityLabel',
+      '<Button iconOnly> is missing `accessibilityLabel`. Screen readers announce ' +
+        'it as an unlabeled button. Pass accessibilityLabel="Close" (or similar).',
+    )
+  }
 
   // Label colour: tint for the transparent variants, contrast-picked otherwise.
   const textColor = color
@@ -131,9 +135,9 @@ export const Button: React.FC<ButtonProps & { _groupStyle?: any }> = ({
 
   // Haptic on the confirmed press, not on press-in: dragging off cancels it.
   const handlePress = useCallback((e: any) => {
-    triggerHaptic(haptic)
+    haptics.trigger(haptic)
     onPress?.(e)
-  }, [haptic, onPress])
+  }, [haptic, onPress, haptics])
 
   // Icon-only: square/circle button
   const iconOnlySize = iconOnlySizes[size]

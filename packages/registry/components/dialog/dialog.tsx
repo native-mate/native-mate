@@ -9,17 +9,11 @@ import Animated, {
   runOnJS,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, useMotion, Text, makeStyles, fontStyle, withAlpha } from '@native-mate/core'
-import type { DialogProps, HapticStyle } from './dialog.types'
-
-let Haptics: any = null
-try { Haptics = require('expo-haptics') } catch {}
-
-const triggerHaptic = (style: HapticStyle) => {
-  if (!Haptics || style === 'none') return
-  const map = { light: 'Light', medium: 'Medium', heavy: 'Heavy' } as const
-  Haptics.impactAsync(Haptics.ImpactFeedbackStyle[map[style]])
-}
+import {
+  useTheme, useMotion, Text, makeStyles, fontStyle, withAlpha,
+  useHaptics, useStrings, deprecatedProp,
+} from '@native-mate/core'
+import type { DialogProps } from './dialog.types'
 
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -75,8 +69,8 @@ export const Dialog: React.FC<DialogProps> = ({
   onClose,
   title,
   description,
-  confirmLabel = 'Confirm',
-  cancelLabel = 'Cancel',
+  confirmLabel,
+  cancelLabel,
   onConfirm,
   onCancel,
   variant = 'default',
@@ -88,7 +82,13 @@ export const Dialog: React.FC<DialogProps> = ({
   const theme = useTheme()
   const motion = useMotion()
   const styles = useStyles()
+  const haptics = useHaptics()
+  const strings = useStrings()
   const [modalVisible, setModalVisible] = useState(visible)
+
+  // Per-component label props stay the higher-priority override.
+  const confirmText = confirmLabel ?? strings.confirm
+  const cancelText = cancelLabel ?? strings.cancel
 
   const scale = useSharedValue(0.9)
   const opacity = useSharedValue(0)
@@ -119,16 +119,16 @@ export const Dialog: React.FC<DialogProps> = ({
   }))
 
   const handleConfirm = useCallback(() => {
-    triggerHaptic(haptic)
+    haptics.trigger(haptic)
     onConfirm?.()
     onClose()
-  }, [haptic, onConfirm, onClose])
+  }, [haptic, onConfirm, onClose, haptics])
 
   const handleCancel = useCallback(() => {
-    triggerHaptic(haptic)
+    haptics.trigger(haptic)
     onCancel?.()
     onClose()
-  }, [haptic, onCancel, onClose])
+  }, [haptic, onCancel, onClose, haptics])
 
   const isDestructive = variant === 'destructive'
   const accentColor = isDestructive ? theme.colors.destructive : theme.colors.primary
@@ -159,11 +159,17 @@ export const Dialog: React.FC<DialogProps> = ({
               {/* Icon */}
               {icon !== null && (
                 <View style={[styles.iconWrap, { backgroundColor: iconBg }]}>
-                  <Ionicons
-                    name={(icon ?? defaultIcon) as any}
-                    size={24}
-                    color={accentColor}
-                  />
+                  {icon === undefined ? (
+                    <Ionicons name={defaultIcon} size={24} color={accentColor} />
+                  ) : typeof icon === 'string' ? (
+                    <Ionicons
+                      name={deprecatedProp('Dialog icon (string)', 'Dialog icon (ReactNode)', icon) as any}
+                      size={24}
+                      color={accentColor}
+                    />
+                  ) : (
+                    icon
+                  )}
                 </View>
               )}
 
@@ -193,10 +199,10 @@ export const Dialog: React.FC<DialogProps> = ({
                 style={({ pressed }) => [styles.btn, pressed && { backgroundColor: theme.colors.surface }]}
                 onPress={handleCancel}
                 accessibilityRole="button"
-                accessibilityLabel={cancelLabel}
+                accessibilityLabel={cancelText}
               >
                 <Text style={{ fontSize: 15, ...fontStyle(theme.typography, 'medium'), color: theme.colors.muted }}>
-                  {cancelLabel}
+                  {cancelText}
                 </Text>
               </Pressable>
               <View style={styles.btnDivider} />
@@ -204,10 +210,10 @@ export const Dialog: React.FC<DialogProps> = ({
                 style={({ pressed }) => [styles.btn, pressed && { backgroundColor: theme.colors.surface }]}
                 onPress={handleConfirm}
                 accessibilityRole="button"
-                accessibilityLabel={confirmLabel}
+                accessibilityLabel={confirmText}
               >
                 <Text style={{ fontSize: 15, ...fontStyle(theme.typography, 'semibold'), color: accentColor }}>
-                  {confirmLabel}
+                  {confirmText}
                 </Text>
               </Pressable>
             </View>

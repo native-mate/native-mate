@@ -8,16 +8,30 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
-import type { SearchBarProps, SearchBarSuggestion, HapticStyle, SearchBarHandle } from './search-bar.types'
+import {
+  useTheme,
+  Text,
+  makeStyles,
+  fontStyle,
+  useHaptics,
+  useStrings,
+  deprecatedProp,
+} from '@native-mate/core'
+import type { SearchBarProps, SearchBarSuggestion, SearchBarHandle } from './search-bar.types'
 
-let Haptics: any = null
-try { Haptics = require('expo-haptics') } catch {}
-
-const triggerHaptic = (style: HapticStyle) => {
-  if (!Haptics || style === 'none') return
-  const map = { light: 'Light', medium: 'Medium', heavy: 'Heavy' } as const
-  Haptics.impactAsync(Haptics.ImpactFeedbackStyle[map[style]])
+// `icon` is a node in v0.5. A string still works for one minor — it is routed
+// through the bundled Ionicons set exactly as before — but the warning fires
+// once so call sites can migrate. Not a hook, so calling it per suggestion
+// inside the list render is fine.
+function renderSuggestionIcon(icon: SearchBarSuggestion['icon'], color: string) {
+  if (icon == null) {
+    return <Ionicons name="search-outline" size={16} color={color} />
+  }
+  if (typeof icon === 'string') {
+    const name = deprecatedProp('suggestion.icon (string)', 'suggestion.icon (ReactNode)', icon)
+    return <Ionicons name={name as any} size={16} color={color} />
+  }
+  return <>{icon}</>
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -83,7 +97,7 @@ const useStyles = makeStyles((theme) => ({
 export const SearchBar = React.forwardRef<SearchBarHandle, SearchBarProps>(({
   value,
   onChangeText,
-  placeholder = 'Search...',
+  placeholder,
   onFocus,
   onBlur,
   onCancel,
@@ -102,8 +116,13 @@ export const SearchBar = React.forwardRef<SearchBarHandle, SearchBarProps>(({
 }, ref) => {
   const theme = useTheme()
   const styles = useStyles()
+  const strings = useStrings()
+  const haptics = useHaptics()
   const inputRef = useRef<TextInput>(null)
   const [focused, setFocused] = useState(false)
+
+  // The prop still wins; the strings slot only supplies the default.
+  const resolvedPlaceholder = placeholder ?? strings.search
 
   const showCancelButton = showCancel !== undefined ? showCancel : focused
 
@@ -167,7 +186,7 @@ export const SearchBar = React.forwardRef<SearchBarHandle, SearchBarProps>(({
   }, [onBlur])
 
   const handleCancel = useCallback(() => {
-    triggerHaptic(haptic)
+    haptics.trigger(haptic)
     handleChangeText('')
     inputRef.current?.blur()
     setFocused(false)
@@ -175,13 +194,13 @@ export const SearchBar = React.forwardRef<SearchBarHandle, SearchBarProps>(({
   }, [haptic, handleChangeText, onCancel])
 
   const handleClear = useCallback(() => {
-    triggerHaptic(haptic)
+    haptics.trigger(haptic)
     handleChangeText('')
     inputRef.current?.focus()
   }, [haptic, handleChangeText])
 
   const handleSuggestionPress = useCallback((suggestion: SearchBarSuggestion) => {
-    triggerHaptic(haptic)
+    haptics.trigger(haptic)
     onSuggestionPress?.(suggestion)
   }, [haptic, onSuggestionPress])
 
@@ -222,7 +241,7 @@ export const SearchBar = React.forwardRef<SearchBarHandle, SearchBarProps>(({
             value={value}
             onChangeText={handleChangeText}
             onSubmitEditing={handleSubmitEditing}
-            placeholder={placeholder}
+            placeholder={resolvedPlaceholder}
             placeholderTextColor={theme.colors.muted}
             onFocus={handleFocus}
             onBlur={handleBlur}
@@ -232,14 +251,14 @@ export const SearchBar = React.forwardRef<SearchBarHandle, SearchBarProps>(({
             autoCapitalize="none"
             autoCorrect={false}
             accessibilityRole="search"
-            accessibilityLabel={placeholder}
+            accessibilityLabel={resolvedPlaceholder}
           />
           {value.length > 0 && (
             <Pressable
               onPress={handleClear}
               hitSlop={12}
               accessibilityRole="button"
-              accessibilityLabel="Clear search"
+              accessibilityLabel={strings.clear}
               testID={testID ? `${testID}-clear` : undefined}
             >
               <View style={styles.clearBtn}>
@@ -256,9 +275,9 @@ export const SearchBar = React.forwardRef<SearchBarHandle, SearchBarProps>(({
           importantForAccessibility={showCancelButton ? 'auto' : 'no-hide-descendants'}
           pointerEvents={showCancelButton ? 'auto' : 'none'}
         >
-          <Pressable onPress={handleCancel} hitSlop={8} accessibilityRole="button" accessibilityLabel="Cancel search">
+          <Pressable onPress={handleCancel} hitSlop={8} accessibilityRole="button" accessibilityLabel={strings.cancel}>
             <Text style={{ color: theme.colors.primary, fontSize: 15, ...fontStyle(theme.typography, 'medium') }}>
-              Cancel
+              {strings.cancel}
             </Text>
           </Pressable>
         </Animated.View>
@@ -279,11 +298,7 @@ export const SearchBar = React.forwardRef<SearchBarHandle, SearchBarProps>(({
                 accessibilityRole="button"
                 accessibilityLabel={suggestion.label}
               >
-                <Ionicons
-                  name={(suggestion.icon ?? 'search-outline') as any}
-                  size={16}
-                  color={theme.colors.muted}
-                />
+                {renderSuggestionIcon(suggestion.icon, theme.colors.muted)}
                 <Text style={{ fontSize: 14, color: theme.colors.foreground, flex: 1 }} numberOfLines={1}>
                   {suggestion.label}
                 </Text>
