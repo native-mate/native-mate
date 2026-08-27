@@ -65,13 +65,15 @@ High-impact components every mobile app needs.
   - [x] date-picker composes the real Sheet; `firstDayOfWeek`/`locale`/`hour12`
   - [x] sheet drag + real `snapPoints` via optional RNGH, graceful without it
   - [x] app-wide haptics kill switch (`<ThemeProvider haptics={false}>`)
-  - [ ] Remaining a11y: modal focus restore, `otp-input` VoiceOver polish
-  - [ ] Remaining perf: worklets capturing whole `theme`, segmented-control
-        `translateX`/`scaleX` indicator, stepper percentage-width connector
-  - [ ] RTL: 16 files still on physical properties (listed in `audit-rtl`'s
-        `PENDING_OTHER_AGENTS`); color-picker's flipped gradient track needs
-        `direction: 'ltr'` pinned
-  - [ ] `toast` swipe still on PanResponder — move to RNGH so action buttons win their taps
+  - [x] a11y: `accessibilityViewIsModal` + focus restore (`returnFocusRef`) on
+        modal/dialog/action-sheet/sheet/popover; `otp-input` VoiceOver polish
+  - [x] perf: worklet theme/module captures hoisted, segmented-control and
+        stepper animate transforms instead of layout properties, branch-divergent
+        worklet key sets fixed
+  - [x] RTL complete — `audit-rtl`'s pending list is empty; color-picker's track
+        pinned `direction: 'ltr'`
+  - [x] `toast` swipe on RNGH (optional peer) — activation slop stops the dismiss
+        gesture from eating action-button taps
 
 ---
 
