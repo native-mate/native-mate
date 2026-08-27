@@ -15,10 +15,16 @@ import type { SkeletonProps, SkeletonTextProps, SkeletonAvatarProps, SkeletonCar
 // ─── CSS injection (web only) ──────────────────────────────────────────────────
 
 let cssInjected = false
-function injectSkeletonCSS() {
+function injectSkeletonCSS(nonce?: string) {
   if (cssInjected || Platform.OS !== 'web') return
+  // Platform.OS === 'web' still covers SSR / static prerender passes where
+  // there is no DOM at all, so guard on `document` before touching it.
+  if (typeof document === 'undefined' || !document.head) return
   cssInjected = true
   const el = document.createElement('style')
+  // Under a strict Content-Security-Policy an injected <style> needs the
+  // page's nonce or the browser drops it.
+  if (nonce) el.setAttribute('nonce', nonce)
   el.textContent = `
     @keyframes nm-skeleton-shimmer {
       0%   { transform: translateX(-100%); }
@@ -35,7 +41,7 @@ function injectSkeletonCSS() {
 // ─── Web bone ─────────────────────────────────────────────────────────────────
 
 function WebSkeleton({
-  width, height, borderRadius, variant, baseColor, shimmerColor, style,
+  width, height, borderRadius, variant, baseColor, shimmerColor, style, nonce,
 }: {
   width: string | number
   height: number
@@ -44,8 +50,9 @@ function WebSkeleton({
   baseColor: string
   shimmerColor: string
   style?: any
+  nonce?: string
 }) {
-  useEffect(() => { injectSkeletonCSS() }, [])
+  useEffect(() => { injectSkeletonCSS(nonce) }, [nonce])
 
   const w = typeof width === 'number' ? `${width}px` : width
 
@@ -169,11 +176,12 @@ export const Skeleton: React.FC<SkeletonProps> = ({
   borderRadius,
   variant = 'shimmer',
   style,
+  nonce,
 }) => {
   const theme = useTheme()
   const br          = borderRadius ?? theme.radius.md
-  const baseColor   = theme.colors.surfaceRaised ?? theme.colors.surface ?? '#27272a'
-  const shimmerColor = withAlpha(theme.colors.border ?? '#3f3f46', 0.56)
+  const baseColor   = theme.colors.surfaceRaised
+  const shimmerColor = withAlpha(theme.colors.border, 0.56)
 
   if (Platform.OS === 'web') {
     return (
@@ -185,6 +193,7 @@ export const Skeleton: React.FC<SkeletonProps> = ({
         baseColor={baseColor}
         shimmerColor={shimmerColor}
         style={style}
+        nonce={nonce}
       />
     )
   }
@@ -209,14 +218,18 @@ export const SkeletonText: React.FC<SkeletonTextProps> = ({
   lastLineWidth = '65%',
   variant = 'shimmer',
   style,
+  nonce,
 }) => {
-  const widths = Array.from({ length: lines }, (_, i) =>
-    i === lines - 1 ? lastLineWidth : `${100 - i * 8}%`
+  const lineCount = Math.max(0, Math.trunc(lines) || 0)
+  // Each line steps 8% narrower; past 12 lines that formula goes to zero and
+  // then negative, so floor the taper at a still-visible 30%.
+  const widths = Array.from({ length: lineCount }, (_, i) =>
+    i === lineCount - 1 ? lastLineWidth : `${Math.max(30, 100 - i * 8)}%`
   )
   return (
     <View style={[{ gap: 8 }, style]}>
       {widths.map((w, i) => (
-        <Skeleton key={i} width={w as any} height={12} variant={variant} />
+        <Skeleton key={i} width={w as any} height={12} variant={variant} nonce={nonce} />
       ))}
     </View>
   )
@@ -252,7 +265,7 @@ export const SkeletonCard: React.FC<SkeletonCardProps> = ({
       borderRadius: theme.radius.lg,
       overflow: 'hidden',
       borderWidth: 1,
-      borderColor: theme.colors.border ?? '#3f3f46',
+      borderColor: theme.colors.border,
     }, style]}>
       <Skeleton width="100%" height={imageHeight} borderRadius={0} variant={variant} />
       <View style={{ padding: 12, gap: 8 }}>

@@ -1,6 +1,6 @@
 {
   "name": "search-bar",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Animated search input with slide-in cancel button, suggestions dropdown, loading state, and clear button",
   "category": "input",
   "files": [

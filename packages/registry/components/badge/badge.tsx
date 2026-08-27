@@ -12,13 +12,13 @@ function getColors(variant: BadgeVariant, appearance: BadgeAppearance, theme: an
   let baseColor: string
   let onColor: string
   switch (variant) {
-    case 'default':     baseColor = theme.colors.primary; onColor = theme.colors.onPrimary ?? '#fff'; break
+    case 'default':     baseColor = theme.colors.primary; onColor = theme.colors.onPrimary; break
     case 'secondary':   baseColor = theme.colors.muted;   onColor = theme.colors.background; break
-    case 'destructive': baseColor = theme.colors.destructive; onColor = theme.colors.onDestructive ?? '#fff'; break
-    case 'success':     baseColor = theme.colors.success; onColor = theme.colors.onSuccess ?? '#fff'; break
-    case 'warning':     baseColor = theme.colors.warning; onColor = theme.colors.onWarning ?? '#fff'; break
-    case 'info':        baseColor = theme.colors.info ?? '#3b82f6'; onColor = theme.colors.onInfo ?? '#fff'; break
-    default:            baseColor = theme.colors.primary; onColor = theme.colors.onPrimary ?? '#fff'
+    case 'destructive': baseColor = theme.colors.destructive; onColor = theme.colors.onDestructive; break
+    case 'success':     baseColor = theme.colors.success; onColor = theme.colors.onSuccess; break
+    case 'warning':     baseColor = theme.colors.warning; onColor = theme.colors.onWarning; break
+    case 'info':        baseColor = theme.colors.info; onColor = theme.colors.onInfo; break
+    default:            baseColor = theme.colors.primary; onColor = theme.colors.onPrimary
   }
 
   switch (appearance) {
@@ -38,6 +38,16 @@ const sizeMap: Record<BadgeSize, { py: number; px: number; fontSize: number; dot
   sm: { py: 2,  px: 7,  fontSize: 10, dotSize: 5, gap: 4 },
   md: { py: 3,  px: 9,  fontSize: 11, dotSize: 6, gap: 5 },
   lg: { py: 4,  px: 12, fontSize: 13, dotSize: 7, gap: 6 },
+}
+
+/** Spoken prefix conveying the variant's meaning to a screen reader. */
+const variantMeaning: Record<BadgeVariant, string> = {
+  default: '',
+  secondary: '',
+  destructive: 'Error',
+  success: 'Success',
+  warning: 'Warning',
+  info: 'Info',
 }
 
 function PulseDot({ color, size }: { color: string; size: number }) {
@@ -80,6 +90,7 @@ export const Badge = React.memo<BadgeProps>(({
   maxCount = 99,
   onDismiss,
   children,
+  accessibilityLabel,
   testID,
 }) => {
   const theme = useTheme()
@@ -90,9 +101,25 @@ export const Badge = React.memo<BadgeProps>(({
     ? count > maxCount ? `${maxCount}+` : String(count)
     : children
 
+  // Screen-reader label: variant meaning + the badge's textual content.
+  // `children` is only read when it is plain text — arbitrary nodes are skipped.
+  const spokenContent = count !== undefined
+    ? (count > maxCount ? `More than ${maxCount}` : String(count))
+    : (typeof children === 'string' || typeof children === 'number' ? String(children) : '')
+  const meaning = variantMeaning[variant] ?? ''
+  const composedLabel = accessibilityLabel
+    ?? (meaning && spokenContent
+      ? `${meaning}: ${spokenContent}`
+      : meaning || spokenContent || undefined)
+
+  // When dismissible the close button must stay its own a11y node, so the
+  // container is not collapsed; the label then rides on the Text instead.
   return (
     <View
       testID={testID}
+      accessible={!onDismiss}
+      accessibilityRole="text"
+      accessibilityLabel={onDismiss ? undefined : composedLabel}
       style={{
       flexDirection: 'row',
       alignItems: 'center',
@@ -111,11 +138,19 @@ export const Badge = React.memo<BadgeProps>(({
           ? <PulseDot color={colors.text} size={sz.dotSize} />
           : <View style={{ width: sz.dotSize, height: sz.dotSize, borderRadius: sz.dotSize / 2, backgroundColor: colors.text, opacity: 0.85 }} />
       )}
-      <Text style={{ fontSize: sz.fontSize, ...fontStyle(theme.typography, 'semibold'), color: colors.text, letterSpacing: 0.2, lineHeight: sz.fontSize + 4 }}>
+      <Text
+        accessibilityRole="text"
+        accessibilityLabel={onDismiss ? composedLabel : undefined}
+        style={{ fontSize: sz.fontSize, ...fontStyle(theme.typography, 'semibold'), color: colors.text, letterSpacing: 0.2, lineHeight: sz.fontSize + 4 }}>
         {label}
       </Text>
       {onDismiss && (
-        <Pressable onPress={onDismiss} hitSlop={8} style={{ marginLeft: -2 }}>
+        <Pressable
+          onPress={onDismiss}
+          hitSlop={16}
+          accessibilityRole="button"
+          accessibilityLabel={spokenContent ? `Dismiss ${spokenContent}` : 'Dismiss'}
+          style={{ marginLeft: -2 }}>
           <Ionicons name="close" size={sz.fontSize + 2} color={colors.text} style={{ opacity: 0.6 }} />
         </Pressable>
       )}

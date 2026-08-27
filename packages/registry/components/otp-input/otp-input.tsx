@@ -33,6 +33,7 @@ function Cell({
   success,
   variant,
   secure,
+  testID,
 }: {
   char: string
   isActive: boolean
@@ -41,6 +42,7 @@ function Cell({
   success: boolean
   variant: 'box' | 'underline' | 'rounded'
   secure: boolean
+  testID?: string
 }) {
   const theme = useTheme()
   const motion = useMotion()
@@ -137,7 +139,14 @@ function Cell({
   const displayChar = isFilled && secure ? '●' : char
 
   return (
-    <Animated.View style={[containerStyle, isUnderline ? underlineBorderStyle : borderAnimStyle]}>
+    <Animated.View
+      style={[containerStyle, isUnderline ? underlineBorderStyle : borderAnimStyle]}
+      testID={testID}
+      // The real (offscreen) TextInput carries the accessible value; the cells
+      // are a purely visual mirror and would otherwise be read out as noise.
+      accessibilityElementsHidden={true}
+      importantForAccessibility="no-hide-descendants"
+    >
       {isFilled ? (
         <Text variant="title" style={{ fontSize: isRounded ? 20 : 22, letterSpacing: 0 }}>
           {displayChar}
@@ -156,7 +165,7 @@ function Cell({
 
 // ── OTPInput ──────────────────────────────────────────────────────
 
-export const OTPInput: React.FC<OTPInputProps> = ({
+export const OTPInput = React.forwardRef<OTPInputHandle, OTPInputProps>(({
   length = 6,
   value,
   onChange,
@@ -173,14 +182,18 @@ export const OTPInput: React.FC<OTPInputProps> = ({
   hint,
   resend = false,
   resendCooldown = 30,
+  initialCooldown = 0,
   onResend,
   haptic = true,
-}) => {
+  accessibilityLabel = 'Verification code',
+  testID,
+}, ref) => {
   const theme = useTheme()
   const styles = useStyles()
   const inputRef = useRef<TextInput>(null)
   const [focused, setFocused] = useState(false)
-  const [cooldown, setCooldown] = useState(0)
+  // Seeded once: a code is typically already in flight when this mounts.
+  const [cooldown, setCooldown] = useState(() => Math.max(0, initialCooldown))
 
   // Shake on error
   const shakeAnim = useSharedValue(0)
@@ -236,6 +249,12 @@ export const OTPInput: React.FC<OTPInputProps> = ({
     }
   }, [length, type, onChange, onComplete, haptic])
 
+  useImperativeHandle(ref, () => ({
+    focus: () => inputRef.current?.focus(),
+    blur: () => inputRef.current?.blur(),
+    clear: () => onChange(''),
+  }), [onChange])
+
   const handleResend = useCallback(() => {
     onChange('')
     setCooldown(resendCooldown)
@@ -247,7 +266,7 @@ export const OTPInput: React.FC<OTPInputProps> = ({
   }))
 
   return (
-    <View style={styles.wrapper}>
+    <View style={styles.wrapper} testID={testID}>
       <Pressable
         onPress={() => !disabled && inputRef.current?.focus()}
         style={{ alignItems: 'center' }}
@@ -263,6 +282,7 @@ export const OTPInput: React.FC<OTPInputProps> = ({
               success={success && value.length === length}
               variant={variant}
               secure={secure}
+              testID={testID ? `${testID}-cell-${i}` : undefined}
             />
           ))}
         </Animated.View>
@@ -273,15 +293,19 @@ export const OTPInput: React.FC<OTPInputProps> = ({
         value={value}
         onChangeText={handleChange}
         keyboardType={type === 'numeric' ? 'number-pad' : 'default'}
+        autoCapitalize={type === 'alphanumeric' ? 'characters' : 'none'}
         maxLength={length}
         style={{ position: 'absolute', opacity: 0, width: 1, height: 1 }}
         editable={!disabled && !loading}
         autoFocus={autoFocus}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
-        accessibilityLabel={`${length}-digit verification code`}
+        accessibilityLabel={accessibilityLabel}
+        accessibilityHint={`Enter the ${length}-character code`}
+        accessibilityValue={{ text: value.split('').join(' ') }}
         textContentType="oneTimeCode"
         autoComplete="one-time-code"
+        testID={testID ? `${testID}-input` : undefined}
       />
 
       {errorMessage && error && (
@@ -306,4 +330,6 @@ export const OTPInput: React.FC<OTPInputProps> = ({
       )}
     </View>
   )
-}
+})
+
+OTPInput.displayName = 'OTPInput'

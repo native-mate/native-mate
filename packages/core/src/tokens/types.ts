@@ -10,6 +10,9 @@ export interface FontFamilyTokens {
   medium: string
   semibold: string
   bold: string
+  /** Code/tabular contexts (markdown code spans, hex fields). Optional: when
+   *  absent components fall back to the platform monospace face. */
+  mono?: string
 }
 
 export interface TokenColors {

@@ -75,7 +75,7 @@ export const Banner: React.FC<BannerProps> = ({
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const config = variantConfig[variant]
-  const accentColor = config.hardColor ?? ((theme.colors[config.colorKey as keyof typeof theme.colors] as string) ?? '#3b82f6')
+  const accentColor = config.hardColor ?? (theme.colors[config.colorKey as keyof typeof theme.colors] as string)
 
   const translateY = useSharedValue(visible ? 0 : (position === 'top' ? -100 : 100))
   const opacity = useSharedValue(visible ? 1 : 0)

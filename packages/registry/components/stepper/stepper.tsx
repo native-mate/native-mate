@@ -39,7 +39,9 @@ const useStyles = makeStyles((theme) => ({
   },
   verticalStep: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    // 'stretch' lets the node column (and therefore the connector) grow to the
+    // full height of the step's text content.
+    alignItems: 'stretch',
   },
   nodeCircle: {
     alignItems: 'center',
@@ -80,6 +82,7 @@ const ConnectingLine: React.FC<ConnectingLineProps> = ({
   thickness,
   activeColor,
   upcomingColor,
+  length,
 }) => {
   const fillProgress = useSharedValue(filled ? 1 : 0)
 
@@ -121,11 +124,15 @@ const ConnectingLine: React.FC<ConnectingLineProps> = ({
     )
   }
 
+  // Vertical: flexes to fill the step row's height so the connector still
+  // reaches the next node when a step carries a long description.
   return (
     <View
       style={{
         width: thickness,
-        height: 24,
+        flex: 1,
+        minHeight: length ?? 24,
+        marginVertical: 4,
         backgroundColor: upcomingColor,
         borderRadius: thickness,
         overflow: 'hidden',
@@ -258,6 +265,7 @@ const StepNode = React.memo<StepNodeProps>(({
     <Pressable
       onPress={isInteractive ? onPress : undefined}
       disabled={!isInteractive}
+      hitSlop={Math.max(0, Math.ceil((44 - sz.node) / 2))}
       accessibilityRole="button"
       accessibilityLabel={`Step ${index + 1}: ${step.label}${status === 'completed' ? ', completed' : status === 'active' ? ', current' : ', upcoming'}`}
       accessibilityState={{ disabled: !isInteractive }}
@@ -317,72 +325,85 @@ export const Stepper = React.memo<StepperProps>(({
     onStepPress?.(index)
   }
 
+  // Out-of-range values previously rendered every step as completed (or every
+  // step as upcoming) with no indication anything was wrong.
+  const lastIndex = Math.max(0, steps.length - 1)
+  const safeStep = Number.isFinite(currentStep)
+    ? Math.min(lastIndex, Math.max(0, Math.trunc(currentStep)))
+    : 0
+
   const getStatus = (index: number): 'completed' | 'active' | 'upcoming' => {
-    if (index < currentStep) return 'completed'
-    if (index === currentStep) return 'active'
+    if (index < safeStep) return 'completed'
+    if (index === safeStep) return 'active'
     return 'upcoming'
+  }
+
+  const progressA11y = {
+    accessibilityRole: 'progressbar' as const,
+    accessibilityValue: { min: 0, max: lastIndex, now: safeStep },
+    accessibilityLiveRegion: 'polite' as const,
+    accessibilityLabel: steps.length
+      ? `Step ${safeStep + 1} of ${steps.length}: ${steps[safeStep]?.label ?? ''}`
+      : undefined,
   }
 
   if (orientation === 'vertical') {
     return (
-      <View style={[styles.verticalContainer, style]} testID={testID}>
+      <View style={[styles.verticalContainer, style]} testID={testID} {...progressA11y}>
         {steps.map((step, i) => {
           const status = getStatus(i)
+          const isLast = i === steps.length - 1
           return (
-            <View key={i}>
-              <View style={styles.verticalStep}>
-                <View style={{ alignItems: 'center' }}>
-                  <StepNode
-                    step={step}
-                    index={i}
-                    status={status}
-                    variant={variant}
-                    size={size}
-                    completedColor={cColor}
-                    activeColor={aColor}
-                    upcomingColor={uColor}
-                    onPress={
-                      onStepPress && status === 'completed'
-                        ? () => handleStepPress(i)
-                        : undefined
-                    }
-                    testID={testID ? `${testID}-item-${i}` : undefined}
-                  />
-                </View>
-                <View style={{ flex: 1, marginLeft: 12, paddingTop: 4, paddingBottom: i < steps.length - 1 ? 4 : 0 }}>
-                  <Text
-                    style={{
-                      fontSize: sz.fontSize,
-                      ...fontStyle(theme.typography, status === 'active' ? 'semibold' : 'medium'),
-                      color: status === 'upcoming' ? uColor : theme.colors.foreground,
-                    }}
-                  >
-                    {step.label}
-                  </Text>
-                  {step.description && (
-                    <Text
-                      style={{
-                        fontSize: sz.descFontSize,
-                        color: theme.colors.muted,
-                        marginTop: 2,
-                      }}
-                    >
-                      {step.description}
-                    </Text>
-                  )}
-                </View>
-              </View>
-              {i < steps.length - 1 && (
-                <View style={{ marginLeft: sz.node / 2 - sz.lineThickness / 2 }}>
+            <View key={i} style={styles.verticalStep}>
+              <View style={{ alignItems: 'center' }}>
+                <StepNode
+                  step={step}
+                  index={i}
+                  status={status}
+                  variant={variant}
+                  size={size}
+                  completedColor={cColor}
+                  activeColor={aColor}
+                  upcomingColor={uColor}
+                  onPress={
+                    onStepPress && status === 'completed'
+                      ? () => handleStepPress(i)
+                      : undefined
+                  }
+                  testID={testID ? `${testID}-item-${i}` : undefined}
+                />
+                {!isLast && (
                   <ConnectingLine
-                    filled={i < currentStep}
+                    filled={i < safeStep}
                     orientation="vertical"
                     thickness={sz.lineThickness}
                     activeColor={cColor}
                     upcomingColor={uColor + '40'}
                   />
-                </View>
-              )}
+                )}
+              </View>
+              <View style={{ flex: 1, marginLeft: 12, paddingTop: 4, paddingBottom: isLast ? 0 : 24 }}>
+                <Text
+                  style={{
+                    fontSize: sz.fontSize,
+                    ...fontStyle(theme.typography, status === 'active' ? 'semibold' : 'medium'),
+                    color: status === 'upcoming' ? uColor : theme.colors.foreground,
+                  }}
+                >
+                  {step.label}
+                </Text>
+                {step.description && (
+                  <Text
+                    style={{
+                      fontSize: sz.descFontSize,
+                      color: theme.colors.muted,
+                      marginTop: 2,
+                    }}
+                  >
+                    {step.description}
+                  </Text>
+                )}
+              </View>
             </View>
           )
         })}
@@ -392,7 +413,7 @@ export const Stepper = React.memo<StepperProps>(({
 
   // Horizontal
   return (
-    <View style={[styles.horizontalContainer, style]} testID={testID}>
+    <View style={[styles.horizontalContainer, style]} testID={testID} {...progressA11y}>
       {steps.map((step, i) => {
         const status = getStatus(i)
         return (
@@ -444,7 +465,7 @@ export const Stepper = React.memo<StepperProps>(({
             </View>
             {i < steps.length - 1 && (
               <ConnectingLine
-                filled={i < currentStep}
+                filled={i < safeStep}
                 orientation="horizontal"
                 thickness={sz.lineThickness}
                 activeColor={cColor}

@@ -9,7 +9,7 @@ import Animated, {
   interpolateColor,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { TextareaProps, TextareaHandle } from './textarea.types'
 
 let Haptics: any = null
@@ -218,9 +218,12 @@ export const Textarea = React.forwardRef<TextareaHandle, TextareaProps>(({
         { backgroundColor: (disabled || readOnly) ? theme.colors.surface : theme.colors.background },
         containerAnimStyle,
       ]}>
-        {/* Floating label */}
+        {/* Floating label. fontStyle() resolves the themed brand family (or
+            the weight fallback when no custom family is registered) — the
+            previous `fontFamily: undefined` reset white-label themes back to
+            the system font. */}
         {floatingLabel && label && (
-          <Animated.Text style={[{ fontFamily: undefined }, floatingLabelStyle]}>
+          <Animated.Text style={[fontStyle(theme.typography, 'regular'), floatingLabelStyle]}>
             {label}{required ? ' *' : ''}
           </Animated.Text>
         )}

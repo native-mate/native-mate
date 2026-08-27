@@ -18,8 +18,16 @@ export interface OTPInputProps {
   hint?: string
   resend?: boolean
   resendCooldown?: number
+  /**
+   * Seconds of cooldown to seed on first render — a code is usually already
+   * in flight when the screen mounts.
+   */
+  initialCooldown?: number
   onResend?: () => void
   haptic?: boolean
+  /** Accessibility label for the (visually hidden) code field. */
+  accessibilityLabel?: string
+  /** Test identifier for the root; children derive `-input` / `-cell-<i>`. */
   testID?: string
 }
 

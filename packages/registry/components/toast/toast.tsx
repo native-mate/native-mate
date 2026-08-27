@@ -10,8 +10,15 @@ import Animated, {
   cancelAnimation,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
-import type { ToastProps, ToastVariant, ToastContextValue, ToastConfig, ToastAction } from './toast.types'
+import { useTheme, useMotion, withAlpha, Text, makeStyles, fontStyle } from '@native-mate/core'
+import type {
+  ToastProps,
+  ToastVariant,
+  ToastContextValue,
+  ToastConfig,
+  ToastAction,
+  ToastProviderProps,
+} from './toast.types'
 
 let Haptics: any = null
 try { Haptics = require('expo-haptics') } catch {}
@@ -68,6 +75,125 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
+// ── Shared toast content ──────────────────────────────────────────────────────
+// Single source of truth for what lives inside the animated container, so the
+// native (Modal) and web (fixed) branches can never drift apart again.
+
+interface ToastBodyProps {
+  message: string
+  description?: string
+  variant: ToastVariant
+  icon?: React.ReactNode
+  avatar?: ToastProps['avatar']
+  iconBg: string
+  iconColor: string
+  actions: ToastAction[]
+  persistent: boolean
+  showProgress: boolean
+  onClose: () => void
+  progressStyle: any
+  testID?: string
+}
+
+const ToastBody: React.FC<ToastBodyProps> = ({
+  message,
+  description,
+  variant,
+  icon,
+  avatar,
+  iconBg,
+  iconColor,
+  actions,
+  persistent,
+  showProgress,
+  onClose,
+  progressStyle,
+  testID,
+}) => {
+  const theme = useTheme()
+  const styles = useStyles()
+
+  return (
+    <>
+      {/* Left side: avatar image OR icon badge */}
+      {avatar ? (
+        <Image
+          source={avatar}
+          style={{ width: 40, height: 40, borderRadius: 20, marginTop: 1 }}
+        />
+      ) : (
+        <View style={[styles.icon, { backgroundColor: iconBg }]}>
+          {icon
+            ? icon
+            : <Ionicons name={variantIconName[variant]} size={14} color={iconColor} />
+          }
+        </View>
+      )}
+
+      <View style={styles.content}>
+        <Text variant="label">{message}</Text>
+        {description && <Text variant="caption" muted>{description}</Text>}
+        {actions.length > 0 && (
+          <View style={styles.actionsRow}>
+            {actions.map((a, idx) => (
+              <Pressable
+                key={idx}
+                testID={testID ? (idx === 0 ? `${testID}-action` : `${testID}-action-${idx}`) : undefined}
+                style={[
+                  styles.action,
+                  a.variant === 'primary' && { borderColor: theme.colors.primary },
+                ]}
+                onPress={a.onPress}
+              >
+                <Text
+                  variant="caption"
+                  style={{
+                    ...fontStyle(theme.typography, 'semibold'),
+                    color: a.variant === 'primary' ? theme.colors.primary : theme.colors.foreground,
+                  }}
+                >
+                  {a.label}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+        )}
+      </View>
+
+      {persistent && (
+        <Pressable
+          testID={testID ? `${testID}-close` : undefined}
+          onPress={onClose}
+          hitSlop={8}
+          accessibilityRole="button"
+          accessibilityLabel="Dismiss"
+        >
+          <Ionicons name="close" size={18} color={theme.colors.muted} />
+        </Pressable>
+      )}
+
+      {showProgress && !persistent && (
+        <View
+          testID={testID ? `${testID}-progress` : undefined}
+          style={{
+            position: 'absolute',
+            bottom: 0, left: 0,
+            height: 3,
+            // withAlpha() instead of dimming the whole track with `opacity`,
+            // which also washed out the fill rendered inside it.
+            backgroundColor: withAlpha(iconBg, 0.25),
+            borderBottomLeftRadius: theme.radius.lg,
+            borderBottomRightRadius: theme.radius.lg,
+            width: '100%',
+          }}
+        >
+          <Animated.View style={[{ height: 3, backgroundColor: iconBg }, progressStyle]} />
+        </View>
+      )}
+    </>
+  )
+}
+
 export const Toast: React.FC<ToastProps> = ({
   message,
   description,
@@ -82,10 +208,13 @@ export const Toast: React.FC<ToastProps> = ({
   persistent = false,
   icon,
   avatar,
+  offset = 0,
+  testID,
   id,
 }) => {
   const theme = useTheme()
   const styles = useStyles()
+  const motion = useMotion()
   // Keep Modal mounted while animating out so the exit animation plays fully
   const [modalOpen, setModalOpen] = useState(false)
   const translateY = useSharedValue(position === 'bottom' ? 120 : -120)
@@ -113,26 +242,45 @@ export const Toast: React.FC<ToastProps> = ({
   // react-native-safe-area-context (not a declared dependency of this
   // component) — Android accounts for the status bar, iOS uses a sane
   // default that clears the notch/Dynamic Island on modern devices.
-  const edgeOffset = Platform.select({
+  // `offset` is added on top so callers (and the stacking provider) can push
+  // a toast further in from the edge.
+  const platformInset = Platform.select({
     android: (StatusBar.currentHeight ?? 24) + 8,
     ios: 56,
     default: 48,
   }) as number
+  const edgeOffset = platformInset + offset
 
-  const hide = useCallback(() => onHide(), [onHide])
+  // Motion tokens resolved on the JS thread — never inside a worklet.
+  const fast = motion.timing('fast')
+  const normal = motion.timing('normal')
+  const spring = motion.spring()
+
+  // onHide can change identity between renders while the enter/exit effect is
+  // keyed only on [visible, id]; a ref keeps the animation callbacks current.
+  const onHideRef = useRef(onHide)
+  onHideRef.current = onHide
+  const hide = useCallback(() => { onHideRef.current() }, [])
   // Used to cancel stale exit-animation callbacks (race condition when fire() is called rapidly)
   const exitGenRef = useRef(0)
 
   const dismiss = useCallback(() => {
     exitGenRef.current += 1
     const gen = exitGenRef.current
-    opacity.value = withTiming(0, { duration: 180 })
+    opacity.value = withTiming(0, fast)
     translateY.value = withSpring(
       position === 'bottom' ? 120 : -120,
-      { mass: 0.5, damping: 18, stiffness: 200 },
+      spring,
       () => { if (exitGenRef.current === gen) runOnJS(hide)() },
     )
-  }, [position, hide])
+  }, [position, hide, fast.duration, spring.damping, spring.stiffness, spring.mass])
+
+  // Parent-driven exit (provider `dismiss(id)`): fade out, unmount the Modal,
+  // then report so the queue can drop this entry. `hide` is idempotent.
+  const finishExit = useCallback(() => {
+    setModalOpen(false)
+    onHideRef.current()
+  }, [])
 
   useEffect(() => {
     if (visible) {
@@ -147,8 +295,8 @@ export const Toast: React.FC<ToastProps> = ({
         else if (variant === 'warning') Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning)
       }
       translateX.value = 0
-      translateY.value = withSpring(0, { mass: 0.5, damping: 18, stiffness: 200 })
-      opacity.value = withTiming(1, { duration: 200 })
+      translateY.value = withSpring(0, spring)
+      opacity.value = withTiming(1, normal)
       progressWidth.value = 100
 
       if (Platform.OS === 'ios') {
@@ -158,7 +306,11 @@ export const Toast: React.FC<ToastProps> = ({
       }
 
       if (!persistent && duration > 0) {
-        progressWidth.value = withTiming(0, { duration })
+        // Content timing, not a motion token: the bar must track the toast's
+        // own `duration`. It simply doesn't animate under reduced motion.
+        if (!motion.reduced) {
+          progressWidth.value = withTiming(0, { duration })
+        }
         const timer = setTimeout(() => dismiss(), duration)
         return () => clearTimeout(timer)
       }
@@ -166,8 +318,8 @@ export const Toast: React.FC<ToastProps> = ({
       exitGenRef.current += 1
       const gen = exitGenRef.current
       cancelAnimation(opacity)
-      opacity.value = withTiming(0, { duration: 180 }, () => {
-        if (exitGenRef.current === gen) runOnJS(setModalOpen)(false)
+      opacity.value = withTiming(0, fast, () => {
+        if (exitGenRef.current === gen) runOnJS(finishExit)()
       })
     }
     // `id` is included so a new toast shown while one is already visible
@@ -179,8 +331,8 @@ export const Toast: React.FC<ToastProps> = ({
   // Swipe-to-dismiss — supports left/right AND vertical (up for bottom toast, down for top toast)
   const activeAxis = useRef<'x' | 'y' | null>(null)
 
-  const panResponder = useRef(
-    PanResponder.create({
+  const panResponder = useMemo(
+    () => PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onMoveShouldSetPanResponder: (_, gs) => Math.abs(gs.dx) > 5 || Math.abs(gs.dy) > 5,
       onPanResponderGrant: () => {
@@ -201,25 +353,26 @@ export const Toast: React.FC<ToastProps> = ({
       onPanResponderRelease: (_, gs) => {
         if (activeAxis.current === 'x') {
           if (Math.abs(gs.dx) > 80) {
-            translateX.value = withTiming(gs.dx > 0 ? 500 : -500, { duration: 200 })
-            opacity.value = withTiming(0, { duration: 200 }, () => runOnJS(hide)())
+            translateX.value = withTiming(gs.dx > 0 ? 500 : -500, normal)
+            opacity.value = withTiming(0, normal, () => runOnJS(hide)())
           } else {
-            translateX.value = withSpring(0, { mass: 0.4, damping: 14, stiffness: 200 })
+            translateX.value = withSpring(0, spring)
           }
         } else {
           // Bottom toast: swipe down (positive dy) dismisses; top toast: swipe up (negative dy) dismisses
           const dismissed = position === 'bottom' ? gs.dy > 60 : gs.dy < -60
           if (dismissed) {
-            translateY.value = withTiming(position === 'bottom' ? 300 : -300, { duration: 200 })
-            opacity.value = withTiming(0, { duration: 200 }, () => runOnJS(hide)())
+            translateY.value = withTiming(position === 'bottom' ? 300 : -300, normal)
+            opacity.value = withTiming(0, normal, () => runOnJS(hide)())
           } else {
-            translateY.value = withSpring(0, { mass: 0.4, damping: 14, stiffness: 200 })
+            translateY.value = withSpring(0, spring)
           }
         }
         activeAxis.current = null
       },
-    })
-  ).current
+    }),
+    [position, hide, normal.duration, spring.damping, spring.stiffness, spring.mass],
+  )
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: translateY.value }, { translateX: translateX.value }],
@@ -231,140 +384,68 @@ export const Toast: React.FC<ToastProps> = ({
   }))
 
   // Merge single `action` + `actions` array into one list
-  const allActions: ToastAction[] = [
-    ...(action ? [action] : []),
-    ...(actions ?? []),
-  ]
+  const allActions: ToastAction[] = useMemo(
+    () => [...(action ? [action] : []), ...(actions ?? [])],
+    [action, actions],
+  )
 
   if (!modalOpen) return null
+
+  const body = (
+    <ToastBody
+      message={message}
+      description={description}
+      variant={variant}
+      icon={icon}
+      avatar={avatar}
+      iconBg={iconBg}
+      iconColor={iconColor}
+      actions={allActions}
+      persistent={persistent}
+      showProgress={showProgress}
+      onClose={dismiss}
+      progressStyle={progressStyle}
+      testID={testID}
+    />
+  )
 
   // On web, render with fixed positioning directly (no Modal portal needed)
   if (Platform.OS === 'web') {
     return (
-      <Animated.View
-        style={[
-          styles.container,
-          {
-            position: 'fixed' as any,
-            [position === 'top' ? 'top' : 'bottom']: edgeOffset,
-            zIndex: 9999,
-          },
-          animatedStyle,
-        ]}
-        accessibilityRole="alert"
-        accessibilityLiveRegion="polite"
+      <View
+        pointerEvents="box-none"
+        style={{ position: 'fixed' as any, top: 0, left: 0, right: 0, bottom: 0, zIndex: 9999 }}
       >
-        {/* Left side: avatar image OR icon badge */}
-        {avatar ? (
-          <Image source={avatar} style={{ width: 40, height: 40, borderRadius: 20, marginTop: 1 }} />
-        ) : (
-          <View style={[styles.icon, { backgroundColor: iconBg }]}>
-            {icon ? icon : <Ionicons name={variantIconName[variant]} size={14} color={iconColor} />}
-          </View>
-        )}
-        <View style={styles.content}>
-          <Text variant="label">{message}</Text>
-          {description && <Text variant="caption" muted>{description}</Text>}
-          {allActions.length > 0 && (
-            <View style={styles.actionsRow}>
-              {allActions.map((a, idx) => (
-                <Pressable key={idx} style={[styles.action, a.variant === 'primary' && { borderColor: theme.colors.primary }]} onPress={a.onPress}>
-                  <Text variant="caption" style={{ ...fontStyle(theme.typography, 'semibold'), color: a.variant === 'primary' ? theme.colors.primary : theme.colors.foreground }}>{a.label}</Text>
-                </Pressable>
-              ))}
-            </View>
-          )}
-        </View>
-        {persistent && (
-          <Pressable onPress={dismiss} hitSlop={8}>
-            <Ionicons name="close" size={18} color={theme.colors.muted} />
-          </Pressable>
-        )}
-        {showProgress && !persistent && (
-          <View style={{ position: 'absolute', bottom: 0, left: 0, height: 3, backgroundColor: iconBg, opacity: 0.5, borderBottomLeftRadius: theme.radius.lg, borderBottomRightRadius: theme.radius.lg, width: '100%' }}>
-            <Animated.View style={[{ height: 3, backgroundColor: iconBg }, progressStyle]} />
-          </View>
-        )}
-      </Animated.View>
+        <Animated.View
+          testID={testID}
+          style={[
+            styles.container,
+            { [position === 'top' ? 'top' : 'bottom']: edgeOffset },
+            animatedStyle,
+          ]}
+          accessibilityRole="alert"
+          accessibilityLiveRegion="polite"
+          {...panResponder.panHandlers}
+        >
+          {body}
+        </Animated.View>
+      </View>
     )
   }
 
   return (
     <Modal visible={modalOpen} transparent animationType="none" onRequestClose={dismiss} statusBarTranslucent>
-    <View pointerEvents="box-none" style={{ flex: 1 }}>
-    <Animated.View
-      style={[styles.container, { [position === 'top' ? 'top' : 'bottom']: edgeOffset }, animatedStyle]}
-      accessibilityRole="alert"
-      accessibilityLiveRegion="polite"
-      {...panResponder.panHandlers}
-    >
-      {/* Left side: avatar image OR icon badge */}
-      {avatar ? (
-        <Image
-          source={avatar}
-          style={{ width: 40, height: 40, borderRadius: 20, marginTop: 1 }}
-        />
-      ) : (
-        <View style={[styles.icon, { backgroundColor: iconBg }]}>
-          {icon
-            ? icon
-            : <Ionicons name={variantIconName[variant]} size={14} color={iconColor} />
-          }
-        </View>
-      )}
-
-      <View style={styles.content}>
-        <Text variant="label">{message}</Text>
-        {description && <Text variant="caption" muted>{description}</Text>}
-        {allActions.length > 0 && (
-          <View style={styles.actionsRow}>
-            {allActions.map((a, idx) => (
-              <Pressable
-                key={idx}
-                style={[
-                  styles.action,
-                  a.variant === 'primary' && { borderColor: theme.colors.primary },
-                ]}
-                onPress={a.onPress}
-              >
-                <Text
-                  variant="caption"
-                  style={{
-                    ...fontStyle(theme.typography, 'semibold'),
-                    color: a.variant === 'primary' ? theme.colors.primary : theme.colors.foreground,
-                  }}
-                >
-                  {a.label}
-                </Text>
-              </Pressable>
-            ))}
-          </View>
-        )}
+      <View pointerEvents="box-none" style={{ flex: 1 }}>
+        <Animated.View
+          testID={testID}
+          style={[styles.container, { [position === 'top' ? 'top' : 'bottom']: edgeOffset }, animatedStyle]}
+          accessibilityRole="alert"
+          accessibilityLiveRegion="polite"
+          {...panResponder.panHandlers}
+        >
+          {body}
+        </Animated.View>
       </View>
-
-      {persistent && (
-        <Pressable onPress={dismiss} hitSlop={8}>
-          <Ionicons name="close" size={18} color={theme.colors.muted} />
-        </Pressable>
-      )}
-      {showProgress && !persistent && (
-        <View style={{
-          position: 'absolute',
-          bottom: 0, left: 0,
-          height: 3,
-          backgroundColor: iconBg,
-          opacity: 0.5,
-          borderBottomLeftRadius: theme.radius.lg,
-          borderBottomRightRadius: theme.radius.lg,
-          width: '100%',
-        }}>
-          <Animated.View
-            style={[{ height: 3, backgroundColor: iconBg }, progressStyle]}
-          />
-        </View>
-      )}
-    </Animated.View>
-    </View>
     </Modal>
   )
 }
@@ -373,37 +454,123 @@ export const Toast: React.FC<ToastProps> = ({
 
 const ToastContext = createContext<ToastContextValue | null>(null)
 
-export function ToastProvider({ children }: { children: React.ReactNode }) {
-  const [toast, setToast] = useState<ToastConfig | null>(null)
-  const [visible, setVisible] = useState(false)
-  // Monotonically increasing id so a show() call while a toast is already
-  // visible is recognized as a distinct toast instance (see toast.tsx's
-  // auto-dismiss effect, which is keyed on this id).
+type EntryState = 'pending' | 'visible' | 'exiting'
+
+interface ToastEntry {
+  config: ToastConfig & { id: string }
+  state: EntryState
+  /** Bumped by update() so the Toast restarts its auto-dismiss timer. */
+  rev: number
+}
+
+// Vertical gap between stacked toasts when `max` > 1.
+const STACK_GAP = 76
+
+export function ToastProvider({ children, max = 1 }: ToastProviderProps) {
+  const [entries, setEntries] = useState<ToastEntry[]>([])
+  // Monotonically increasing id so every show() call is a distinct queue entry.
   const nextIdRef = useRef(0)
-  const [toastId, setToastId] = useState(0)
+  const maxRef = useRef(max)
+  maxRef.current = max
 
-  const show = useCallback((config: ToastConfig) => {
+  // Promote queued toasts into the visible slots freed by dismissals.
+  // `exiting` entries no longer hold a slot, so the next one starts entering
+  // while the outgoing one is still animating away.
+  const promote = useCallback((list: ToastEntry[]): ToastEntry[] => {
+    const limit = Math.max(1, maxRef.current)
+    let shown = list.filter((e) => e.state === 'visible').length
+    return list.map((e) => {
+      if (e.state === 'pending' && shown < limit) {
+        shown += 1
+        return { ...e, state: 'visible' as EntryState }
+      }
+      return e
+    })
+  }, [])
+
+  // A raised `max` should immediately reveal anything already queued.
+  useEffect(() => {
+    setEntries((prev) => (prev.some((e) => e.state === 'pending') ? promote(prev) : prev))
+  }, [max, promote])
+
+  const show = useCallback((config: ToastConfig): string => {
     nextIdRef.current += 1
-    setToastId(nextIdRef.current)
-    setToast(config)
-    setVisible(true)
+    const id = config.id ?? `toast-${nextIdRef.current}`
+    setEntries((prev) =>
+      promote([
+        ...prev.filter((e) => e.config.id !== id),
+        { config: { ...config, id }, state: 'pending', rev: 0 },
+      ]),
+    )
+    return id
+  }, [promote])
+
+  // Called once a toast has finished animating out.
+  const remove = useCallback((id: string) => {
+    setEntries((prev) => {
+      const next = prev.filter((e) => e.config.id !== id)
+      return next.length === prev.length ? prev : promote(next)
+    })
+  }, [promote])
+
+  const dismiss = useCallback((id: string) => {
+    setEntries((prev) => {
+      const entry = prev.find((e) => e.config.id === id)
+      if (!entry || entry.state === 'exiting') return prev
+      // Never rendered yet — drop it from the queue outright.
+      if (entry.state === 'pending') return promote(prev.filter((e) => e.config.id !== id))
+      return promote(prev.map((e) => (e.config.id === id ? { ...e, state: 'exiting' as EntryState } : e)))
+    })
+  }, [promote])
+
+  // Backwards-compatible imperative API: dismisses the oldest visible toast.
+  const hide = useCallback(() => {
+    setEntries((prev) => {
+      const first = prev.find((e) => e.state === 'visible')
+      if (!first) return prev
+      return promote(prev.map((e) => (e === first ? { ...e, state: 'exiting' as EntryState } : e)))
+    })
+  }, [promote])
+
+  const update = useCallback((id: string, config: Partial<ToastConfig>) => {
+    setEntries((prev) =>
+      prev.map((e) =>
+        e.config.id === id
+          ? { ...e, config: { ...e.config, ...config, id }, rev: e.rev + 1 }
+          : e,
+      ),
+    )
   }, [])
 
-  const hide = useCallback(() => {
-    setVisible(false)
-  }, [])
+  const value = useMemo<ToastContextValue>(
+    () => ({ show, hide, dismiss, update }),
+    [show, hide, dismiss, update],
+  )
+
+  // Anything not still queued is mounted; stacking only kicks in when more
+  // than one toast may be visible, so max=1 keeps the exact previous layout.
+  const rendered = entries.filter((e) => e.state !== 'pending')
+  const gap = max > 1 ? STACK_GAP : 0
+  const stackCount = { top: 0, bottom: 0 }
 
   return (
-    <ToastContext.Provider value={{ show, hide }}>
+    <ToastContext.Provider value={value}>
       {children}
-      {toast && (
-        <Toast
-          {...toast}
-          id={toast.id ?? toastId}
-          visible={visible}
-          onHide={hide}
-        />
-      )}
+      {rendered.map((entry) => {
+        const pos = entry.config.position === 'top' ? 'top' : 'bottom'
+        const index = stackCount[pos]
+        stackCount[pos] += 1
+        return (
+          <Toast
+            key={entry.config.id}
+            {...entry.config}
+            id={`${entry.config.id}#${entry.rev}`}
+            offset={(entry.config.offset ?? 0) + index * gap}
+            visible={entry.state === 'visible'}
+            onHide={() => remove(entry.config.id)}
+          />
+        )
+      })}
     </ToastContext.Provider>
   )
 }

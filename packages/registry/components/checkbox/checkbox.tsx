@@ -94,9 +94,9 @@ export const Checkbox: React.FC<CheckboxProps> = ({
     }, boxAnimStyle]}>
       <Animated.View style={checkAnimStyle}>
         {indeterminate && !checked ? (
-          <View style={{ width: cfg.icon, height: cfg.iconStroke, backgroundColor: theme.colors.onPrimary ?? '#fff', borderRadius: 2 }} />
+          <View style={{ width: cfg.icon, height: cfg.iconStroke, backgroundColor: theme.colors.onPrimary, borderRadius: 2 }} />
         ) : checked ? (
-          <Ionicons name="checkmark" size={cfg.icon} color={theme.colors.onPrimary ?? '#fff'} />
+          <Ionicons name="checkmark" size={cfg.icon} color={theme.colors.onPrimary} />
         ) : null}
       </Animated.View>
     </Animated.View>

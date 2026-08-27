@@ -14,7 +14,17 @@ export interface PhoneInputProps {
   value: string
   /** Called when the phone number changes */
   onChangeText: (value: string) => void
-  /** Default country code (ISO 3166-1 alpha-2). Default: 'US' */
+  /**
+   * Called alongside `onChangeText` with the E.164 number (`+<dialCode><digits>`)
+   * and whether the digit count matches the selected country's mask.
+   */
+  onChangeFormatted?: (e164: string, isValid: boolean) => void
+  /**
+   * Controlled country code (ISO 3166-1 alpha-2). When provided it wins over
+   * internal state and later changes are respected.
+   */
+  country?: string
+  /** Uncontrolled initial country code (ISO 3166-1 alpha-2). Default: 'US' */
   defaultCountry?: string
   /** Called when the country changes */
   onCountryChange?: (country: Country) => void
@@ -34,5 +44,14 @@ export interface PhoneInputProps {
   placeholder?: string
   /** Enable haptic feedback. Default: true */
   haptic?: boolean
+  /** Test identifier for the root; children derive `-input` / `-country`. */
+  testID?: string
   style?: StyleProp<ViewStyle>
+}
+
+/** Imperative handle exposed via ref. */
+export interface PhoneInputHandle {
+  focus(): void
+  blur(): void
+  clear(): void
 }

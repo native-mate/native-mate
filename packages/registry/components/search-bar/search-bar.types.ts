@@ -23,6 +23,15 @@ export interface SearchBarProps {
   onSuggestionPress?: (suggestion: SearchBarSuggestion) => void
   /** Show loading spinner in the search bar */
   loading?: boolean
+  /** Called when the keyboard's search/submit key is pressed */
+  onSubmitEditing?: (text: string) => void
+  /**
+   * Debounce window (ms) for `onDebouncedChangeText`. Default: 300.
+   * Only takes effect when `onDebouncedChangeText` is provided.
+   */
+  debounceMs?: number
+  /** Called `debounceMs` after the user stops typing */
+  onDebouncedChangeText?: (text: string) => void
   /** Auto-focus the input on mount */
   autoFocus?: boolean
   disabled?: boolean

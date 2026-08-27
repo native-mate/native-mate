@@ -1,22 +1,29 @@
 // native-mate: phone-input@0.1.0 | hash:PLACEHOLDER
-import React, { useState, useMemo, useCallback, useRef } from 'react'
-import {
-  View,
-  TextInput,
-  Pressable,
-  FlatList,
-  Modal,
-  KeyboardAvoidingView,
-  Platform,
-} from 'react-native'
+import React, {
+  useState,
+  useMemo,
+  useCallback,
+  useRef,
+  forwardRef,
+  useImperativeHandle,
+} from 'react'
+import { View, TextInput, Pressable, FlatList, Modal } from 'react-native'
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withSpring,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles, Separator, fontStyle } from '@native-mate/core'
-import type { PhoneInputProps, Country } from './phone-input.types'
+import {
+  useTheme,
+  useMotion,
+  withAlpha,
+  Text,
+  makeStyles,
+  Separator,
+  fontStyle,
+} from '@native-mate/core'
+import type { PhoneInputProps, PhoneInputHandle, Country } from './phone-input.types'
 
 let Haptics: any = null
 try { Haptics = require('expo-haptics') } catch {}
@@ -136,7 +143,7 @@ const useStyles = makeStyles((theme) => ({
     gap: 12,
   },
   countryRowSelected: {
-    backgroundColor: theme.colors.primary + '15',
+    backgroundColor: withAlpha(theme.colors.primary, 0.08),
   },
 }))
 
@@ -285,62 +292,102 @@ const CountryPicker: React.FC<CountryPickerProps> = ({
 
 // ── PhoneInput ───────────────────────────────────────────────────────────────
 
-export const PhoneInput: React.FC<PhoneInputProps> = ({
-  value,
-  onChangeText,
-  defaultCountry = 'US',
-  onCountryChange,
-  countries,
-  showFlag = true,
-  showDialCode = true,
-  disabled = false,
-  error,
-  label,
-  placeholder = 'Phone number',
-  haptic = true,
-  style,
-}) => {
+export const PhoneInput = forwardRef<PhoneInputHandle, PhoneInputProps>(function PhoneInput(
+  {
+    value,
+    onChangeText,
+    onChangeFormatted,
+    country,
+    defaultCountry = 'US',
+    onCountryChange,
+    countries,
+    showFlag = true,
+    showDialCode = true,
+    disabled = false,
+    error,
+    label,
+    placeholder = 'Phone number',
+    haptic = true,
+    testID,
+    style,
+  },
+  ref
+) {
   const theme = useTheme()
+  const motion = useMotion()
   const styles = useStyles()
   const inputRef = useRef<TextInput>(null)
 
   const countryList = countries && countries.length > 0 ? countries : DEFAULT_COUNTRIES
-  const [selectedCountry, setSelectedCountry] = useState<Country>(
+  const [internalCountry, setInternalCountry] = useState<Country>(
     () => countryList.find((c) => c.code === defaultCountry) ?? countryList[0]
   )
   const [pickerVisible, setPickerVisible] = useState(false)
 
+  // A `country` prop makes the component controlled: it wins over internal
+  // state, and later changes to it are honoured (unlike `defaultCountry`,
+  // which only seeds the initial value).
+  const isControlled = country != null
+  const selectedCountry = useMemo(() => {
+    if (!isControlled) return internalCountry
+    return countryList.find((c) => c.code === country) ?? internalCountry
+  }, [isControlled, country, countryList, internalCountry])
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      focus: () => inputRef.current?.focus(),
+      blur: () => inputRef.current?.blur(),
+      clear: () => {
+        onChangeText('')
+        inputRef.current?.clear()
+      },
+    }),
+    [onChangeText]
+  )
+
   const focusScale = useSharedValue(1)
-  const borderColor = useSharedValue(theme.colors.border)
 
   const containerAnimStyle = useAnimatedStyle(() => ({
     transform: [{ scale: focusScale.value }],
   }))
 
+  // Read outside the worklet — hooks must never be called inside one.
+  const springConfig = motion.spring()
+
   const handleFocus = () => {
-    focusScale.value = withSpring(1.005, { damping: 20, stiffness: 300 })
+    focusScale.value = withSpring(1.005, springConfig)
   }
 
   const handleBlur = () => {
-    focusScale.value = withSpring(1, { damping: 20, stiffness: 300 })
+    focusScale.value = withSpring(1, springConfig)
   }
 
   const handleCountrySelect = useCallback(
-    (country: Country) => {
+    (nextCountry: Country) => {
       if (haptic && Haptics) Haptics.selectionAsync()
-      setSelectedCountry(country)
-      onCountryChange?.(country)
+      if (!isControlled) setInternalCountry(nextCountry)
+      onCountryChange?.(nextCountry)
     },
-    [haptic, onCountryChange]
+    [haptic, isControlled, onCountryChange]
   )
 
   const handleChangeText = useCallback(
     (text: string) => {
-      const digits = stripNonDigits(text)
       const capacity = maskDigitCapacity(selectedCountry.format)
-      onChangeText(capacity != null ? digits.slice(0, capacity) : digits)
+      const digits = capacity != null
+        ? stripNonDigits(text).slice(0, capacity)
+        : stripNonDigits(text)
+      onChangeText(digits)
+      if (onChangeFormatted) {
+        const dial = selectedCountry.dialCode.startsWith('+')
+          ? selectedCountry.dialCode
+          : `+${selectedCountry.dialCode}`
+        const isValid = capacity != null ? digits.length === capacity : digits.length > 0
+        onChangeFormatted(`${dial}${digits}`, isValid)
+      }
     },
-    [onChangeText, selectedCountry.format]
+    [onChangeText, onChangeFormatted, selectedCountry.format, selectedCountry.dialCode]
   )
 
   const formattedValue = useMemo(
@@ -355,7 +402,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
   }
 
   return (
-    <View style={[styles.container, { opacity: disabled ? 0.5 : 1 }, style]}>
+    <View style={[styles.container, { opacity: disabled ? 0.5 : 1 }, style]} testID={testID}>
       {label && <Text style={styles.label}>{label}</Text>}
 
       <Animated.View
@@ -370,6 +417,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
           style={styles.countryButton}
           onPress={openPicker}
           disabled={disabled}
+          testID={testID ? `${testID}-country` : undefined}
           accessibilityRole="button"
           accessibilityLabel={`Selected country: ${selectedCountry.name}. Tap to change.`}
         >
@@ -412,6 +460,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
           onBlur={handleBlur}
           accessibilityLabel={label ?? placeholder}
           accessibilityState={{ disabled }}
+          testID={testID ? `${testID}-input` : undefined}
         />
       </Animated.View>
 
@@ -426,4 +475,4 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
       />
     </View>
   )
-}
+})

@@ -141,19 +141,79 @@ Not breaking, but they belong with the gesture rework:
 
 ## Sequencing
 
-1. Contracts + codemod (`v0.5.0-alpha`) — largest blast radius, do first so the rest
-   lands on stable prop shapes.
-2. i18n `strings` slot + RTL sweep + `audit-rtl` CI gate.
-3. Accessibility wave (independent of 1–2; can run in parallel).
-4. RNGH gesture rework for sheet/toast + the perf items above.
-5. Date-picker locale work last — it depends on the `strings` slot from step 2.
+Revised after consumer review. The original order put the largest migration ahead of
+fixes that make apps broken *today*; steps 1–4 now ship with no migration at all.
 
-## Open questions for review
+1. **v0.4 adoption wave** — make the 80 components actually consume `useMotion`,
+   `withAlpha`, `makeStyles`, `forwardRef`, `testID`, `React.memo`. Non-breaking, and
+   the hooks are already written. *(In progress — partial adoption landed in
+   `c41a586`; coverage is uneven and being completed.)*
+2. **P0 correctness** — toast queue + timer, infinite-scroll threshold unit error,
+   phone-input digit loss, skeleton crashes, date-picker inert `disabled`, sheet
+   stale closures. Non-breaking, ships as 0.4.x.
+3. **P1 dead-API cleanup** — props that are documented but do nothing (`card.size`,
+   `date-picker.sheetHeight`, `otp-input.borderAnim`, phone-input's unused animation
+   imports). Technically breaking, but only breaks code that was already a no-op —
+   call it out explicitly in the changelog rather than bundling it silently.
+4. **Accessibility wave** (§6) — independent of contracts, parallelizable, and the
+   highest-value item for a consumer whose users are elderly or vision-impaired
+   patients reading their own medical results.
+5. **Contracts + codemod** (§1) — the breaking release proper.
+6. **i18n `strings` slot + RTL sweep + `audit-rtl`** (§2–3), including `search-bar`'s
+   hardcoded `width: 60` Cancel button, which clips for "Annuler", "Abbrechen",
+   "रद्द करें", and "キャンセル" — invisible until the day a second locale ships.
+7. **RNGH gesture rework** (§5) + the perf items in §7. No longer blocked on the
+   breaking release now that RNGH is an optional peer.
+8. **Date-picker locale** (§4) — depends on the `strings` slot, and its dead sheet API
+   must be resolved first so locale work isn't built on top of it.
 
-1. **RNGH as a peer dependency** — acceptable? It's near-universal in RN apps, but it
-   is a real new requirement for consumers who don't have it.
-2. **`errorMessage` deprecation window** — one minor, or keep the alias indefinitely?
-3. **`Intl` reliance** for date-picker locales — acceptable to require, or should
-   month/day names come exclusively from the `strings` slot?
-4. **`iconOnly` + required label** as a *type-level* error — breaks existing code at
-   compile time (intended), or runtime dev-warning only?
+## Consumer-critical component order
+
+If a per-component wave needs an order, these 14 are what the first production
+consumer actually depends on: `otp-input`, `phone-input`, `search-bar`, `list-item`,
+`card`, `badge`, `skeleton`, `empty-state`, `timeline`, `stepper`,
+`segmented-control`, `sheet`, `toast`, `button`. They are going direct to FlashList
+rather than using `infinite-scroll`, and their booking flow needs a narrow
+"next N days" slot picker rather than a general calendar — so `date-picker` and
+`infinite-scroll` still need their dead APIs fixed, but neither blocks that consumer.
+
+## Resolved decisions
+
+Answered by the first production consumer in
+`2026-08-27-v05-review-response.md`. All four are now settled:
+
+1. **RNGH is an *optional* peer, not a hard requirement.** Use the same
+   `try { require(...) } catch {}` pattern the library already uses for
+   `expo-haptics`. Without RNGH, `sheet` keeps tap-to-dismiss with no drag and
+   `toast` loses swipe-to-dismiss but keeps its timer and actions; emit a one-time
+   `__DEV__` warning naming the missing capability. **Consequence: the gesture
+   rework no longer needs to be gated on the breaking release** — it can ship in a
+   0.4.x.
+2. **`errorMessage` gets one minor with a loud dev warning, then removal in v0.6.**
+   The codemod makes removal cheap, and a permanent alias doubles the branch count in
+   every component forever. Warn once per prop name per session via a module-level
+   `Set` so a 200-row list doesn't emit 200 warnings.
+3. **Date-picker locales are hybrid, non-throwing.** Try `Intl.DateTimeFormat`, fall
+   back to the `strings` slot, never throw, and never assume returned names are
+   actually in the requested locale (Hermes' Android locale data depends on how the
+   app was built and degrades silently to English). `firstDayOfWeek` is a plain
+   `0..6` prop — `Intl.Locale.prototype.weekInfo` is absent in Hermes, so it must not
+   be derived.
+4. **`iconOnly` needs both the type-level discriminated union and a `__DEV__` runtime
+   warning.** This generalizes into a standing rule below.
+
+### Standing rule: assume a JavaScript consumer
+
+native-mate's first production consumer is **JavaScript, not TypeScript** — project
+rule, JS + JSX only. Every type-level guarantee the library ships is invisible there.
+**Any rule the library wants to *guarantee* rather than merely document needs a
+`__DEV__` runtime check in addition to its type.** This applies to the `iconOnly`
+label requirement and to every future constraint of the same shape.
+
+### Standing rule: a hardcoded color is a white-label bug
+
+Each lab in the consumer's app supplies its own palette, so a literal like
+`otp-input`'s `#22c55e` doesn't merely look wrong at night — it renders a
+competitor's green inside another lab's branded app. Same for `fontFamily`
+literals and `fontFamily: undefined`, which silently drop a brand font. Both classes
+get CI gates (`audit-hex`, `audit-fonts`) rather than one-time sweeps.

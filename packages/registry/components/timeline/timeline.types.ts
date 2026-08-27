@@ -34,6 +34,12 @@ export interface TimelineProps {
   activeColor?: string
   /** Color for error items. Uses theme destructive if not set */
   errorColor?: string
+  /**
+   * Formats a `Date` timestamp for display. Defaults to `toLocaleString()`.
+   * Provide this to control locale, timezone and format (string timestamps are
+   * rendered as-is and never passed through this).
+   */
+  formatTimestamp?: (d: Date) => string
   /** Enable haptic feedback on node press. Default: true */
   haptic?: boolean
   /** Called when a node is pressed */

@@ -7,7 +7,7 @@ import Animated, {
   withSpring,
   withTiming,
 } from 'react-native-reanimated'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, withAlpha, readableOn } from '@native-mate/core'
 import type { ButtonProps, ButtonVariant, ButtonGroupProps, HapticStyle } from './button.types'
 
 let Haptics: any = null
@@ -18,6 +18,9 @@ const triggerHaptic = (style: HapticStyle) => {
   const map = { light: 'Light', medium: 'Medium', heavy: 'Heavy' } as const
   Haptics.impactAsync(Haptics.ImpactFeedbackStyle[map[style]])
 }
+
+// A custom `color` can be anything, so the label is contrast-picked against it
+// (core's readableOn) rather than assumed to be white.
 
 const useStyles = makeStyles((theme) => ({
   base: {
@@ -67,18 +70,33 @@ export const Button: React.FC<ButtonProps & { _groupStyle?: any }> = ({
   children,
   accessibilityLabel,
   onPress,
+  style,
+  testID,
   _groupStyle,
   ...rest
 }) => {
   const theme = useTheme()
   const styles = useStyles()
-  const pressed = useSharedValue(0)
+  const scale = useSharedValue(1)
+  const pressOpacity = useSharedValue(1)
   const rippleScale = useSharedValue(0)
   const rippleOpacity = useSharedValue(0)
 
+  const isDisabled = disabled || loading
+
+  // Label colour: tint for the transparent variants, contrast-picked otherwise.
+  const textColor = color
+    ? (variant === 'outline' || variant === 'ghost' || variant === 'link' ? color : readableOn(color))
+    : theme.colors[labelColorMap[variant]]
+
+  // Plain values only — worklets must never close over element-typed props.
+  const springConfig = theme.animation.easing.spring
+  const rippleRadius = rounded ? 9999 : theme.radius.md
+  const rippleColor = withAlpha(textColor, 0.15)
+
   const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: withSpring(pressed.value ? 0.95 : 1, theme.animation.easing.spring) }],
-    opacity: pressed.value ? 0.85 : 1,
+    transform: [{ scale: scale.value }],
+    opacity: pressOpacity.value,
   }))
 
   const rippleStyle = useAnimatedStyle(() => ({
@@ -87,33 +105,35 @@ export const Button: React.FC<ButtonProps & { _groupStyle?: any }> = ({
     left: 0,
     right: 0,
     bottom: 0,
-    borderRadius: rounded ? 9999 : theme.radius.md,
-    backgroundColor: 'rgba(255,255,255,0.15)',
+    borderRadius: rippleRadius,
+    backgroundColor: rippleColor,
     transform: [{ scale: rippleScale.value }],
     opacity: rippleOpacity.value,
   }))
 
-  const isDisabled = disabled || loading
-  const textColor = color
-    ? (variant === 'outline' || variant === 'ghost' ? color : '#fff')
-    : theme.colors[labelColorMap[variant]]
-
   const handlePressIn = useCallback(() => {
-    pressed.value = 1
-    triggerHaptic(haptic)
+    scale.value = withSpring(0.95, springConfig)
+    pressOpacity.value = withTiming(0.85, { duration: 80 })
     if (Platform.OS === 'android') {
       rippleScale.value = 0
       rippleOpacity.value = 1
       rippleScale.value = withTiming(2, { duration: 300 })
     }
-  }, [haptic])
+  }, [springConfig])
 
   const handlePressOut = useCallback(() => {
-    pressed.value = 0
+    scale.value = withSpring(1, springConfig)
+    pressOpacity.value = withTiming(1, { duration: 80 })
     if (Platform.OS === 'android') {
       rippleOpacity.value = withTiming(0, { duration: 200 })
     }
-  }, [])
+  }, [springConfig])
+
+  // Haptic on the confirmed press, not on press-in: dragging off cancels it.
+  const handlePress = useCallback((e: any) => {
+    triggerHaptic(haptic)
+    onPress?.(e)
+  }, [haptic, onPress])
 
   // Icon-only: square/circle button
   const iconOnlySize = iconOnlySizes[size]
@@ -139,12 +159,14 @@ export const Button: React.FC<ButtonProps & { _groupStyle?: any }> = ({
     <Pressable
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
-      onPress={onPress}
+      onPress={handlePress}
       disabled={isDisabled}
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel ?? (typeof children === 'string' ? children : undefined)}
       accessibilityState={{ disabled: isDisabled, busy: loading }}
+      testID={testID}
       {...rest}
+      style={style}
     >
       <Animated.View
         style={[

@@ -12,7 +12,7 @@ const NAMED: Record<string, [number, number, number]> = {
   grey: [128, 128, 128],
 }
 
-function parse(color: string): [number, number, number, number] | null {
+export function parseColor(color: string): [number, number, number, number] | null {
   const c = color.trim().toLowerCase()
 
   if (c.startsWith('#')) {
@@ -47,7 +47,7 @@ function parse(color: string): [number, number, number, number] | null {
 
 export function withAlpha(color: string, alpha: number): string {
   const a = Math.max(0, Math.min(1, alpha))
-  const parsed = parse(color)
+  const parsed = parseColor(color)
   // Unparseable (exotic named color): hand back the original rather than
   // rendering something wrong — the color stays correct, just opaque.
   if (!parsed) return color

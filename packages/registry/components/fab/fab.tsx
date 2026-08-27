@@ -10,7 +10,7 @@ import Animated, {
   Extrapolation,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles, shadow, fontStyle } from '@native-mate/core'
+import { useTheme, Text, makeStyles, shadow, fontStyle, readableOn } from '@native-mate/core'
 import type { FabProps, FabAction, FabSize, FabVariant, HapticStyle } from './fab.types'
 
 let Haptics: any = null
@@ -115,7 +115,8 @@ const SpeedDialAction: React.FC<{
   }, [])
 
   const btnColor = action.color ?? theme.colors.surface
-  const iconColor = action.color ? '#fff' : theme.colors.foreground
+  // A caller-supplied action fill has no paired `on*` token — contrast-pick.
+  const iconColor = action.color ? readableOn(action.color) : theme.colors.foreground
 
   return (
     <Animated.View style={[styles.speedDialItem, animStyle]}>
@@ -173,11 +174,13 @@ export const Fab: React.FC<FabProps> = ({
   const variantTextColors: Record<FabVariant, string> = {
     default: theme.colors.onPrimary,
     secondary: theme.colors.foreground,
-    destructive: theme.colors.onDestructive ?? '#fff',
+    destructive: theme.colors.onDestructive,
   }
 
   const bgColor = color ?? variantColors[variant]
-  const fgColor = color ? '#fff' : variantTextColors[variant]
+  // A caller-supplied fill is arbitrary: pick the foreground against it rather
+  // than assuming the theme's on-accent token reads on it.
+  const fgColor = color ? readableOn(color) : variantTextColors[variant]
 
   const positionStyle: Record<string, any> = {
     'bottom-right': { bottom: bottomOffset, right: sideOffset, alignItems: 'flex-end' },

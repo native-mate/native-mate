@@ -1,11 +1,20 @@
 {
   "name": "spinner",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Animated loading spinner with theme-aware colors and sizes",
   "category": "feedback",
   "files": [
-    { "path": "spinner.tsx", "hash": "" },
-    { "path": "spinner.types.ts", "hash": "" }
+    {
+      "path": "spinner.tsx",
+      "hash": ""
+    },
+    {
+      "path": "spinner.types.ts",
+      "hash": ""
+    }
   ],
-  "dependencies": { "npm": [], "components": [] }
+  "dependencies": {
+    "npm": [],
+    "components": []
+  }
 }

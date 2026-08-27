@@ -7,7 +7,7 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles, shadow, fontStyle } from '@native-mate/core'
+import { useTheme, Text, makeStyles, shadow, fontStyle, readableOn } from '@native-mate/core'
 import type { PricingCardProps } from './pricing-card.types'
 
 let Haptics: any = null
@@ -176,7 +176,9 @@ export const PricingCard: React.FC<PricingCardProps> = ({
           <Text
             variant="caption"
             style={{
-              color: badgeColor != null ? '#FFFFFF' : theme.colors.onPrimary,
+              // Themed badge fill pairs with onPrimary; a caller accent has no
+              // paired token, so its label is contrast-picked against the fill.
+              color: badgeColor != null ? readableOn(badgeColor) : theme.colors.onPrimary,
               ...fontStyle(theme.typography, 'bold'),
               fontSize: 12,
               letterSpacing: 0.5,

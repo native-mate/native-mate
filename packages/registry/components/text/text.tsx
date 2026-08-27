@@ -1,7 +1,7 @@
 // native-mate: text@0.1.0 | hash:PLACEHOLDER
 import React from 'react'
-import { Text as RNText, Platform } from 'react-native'
-import { useTheme, fontStyle } from '@native-mate/core'
+import { Text as RNText } from 'react-native'
+import { useTheme, fontStyle, monoFontFamily } from '@native-mate/core'
 import type { FontWeightKey } from '@native-mate/core'
 import type { TextProps, TextVariant, TextWeight, TextColor } from './text.types'
 
@@ -13,7 +13,9 @@ const VARIANTS: Record<TextVariant, {
   lineHeight: number
   letterSpacing?: number
   textTransform?: 'uppercase' | 'lowercase' | 'capitalize' | 'none'
-  fontFamily?: string
+  // Presets are module-level, so the mono face cannot be resolved here (it needs
+  // `theme`). The flag defers that to the component, where monoFontFamily runs.
+  mono?: boolean
 }> = {
   h1:        { fontSize: 36, weightKey: 'bold', lineHeight: 44 },
   h2:        { fontSize: 30, weightKey: 'bold', lineHeight: 38 },
@@ -27,10 +29,7 @@ const VARIANTS: Record<TextVariant, {
   label:     { fontSize: 13, weightKey: 'medium', lineHeight: 18 },
   caption:   { fontSize: 11, weightKey: 'regular', lineHeight: 16 },
   overline:  { fontSize: 10, weightKey: 'semibold', lineHeight: 14, letterSpacing: 1.5, textTransform: 'uppercase' },
-  code:      {
-    fontSize: 13, weightKey: 'regular', lineHeight: 20,
-    fontFamily: Platform.select({ ios: 'Menlo', android: 'monospace', default: 'monospace' }),
-  },
+  code:      { fontSize: 13, weightKey: 'regular', lineHeight: 20, mono: true },
 }
 
 // TextWeight has 6 levels but the core fontStyle helper only resolves 4 keys —
@@ -51,15 +50,15 @@ function resolveColor(
   muted: boolean | undefined,
   colors: Record<string, string>,
 ): string {
-  if (muted) return colors.muted ?? '#71717a'
-  if (!color) return colors.foreground ?? '#fafafa'
+  if (muted) return colors.muted
+  if (!color) return colors.foreground
   // Token names
-  if (color === 'foreground')  return colors.foreground  ?? '#fafafa'
-  if (color === 'muted')       return colors.muted       ?? '#71717a'
-  if (color === 'primary')     return colors.primary     ?? '#6366f1'
-  if (color === 'destructive') return colors.destructive ?? '#ef4444'
-  if (color === 'success')     return colors.success     ?? '#22c55e'
-  if (color === 'warning')     return colors.warning     ?? '#f59e0b'
+  if (color === 'foreground')  return colors.foreground
+  if (color === 'muted')       return colors.muted
+  if (color === 'primary')     return colors.primary
+  if (color === 'destructive') return colors.destructive
+  if (color === 'success')     return colors.success
+  if (color === 'warning')     return colors.warning
   // Raw value (hex / rgb / named)
   return color
 }
@@ -100,7 +99,9 @@ export const Text: React.FC<TextProps> = ({
           ...fontStyle(theme.typography, weightKey),
           lineHeight:      preset.lineHeight,
           letterSpacing:   preset.letterSpacing ?? 0,
-          fontFamily:      preset.fontFamily,
+          // Code text overrides the weight-resolved family with the mono face
+          // (brand-themed via typography.family.mono, else the platform default).
+          ...(preset.mono ? { fontFamily: monoFontFamily(theme.typography) } : null),
           textTransform:   resolvedTransform as any,
           color:           resolvedColor,
           textAlign:       align,

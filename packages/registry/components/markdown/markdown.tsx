@@ -1,7 +1,7 @@
 // native-mate: markdown@0.1.0 | hash:PLACEHOLDER
 import React, { useMemo } from 'react'
 import { View, Pressable, Image } from 'react-native'
-import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle, monoFontFamily } from '@native-mate/core'
 import type { MarkdownProps } from './markdown.types'
 
 const useStyles = makeStyles((theme) => ({
@@ -68,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
     fontStyle: 'italic',
   },
   inlineCode: {
-    fontFamily: 'monospace',
+    fontFamily: monoFontFamily(theme.typography),
     backgroundColor: theme.colors.background,
     color: theme.colors.foreground,
     paddingHorizontal: 5,
@@ -86,7 +86,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: '#1E1E1E',
   },
   codeBlockText: {
-    fontFamily: 'monospace',
+    fontFamily: monoFontFamily(theme.typography),
     fontSize: theme.typography.size.sm,
     color: theme.colors.foreground,
     lineHeight: 20,

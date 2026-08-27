@@ -11,7 +11,7 @@ import Animated, {
   interpolateColor,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { InputProps, InputHandle } from './input.types'
 
 let Haptics: any = null
@@ -201,9 +201,12 @@ export const Input = React.forwardRef<InputHandle, InputProps>(({
         { minHeight: config.minHeight, backgroundColor: disabled ? theme.colors.surface : theme.colors.background },
         containerAnimStyle,
       ]}>
-        {/* Floating label */}
+        {/* Floating label. fontStyle() resolves the themed brand family (or
+            the weight fallback when no custom family is registered) — the
+            previous inline check emitted `fontFamily: undefined` for
+            white-label themes and silently fell back to the system font. */}
         {floatingLabel && label && (
-          <Animated.Text style={[theme.typography.family?.regular ? { fontFamily: theme.typography.family.regular } : null, floatingLabelStyle]}>
+          <Animated.Text style={[fontStyle(theme.typography, 'regular'), floatingLabelStyle]}>
             {label}{required ? ' *' : ''}
           </Animated.Text>
         )}
@@ -223,7 +226,12 @@ export const Input = React.forwardRef<InputHandle, InputProps>(({
         )}
 
         {/* TextInput */}
+        {/* `{...rest}` is spread FIRST so the component's own contract —
+            accessibility, the disabled/editable state, value wiring and style —
+            always wins. Spreading it last let a consumer silently clobber
+            `editable={!disabled}` or the accessibility label. */}
         <TextInput
+          {...rest}
           ref={inputRef}
           testID={testID ? `${testID}-input` : undefined}
           style={[
@@ -237,11 +245,11 @@ export const Input = React.forwardRef<InputHandle, InputProps>(({
           ]}
           placeholderTextColor={theme.colors.muted}
           placeholder={floatingLabel && !focused && !currentValue ? undefined : placeholder}
-          {...rest}
           value={currentValue}
           onChangeText={handleChangeText}
           editable={!disabled}
-          accessibilityLabel={label}
+          accessibilityLabel={label ?? rest.accessibilityLabel}
+          accessibilityHint={error || hint || rest.accessibilityHint}
           accessibilityState={{ disabled }}
           onFocus={handleFocus}
           onBlur={handleBlur}
@@ -251,7 +259,14 @@ export const Input = React.forwardRef<InputHandle, InputProps>(({
 
         {/* Clear button */}
         {clearable && currentValue ? (
-          <Pressable onPress={handleClear} style={{ paddingRight: config.paddingH }} testID={testID ? `${testID}-clear` : undefined}>
+          <Pressable
+            onPress={handleClear}
+            hitSlop={12}
+            accessibilityRole="button"
+            accessibilityLabel={label ? `Clear ${label}` : 'Clear text'}
+            style={{ paddingRight: config.paddingH }}
+            testID={testID ? `${testID}-clear` : undefined}
+          >
             <View style={styles.clearBtn}>
               <Ionicons name="close" size={11} color={theme.colors.onSurface} />
             </View>
@@ -265,6 +280,9 @@ export const Input = React.forwardRef<InputHandle, InputProps>(({
               setShowPassword(v => !v)
               setTimeout(() => inputRef.current?.focus(), 10)
             }}
+            hitSlop={12}
+            accessibilityRole="button"
+            accessibilityLabel={showPassword ? 'Hide password' : 'Show password'}
             style={{ paddingRight: config.paddingH }}
             testID={testID ? `${testID}-toggle` : undefined}
           >
@@ -289,8 +307,20 @@ export const Input = React.forwardRef<InputHandle, InputProps>(({
 
       {/* Bottom row: error/hint + count */}
       <View style={styles.row}>
-        <View style={{ flex: 1 }}>
-          {error && <Text variant="caption" style={styles.error} testID={testID ? `${testID}-error` : undefined}>{error}</Text>}
+        {/* Validation errors must announce the moment they change — an
+            assertive live region interrupts so the message isn't missed. */}
+        <View style={{ flex: 1 }} accessibilityLiveRegion={error ? 'assertive' : 'none'}>
+          {error && (
+            <Text
+              variant="caption"
+              style={styles.error}
+              accessibilityLiveRegion="assertive"
+              accessibilityRole="alert"
+              testID={testID ? `${testID}-error` : undefined}
+            >
+              {error}
+            </Text>
+          )}
           {!error && hint && <Text variant="caption" style={styles.hint}>{hint}</Text>}
         </View>
         {showCount && (

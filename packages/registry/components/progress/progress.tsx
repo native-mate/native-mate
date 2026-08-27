@@ -177,7 +177,7 @@ export const Progress: React.FC<ProgressProps> = ({
         color={fillColor}
         trackColor={bgColor}
         showValue={showValue}
-        innerBg={theme.colors.background ?? '#09090b'}
+        innerBg={theme.colors.background}
         typography={theme.typography}
       />
     )

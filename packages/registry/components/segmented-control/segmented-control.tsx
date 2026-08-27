@@ -87,6 +87,16 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
     width: indicatorW.value,
   }))
 
+  // sm/md segments are 30–38pt tall; extend the touch target vertically to
+  // 44pt without changing the rendered height. Horizontal slop stays 0 because
+  // segments are flush neighbours and would otherwise steal each other's taps.
+  const segmentHitSlop = {
+    top: Math.max(0, Math.ceil((44 - sz.height) / 2)),
+    bottom: Math.max(0, Math.ceil((44 - sz.height) / 2)),
+    left: 0,
+    right: 0,
+  }
+
   const handlePress = (key: string) => {
     if (disabled) return
     if (haptic && Haptics) {
@@ -145,6 +155,7 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
               )
             }
             disabled={disabled}
+            hitSlop={segmentHitSlop}
             accessibilityRole="tab"
             accessibilityState={{ selected: isSelected, disabled }}
             accessibilityLabel={segment.label}

@@ -4,13 +4,22 @@ import { View, Pressable, Image } from 'react-native'
 import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated'
 import { useTheme, Text, Separator, makeStyles, shadow } from '@native-mate/core'
 import { Skeleton } from '../skeleton/skeleton'
-import type { CardProps, CardHeaderProps, CardContentProps, CardFooterProps, CardMediaProps } from './card.types'
+import type { CardProps, CardSize, CardHeaderProps, CardContentProps, CardFooterProps, CardMediaProps } from './card.types'
 
+// `radius` names a theme.radius token so a themed radius scale flows through.
+// `md` reproduces the values Card/Header/Content/Footer used to hardcode.
 const sizeTokens = {
-  sm: { pad: 12, gap: 8,  radius: 10, headerPad: 12 },
-  md: { pad: 16, gap: 10, radius: 14, headerPad: 16 },
-  lg: { pad: 20, gap: 12, radius: 18, headerPad: 20 },
+  sm: { pad: 12, gap: 8,  radius: 'md' as const, headerPad: 12 },
+  md: { pad: 16, gap: 10, radius: 'lg' as const, headerPad: 16 },
+  lg: { pad: 20, gap: 12, radius: 'xl' as const, headerPad: 20 },
 }
+
+const DEFAULT_CARD_SIZE: CardSize = 'md'
+
+/** Lets CardHeader/Content/Footer/Media pick up the enclosing Card's size. */
+const CardSizeContext = React.createContext<CardSize>(DEFAULT_CARD_SIZE)
+
+const useCardSize = () => sizeTokens[React.useContext(CardSizeContext)]
 
 const useStyles = makeStyles((theme) => ({
   elevated: {
@@ -49,12 +58,14 @@ export const CardMedia: React.FC<CardMediaProps> = ({
   roundedTop = true,
   style,
 }) => {
+  const theme = useTheme()
+  const radius = theme.radius[useCardSize().radius]
   return (
     <Image
       source={source}
       style={[
         { width: '100%', height },
-        roundedTop && { borderTopLeftRadius: 14, borderTopRightRadius: 14 },
+        roundedTop && { borderTopLeftRadius: radius, borderTopRightRadius: radius },
         style,
       ]}
       resizeMode="cover"
@@ -72,8 +83,18 @@ export const CardHeader: React.FC<CardHeaderProps> = ({
   trailing,
   style,
 }) => {
+  const t = useCardSize()
   return (
-    <View style={[{ paddingHorizontal: 16, paddingTop: 16, paddingBottom: description ? 8 : 12 }, style]}>
+    <View
+      style={[
+        {
+          paddingHorizontal: t.headerPad,
+          paddingTop: t.headerPad,
+          paddingBottom: description ? t.gap - 2 : t.gap + 2,
+        },
+        style,
+      ]}
+    >
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
         {leading != null && <View style={{ flexShrink: 0 }}>{leading}</View>}
         <View style={{ flex: 1, gap: 2 }}>
@@ -95,11 +116,14 @@ export const CardHeader: React.FC<CardHeaderProps> = ({
 
 // ─── CardContent ──────────────────────────────────────────────────────────────
 
-export const CardContent: React.FC<CardContentProps> = ({ children, style }) => (
-  <View style={[{ paddingHorizontal: 16, paddingBottom: 16 }, style]}>
-    {children}
-  </View>
-)
+export const CardContent: React.FC<CardContentProps> = ({ children, style }) => {
+  const t = useCardSize()
+  return (
+    <View style={[{ paddingHorizontal: t.pad, paddingBottom: t.pad }, style]}>
+      {children}
+    </View>
+  )
+}
 
 // ─── CardFooter ───────────────────────────────────────────────────────────────
 
@@ -109,6 +133,7 @@ export const CardFooter: React.FC<CardFooterProps> = ({
   align = 'left',
   style,
 }) => {
+  const t = useCardSize()
   const justifyContent =
     align === 'right' ? 'flex-end' :
     align === 'apart' ? 'space-between' :
@@ -123,8 +148,8 @@ export const CardFooter: React.FC<CardFooterProps> = ({
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent,
-            paddingHorizontal: 16,
-            paddingVertical: 12,
+            paddingHorizontal: t.pad,
+            paddingVertical: t.gap + 2,
             gap: 8,
           },
           style,
@@ -141,7 +166,7 @@ export const CardFooter: React.FC<CardFooterProps> = ({
 export const Card = React.memo<CardProps>(({
   children,
   variant = 'elevated',
-  size = 'md',
+  size = DEFAULT_CARD_SIZE,
   loading = false,
   onPress,
   disabled = false,
@@ -161,7 +186,7 @@ export const Card = React.memo<CardProps>(({
   }))
 
   const accentStyle = accent != null ? { borderLeftWidth: 3, borderLeftColor: accent } : {}
-  const containerStyle = [styles[variant], accentStyle, style]
+  const containerStyle = [styles[variant], { borderRadius: theme.radius[config.radius] }, accentStyle, style]
 
   const inner = loading ? (
     <View style={[styles.skeletonWrap, { padding: config.pad, gap: config.gap }]}>
@@ -176,26 +201,30 @@ export const Card = React.memo<CardProps>(({
 
   if (onPress) {
     return (
-      <AnimatedPressable
-        onPress={onPress}
-        disabled={disabled}
-        onPressIn={() => { scale.value = withSpring(activeScale, { damping: 15, stiffness: 300 }) }}
-        onPressOut={() => { scale.value = withSpring(1, { damping: 15, stiffness: 300 }) }}
-        android_ripple={{ color: theme.colors.border + '50', borderless: false }}
-        accessibilityRole="button"
-        style={[containerStyle, animStyle, disabled && { opacity: 0.5 }]}
-        testID={testID}
-        {...(rest as any)}
-      >
-        {inner}
-      </AnimatedPressable>
+      <CardSizeContext.Provider value={size}>
+        <AnimatedPressable
+          onPress={onPress}
+          disabled={disabled}
+          onPressIn={() => { scale.value = withSpring(activeScale, { damping: 15, stiffness: 300 }) }}
+          onPressOut={() => { scale.value = withSpring(1, { damping: 15, stiffness: 300 }) }}
+          android_ripple={{ color: theme.colors.border + '50', borderless: false }}
+          accessibilityRole="button"
+          style={[containerStyle, animStyle, disabled && { opacity: 0.5 }]}
+          testID={testID}
+          {...(rest as any)}
+        >
+          {inner}
+        </AnimatedPressable>
+      </CardSizeContext.Provider>
     )
   }
 
   return (
-    <View style={containerStyle} testID={testID} {...rest}>
-      {inner}
-    </View>
+    <CardSizeContext.Provider value={size}>
+      <View style={containerStyle} testID={testID} {...rest}>
+        {inner}
+      </View>
+    </CardSizeContext.Provider>
   )
 })
 

@@ -57,7 +57,7 @@ export const Alert: React.FC<AlertProps> = ({
   const theme = useTheme()
   const styles = useStyles()
   const meta = variantMeta[variant]
-  const accentColor = meta.hardColor ?? ((theme.colors[meta.colorKey as keyof typeof theme.colors] as string) ?? '#3b82f6')
+  const accentColor = meta.hardColor ?? (theme.colors[meta.colorKey as keyof typeof theme.colors] as string)
 
   return (
     <View

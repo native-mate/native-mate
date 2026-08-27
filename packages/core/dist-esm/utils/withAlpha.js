@@ -11,7 +11,7 @@ const NAMED = {
     gray: [128, 128, 128],
     grey: [128, 128, 128],
 };
-function parse(color) {
+export function parseColor(color) {
     const c = color.trim().toLowerCase();
     if (c.startsWith('#')) {
         const hex = c.slice(1);
@@ -45,7 +45,7 @@ function parse(color) {
 }
 export function withAlpha(color, alpha) {
     const a = Math.max(0, Math.min(1, alpha));
-    const parsed = parse(color);
+    const parsed = parseColor(color);
     // Unparseable (exotic named color): hand back the original rather than
     // rendering something wrong — the color stays correct, just opaque.
     if (!parsed)

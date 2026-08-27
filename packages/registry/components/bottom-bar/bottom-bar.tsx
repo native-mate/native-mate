@@ -10,7 +10,7 @@ import Animated, {
   withSequence,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle, readableOn } from '@native-mate/core'
 import type { BottomBarProps, BottomBarItem, HapticStyle, BottomBarBadge } from './bottom-bar.types'
 
 let Haptics: any = null
@@ -107,7 +107,7 @@ const Badge: React.FC<{ badge: BottomBarBadge; theme: any }> = ({ badge, theme }
       ]}
     >
       {hasValue && (
-        <Text style={{ color: badge.color ? '#fff' : (theme.colors.onDestructive ?? '#fff'), fontSize: 9, ...fontStyle(theme.typography, 'bold'), lineHeight: 12 }}>
+        <Text style={{ color: badge.color ? readableOn(badge.color) : theme.colors.onDestructive, fontSize: 9, ...fontStyle(theme.typography, 'bold'), lineHeight: 12 }}>
           {typeof badge.value === 'number' && badge.value > 99 ? '99+' : String(badge.value)}
         </Text>
       )}

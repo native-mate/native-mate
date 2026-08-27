@@ -15,5 +15,7 @@ export interface BadgeProps {
   maxCount?: number
   onDismiss?: () => void
   children?: React.ReactNode
+  /** Overrides the auto-composed screen-reader label (variant meaning + content) */
+  accessibilityLabel?: string
   testID?: string
 }

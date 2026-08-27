@@ -97,6 +97,10 @@ export const ListItem = React.memo<ListItemProps>(({
   const titleColor = destructive ? theme.colors.destructive : theme.colors.foreground
   const subtitleColor = destructive ? theme.colors.destructive + '99' : theme.colors.muted
 
+  // The pressable row is a single a11y node, so the secondary lines have to be
+  // folded into its label or a screen reader only ever announces the title.
+  const rowA11yLabel = [title, subtitle, description].filter(Boolean).join(', ')
+
   const shouldShowChevron = showChevron !== undefined
     ? showChevron
     : onPress !== undefined && trailing === undefined
@@ -145,7 +149,12 @@ export const ListItem = React.memo<ListItemProps>(({
       {/* Trailing */}
       {trailing && <View style={styles.trailing}>{trailing}</View>}
       {shouldShowChevron && (
-        <View style={styles.trailing} testID={testID ? `${testID}-action` : undefined}>
+        <View
+          style={styles.trailing}
+          testID={testID ? `${testID}-action` : undefined}
+          accessibilityElementsHidden
+          importantForAccessibility="no-hide-descendants"
+        >
           <Ionicons
             name="chevron-forward"
             size={18}
@@ -167,7 +176,7 @@ export const ListItem = React.memo<ListItemProps>(({
           onPressOut={handlePressOut}
           disabled={disabled}
           accessibilityRole="button"
-          accessibilityLabel={title}
+          accessibilityLabel={rowA11yLabel}
           accessibilityState={{ disabled }}
         >
           {content}

@@ -124,6 +124,26 @@ export const Chip = React.memo<ChipProps>(({
     scale.value = withSpring(1, { damping: 15, stiffness: 300 })
   }, [])
 
+  // Chips are 28–34pt tall, well under the 44pt minimum touch target. hitSlop
+  // extends the *touchable* area without altering the rendered size. Horizontal
+  // slop is kept small so adjacent chips in a ChipGroup can't steal each
+  // other's taps.
+  const chipHitSlop = {
+    top: Math.max(0, Math.ceil((44 - dims.height) / 2)),
+    bottom: Math.max(0, Math.ceil((44 - dims.height) / 2)),
+    left: 4,
+    right: 4,
+  }
+
+  // Close icon is 14–16pt; slop reaches ~44pt while biasing away from the label
+  // so the main press target isn't swallowed.
+  const closeHitSlop = {
+    top: Math.max(0, Math.ceil((44 - dims.closeSize) / 2)),
+    bottom: Math.max(0, Math.ceil((44 - dims.closeSize) / 2)),
+    left: 10,
+    right: Math.max(0, 44 - dims.closeSize - 10),
+  }
+
   const handleClose = useCallback(() => {
     triggerHaptic(haptic)
     onClose?.()
@@ -156,6 +176,7 @@ export const Chip = React.memo<ChipProps>(({
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
         disabled={disabled}
+        hitSlop={chipHitSlop}
         accessibilityRole="button"
         accessibilityLabel={label}
         accessibilityState={{ selected, disabled }}
@@ -189,7 +210,9 @@ export const Chip = React.memo<ChipProps>(({
       {closable && (
         <Pressable
           onPress={handleClose}
-          hitSlop={8}
+          hitSlop={closeHitSlop}
+          disabled={disabled}
+          accessibilityRole="button"
           accessibilityLabel={`Remove ${label}`}
           testID={testID ? `${testID}-close` : undefined}
         >

@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import { zinc } from './presets/zinc';
 import { slate } from './presets/slate';
 import { rose } from './presets/rose';
@@ -58,6 +59,11 @@ export function normalizeOverrides(overrides, mode) {
 // ascenders/descenders never clip (fontSize > lineHeight clips, worst on Android).
 export function textLineHeight(typography, fontSize) {
     return Math.max(typography.lineHeight.normal, Math.round(fontSize * 1.3));
+}
+// Monospace face for code/tabular text. Brands can theme it via
+// typography.family.mono; otherwise each platform's default mono face is used.
+export function monoFontFamily(typography) {
+    return typography.family?.mono ?? (Platform.OS === 'ios' ? 'Menlo' : 'monospace');
 }
 // Reduced-motion convention: every timing-based animation reads a duration from
 // animation.speed, so zeroing the speeds makes the whole registry instant.

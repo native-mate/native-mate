@@ -1,6 +1,6 @@
 {
   "name": "swipeable-row",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Swipe-to-reveal actions row with spring physics and destructive full-swipe",
   "category": "input",
   "files": [

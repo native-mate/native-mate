@@ -8,7 +8,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle, monoFontFamily } from '@native-mate/core'
 import type { ColorPickerProps } from './color-picker.types'
 
 let Haptics: any = null
@@ -164,7 +164,7 @@ const useStyles = makeStyles((theme) => ({
     paddingVertical: Platform.OS === 'ios' ? 10 : 8,
     fontSize: theme.typography.size.md,
     color: theme.colors.foreground,
-    fontFamily: 'monospace',
+    fontFamily: monoFontFamily(theme.typography),
     backgroundColor: theme.colors.surface,
   },
   disabled: {

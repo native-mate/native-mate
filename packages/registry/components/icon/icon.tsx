@@ -23,13 +23,13 @@ function resolveSize(size: IconSize): number {
 
 function resolveColor(color: IconColor, colors: Record<string, string>): string {
   const TOKEN_MAP: Record<string, string> = {
-    foreground:  colors.foreground  ?? '#fafafa',
-    muted:       colors.muted       ?? '#71717a',
-    primary:     colors.primary     ?? '#6366f1',
-    destructive: colors.destructive ?? '#ef4444',
-    success:     colors.success     ?? '#22c55e',
-    warning:     colors.warning     ?? '#f59e0b',
-    border:      colors.border      ?? '#27272a',
+    foreground:  colors.foreground,
+    muted:       colors.muted,
+    primary:     colors.primary,
+    destructive: colors.destructive,
+    success:     colors.success,
+    warning:     colors.warning,
+    border:      colors.border,
   }
   return TOKEN_MAP[color] ?? color
 }

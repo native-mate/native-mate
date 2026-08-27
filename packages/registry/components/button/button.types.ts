@@ -1,4 +1,4 @@
-import type { PressableProps } from 'react-native'
+import type { PressableProps, StyleProp, ViewStyle } from 'react-native'
 
 export type ButtonVariant = 'default' | 'destructive' | 'outline' | 'ghost' | 'secondary' | 'link'
 export type ButtonSize = 'sm' | 'md' | 'lg'
@@ -18,6 +18,9 @@ export interface ButtonProps extends Omit<PressableProps, 'style'> {
   iconRight?: React.ReactNode
   children?: React.ReactNode
   accessibilityLabel?: string
+  /** Merged last onto the root Pressable — layout escape hatch. */
+  style?: StyleProp<ViewStyle>
+  testID?: string
 }
 
 export interface ButtonGroupProps {

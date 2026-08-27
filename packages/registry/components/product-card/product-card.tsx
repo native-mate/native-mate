@@ -9,7 +9,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles, shadow, fontStyle } from '@native-mate/core'
+import { useTheme, Text, makeStyles, shadow, fontStyle, readableOn } from '@native-mate/core'
 import type { ProductCardProps } from './product-card.types'
 
 let Haptics: any = null
@@ -235,7 +235,9 @@ export const ProductCard = React.memo<ProductCardProps>(({
             <Text
               variant="caption"
               style={{
-                color: badgeColor ? '#FFFFFF' : theme.colors.onPrimary,
+                // Default badge fill is theme primary (onPrimary pairs with it);
+                // a caller-supplied badgeColor is contrast-picked instead.
+                color: badgeColor != null ? readableOn(badgeColor) : theme.colors.onPrimary,
                 ...fontStyle(theme.typography, 'bold'),
                 fontSize: 11,
               }}
@@ -271,7 +273,12 @@ export const ProductCard = React.memo<ProductCardProps>(({
               justifyContent: 'center',
             }}
           >
-            <Text variant="label" style={{ color: '#FFFFFF', fontSize: 14 }}>
+            {/* Unavailable state over a fixed translucent black scrim laid on an
+                arbitrary product image. readableOn() cannot see through the
+                scrim to the image beneath, and the scrim is dark in both color
+                schemes, so the on-accent token that stays light in both —
+                onDestructive — is the right foreground here. */}
+            <Text variant="label" style={{ color: theme.colors.onDestructive, fontSize: 14 }}>
               Out of Stock
             </Text>
           </View>

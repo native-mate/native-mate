@@ -1,6 +1,6 @@
 // native-mate: empty-state@0.2.0 | hash:PLACEHOLDER
 import React from 'react'
-import { View, Pressable } from 'react-native'
+import { View } from 'react-native'
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -8,6 +8,7 @@ import Animated, {
   withDelay,
 } from 'react-native-reanimated'
 import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
+import { Button } from '../button/button'
 import type { EmptyStateProps } from './empty-state.types'
 
 // ── Shared entrance animation ─────────────────────────────────────────────────
@@ -30,6 +31,9 @@ function useEntranceAnimation() {
 
 // ── Action button ─────────────────────────────────────────────────────────────
 
+// Composes the registry Button so variants, haptics, loading, disabled and
+// accessibility stay in one place instead of being reimplemented here.
+
 const ActionButton: React.FC<{
   label: string
   onPress: () => void
@@ -37,50 +41,38 @@ const ActionButton: React.FC<{
   compact?: boolean
 }> = ({ label, onPress, variant = 'primary', compact }) => {
   const theme = useTheme()
-  const isPrimary = variant === 'primary'
   return (
-    <Pressable
+    <Button
+      variant={variant === 'primary' ? 'default' : 'outline'}
+      size={compact ? 'sm' : 'md'}
       onPress={onPress}
-      accessibilityRole="button"
       style={{
         alignSelf: compact ? 'flex-start' : 'center',
-        paddingVertical: compact ? theme.spacing.xs : theme.spacing.sm,
-        paddingHorizontal: compact ? theme.spacing.md : theme.spacing.xl,
-        borderRadius: theme.radius.md,
-        backgroundColor: isPrimary ? theme.colors.primary : 'transparent',
-        borderWidth: isPrimary ? 0 : 1,
-        borderColor: theme.colors.border,
         marginTop: theme.spacing.sm,
       }}
     >
-      <Text
-        style={{
-          fontSize: 13,
-          ...fontStyle(theme.typography, 'semibold'),
-          color: isPrimary ? theme.colors.onPrimary : theme.colors.foreground,
-        }}
-      >
-        {label}
-      </Text>
-    </Pressable>
+      {label}
+    </Button>
   )
 }
 
 // ── Secondary action (link style) ─────────────────────────────────────────────
 
-const SecondaryAction: React.FC<{ label: string; onPress: () => void }> = ({
+const SecondaryAction: React.FC<{ label: string; onPress: () => void; compact?: boolean }> = ({
   label,
   onPress,
-}) => {
-  const theme = useTheme()
-  return (
-    <Pressable onPress={onPress} accessibilityRole="button" style={{ marginTop: 4 }}>
-      <Text style={{ fontSize: 13, color: theme.colors.muted, textDecorationLine: 'underline' }}>
-        {label}
-      </Text>
-    </Pressable>
-  )
-}
+  compact,
+}) => (
+  <Button
+    variant="link"
+    size="sm"
+    haptic="none"
+    onPress={onPress}
+    style={{ alignSelf: compact ? 'flex-start' : 'center', marginTop: 4 }}
+  >
+    {label}
+  </Button>
+)
 
 // ── Default variant (centered column) ────────────────────────────────────────
 
@@ -235,7 +227,7 @@ const CompactEmptyState: React.FC<EmptyStateProps> = ({
             />
           )}
           {secondaryAction && (
-            <SecondaryAction label={secondaryAction.label} onPress={secondaryAction.onPress} />
+            <SecondaryAction label={secondaryAction.label} onPress={secondaryAction.onPress} compact />
           )}
         </View>
       </View>

@@ -1,6 +1,6 @@
 {
   "name": "avatar",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Circular avatar with image + initials fallback",
   "category": "display",
   "files": [

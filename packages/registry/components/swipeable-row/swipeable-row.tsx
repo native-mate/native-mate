@@ -10,7 +10,7 @@ import Animated, {
   interpolate,
   Extrapolation,
 } from 'react-native-reanimated'
-import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle, readableOn } from '@native-mate/core'
 import type { SwipeableRowProps, SwipeAction } from './swipeable-row.types'
 
 let Haptics: any = null
@@ -98,7 +98,9 @@ const ActionButton: React.FC<ActionButtonProps> = ({
           style={{
             ...fontStyle(theme.typography, 'semibold'),
             fontSize: 12,
-            color: action.textColor ?? '#fff',
+            // The action fill is caller-supplied, so the label is contrast-picked
+            // against it unless the caller named its own text color.
+            color: action.textColor ?? readableOn(action.color),
           }}
         >
           {action.label}

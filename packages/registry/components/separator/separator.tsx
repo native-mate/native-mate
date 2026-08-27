@@ -40,8 +40,8 @@ export const Separator: React.FC<SeparatorProps> = ({
   style,
 }) => {
   const theme = useTheme()
-  const lineColor = color ?? (theme.colors as Record<string, string>).border ?? '#27272a'
-  const resolvedLabelColor = labelColor ?? (theme.colors as Record<string, string>).muted ?? '#71717a'
+  const lineColor = color ?? theme.colors.border
+  const resolvedLabelColor = labelColor ?? theme.colors.muted
 
   const a11yProps = decorative
     ? { accessibilityElementsHidden: true, importantForAccessibility: 'no-hide-descendants' as const }

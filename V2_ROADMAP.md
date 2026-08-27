@@ -53,6 +53,11 @@ High-impact components every mobile app needs.
 - [ ] Opacity tokens (disabled, hover, backdrop)
 - [x] Reduced-motion support — `useMotion()` + ThemeProvider collapses `animation.speed` (core 0.4.0)
 - [x] `withAlpha()` color helper replacing hex-string concatenation (core 0.4.0)
+- [x] `readableOn()` / `relativeLuminance()` — WCAG contrast pick for caller-supplied fills, the case no `on*` token can cover (core 0.4.0)
+- [x] `typography.family.mono` + `monoFontFamily()` for code/tabular text (core 0.4.0)
+- [x] CI gates: `audit-hex` (no hardcoded semantic colors — every literal is a white-label bug),
+      `audit-fonts` (no `fontFamily` literals or `undefined`), `audit-availability`
+      (the registry index can never advertise what the CLI cannot install)
 - [ ] **v0.5 breaking wave** — see `docs/superpowers/specs/2026-08-27-v05-contracts-i18n-a11y-design.md`:
       standardized `error`/`haptic`/`icon` prop contracts + codemod, i18n `strings` slot,
       RTL logical-property sweep + `audit-rtl` CI gate, date-picker locale support,

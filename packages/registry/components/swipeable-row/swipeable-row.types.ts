@@ -6,7 +6,7 @@ export interface SwipeAction {
   icon?: React.ReactNode
   color: string
   onPress: () => void
-  /** Text color for the action label. Default: '#fff' */
+  /** Text color for the action label. Default: contrast-picked against `color`. */
   textColor?: string
 }
 

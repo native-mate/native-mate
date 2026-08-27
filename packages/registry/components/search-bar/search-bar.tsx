@@ -90,6 +90,9 @@ export const SearchBar = React.forwardRef<SearchBarHandle, SearchBarProps>(({
   showCancel,
   suggestions = [],
   onSuggestionPress,
+  onSubmitEditing,
+  debounceMs = 300,
+  onDebouncedChangeText,
   loading = false,
   autoFocus = false,
   disabled = false,
@@ -125,6 +128,34 @@ export const SearchBar = React.forwardRef<SearchBarHandle, SearchBarProps>(({
     opacity: cancelOpacity.value,
   }))
 
+  // ── Debounced change ───────────────────────────────────────────────────────
+  // The latest callback is held in a ref so the timer never fires a stale one,
+  // and the pending timer is always cleared on unmount.
+  const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const debouncedCbRef = useRef(onDebouncedChangeText)
+  useEffect(() => { debouncedCbRef.current = onDebouncedChangeText }, [onDebouncedChangeText])
+  useEffect(() => () => {
+    if (debounceTimer.current) clearTimeout(debounceTimer.current)
+  }, [])
+
+  const handleChangeText = useCallback((text: string) => {
+    onChangeText(text)
+    if (!debouncedCbRef.current) return
+    if (debounceTimer.current) clearTimeout(debounceTimer.current)
+    debounceTimer.current = setTimeout(() => {
+      debounceTimer.current = null
+      debouncedCbRef.current?.(text)
+    }, debounceMs)
+  }, [onChangeText, debounceMs])
+
+  const handleSubmitEditing = useCallback(() => {
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current)
+      debounceTimer.current = null
+    }
+    onSubmitEditing?.(value)
+  }, [onSubmitEditing, value])
+
   const handleFocus = useCallback(() => {
     setFocused(true)
     onFocus?.()
@@ -137,17 +168,17 @@ export const SearchBar = React.forwardRef<SearchBarHandle, SearchBarProps>(({
 
   const handleCancel = useCallback(() => {
     triggerHaptic(haptic)
-    onChangeText('')
+    handleChangeText('')
     inputRef.current?.blur()
     setFocused(false)
     onCancel?.()
-  }, [haptic, onChangeText, onCancel])
+  }, [haptic, handleChangeText, onCancel])
 
   const handleClear = useCallback(() => {
     triggerHaptic(haptic)
-    onChangeText('')
+    handleChangeText('')
     inputRef.current?.focus()
-  }, [haptic, onChangeText])
+  }, [haptic, handleChangeText])
 
   const handleSuggestionPress = useCallback((suggestion: SearchBarSuggestion) => {
     triggerHaptic(haptic)
@@ -178,10 +209,19 @@ export const SearchBar = React.forwardRef<SearchBarHandle, SearchBarProps>(({
             testID={testID ? `${testID}-input` : undefined}
             style={[
               styles.input,
-              Platform.OS === 'web' && { outlineStyle: 'none' } as any,
+              // A visible keyboard focus ring on web. The previous
+              // `outlineStyle: 'none'` removed it entirely, leaving keyboard
+              // users with no indication of where focus was.
+              Platform.OS === 'web' && focused && ({
+                outlineStyle: 'solid',
+                outlineWidth: 2,
+                outlineColor: theme.colors.primary,
+                outlineOffset: 2,
+              } as any),
             ]}
             value={value}
-            onChangeText={onChangeText}
+            onChangeText={handleChangeText}
+            onSubmitEditing={handleSubmitEditing}
             placeholder={placeholder}
             placeholderTextColor={theme.colors.muted}
             onFocus={handleFocus}
@@ -195,7 +235,13 @@ export const SearchBar = React.forwardRef<SearchBarHandle, SearchBarProps>(({
             accessibilityLabel={placeholder}
           />
           {value.length > 0 && (
-            <Pressable onPress={handleClear} hitSlop={6} accessibilityLabel="Clear search" testID={testID ? `${testID}-clear` : undefined}>
+            <Pressable
+              onPress={handleClear}
+              hitSlop={12}
+              accessibilityRole="button"
+              accessibilityLabel="Clear search"
+              testID={testID ? `${testID}-clear` : undefined}
+            >
               <View style={styles.clearBtn}>
                 <Ionicons name="close" size={12} color={theme.colors.muted} />
               </View>
@@ -204,8 +250,13 @@ export const SearchBar = React.forwardRef<SearchBarHandle, SearchBarProps>(({
         </View>
 
         {/* Cancel button */}
-        <Animated.View style={[{ overflow: 'hidden' }, cancelAnimStyle]}>
-          <Pressable onPress={handleCancel} accessibilityRole="button" accessibilityLabel="Cancel search">
+        <Animated.View
+          style={[{ overflow: 'hidden' }, cancelAnimStyle]}
+          accessibilityElementsHidden={!showCancelButton}
+          importantForAccessibility={showCancelButton ? 'auto' : 'no-hide-descendants'}
+          pointerEvents={showCancelButton ? 'auto' : 'none'}
+        >
+          <Pressable onPress={handleCancel} hitSlop={8} accessibilityRole="button" accessibilityLabel="Cancel search">
             <Text style={{ color: theme.colors.primary, fontSize: 15, ...fontStyle(theme.typography, 'medium') }}>
               Cancel
             </Text>

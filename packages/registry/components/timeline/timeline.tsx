@@ -10,7 +10,6 @@ import Animated, {
   withRepeat,
   withSequence,
   Easing,
-  FadeInDown,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
 import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
@@ -26,6 +25,12 @@ const sizeMap = {
 }
 
 const SPRING = { damping: 16, stiffness: 180, mass: 0.6 }
+
+/**
+ * Ceiling on the accumulated entrance stagger. Without it a 100-item list at
+ * the default 100ms stagger would take 10 seconds before the last row appears.
+ */
+const MAX_STAGGER_TOTAL = 600
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -194,6 +199,7 @@ interface TimelineItemRowProps {
   upcomingColor: string
   onPress?: (key: string) => void
   haptic: boolean
+  formatTimestamp?: (d: Date) => string
   testID?: string
 }
 
@@ -210,6 +216,7 @@ const TimelineItemRow = React.memo<TimelineItemRowProps>(({
   upcomingColor,
   onPress,
   haptic: enableHaptic,
+  formatTimestamp,
   testID,
 }) => {
   const theme = useTheme()
@@ -222,18 +229,18 @@ const TimelineItemRow = React.memo<TimelineItemRowProps>(({
 
   useEffect(() => {
     if (!animated) return
-    // Deferring the trigger by a tick (rather than calling withDelay/withTiming
-    // synchronously inside the mount effect) mirrors the working pattern in
-    // bottom-sheet-list.tsx — Reanimated's initial style commit on web isn't
-    // reliably picked up when the animation is kicked off in the same tick
-    // the shared values are created, which otherwise leaves items stuck at
-    // opacity: 0.
-    const t = setTimeout(() => {
-      const delay = index * staggerDelay
+    // Deferring the trigger to the next frame (rather than calling
+    // withDelay/withTiming synchronously inside the mount effect) mirrors the
+    // working pattern in bottom-sheet-list.tsx — Reanimated's initial style
+    // commit on web isn't reliably picked up when the animation is kicked off
+    // in the same tick the shared values are created, which otherwise leaves
+    // items stuck at opacity: 0.
+    const raf = requestAnimationFrame(() => {
+      const delay = Math.min(index * staggerDelay, MAX_STAGGER_TOTAL)
       opacity.value = withDelay(delay, withTiming(1, { duration: 400, easing: Easing.out(Easing.cubic) }))
       translateY.value = withDelay(delay, withSpring(0, SPRING))
-    }, 10)
-    return () => clearTimeout(t)
+    })
+    return () => cancelAnimationFrame(raf)
   }, [animated, index, staggerDelay])
 
   const animStyle = useAnimatedStyle(() => ({
@@ -256,7 +263,7 @@ const TimelineItemRow = React.memo<TimelineItemRowProps>(({
   const formattedTime = item.timestamp
     ? typeof item.timestamp === 'string'
       ? item.timestamp
-      : item.timestamp.toLocaleString()
+      : (formatTimestamp ?? ((d: Date) => d.toLocaleString()))(item.timestamp)
     : undefined
 
   return (
@@ -356,6 +363,7 @@ export const Timeline = React.memo<TimelineProps>(({
   activeColor,
   errorColor,
   haptic = true,
+  formatTimestamp,
   onItemPress,
   style,
   testID,
@@ -389,6 +397,7 @@ export const Timeline = React.memo<TimelineProps>(({
           upcomingColor={uColor}
           onPress={onItemPress}
           haptic={haptic}
+          formatTimestamp={formatTimestamp}
           testID={testID ? `${testID}-item-${i}` : undefined}
         />
       ))}

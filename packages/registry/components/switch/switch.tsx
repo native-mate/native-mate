@@ -7,7 +7,7 @@ import Animated, {
   withSpring,
   interpolateColor,
 } from 'react-native-reanimated'
-import { useTheme, Text, makeStyles } from '@native-mate/core'
+import { useTheme, Text, makeStyles, readableOn } from '@native-mate/core'
 import type { SwitchProps } from './switch.types'
 
 let Haptics: any = null
@@ -42,7 +42,11 @@ export const Switch: React.FC<SwitchProps> = ({
   const theme = useTheme()
   const styles = useStyles()
   const cfg = sizeMap[size]
-  const activeColor = color ?? theme.colors.success ?? '#22c55e'
+  const activeColor = color ?? theme.colors.success
+  // The thumb rides the filled track, whose color is either a caller-supplied
+  // accent or the success token — neither has a paired `on*` token, so the
+  // legible foreground is computed from the fill itself.
+  const thumbColor = readableOn(activeColor)
 
   const progress = useSharedValue(value ? 1 : 0)
 
@@ -87,7 +91,7 @@ export const Switch: React.FC<SwitchProps> = ({
           width: cfg.thumb,
           height: cfg.thumb,
           borderRadius: cfg.thumb / 2,
-          backgroundColor: '#fff',
+          backgroundColor: thumbColor,
           alignItems: 'center',
           justifyContent: 'center',
           marginLeft: value ? cfg.trackW - cfg.thumb - cfg.padding * 2 : 0,
@@ -101,7 +105,8 @@ export const Switch: React.FC<SwitchProps> = ({
               width: cfg.thumb,
               height: cfg.thumb,
               borderRadius: cfg.thumb / 2,
-              backgroundColor: '#fff',
+              // Thumb sits on the filled track — contrast-picked against it.
+              backgroundColor: thumbColor,
               borderWidth: 0.5,
               borderColor: 'rgba(0,0,0,0.08)',
               shadowColor: '#000',

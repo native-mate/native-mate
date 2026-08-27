@@ -8,6 +8,8 @@ export interface SkeletonProps {
   borderRadius?: number
   variant?: SkeletonVariant
   style?: ViewStyle
+  /** CSP nonce applied to the injected <style> tag (web only) */
+  nonce?: string
 }
 
 export interface SkeletonTextProps {
@@ -15,6 +17,8 @@ export interface SkeletonTextProps {
   lastLineWidth?: string | number
   variant?: SkeletonVariant
   style?: ViewStyle
+  /** CSP nonce applied to the injected <style> tag (web only) */
+  nonce?: string
 }
 
 export interface SkeletonAvatarProps {

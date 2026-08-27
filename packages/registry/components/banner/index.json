@@ -1,6 +1,6 @@
 {
   "name": "banner",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "description": "App banner with slide in/out animation, four variants (info/warning/success/error), action button, and auto-dismiss",
   "category": "feedback",
   "files": [

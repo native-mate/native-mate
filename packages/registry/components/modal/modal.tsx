@@ -64,9 +64,9 @@ function ActionButton({ action, theme, styles }: { action: ModalAction; theme: a
       ? theme.colors.destructive
       : theme.colors.surface
   const color = isPrimary
-    ? (theme.colors.onPrimary ?? '#fff')
+    ? theme.colors.onPrimary
     : isDestructive
-      ? (theme.colors.onDestructive ?? '#fff')
+      ? theme.colors.onDestructive
       : theme.colors.foreground
 
   return (

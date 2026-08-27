@@ -1,3 +1,4 @@
+import { Platform } from 'react-native'
 import type { TokenSet, ResolvedTheme, NativeMateTokenOverrides, ThemeOverrides, FontWeightKey } from './types'
 import { zinc } from './presets/zinc'
 import { slate } from './presets/slate'
@@ -83,6 +84,12 @@ export function textLineHeight(
   fontSize: number,
 ): number {
   return Math.max(typography.lineHeight.normal, Math.round(fontSize * 1.3))
+}
+
+// Monospace face for code/tabular text. Brands can theme it via
+// typography.family.mono; otherwise each platform's default mono face is used.
+export function monoFontFamily(typography: ResolvedTheme['typography']): string {
+  return typography.family?.mono ?? (Platform.OS === 'ios' ? 'Menlo' : 'monospace')
 }
 
 // Reduced-motion convention: every timing-based animation reads a duration from

@@ -4,7 +4,7 @@ export { useTheme } from './theme/useTheme'
 export { makeStyles } from './theme/makeStyles'
 
 // Tokens
-export { presets, resolveTokens, normalizeOverrides, fontStyle, textLineHeight, collapseMotion, zinc, slate, rose, midnight } from './tokens'
+export { presets, resolveTokens, normalizeOverrides, fontStyle, textLineHeight, collapseMotion, monoFontFamily, zinc, slate, rose, midnight } from './tokens'
 export type {
   TokenSet, ResolvedTheme, ThemePreset,
   NativeMateConfig, NativeMateTokenOverrides, ThemeOverrides,
@@ -28,5 +28,6 @@ export { useBreakpoint } from './utils/useBreakpoint'
 export { useReducedMotion } from './utils/useReducedMotion'
 export { useMotion } from './utils/useMotion'
 export type { Motion, SpeedKey } from './utils/useMotion'
-export { withAlpha } from './utils/withAlpha'
+export { withAlpha, parseColor } from './utils/withAlpha'
+export { readableOn, relativeLuminance } from './utils/readableOn'
 export type { Breakpoint } from './utils/useBreakpoint'

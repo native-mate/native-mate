@@ -37,12 +37,12 @@ function resolveSpeed(speed: SpinnerSpeed): number {
 
 function resolveColor(color: SpinnerColor, colors: Record<string, string>): string {
   const TOKEN_MAP: Record<string, string> = {
-    primary:     colors.primary     ?? '#6366f1',
-    foreground:  colors.foreground  ?? '#fafafa',
-    muted:       colors.muted       ?? '#52525b',
-    destructive: colors.destructive ?? '#ef4444',
-    success:     colors.success     ?? '#22c55e',
-    warning:     colors.warning     ?? '#f59e0b',
+    primary:     colors.primary,
+    foreground:  colors.foreground,
+    muted:       colors.muted,
+    destructive: colors.destructive,
+    success:     colors.success,
+    warning:     colors.warning,
   }
   return TOKEN_MAP[color] ?? color
 }

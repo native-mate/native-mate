@@ -1,6 +1,6 @@
 {
   "name": "segmented-control",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "iOS-style segmented toggle with animated sliding pill indicator",
   "category": "input",
   "files": [
