@@ -1,6 +1,9 @@
 # v0.5 — Prop contracts, i18n/RTL, and accessibility
 
-Status: **draft, awaiting review**
+Status: **implemented** — core 0.5.0 + CLI 1.1.0 + 27 components shipped in
+`0a250b5` and `e4f4d22`. Sections 1–5 are done; §6's remaining a11y items and
+§7's perf items are tracked in the roadmap. See the sequencing section for what
+is deliberately still open.
 Scope: breaking changes to `@native-mate/core` types and every registry component.
 Prerequisite: v0.4 (shipped) — `useMotion`, `withAlpha`, reduced-motion collapse,
 `makeStyles` per-theme cache, CJS/ESM packaging, forwardRef/testID/memo wave.

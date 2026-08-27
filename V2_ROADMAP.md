@@ -58,10 +58,20 @@ High-impact components every mobile app needs.
 - [x] CI gates: `audit-hex` (no hardcoded semantic colors — every literal is a white-label bug),
       `audit-fonts` (no `fontFamily` literals or `undefined`), `audit-availability`
       (the registry index can never advertise what the CLI cannot install)
-- [ ] **v0.5 breaking wave** — see `docs/superpowers/specs/2026-08-27-v05-contracts-i18n-a11y-design.md`:
-      standardized `error`/`haptic`/`icon` prop contracts + codemod, i18n `strings` slot,
-      RTL logical-property sweep + `audit-rtl` CI gate, date-picker locale support,
-      RNGH gestures for sheet/toast, full a11y wave (44pt targets, live regions, modal focus)
+- [x] **v0.5 wave shipped** — see `docs/superpowers/specs/2026-08-27-v05-contracts-i18n-a11y-design.md`
+  - [x] `error`/`haptic`/`icon` prop contracts + `npx @native-mate/cli migrate v0.5` codemod
+  - [x] i18n `strings` slot (`useStrings`, ThemeProvider `strings`), English-only defaults
+  - [x] RTL logical-property sweep + directional icons + `audit-rtl` CI gate
+  - [x] date-picker composes the real Sheet; `firstDayOfWeek`/`locale`/`hour12`
+  - [x] sheet drag + real `snapPoints` via optional RNGH, graceful without it
+  - [x] app-wide haptics kill switch (`<ThemeProvider haptics={false}>`)
+  - [ ] Remaining a11y: modal focus restore, `otp-input` VoiceOver polish
+  - [ ] Remaining perf: worklets capturing whole `theme`, segmented-control
+        `translateX`/`scaleX` indicator, stepper percentage-width connector
+  - [ ] RTL: 16 files still on physical properties (listed in `audit-rtl`'s
+        `PENDING_OTHER_AGENTS`); color-picker's flipped gradient track needs
+        `direction: 'ltr'` pinned
+  - [ ] `toast` swipe still on PanResponder — move to RNGH so action buttons win their taps
 
 ---
 
