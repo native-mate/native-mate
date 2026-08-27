@@ -66,38 +66,44 @@ jobs:
       - name: Publish @native-mate/core
         working-directory: packages/core
         run: |
-          PKG="$(npm pkg get name | tr -d '"')"; VER="$(npm pkg get version | tr -d '"')"
-          ENC="$(printf '%s' "$PKG" | sed 's|/|%2F|')"
-          if curl -sf "https://registry.npmjs.org/$ENC/$VER" >/dev/null; then
-            echo "$PKG@$VER already on npm — skipping"
-          else
-            npm publish --access public --provenance
+          set +e
+          OUT="$(npm publish --access public --provenance 2>&1)"
+          CODE=$?
+          echo "$OUT"
+          if [ $CODE -ne 0 ] && echo "$OUT" | grep -q "previously published versions"; then
+            echo "version already on npm — treating as success"
+            exit 0
           fi
+          exit $CODE
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish @native-mate/cli
         working-directory: packages/cli
         run: |
-          PKG="$(npm pkg get name | tr -d '"')"; VER="$(npm pkg get version | tr -d '"')"
-          ENC="$(printf '%s' "$PKG" | sed 's|/|%2F|')"
-          if curl -sf "https://registry.npmjs.org/$ENC/$VER" >/dev/null; then
-            echo "$PKG@$VER already on npm — skipping"
-          else
-            npm publish --access public --provenance
+          set +e
+          OUT="$(npm publish --access public --provenance 2>&1)"
+          CODE=$?
+          echo "$OUT"
+          if [ $CODE -ne 0 ] && echo "$OUT" | grep -q "previously published versions"; then
+            echo "version already on npm — treating as success"
+            exit 0
           fi
+          exit $CODE
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish @native-mate/mcp
         working-directory: packages/mcp
         run: |
-          PKG="$(npm pkg get name | tr -d '"')"; VER="$(npm pkg get version | tr -d '"')"
-          ENC="$(printf '%s' "$PKG" | sed 's|/|%2F|')"
-          if curl -sf "https://registry.npmjs.org/$ENC/$VER" >/dev/null; then
-            echo "$PKG@$VER already on npm — skipping"
-          else
-            npm publish --access public --provenance
+          set +e
+          OUT="$(npm publish --access public --provenance 2>&1)"
+          CODE=$?
+          echo "$OUT"
+          if [ $CODE -ne 0 ] && echo "$OUT" | grep -q "previously published versions"; then
+            echo "version already on npm — treating as success"
+            exit 0
           fi
+          exit $CODE
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
