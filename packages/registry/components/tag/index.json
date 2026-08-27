@@ -1,6 +1,6 @@
 {
   "name": "tag",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Compact dismissible label chip with spring animation on remove",
   "category": "display",
   "files": [

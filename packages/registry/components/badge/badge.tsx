@@ -151,7 +151,7 @@ export const Badge = React.memo<BadgeProps>(({
           hitSlop={16}
           accessibilityRole="button"
           accessibilityLabel={spokenContent ? `${strings.dismiss} ${spokenContent}` : strings.dismiss}
-          style={{ marginLeft: -2 }}>
+          style={{ marginStart: -2 }}>
           <Ionicons name="close" size={sz.fontSize + 2} color={colors.text} style={{ opacity: 0.6 }} />
         </Pressable>
       )}

@@ -2,7 +2,7 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react'
 import { View, Pressable } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, useStrings, Text, makeStyles, fontStyle, withAlpha } from '@native-mate/core'
+import { useTheme, useStrings, Text, makeStyles, fontStyle, withAlpha, directionalIcon } from '@native-mate/core'
 import { Sheet } from '../sheet/sheet'
 import type { DatePickerProps, Weekday } from './date-picker.types'
 
@@ -94,7 +94,7 @@ const useStyles = makeStyles((theme) => ({
   },
   periodColumn: {
     gap: 6,
-    paddingLeft: 4,
+    paddingStart: 4,
   },
   periodButton: {
     minWidth: 44,
@@ -626,7 +626,9 @@ export const DatePicker: React.FC<DatePickerProps> = ({
                   accessibilityRole="button"
                 >
                   <Ionicons
-                    name="chevron-back"
+                    // "Previous" points backwards along the reading direction,
+                    // so the glyph mirrors with the locale.
+                    name={directionalIcon('chevron-back', 'chevron-forward')}
                     size={18}
                     color={theme.colors.foreground}
                   />
@@ -641,7 +643,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
                   accessibilityRole="button"
                 >
                   <Ionicons
-                    name="chevron-forward"
+                    name={directionalIcon('chevron-forward', 'chevron-back')}
                     size={18}
                     color={theme.colors.foreground}
                   />

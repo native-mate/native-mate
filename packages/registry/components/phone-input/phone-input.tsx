@@ -82,8 +82,8 @@ const useStyles = makeStyles((theme) => ({
     paddingHorizontal: 12,
     paddingVertical: 10,
     gap: 6,
-    borderRightWidth: 1,
-    borderRightColor: theme.colors.border,
+    borderEndWidth: 1,
+    borderEndColor: theme.colors.border,
   },
   textInput: {
     flex: 1,

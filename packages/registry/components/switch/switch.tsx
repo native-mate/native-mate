@@ -7,7 +7,7 @@ import Animated, {
   withSpring,
   interpolateColor,
 } from 'react-native-reanimated'
-import { useTheme, Text, makeStyles, readableOn, useHaptics } from '@native-mate/core'
+import { useTheme, Text, makeStyles, readableOn, useHaptics, useDirection } from '@native-mate/core'
 import type { SwitchProps } from './switch.types'
 
 const sizeMap = {
@@ -39,6 +39,9 @@ export const Switch: React.FC<SwitchProps> = ({
   const theme = useTheme()
   const styles = useStyles()
   const haptics = useHaptics()
+  // `sign` is 1 in LTR, -1 in RTL. Plain number, so the worklet below can
+  // safely close over it.
+  const { sign } = useDirection()
   const cfg = sizeMap[size]
   const activeColor = color ?? theme.colors.success
   // The thumb rides the filled track, whose color is either a caller-supplied
@@ -52,8 +55,11 @@ export const Switch: React.FC<SwitchProps> = ({
     progress.value = withSpring(value ? 1 : 0, { mass: 0.4, damping: 14, stiffness: 200 })
   }, [value])
 
+  // `translateX` is a physical axis that RN never mirrors, so the thumb's travel
+  // is signed by hand — off sits at the start edge and on at the end edge in
+  // both directions.
   const thumbStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: progress.value * (cfg.trackW - cfg.thumb - cfg.padding * 2) }],
+    transform: [{ translateX: sign * progress.value * (cfg.trackW - cfg.thumb - cfg.padding * 2) }],
   }))
 
   const trackStyle = useAnimatedStyle(() => ({
@@ -92,7 +98,7 @@ export const Switch: React.FC<SwitchProps> = ({
           backgroundColor: thumbColor,
           alignItems: 'center',
           justifyContent: 'center',
-          marginLeft: value ? cfg.trackW - cfg.thumb - cfg.padding * 2 : 0,
+          marginStart: value ? cfg.trackW - cfg.thumb - cfg.padding * 2 : 0,
         }}>
           <ActivityIndicator size={cfg.thumb * 0.55} color={activeColor} />
         </View>

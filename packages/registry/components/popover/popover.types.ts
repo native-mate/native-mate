@@ -21,4 +21,12 @@ export interface PopoverProps {
   /** Max height of the popover content area */
   maxHeight?: number
   style?: StyleProp<ViewStyle>
+  /**
+   * Where screen-reader focus goes when the popover closes. Defaults to the
+   * popover's own trigger, which it already owns — pass a ref only when the
+   * control the user actually pressed lives somewhere else. Native-only and
+   * fully guarded: web, a missing ref, or an unavailable
+   * `AccessibilityInfo.setAccessibilityFocus` is a silent no-op.
+   */
+  returnFocusRef?: React.RefObject<any> | null
 }

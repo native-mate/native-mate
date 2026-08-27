@@ -1,6 +1,9 @@
 // native-mate: sheet@0.2.0 | hash:PLACEHOLDER
 import React, { useEffect } from 'react'
-import { Modal, View, ScrollView, Pressable, StyleSheet, Keyboard, Platform } from 'react-native'
+import {
+  Modal, View, ScrollView, Pressable, StyleSheet, Keyboard, Platform,
+  AccessibilityInfo, findNodeHandle,
+} from 'react-native'
 import Animated, {
   useSharedValue, useAnimatedStyle, withTiming, withSpring, runOnJS, Easing,
 } from 'react-native-reanimated'
@@ -13,6 +16,23 @@ import type { SheetProps } from './sheet.types'
 let RNGH: any = null
 try { RNGH = require('react-native-gesture-handler') } catch {}
 const HAS_RNGH = !!(RNGH && RNGH.Gesture && RNGH.GestureDetector)
+
+// ── Focus restore ────────────────────────────────────────────────────────────
+// Opening an RN Modal moves the screen reader into it; closing one drops the
+// cursor wherever the platform decides — usually the top of the screen, not the
+// control the user pressed. `returnFocusRef` points at that control so focus
+// lands back where it started. `setAccessibilityFocus` is native-only and takes
+// a react tag, so every step is guarded: on web, or if the API is ever missing,
+// this is a no-op rather than a crash.
+function restoreAccessibilityFocus(ref?: React.RefObject<any> | null) {
+  const node = ref?.current
+  if (!node || Platform.OS === 'web') return
+  if (typeof AccessibilityInfo?.setAccessibilityFocus !== 'function') return
+  try {
+    const tag = typeof node === 'number' ? node : findNodeHandle(node)
+    if (tag != null) AccessibilityInfo.setAccessibilityFocus(tag)
+  } catch {}
+}
 
 // Home-indicator inset. `react-native-safe-area-context` is not a registry-wide
 // dependency, so we ship a sane constant that consumers can override.
@@ -35,13 +55,13 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: 'rgba(0,0,0,0.5)',
   },
   sheet: {
-    position: 'absolute', bottom: 0, left: 0, right: 0,
+    position: 'absolute', bottom: 0, start: 0, end: 0,
     backgroundColor: theme.colors.surfaceRaised ?? theme.colors.surface,
     borderTopLeftRadius: theme.radius.xl,
     borderTopRightRadius: theme.radius.xl,
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderLeftWidth: StyleSheet.hairlineWidth,
-    borderRightWidth: StyleSheet.hairlineWidth,
+    borderStartWidth: StyleSheet.hairlineWidth,
+    borderEndWidth: StyleSheet.hairlineWidth,
     borderColor: withAlpha(theme.colors.border, 0.31),
     overflow: 'hidden',
   },
@@ -73,6 +93,7 @@ export const Sheet: React.FC<SheetProps> = ({
   onDismiss,
   bottomInset,
   snapPoints,
+  returnFocusRef,
 }) => {
   const theme = useTheme()
   const motion = useMotion()
@@ -109,11 +130,14 @@ export const Sheet: React.FC<SheetProps> = ({
 
   // Latest-ref: the mount/visibility effect is keyed on `visible` only, so it
   // must never read props straight from the render closure or they go stale.
-  const latest = React.useRef({ animation, maxHeight, openTranslate, onClose, onDismiss, motion })
-  latest.current = { animation, maxHeight, openTranslate, onClose, onDismiss, motion }
+  const latest = React.useRef({ animation, maxHeight, openTranslate, onClose, onDismiss, motion, returnFocusRef })
+  latest.current = { animation, maxHeight, openTranslate, onClose, onDismiss, motion, returnFocusRef }
 
   // Plain JS callback for runOnJS — reads the latest onDismiss, never a stale one.
+  // The screen reader is sent back to the trigger first, so the announcement of
+  // the restored element is not interrupted by the caller's onDismiss work.
   const notifyDismissed = () => {
+    restoreAccessibilityFocus(latest.current.returnFocusRef)
     latest.current.onDismiss?.()
   }
 

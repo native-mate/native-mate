@@ -13,6 +13,11 @@ import Animated, {
 import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { ProgressProps } from './progress.types'
 
+// Hoisted so the fill worklet closes over primitives instead of copying the
+// `Platform` module and re-building an easing function on every evaluation.
+const IS_WEB = Platform.OS === 'web'
+const FILL_EASING = Easing.out(Easing.ease)
+
 const linearHeights = { sm: 4, md: 8, lg: 12 }
 const circularSizes = { sm: 36, md: 52, lg: 68 }
 const circularStroke = { sm: 4, md: 5, lg: 6 }
@@ -169,6 +174,18 @@ export const Progress: React.FC<ProgressProps> = ({
     }
   }, [indeterminate])
 
+  // Declared before the circular early-return: a hook may never sit behind a
+  // conditional, or React's hook order breaks when `variant` changes.
+  const fillStyle = useAnimatedStyle(() => ({
+    // withTiming with percentage strings doesn't interpolate correctly in React Native Web
+    width: (animated && !indeterminate && !IS_WEB)
+      ? withTiming(`${clampedValue}%` as any, { duration: 500, easing: FILL_EASING })
+      : (indeterminate ? '35%' : `${clampedValue}%` as any),
+    // Both branches return the same keys — a neutral translateX rather than an
+    // empty array — so Reanimated never leaves a stale transform applied.
+    transform: [{ translateX: indeterminate ? shimmerX.value * 300 : 0 }],
+  }))
+
   if (variant === 'circular') {
     return (
       <CircularRing
@@ -184,16 +201,6 @@ export const Progress: React.FC<ProgressProps> = ({
   }
 
   const h = linearHeights[size]
-
-  const fillStyle = useAnimatedStyle(() => ({
-    // withTiming with percentage strings doesn't interpolate correctly in React Native Web
-    width: (animated && !indeterminate && Platform.OS !== 'web')
-      ? withTiming(`${clampedValue}%` as any, { duration: 500, easing: Easing.out(Easing.ease) })
-      : (indeterminate ? '35%' : `${clampedValue}%` as any),
-    transform: indeterminate
-      ? [{ translateX: shimmerX.value * 300 as any }]
-      : [],
-  }))
 
   return (
     <View>

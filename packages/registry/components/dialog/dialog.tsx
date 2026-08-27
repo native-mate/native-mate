@@ -1,6 +1,8 @@
 // native-mate: dialog@0.1.0 | hash:PLACEHOLDER
 import React, { useState, useEffect, useCallback } from 'react'
-import { Modal, View, Pressable, StyleSheet, Platform } from 'react-native'
+import {
+  Modal, View, Pressable, StyleSheet, Platform, AccessibilityInfo, findNodeHandle,
+} from 'react-native'
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -14,6 +16,23 @@ import {
   useHaptics, useStrings, deprecatedProp,
 } from '@native-mate/core'
 import type { DialogProps } from './dialog.types'
+
+// ── Focus restore ────────────────────────────────────────────────────────────
+// Opening an RN Modal moves the screen reader into it; closing one drops the
+// cursor wherever the platform decides — usually the top of the screen, not the
+// control the user pressed. `returnFocusRef` points at that control so focus
+// lands back where it started. `setAccessibilityFocus` is native-only and takes
+// a react tag, so every step is guarded: on web, or if the API is ever missing,
+// this is a no-op rather than a crash.
+function restoreAccessibilityFocus(ref?: React.RefObject<any> | null) {
+  const node = ref?.current
+  if (!node || Platform.OS === 'web') return
+  if (typeof AccessibilityInfo?.setAccessibilityFocus !== 'function') return
+  try {
+    const tag = typeof node === 'number' ? node : findNodeHandle(node)
+    if (tag != null) AccessibilityInfo.setAccessibilityFocus(tag)
+  } catch {}
+}
 
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -78,6 +97,7 @@ export const Dialog: React.FC<DialogProps> = ({
   dismissible = true,
   haptic = 'medium',
   style,
+  returnFocusRef,
 }) => {
   const theme = useTheme()
   const motion = useMotion()
@@ -94,6 +114,16 @@ export const Dialog: React.FC<DialogProps> = ({
   const opacity = useSharedValue(0)
   const backdropOpacity = useSharedValue(0)
 
+  // The close animation runs on the UI thread; `runOnJS` needs one plain JS
+  // function, and a ref keeps `returnFocusRef` current without re-keying the
+  // effect below.
+  const returnFocusRefLatest = React.useRef(returnFocusRef)
+  returnFocusRefLatest.current = returnFocusRef
+  const finishClose = useCallback(() => {
+    setModalVisible(false)
+    restoreAccessibilityFocus(returnFocusRefLatest.current)
+  }, [])
+
   useEffect(() => {
     if (visible) {
       setModalVisible(true)
@@ -104,7 +134,7 @@ export const Dialog: React.FC<DialogProps> = ({
       scale.value = withSpring(0.9, { damping: 18, stiffness: 260 })
       backdropOpacity.value = withTiming(0, motion.timing('fast'))
       opacity.value = withTiming(0, motion.timing('fast'), () => {
-        runOnJS(setModalVisible)(false)
+        runOnJS(finishClose)()
       })
     }
   }, [visible, motion])
@@ -144,7 +174,13 @@ export const Dialog: React.FC<DialogProps> = ({
       statusBarTranslucent
       onRequestClose={dismissible ? onClose : undefined}
     >
-      <Animated.View style={[styles.backdrop, { backgroundColor: 'rgba(0,0,0,0.5)' }, backdropAnim]}>
+      {/* Everything the dialog owns lives under one view marked as modal, so
+          iOS VoiceOver stops at its boundary instead of wandering into the
+          screen behind it. */}
+      <Animated.View
+        style={[styles.backdrop, { backgroundColor: 'rgba(0,0,0,0.5)' }, backdropAnim]}
+        accessibilityViewIsModal={true}
+      >
         {dismissible && (
           <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
         )}

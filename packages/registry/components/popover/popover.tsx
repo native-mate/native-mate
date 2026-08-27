@@ -1,6 +1,9 @@
 // native-mate: popover@0.1.0 | hash:PLACEHOLDER
 import React, { useRef, useState, useCallback, useEffect } from 'react'
-import { View, Pressable, Modal, StyleSheet, ScrollView, Dimensions, Platform } from 'react-native'
+import {
+  View, Pressable, Modal, StyleSheet, ScrollView, Dimensions, Platform,
+  AccessibilityInfo, findNodeHandle,
+} from 'react-native'
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -16,6 +19,24 @@ const ARROW_SIZE = 8
 const SCREEN_PADDING = 12
 
 interface AnchorRect { x: number; y: number; width: number; height: number }
+
+// ── Focus restore ────────────────────────────────────────────────────────────
+// The bubble opens inside an RN Modal, which moves the screen reader into it;
+// closing one drops the cursor wherever the platform decides — usually the top
+// of the screen. Popover owns its trigger, so it restores focus to its own
+// anchor ref by default (`returnFocusRef` overrides it for callers whose real
+// trigger sits elsewhere). `setAccessibilityFocus` is native-only and takes a
+// react tag, so every step is guarded: on web, or if the API is ever missing,
+// this is a no-op rather than a crash.
+function restoreAccessibilityFocus(ref?: React.RefObject<any> | null) {
+  const node = ref?.current
+  if (!node || Platform.OS === 'web') return
+  if (typeof AccessibilityInfo?.setAccessibilityFocus !== 'function') return
+  try {
+    const tag = typeof node === 'number' ? node : findNodeHandle(node)
+    if (tag != null) AccessibilityInfo.setAccessibilityFocus(tag)
+  } catch {}
+}
 
 const useStyles = makeStyles((theme) => ({
   bubble: {
@@ -268,6 +289,7 @@ function PopoverNative({
   maxWidth = 280,
   maxHeight = 360,
   style,
+  returnFocusRef,
 }: PopoverProps) {
   const theme = useTheme()
   const styles = useStyles()
@@ -297,14 +319,21 @@ function PopoverNative({
     })
   }, [onOpenChange])
 
+  // Plain JS callback for runOnJS: unmount the Modal, then hand the screen
+  // reader back to the trigger that opened it.
+  const finishClose = useCallback((alsoCloseInternal: boolean) => {
+    setModalVisible(false)
+    if (alsoCloseInternal) setInternalOpen(false)
+    restoreAccessibilityFocus(returnFocusRef ?? anchorRef)
+  }, [returnFocusRef])
+
   const closePopover = useCallback(() => {
     opacity.value = withTiming(0, { duration: 120 })
     scale.value = withTiming(0.9, { duration: 120 }, () => {
-      runOnJS(setModalVisible)(false)
-      runOnJS(setInternalOpen)(false)
+      runOnJS(finishClose)(true)
     })
     onOpenChange?.(false)
-  }, [onOpenChange])
+  }, [onOpenChange, finishClose])
 
   const toggle = useCallback(() => {
     if (isOpen) closePopover()
@@ -323,10 +352,11 @@ function PopoverNative({
       })
     } else {
       opacity.value = withTiming(0, { duration: 120 }, () => {
-        runOnJS(setModalVisible)(false)
+        runOnJS(finishClose)(false)
       })
       scale.value = withTiming(0.9, { duration: 120 })
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [controlledVisible])
 
   const layout = getBubbleLayout(position, anchor, maxWidth)
@@ -351,35 +381,45 @@ function PopoverNative({
           statusBarTranslucent
           onRequestClose={closePopover}
         >
-          {closeOnOutsidePress && (
-            <Pressable style={StyleSheet.absoluteFill} onPress={closePopover} />
-          )}
-
-          <Animated.View
-            style={[
-              styles.bubble,
-              {
-                top: layout.top,
-                left: layout.left,
-                maxWidth,
-              },
-              animStyle,
-            ]}
+          {/* One view marked as modal wraps the catcher and the bubble, so iOS
+              VoiceOver stops at the popover boundary instead of wandering into
+              the screen behind it. `box-none` keeps the wrapper itself
+              untouchable so the catcher below still receives outside presses. */}
+          <View
+            style={StyleSheet.absoluteFill}
+            pointerEvents="box-none"
+            accessibilityViewIsModal={true}
           >
-            {/* Arrow */}
-            {showArrow && (
-              <View style={[styles.arrow, layout.arrowStyle as object]} />
+            {closeOnOutsidePress && (
+              <Pressable style={StyleSheet.absoluteFill} onPress={closePopover} />
             )}
 
-            <ScrollView
-              style={{ maxHeight }}
-              showsVerticalScrollIndicator={false}
-              keyboardShouldPersistTaps="handled"
-              nestedScrollEnabled
+            <Animated.View
+              style={[
+                styles.bubble,
+                {
+                  top: layout.top,
+                  left: layout.left,
+                  maxWidth,
+                },
+                animStyle,
+              ]}
             >
-              {content}
-            </ScrollView>
-          </Animated.View>
+              {/* Arrow */}
+              {showArrow && (
+                <View style={[styles.arrow, layout.arrowStyle as object]} />
+              )}
+
+              <ScrollView
+                style={{ maxHeight }}
+                showsVerticalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
+                nestedScrollEnabled
+              >
+                {content}
+              </ScrollView>
+            </Animated.View>
+          </View>
         </Modal>
       )}
     </>

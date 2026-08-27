@@ -1,11 +1,20 @@
 {
   "name": "popover",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Rich popover anchored to a trigger with arrow, auto-positioning, scale + fade animation, and interactive scrollable content",
   "category": "overlay",
   "files": [
-    { "path": "popover.tsx", "hash": "" },
-    { "path": "popover.types.ts", "hash": "" }
+    {
+      "path": "popover.tsx",
+      "hash": ""
+    },
+    {
+      "path": "popover.types.ts",
+      "hash": ""
+    }
   ],
-  "dependencies": { "npm": [], "components": [] }
+  "dependencies": {
+    "npm": [],
+    "components": []
+  }
 }

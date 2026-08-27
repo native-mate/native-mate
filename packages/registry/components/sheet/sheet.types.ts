@@ -1,3 +1,5 @@
+import type React from 'react'
+
 export interface SheetProps {
   visible: boolean
   onClose: () => void
@@ -34,4 +36,12 @@ export interface SheetProps {
    * snap point.
    */
   snapPoints?: number[]
+  /**
+   * Ref to the control that opened the sheet (usually the trigger `Pressable`).
+   * When the sheet finishes closing, screen-reader focus is sent back to it via
+   * `AccessibilityInfo.setAccessibilityFocus`, instead of being dropped at the
+   * top of the screen. Native-only and fully guarded — a missing ref, web, or an
+   * unavailable API is a silent no-op.
+   */
+  returnFocusRef?: React.RefObject<any> | null
 }

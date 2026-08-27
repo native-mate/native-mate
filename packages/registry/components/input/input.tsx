@@ -231,14 +231,14 @@ export const Input = React.forwardRef<InputHandle, InputProps>(({
 
         {/* Prefix text */}
         {prefixText && (
-          <View style={{ borderRightWidth: 1, borderColor: theme.colors.border, justifyContent: 'center', paddingHorizontal: config.paddingH }}>
+          <View style={{ borderEndWidth: 1, borderColor: theme.colors.border, justifyContent: 'center', paddingHorizontal: config.paddingH }}>
             <Text variant="body" color={theme.colors.muted} style={{ fontSize: config.fontSize }}>{prefixText}</Text>
           </View>
         )}
 
         {/* Prefix icon */}
         {prefix && (
-          <View style={{ paddingLeft: config.paddingH, justifyContent: 'center' }}>
+          <View style={{ paddingStart: config.paddingH, justifyContent: 'center' }}>
             {prefix}
           </View>
         )}
@@ -282,7 +282,7 @@ export const Input = React.forwardRef<InputHandle, InputProps>(({
             hitSlop={12}
             accessibilityRole="button"
             accessibilityLabel={label ? `${strings.clear} ${label}` : strings.clear}
-            style={{ paddingRight: config.paddingH }}
+            style={{ paddingEnd: config.paddingH }}
             testID={testID ? `${testID}-clear` : undefined}
           >
             <View style={styles.clearBtn}>
@@ -301,7 +301,7 @@ export const Input = React.forwardRef<InputHandle, InputProps>(({
             hitSlop={12}
             accessibilityRole="button"
             accessibilityLabel={showPassword ? strings.hidePassword : strings.showPassword}
-            style={{ paddingRight: config.paddingH }}
+            style={{ paddingEnd: config.paddingH }}
             testID={testID ? `${testID}-toggle` : undefined}
           >
             <Text variant="caption" color={theme.colors.muted}>{showPassword ? 'Hide' : 'Show'}</Text>
@@ -310,14 +310,14 @@ export const Input = React.forwardRef<InputHandle, InputProps>(({
 
         {/* Suffix icon */}
         {suffix && (
-          <View style={{ paddingRight: config.paddingH, justifyContent: 'center' }}>
+          <View style={{ paddingEnd: config.paddingH, justifyContent: 'center' }}>
             {suffix}
           </View>
         )}
 
         {/* Suffix text */}
         {suffixText && (
-          <View style={{ borderLeftWidth: 1, borderColor: theme.colors.border, justifyContent: 'center', paddingHorizontal: config.paddingH }}>
+          <View style={{ borderStartWidth: 1, borderColor: theme.colors.border, justifyContent: 'center', paddingHorizontal: config.paddingH }}>
             <Text variant="body" color={theme.colors.muted} style={{ fontSize: config.fontSize }}>{suffixText}</Text>
           </View>
         )}

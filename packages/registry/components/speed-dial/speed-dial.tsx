@@ -55,8 +55,8 @@ const useStyles = makeStyles((theme) => ({
   backdrop: {
     position: 'absolute',
     top: -Dimensions.get('window').height,
-    left: -Dimensions.get('window').width,
-    right: -Dimensions.get('window').width,
+    start: -Dimensions.get('window').width,
+    end: -Dimensions.get('window').width,
     bottom: -24,
     backgroundColor: 'rgba(0,0,0,0.3)',
   },

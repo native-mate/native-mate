@@ -1,6 +1,6 @@
 // native-mate: stepper@0.1.0 | hash:PLACEHOLDER
 import React, { useEffect } from 'react'
-import { View, Pressable } from 'react-native'
+import { View, Pressable, StyleSheet, LayoutChangeEvent } from 'react-native'
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -11,7 +11,7 @@ import Animated, {
   Easing,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
+import { useTheme, useDirection, Text, makeStyles, fontStyle } from '@native-mate/core'
 import type { StepperProps, StepItem } from './stepper.types'
 
 let Haptics: any = null
@@ -84,22 +84,48 @@ const ConnectingLine: React.FC<ConnectingLineProps> = ({
   upcomingColor,
   length,
 }) => {
+  const direction = useDirection()
   const fillProgress = useSharedValue(filled ? 1 : 0)
+  // Track extent, measured once per layout pass. The fill spans the whole track
+  // and is *scaled* into place, so the growth animation never touches layout.
+  const trackLength = useSharedValue(0)
 
   useEffect(() => {
     fillProgress.value = withSpring(filled ? 1 : 0, SPRING)
   }, [filled])
 
-  const bgStyle = useAnimatedStyle(() => {
-    if (orientation === 'horizontal') {
-      return { width: `${fillProgress.value * 100}%` as any, height: thickness }
+  const isHorizontal = orientation === 'horizontal'
+  // Hoisted out of the worklet: primitives only, so the closure never copies
+  // the direction object.
+  const dirSign = direction.sign
+
+  const handleTrackLayout = (e: LayoutChangeEvent) => {
+    const { width, height } = e.nativeEvent.layout
+    trackLength.value = isHorizontal ? width : height
+  }
+
+  // Every branch returns the same key set (a full four-part transform with
+  // neutral values), so Reanimated never leaves a stale prop applied.
+  const fillStyle = useAnimatedStyle(() => {
+    const progress = fillProgress.value
+    // `scaleX`/`scaleY` scale about the centre; translate back by half the
+    // shrinkage so the fill stays pinned to the track's leading edge. `dirSign`
+    // flips that edge under RTL, where the horizontal row itself is mirrored.
+    const offset = (trackLength.value * (1 - progress)) / 2
+    return {
+      transform: [
+        { translateX: isHorizontal ? -dirSign * offset : 0 },
+        { translateY: isHorizontal ? 0 : -offset },
+        { scaleX: isHorizontal ? progress : 1 },
+        { scaleY: isHorizontal ? 1 : progress },
+      ],
     }
-    return { height: `${fillProgress.value * 100}%` as any, width: thickness }
   })
 
-  if (orientation === 'horizontal') {
+  if (isHorizontal) {
     return (
       <View
+        onLayout={handleTrackLayout}
         style={{
           flex: 1,
           height: thickness,
@@ -112,12 +138,12 @@ const ConnectingLine: React.FC<ConnectingLineProps> = ({
       >
         <Animated.View
           style={[
+            StyleSheet.absoluteFill,
             {
               backgroundColor: activeColor,
               borderRadius: thickness,
-              height: thickness,
             },
-            bgStyle,
+            fillStyle,
           ]}
         />
       </View>
@@ -128,6 +154,7 @@ const ConnectingLine: React.FC<ConnectingLineProps> = ({
   // reaches the next node when a step carries a long description.
   return (
     <View
+      onLayout={handleTrackLayout}
       style={{
         width: thickness,
         flex: 1,
@@ -141,12 +168,12 @@ const ConnectingLine: React.FC<ConnectingLineProps> = ({
     >
       <Animated.View
         style={[
+          StyleSheet.absoluteFill,
           {
             backgroundColor: activeColor,
             borderRadius: thickness,
-            width: thickness,
           },
-          bgStyle,
+          fillStyle,
         ]}
       />
     </View>

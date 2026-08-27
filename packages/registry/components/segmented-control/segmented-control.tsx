@@ -1,12 +1,20 @@
 // native-mate: segmented-control@0.1.0 | hash:PLACEHOLDER
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { View, Pressable } from 'react-native'
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withSpring,
 } from 'react-native-reanimated'
-import { useTheme, useMotion, Text, makeStyles, fontStyle, useHaptics } from '@native-mate/core'
+import {
+  useTheme,
+  useMotion,
+  useDirection,
+  Text,
+  makeStyles,
+  fontStyle,
+  useHaptics,
+} from '@native-mate/core'
 import type { SegmentedControlProps } from './segmented-control.types'
 
 const sizeMap = {
@@ -23,6 +31,9 @@ const useStyles = makeStyles((theme) => ({
   },
   indicator: {
     position: 'absolute',
+    // Anchored at the start edge and moved with a translateX worklet; RN
+    // mirrors `start` under RTL and the translation carries the direction sign.
+    start: 0,
     borderRadius: theme.radius.md,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
@@ -53,46 +64,78 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
 }) => {
   const theme = useTheme()
   const motion = useMotion()
+  const direction = useDirection()
   const styles = useStyles()
   const haptics = useHaptics()
   const sz = sizeMap[size]
 
-  const [segLayouts, setSegLayouts] = useState<Record<string, { x: number; width: number }>>({})
-  const indicatorX = useSharedValue(0)
-  const indicatorW = useSharedValue(0)
+  // Per-segment layouts live in a ref: `onLayout` fires once per segment, and a
+  // setState per callback used to cost one re-render per segment on mount. The
+  // only value React needs is the indicator's *rendered* width, committed once
+  // (below) after every segment has reported.
+  const segLayouts = useRef<Record<string, { x: number; width: number }>>({})
+  const [baseWidth, setBaseWidth] = useState(0)
+
+  // The indicator is laid out once at `baseWidth` and then driven purely on the
+  // compositor: translateX moves it, scaleX sizes it. Animating `left`/`width`
+  // instead re-ran layout on the whole control every single frame.
+  const indicatorTX = useSharedValue(0)
+  const indicatorSX = useSharedValue(0)
 
   const bgColor = backgroundColor ?? theme.colors.surface
   const indColor = indicatorColor ?? (theme.colors.surfaceRaised ?? theme.colors.background)
 
+  const dirSign = direction.sign
+
+  // scaleX scales about the element's centre, so the translation targets the
+  // selected segment's centre rather than its start edge.
+  const moveIndicator = useCallback(
+    (base: number) => {
+      const layout = segLayouts.current[selectedKey]
+      if (!base || !layout) return
+      const spring = motion.spring()
+      indicatorTX.value = withSpring(
+        dirSign * (layout.x + layout.width / 2 - base / 2),
+        spring
+      )
+      indicatorSX.value = withSpring(layout.width / base, spring)
+    },
+    [selectedKey, dirSign, motion]
+  )
+
   const handleLayout = (key: string, x: number, width: number) => {
-    setSegLayouts((prev) => ({ ...prev, [key]: { x, width } }))
-    if (key === selectedKey) {
-      indicatorX.value = withSpring(x, motion.spring())
-      indicatorW.value = withSpring(width, motion.spring())
+    segLayouts.current[key] = { x, width }
+    // Only commit once every *current* segment has reported, so a changed
+    // `segments` list cannot be satisfied by leftover entries from the old one.
+    const measured = segments
+      .map((s) => segLayouts.current[s.key])
+      .filter(Boolean) as Array<{ x: number; width: number }>
+    if (measured.length === segments.length) {
+      const widest = Math.max(...measured.map((l) => l.width))
+      // Single batched commit; React bails out when the value is unchanged.
+      setBaseWidth((prev) => (prev === widest ? prev : widest))
     }
+    if (key === selectedKey) moveIndicator(baseWidth)
   }
 
   useEffect(() => {
-    const layout = segLayouts[selectedKey]
-    if (layout) {
-      indicatorX.value = withSpring(layout.x, motion.spring())
-      indicatorW.value = withSpring(layout.width, motion.spring())
-    }
-  }, [selectedKey, segLayouts])
+    moveIndicator(baseWidth)
+  }, [selectedKey, baseWidth, moveIndicator])
 
   const indicatorStyle = useAnimatedStyle(() => ({
-    left: indicatorX.value,
-    width: indicatorW.value,
+    transform: [
+      { translateX: indicatorTX.value },
+      { scaleX: indicatorSX.value },
+    ],
   }))
 
   // sm/md segments are 30–38pt tall; extend the touch target vertically to
-  // 44pt without changing the rendered height. Horizontal slop stays 0 because
-  // segments are flush neighbours and would otherwise steal each other's taps.
+  // 44pt without changing the rendered height. Horizontal slop is left at its
+  // 0 default because segments are flush neighbours and would otherwise steal
+  // each other's taps.
   const segmentHitSlop = {
     top: Math.max(0, Math.ceil((44 - sz.height) / 2)),
     bottom: Math.max(0, Math.ceil((44 - sz.height) / 2)),
-    left: 0,
-    right: 0,
   }
 
   const handlePress = (key: string) => {
@@ -123,6 +166,7 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
             backgroundColor: indColor,
             top: sz.containerPadding,
             bottom: sz.containerPadding,
+            width: baseWidth,
           },
           indicatorStyle,
         ]}

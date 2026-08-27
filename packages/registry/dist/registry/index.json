@@ -8,7 +8,7 @@
     },
     {
       "name": "action-sheet",
-      "version": "0.3.0",
+      "version": "0.4.0",
       "description": "iOS-style action sheet with animated slide-up, destructive variants, and cancel button",
       "category": "overlay"
     },
@@ -32,7 +32,7 @@
     },
     {
       "name": "badge",
-      "version": "0.4.0",
+      "version": "0.5.0",
       "description": "Inline status badge with 5 variants",
       "category": "display"
     },
@@ -68,7 +68,7 @@
     },
     {
       "name": "button",
-      "version": "0.5.0",
+      "version": "0.6.0",
       "description": "Feature-rich button with 7 variants including gradient, icon-only mode, button group, rounded pill shape, custom colors, haptic feedback, and spring animation",
       "category": "input"
     },
@@ -104,7 +104,7 @@
     },
     {
       "name": "chip",
-      "version": "0.4.0",
+      "version": "0.5.0",
       "description": "Selectable chip with animated selection state, icon/avatar support, closable mode, and ChipGroup layout helper",
       "category": "input"
     },
@@ -116,7 +116,7 @@
     },
     {
       "name": "color-picker",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "description": "Color picker with preset swatches, hue/saturation/lightness sliders, and hex input",
       "category": "input"
     },
@@ -140,13 +140,13 @@
     },
     {
       "name": "date-picker",
-      "version": "0.3.0",
+      "version": "0.4.0",
       "description": "Custom calendar date picker with scroll wheel time selector and bottom sheet presentation",
       "category": "input"
     },
     {
       "name": "dialog",
-      "version": "0.3.0",
+      "version": "0.4.0",
       "description": "Confirm/cancel dialog with scale + fade animation, destructive variant, icon support, and backdrop dismiss",
       "category": "overlay"
     },
@@ -176,7 +176,7 @@
     },
     {
       "name": "fab",
-      "version": "0.3.0",
+      "version": "0.4.0",
       "description": "Floating action button with speed dial fan-out, extended label mode, spring animations, and haptic feedback",
       "category": "input"
     },
@@ -212,13 +212,13 @@
     },
     {
       "name": "input",
-      "version": "0.5.0",
+      "version": "0.6.0",
       "description": "Feature-rich text input with 3 sizes, prefix/suffix, floating label, password toggle, clearable, character count, shake on error, haptic on focus",
       "category": "input"
     },
     {
       "name": "list-item",
-      "version": "0.3.0",
+      "version": "0.4.0",
       "description": "Universal list row with leading/trailing slots, press animation, destructive variant, compact mode, and divider support",
       "category": "display"
     },
@@ -236,7 +236,7 @@
     },
     {
       "name": "modal",
-      "version": "0.3.0",
+      "version": "0.4.0",
       "description": "Centered dialog with scale animation and backdrop",
       "category": "overlay"
     },
@@ -254,7 +254,7 @@
     },
     {
       "name": "otp-input",
-      "version": "0.4.0",
+      "version": "0.5.0",
       "description": "OTP/PIN code input with individual digit boxes",
       "category": "input"
     },
@@ -266,7 +266,7 @@
     },
     {
       "name": "phone-input",
-      "version": "0.4.0",
+      "version": "0.5.0",
       "description": "International phone number input with country picker, flag display, and auto-formatting",
       "category": "input"
     },
@@ -278,7 +278,7 @@
     },
     {
       "name": "popover",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "description": "Rich popover anchored to a trigger with arrow, auto-positioning, scale + fade animation, and interactive scrollable content",
       "category": "overlay"
     },
@@ -296,7 +296,7 @@
     },
     {
       "name": "progress",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "description": "Animated progress bar with accessibility support",
       "category": "feedback"
     },
@@ -350,7 +350,7 @@
     },
     {
       "name": "segmented-control",
-      "version": "0.4.0",
+      "version": "0.5.0",
       "description": "iOS-style segmented toggle with animated sliding pill indicator",
       "category": "input"
     },
@@ -368,7 +368,7 @@
     },
     {
       "name": "sheet",
-      "version": "0.4.0",
+      "version": "0.5.0",
       "description": "Animated bottom sheet with snap points",
       "category": "overlay"
     },
@@ -392,7 +392,7 @@
     },
     {
       "name": "speed-dial",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "description": "FAB speed dial with rotating icon, staggered spring-animated actions, backdrop dim, and labels",
       "category": "input"
     },
@@ -410,7 +410,7 @@
     },
     {
       "name": "stepper",
-      "version": "0.3.0",
+      "version": "0.4.0",
       "description": "Multi-step progress indicator with animated transitions and connecting lines",
       "category": "navigation"
     },
@@ -422,7 +422,7 @@
     },
     {
       "name": "switch",
-      "version": "0.3.0",
+      "version": "0.4.0",
       "description": "Animated toggle switch with interpolated track color",
       "category": "input"
     },
@@ -434,7 +434,7 @@
     },
     {
       "name": "tag",
-      "version": "0.3.0",
+      "version": "0.4.0",
       "description": "Compact dismissible label chip with spring animation on remove",
       "category": "display"
     },
@@ -446,7 +446,7 @@
     },
     {
       "name": "textarea",
-      "version": "0.4.0",
+      "version": "0.5.0",
       "description": "Multiline text input with label and error state",
       "category": "input"
     },
@@ -458,7 +458,7 @@
     },
     {
       "name": "toast",
-      "version": "0.4.0",
+      "version": "0.5.0",
       "description": "Floating toast notification with auto-dismiss and position",
       "category": "feedback"
     },

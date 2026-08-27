@@ -1,6 +1,8 @@
 // native-mate: toast@0.3.0 | hash:PLACEHOLDER
 import React, { useEffect, useRef, createContext, useContext, useState, useCallback, useMemo } from 'react'
-import { View, Pressable, PanResponder, Image, Modal, Platform, AccessibilityInfo, StatusBar } from 'react-native'
+import {
+  View, Pressable, PanResponder, Image, Modal, Platform, AccessibilityInfo, StatusBar, StyleSheet,
+} from 'react-native'
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -10,7 +12,9 @@ import Animated, {
   cancelAnimation,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, useMotion, withAlpha, Text, makeStyles, fontStyle, useHaptics, useStrings } from '@native-mate/core'
+import {
+  useTheme, useMotion, withAlpha, Text, makeStyles, fontStyle, useHaptics, useStrings, devWarn,
+} from '@native-mate/core'
 import type {
   ToastProps,
   ToastVariant,
@@ -19,6 +23,21 @@ import type {
   ToastAction,
   ToastProviderProps,
 } from './toast.types'
+
+// Swipe-to-dismiss wants a gesture system that can lose to the toast's own
+// action buttons. RNGH is an OPTIONAL peer — loaded exactly like the Sheet
+// loads it — so the toast degrades to the legacy PanResponder rather than
+// crashing when it is absent.
+let RNGH: any = null
+try { RNGH = require('react-native-gesture-handler') } catch {}
+const HAS_RNGH = !!(RNGH && RNGH.Gesture && RNGH.GestureDetector)
+
+// Finger travel (px) before the pan claims the gesture. Below this the touch
+// belongs to whatever is underneath — the "Undo" button, the close (×).
+const PAN_SLOP = 8
+// Travel past which a release dismisses, per axis.
+const DISMISS_X = 80
+const DISMISS_Y = 60
 
 const variantIconName: Record<ToastVariant, keyof typeof Ionicons.glyphMap> = {
   default:     'information-circle',
@@ -30,8 +49,8 @@ const variantIconName: Record<ToastVariant, keyof typeof Ionicons.glyphMap> = {
 const useStyles = makeStyles((theme) => ({
   container: {
     position: 'absolute',
-    left: theme.spacing.lg,
-    right: theme.spacing.lg,
+    start: theme.spacing.lg,
+    end: theme.spacing.lg,
     backgroundColor: theme.colors.surfaceRaised,
     borderRadius: theme.radius.lg,
     padding: theme.spacing.md,
@@ -175,7 +194,7 @@ const ToastBody: React.FC<ToastBodyProps> = ({
           testID={testID ? `${testID}-progress` : undefined}
           style={{
             position: 'absolute',
-            bottom: 0, left: 0,
+            bottom: 0, start: 0,
             height: 3,
             // withAlpha() instead of dimming the whole track with `opacity`,
             // which also washed out the fill rendered inside it.
@@ -329,7 +348,73 @@ export const Toast: React.FC<ToastProps> = ({
     // fresh one for the new content instead of inheriting the old timer.
   }, [visible, id])
 
-  // Swipe-to-dismiss — supports left/right AND vertical (up for bottom toast, down for top toast)
+  useEffect(() => {
+    if (!HAS_RNGH) {
+      devWarn(
+        'toast:no-gesture-handler',
+        'Toast: swipe-to-dismiss is falling back to PanResponder because the ' +
+          'optional peer `react-native-gesture-handler` is not installed. The ' +
+          'toast still swipes away, but the legacy responder claims touches ' +
+          'from the toast\'s own action buttons mid-swipe. ' +
+          'Run: npx expo install react-native-gesture-handler'
+      )
+    }
+  }, [])
+
+  // ── Swipe-to-dismiss (RNGH) ────────────────────────────────────────────────
+  // Horizontal in either direction, plus vertical away from the screen edge the
+  // toast is docked to. Every value the worklets close over is a number, a
+  // boolean or a shared value — never an element-typed prop.
+  // `activeOffset*` is what fixes the action-button bug: the pan does not
+  // activate until the finger has actually travelled, so a tap on "Undo" is
+  // never stolen by the swipe surface.
+  const axisLock = useSharedValue(0) // 0 = undecided, 1 = horizontal, 2 = vertical
+
+  const panGesture = useMemo(() => {
+    if (!HAS_RNGH) return null
+    const isBottom = position !== 'top'
+    const t = normal
+    const s = spring
+    return RNGH.Gesture.Pan()
+      .activeOffsetX([-PAN_SLOP, PAN_SLOP])
+      .activeOffsetY([-PAN_SLOP, PAN_SLOP])
+      .onStart(() => {
+        'worklet'
+        axisLock.value = 0
+      })
+      .onUpdate((e: { translationX: number; translationY: number }) => {
+        'worklet'
+        if (axisLock.value === 0) {
+          axisLock.value = Math.abs(e.translationX) >= Math.abs(e.translationY) ? 1 : 2
+        }
+        if (axisLock.value === 1) translateX.value = e.translationX
+        else translateY.value = e.translationY
+      })
+      .onEnd((e: { translationX: number; translationY: number }) => {
+        'worklet'
+        if (axisLock.value === 1) {
+          if (Math.abs(e.translationX) > DISMISS_X) {
+            translateX.value = withTiming(e.translationX > 0 ? 500 : -500, t)
+            opacity.value = withTiming(0, t, () => { runOnJS(hide)() })
+          } else {
+            translateX.value = withSpring(0, s)
+          }
+        } else {
+          const dismissed = isBottom ? e.translationY > DISMISS_Y : e.translationY < -DISMISS_Y
+          if (dismissed) {
+            translateY.value = withTiming(isBottom ? 300 : -300, t)
+            opacity.value = withTiming(0, t, () => { runOnJS(hide)() })
+          } else {
+            translateY.value = withSpring(0, s)
+          }
+        }
+        axisLock.value = 0
+      })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [position, hide, normal.duration, spring.damping, spring.stiffness, spring.mass])
+
+  // ── Swipe-to-dismiss (PanResponder fallback) ───────────────────────────────
+  // Kept byte-for-byte as it was so the no-RNGH path behaves exactly as before.
   const activeAxis = useRef<'x' | 'y' | null>(null)
 
   const panResponder = useMemo(
@@ -410,43 +495,45 @@ export const Toast: React.FC<ToastProps> = ({
     />
   )
 
+  // The swipe surface is the whole toast. With RNGH the pan runs on the UI
+  // thread and only activates past PAN_SLOP, so action buttons keep their taps;
+  // without it we fall back to the legacy panHandlers.
+  const card = (
+    <Animated.View
+      testID={testID}
+      style={[styles.container, { [position === 'top' ? 'top' : 'bottom']: edgeOffset }, animatedStyle]}
+      accessibilityRole="alert"
+      accessibilityLiveRegion="polite"
+      {...(panGesture ? {} : panResponder.panHandlers)}
+    >
+      {body}
+    </Animated.View>
+  )
+
+  const swipeable = panGesture
+    ? <RNGH.GestureDetector gesture={panGesture}>{card}</RNGH.GestureDetector>
+    : card
+
+  // RNGH gestures need a root view of their own inside an RN Modal.
+  const Root: any = HAS_RNGH ? RNGH.GestureHandlerRootView : View
+
   // On web, render with fixed positioning directly (no Modal portal needed)
   if (Platform.OS === 'web') {
     return (
-      <View
+      <Root
         pointerEvents="box-none"
-        style={{ position: 'fixed' as any, top: 0, left: 0, right: 0, bottom: 0, zIndex: 9999 }}
+        style={{ ...StyleSheet.absoluteFillObject, position: 'fixed' as any, zIndex: 9999 }}
       >
-        <Animated.View
-          testID={testID}
-          style={[
-            styles.container,
-            { [position === 'top' ? 'top' : 'bottom']: edgeOffset },
-            animatedStyle,
-          ]}
-          accessibilityRole="alert"
-          accessibilityLiveRegion="polite"
-          {...panResponder.panHandlers}
-        >
-          {body}
-        </Animated.View>
-      </View>
+        {swipeable}
+      </Root>
     )
   }
 
   return (
     <Modal visible={modalOpen} transparent animationType="none" onRequestClose={dismiss} statusBarTranslucent>
-      <View pointerEvents="box-none" style={{ flex: 1 }}>
-        <Animated.View
-          testID={testID}
-          style={[styles.container, { [position === 'top' ? 'top' : 'bottom']: edgeOffset }, animatedStyle]}
-          accessibilityRole="alert"
-          accessibilityLiveRegion="polite"
-          {...panResponder.panHandlers}
-        >
-          {body}
-        </Animated.View>
-      </View>
+      <Root pointerEvents="box-none" style={{ flex: 1 }}>
+        {swipeable}
+      </Root>
     </Modal>
   )
 }

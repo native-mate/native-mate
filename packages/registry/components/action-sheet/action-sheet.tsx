@@ -1,12 +1,31 @@
 // native-mate: action-sheet@0.3.0 | hash:PLACEHOLDER
 import React, { useState } from 'react'
-import { View, Pressable, Modal, StyleSheet } from 'react-native'
+import {
+  View, Pressable, Modal, StyleSheet, Platform, AccessibilityInfo, findNodeHandle,
+} from 'react-native'
 import Animated, {
   useSharedValue, useAnimatedStyle, withSpring, withTiming, runOnJS, Easing,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
 import { fontStyle, makeStyles, Text, useTheme, useMotion, useStrings, withAlpha, type Motion } from '@native-mate/core'
 import type { ActionSheetProps } from './action-sheet.types'
+
+// ── Focus restore ────────────────────────────────────────────────────────────
+// Opening an RN Modal moves the screen reader into it; closing one drops the
+// cursor wherever the platform decides — usually the top of the screen, not the
+// control the user pressed. `returnFocusRef` points at that control so focus
+// lands back where it started. `setAccessibilityFocus` is native-only and takes
+// a react tag, so every step is guarded: on web, or if the API is ever missing,
+// this is a no-op rather than a crash.
+function restoreAccessibilityFocus(ref?: React.RefObject<any> | null) {
+  const node = ref?.current
+  if (!node || Platform.OS === 'web') return
+  if (typeof AccessibilityInfo?.setAccessibilityFocus !== 'function') return
+  try {
+    const tag = typeof node === 'number' ? node : findNodeHandle(node)
+    if (tag != null) AccessibilityInfo.setAccessibilityFocus(tag)
+  } catch {}
+}
 
 const useStyles = makeStyles((theme) => ({
   fill: {
@@ -120,6 +139,7 @@ export const ActionSheet: React.FC<ActionSheetProps> = ({
   cancelLabel,
   animation = 'slide',
   showDividers = true,
+  returnFocusRef,
 }) => {
   const theme = useTheme()
   const motion = useMotion()
@@ -136,9 +156,17 @@ export const ActionSheet: React.FC<ActionSheetProps> = ({
   const backdropOpacity = useSharedValue(0)
   const sheetScale = useSharedValue(animation === 'fade' ? 0.95 : 1)
 
+  // `returnFocusRef` is read through a ref so the JS callback handed to the
+  // exit animation can never see a stale one.
+  const returnFocusRefLatest = React.useRef(returnFocusRef)
+  returnFocusRefLatest.current = returnFocusRef
+
   const { show, hide } = buildAnimations(
     animation, translateY, backdropOpacity, sheetScale, dismissY,
-    () => setModalOpen(false),
+    () => {
+      setModalOpen(false)
+      restoreAccessibilityFocus(returnFocusRefLatest.current)
+    },
     motion,
   )
 
@@ -171,7 +199,10 @@ export const ActionSheet: React.FC<ActionSheetProps> = ({
       statusBarTranslucent
       onRequestClose={handleClose}
     >
-      <View style={styles.fill}>
+      {/* Everything the sheet owns lives under one view marked as modal, so
+          iOS VoiceOver stops at its boundary instead of wandering into the
+          screen behind it. */}
+      <View style={styles.fill} accessibilityViewIsModal={true}>
         {/* Backdrop */}
         <Animated.View style={[styles.backdrop, backdropStyle]} />
         <Pressable style={StyleSheet.absoluteFill} onPress={handleClose} />

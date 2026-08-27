@@ -9,7 +9,7 @@ import Animated, {
   interpolateColor,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useTheme, Text, makeStyles, fontStyle, useHaptics, deprecatedProp } from '@native-mate/core'
+import { useTheme, Text, makeStyles, fontStyle, useHaptics, deprecatedProp, useDirection } from '@native-mate/core'
 import type { ChipProps, ChipGroupProps } from './chip.types'
 
 const sizeMap = {
@@ -50,6 +50,7 @@ export const Chip = React.memo<ChipProps>(({
   const theme = useTheme()
   const styles = useStyles()
   const haptics = useHaptics()
+  const { isRTL } = useDirection()
   const dims = sizeMap[size]
 
   const selectionProgress = useSharedValue(selected ? 1 : 0)
@@ -128,12 +129,17 @@ export const Chip = React.memo<ChipProps>(({
   }
 
   // Close icon is 14–16pt; slop reaches ~44pt while biasing away from the label
-  // so the main press target isn't swallowed.
+  // so the main press target isn't swallowed. `hitSlop` has no logical spelling
+  // — RN only accepts physical left/right here and never mirrors them — so the
+  // asymmetric bias is swapped by hand under RTL, where the row (and with it the
+  // label the slop must lean away from) has flipped to the other side.
+  const towardLabel = 10
+  const awayFromLabel = Math.max(0, 44 - dims.closeSize - 10)
   const closeHitSlop = {
     top: Math.max(0, Math.ceil((44 - dims.closeSize) / 2)),
     bottom: Math.max(0, Math.ceil((44 - dims.closeSize) / 2)),
-    left: 10,
-    right: Math.max(0, 44 - dims.closeSize - 10),
+    left: isRTL ? awayFromLabel : towardLabel,
+    right: isRTL ? towardLabel : awayFromLabel,
   }
 
   const handleClose = useCallback(() => {
@@ -148,8 +154,8 @@ export const Chip = React.memo<ChipProps>(({
         styles.chip,
         {
           height: dims.height,
-          paddingLeft: avatar ? 4 : dims.px,
-          paddingRight: closable ? 6 : dims.px,
+          paddingStart: avatar ? 4 : dims.px,
+          paddingEnd: closable ? 6 : dims.px,
           gap: 6,
         },
         variant === 'outlined' && !selected && {
@@ -176,7 +182,7 @@ export const Chip = React.memo<ChipProps>(({
       >
         {/* Avatar */}
         {avatar && (
-          <View style={{ marginRight: -2 }}>{avatar}</View>
+          <View style={{ marginEnd: -2 }}>{avatar}</View>
         )}
 
         {/* Icon — a string still renders through Ionicons for one minor. */}

@@ -323,15 +323,34 @@ export const OTPInput = React.forwardRef<OTPInputHandle, OTPInputProps>(({
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
         accessibilityLabel={accessibilityLabel ?? strings.verificationCode}
-        accessibilityHint={`Enter the ${length}-character code`}
+        // The visible cells are hidden from the reader (see Cell), so this
+        // input is the whole field as far as VoiceOver/TalkBack are concerned:
+        // it carries the label, the hint naming the expected length, and the
+        // value. It must stay reachable — never `accessibilityElementsHidden`.
+        accessibilityHint={
+          type === 'numeric'
+            ? `Enter the ${length}-digit code`
+            : `Enter the ${length}-character code`
+        }
         accessibilityValue={{ text: value.split('').join(' ') }}
+        // Announce each digit as it lands, without interrupting the user.
+        accessibilityLiveRegion="polite"
         textContentType="oneTimeCode"
         autoComplete="one-time-code"
         testID={testID ? `${testID}-input` : undefined}
       />
 
       {errorText && hasError && (
-        <Text variant="caption" style={styles.error}>{errorText}</Text>
+        // A wrong code has to interrupt whatever is being read: assertive, and
+        // announced as an alert rather than as another caption.
+        <Text
+          variant="caption"
+          style={styles.error}
+          accessibilityRole="alert"
+          accessibilityLiveRegion="assertive"
+        >
+          {errorText}
+        </Text>
       )}
       {!hasError && hint && (
         <Text variant="caption" style={styles.hint}>{hint}</Text>

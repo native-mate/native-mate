@@ -78,10 +78,14 @@ export const ListItem = React.memo<ListItemProps>(({
   const styles = useStyles()
   const pressed = useSharedValue(0)
 
+  // Hoisted out of the worklet below. Referencing `theme.colors.surface` inside
+  // it would capture the entire theme object and copy it to the UI thread on
+  // every evaluation; the worklet only needs these two colour strings.
+  const pressedBg = theme.colors.surface
+  const restingBg = 'transparent'
+
   const animStyle = useAnimatedStyle(() => ({
-    backgroundColor: pressed.value
-      ? theme.colors.surface
-      : 'transparent',
+    backgroundColor: pressed.value ? pressedBg : restingBg,
     transform: [{ scale: pressed.value ? 0.985 : 1 }],
   }))
 

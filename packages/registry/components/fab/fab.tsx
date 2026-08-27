@@ -70,14 +70,14 @@ const useStyles = makeStyles((theme) => ({
     paddingVertical: 6,
     paddingHorizontal: 12,
     borderRadius: 8,
-    marginRight: 12,
+    marginEnd: 12,
     ...shadow(2),
   },
   overlay: {
     position: 'absolute',
     top: -9999,
-    left: -9999,
-    right: -9999,
+    start: -9999,
+    end: -9999,
     bottom: -9999,
   },
 }))

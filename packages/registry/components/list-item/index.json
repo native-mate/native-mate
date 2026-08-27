@@ -1,6 +1,6 @@
 {
   "name": "list-item",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Universal list row with leading/trailing slots, press animation, destructive variant, compact mode, and divider support",
   "category": "display",
   "files": [

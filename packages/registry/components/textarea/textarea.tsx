@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
   hint: { color: theme.colors.muted },
   error: { color: theme.colors.destructive },
   voiceBtn: {
-    marginLeft: 8,
+    marginStart: 8,
     marginTop: 2,
     width: 28,
     height: 28,

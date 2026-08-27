@@ -86,6 +86,39 @@ const PHYSICAL_ALLOWLIST: Record<string, string[]> = {
   // directional — so the nudge that centres it must stay on the left.
   'video-player/video-player.tsx': ['marginLeft'],
   'audio-player/audio-player.tsx': ['marginLeft'],
+  // Full-bleed `top/left/right/bottom: 0` on the Android ripple overlay, inside a
+  // useAnimatedStyle worklet. Symmetric, so nothing to mirror, and worklet styles
+  // skip logical-edge resolution.
+  'button/button.tsx': ['left', 'right'],
+  // Not styles: these are `hitSlop` objects. RN's hitSlop accepts only physical
+  // `left`/`right` and never mirrors them, so there is no logical spelling to
+  // move to — the close button's asymmetric slop is swapped by hand on `isRTL`.
+  'chip/chip.tsx': ['left', 'right'],
+  // `position` ('bottom-right' | 'bottom-left' | 'bottom-center') is a public
+  // prop naming a physical screen corner, exactly like Popover's `position`.
+  // `bottom-center` resets the corner with `left: 0 / right: 0`, which only
+  // overrides the physical edge it is paired with.
+  'fab/fab.tsx': ['left', 'right'],
+  // `left:` inside the floating-label useAnimatedStyle worklet, offset by the
+  // prefix width. Reanimated applies worklet styles through updateProps, which
+  // does not resolve logical edges.
+  'input/input.tsx': ['left'],
+  // Same worklet-positioned floating label as input, above.
+  'textarea/textarea.tsx': ['left'],
+  // `left:` inside a useAnimatedStyle worklet, driven from the active item's
+  // measured `layout.x` — same case as tabs and bottom-bar.
+  'toggle-group/toggle-group.tsx': ['left'],
+  // Track, fill and thumb(s) are one physical coordinate system: every offset is
+  // derived from `nativeEvent.locationX` and `gestureState.dx`, both measured
+  // from the physical left edge. `start:` on the thumb would decouple it from
+  // its own hit-testing and drag maths.
+  'slider/slider.tsx': ['left'],
+  // Same caller-named physical corner as fab (`position`), plus a `direction`
+  // prop ('up' | 'left') naming the physical axis the actions expand along.
+  // `paddingRight` is the gap between that leftward action row and the FAB it
+  // hangs off; mirroring it without mirroring the caller's chosen corner would
+  // push the row through the button.
+  'speed-dial/speed-dial.tsx': ['left', 'right', 'paddingRight'],
 }
 
 // ─── PENDING_OTHER_AGENTS ────────────────────────────────────────────────────
@@ -96,22 +129,10 @@ const PHYSICAL_ALLOWLIST: Record<string, string[]> = {
 // its conversion merges, and delete the block itself once it is empty. Anything
 // that is genuinely physical belongs in PHYSICAL_ALLOWLIST above, with a reason.
 const PENDING_OTHER_AGENTS: string[] = [
-  'badge/badge.tsx',
-  'button/button.tsx',
-  'chip/chip.tsx',
-  'date-picker/date-picker.tsx',
-  'fab/fab.tsx',
-  'input/input.tsx',
-  'phone-input/phone-input.tsx',
-  'segmented-control/segmented-control.tsx',
-  'sheet/sheet.tsx',
-  'slider/slider.tsx',
-  'speed-dial/speed-dial.tsx',
-  'switch/switch.tsx',
-  'tag/tag.tsx',
-  'textarea/textarea.tsx',
-  'toast/toast.tsx',
-  'toggle-group/toggle-group.tsx',
+  // Empty: sheet and toast were the last two, and both are converted (their
+  // physical edges are now `start`/`end`, `borderStart/EndWidth`). Left in place
+  // as an empty list only so a concurrent pass has somewhere to land; delete the
+  // block, and its two references below, once nothing needs it.
 ]
 
 // Blank out comments (preserving offsets, so line numbers stay accurate) so a

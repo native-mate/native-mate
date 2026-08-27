@@ -240,8 +240,8 @@ export const ButtonGroup: React.FC<ButtonGroupProps> = ({
         return (
           <View key={i} style={{
             flex: fullWidth ? 1 : undefined,
-            borderLeftWidth: !isFirst ? 1 : 0,
-            borderLeftColor: theme.colors.border,
+            borderStartWidth: !isFirst ? 1 : 0,
+            borderStartColor: theme.colors.border,
           }}>
             {React.cloneElement(child as React.ReactElement<any>, {
               size: size || child.props.size,

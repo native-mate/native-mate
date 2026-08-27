@@ -1,6 +1,6 @@
 {
   "name": "stepper",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Multi-step progress indicator with animated transitions and connecting lines",
   "category": "navigation",
   "files": [

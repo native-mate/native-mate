@@ -98,8 +98,8 @@ export const Tag = React.memo<TagProps>(({
       borderRadius: 9999,
       borderWidth: 1,
       paddingVertical: sz.py,
-      paddingLeft: sz.px,
-      paddingRight: onRemove ? sz.px - 4 : sz.px,
+      paddingStart: sz.px,
+      paddingEnd: onRemove ? sz.px - 4 : sz.px,
       gap: 5,
       opacity: disabled ? 0.45 : 1,
     }, containerStyle, style]} testID={testID}>

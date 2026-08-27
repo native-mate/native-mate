@@ -1,6 +1,6 @@
 {
   "name": "phone-input",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "International phone number input with country picker, flag display, and auto-formatting",
   "category": "input",
   "files": [

@@ -132,6 +132,16 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 14,
     overflow: 'hidden',
     position: 'relative',
+    // The hue/alpha track is one physical coordinate system and must stay that
+    // way in every locale: the thumb is placed with `left: <pct>` and the value
+    // is read back from `nativeEvent.locationX`, both measured from the physical
+    // left edge. The gradient itself, though, is a `flexDirection: 'row'` of
+    // swatches, which RN *does* reverse under RTL — so without this the colour
+    // ramp would run right-to-left while the thumb and the hit-testing still ran
+    // left-to-right, and the picker would report the complement of the colour
+    // the user tapped. Pinning the subtree to `ltr` keeps the visual order and
+    // the coordinate system pointing the same way.
+    direction: 'ltr',
   },
   sliderThumb: {
     position: 'absolute',
