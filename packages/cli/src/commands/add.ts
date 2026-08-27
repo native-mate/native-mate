@@ -14,9 +14,6 @@ interface AddOptions {
   overwrite?: boolean
 }
 
-// Components not yet ready — will be added in a future release
-const COMING_SOON = new Set(['tooltip', 'popover'])
-
 async function installComponent(
   name: string,
   config: ReturnType<typeof readConfig>,
@@ -97,7 +94,6 @@ async function promptComponentSelection(registry?: string): Promise<string[]> {
   // Group by category
   const categories = new Map<string, typeof index.components>()
   for (const comp of index.components) {
-    if (COMING_SOON.has(comp.name)) continue
     const cat = comp.category || 'other'
     if (!categories.has(cat)) categories.set(cat, [])
     categories.get(cat)!.push(comp)
@@ -165,25 +161,10 @@ export async function add(names: string[], options: AddOptions) {
     s.start('Fetching component registry')
     try {
       const idx = (await fetchIndex(options.registry)) as RegistryIndex
-      names = idx.components
-        .map((c) => c.name)
-        .filter((n) => !COMING_SOON.has(n))
+      names = idx.components.map((c) => c.name)
       s.stop(pc.green(`Adding ${pc.cyan(String(names.length))} components`))
     } catch {
       s.stop(pc.red('Failed to fetch registry'))
-      process.exit(1)
-    }
-  }
-
-  // Check for components not yet in v1
-  for (const name of names) {
-    if (COMING_SOON.has(name)) {
-      p.log.warn(
-        `"${name}" is not available yet — coming in a future release.`
-      )
-      p.log.info(
-        pc.dim('Follow https://github.com/native-mate/native-mate for updates.')
-      )
       process.exit(1)
     }
   }
