@@ -58,6 +58,7 @@ export default function AccessibilityPage() {
               ['SearchBar', 'SearchBarHandle', 'focus() · blur() · clear() · isFocused()'],
               ['OTPInput', 'OTPInputHandle', 'focus() · blur() · clear()'],
               ['PhoneInput', 'PhoneInputHandle', 'focus() · blur() · clear()'],
+              ['Select', 'SelectHandle', 'open() · close()'],
             ].map(([component, handle, methods], i) => (
               <tr key={component} className={i % 2 === 0 ? 'bg-zinc-950' : 'bg-zinc-900/50'}>
                 <td className="px-4 py-3 text-xs text-zinc-300">{component}</td>
@@ -68,6 +69,15 @@ export default function AccessibilityPage() {
           </tbody>
         </table>
       </div>
+      <p className="mt-3 mb-3 text-sm text-zinc-400">
+        Components whose open state is <em>controlled</em> deliberately have no handle.{' '}
+        <code className="text-zinc-300">DatePicker</code> takes{' '}
+        <code className="text-zinc-300">visible</code> as a prop, so an imperative{' '}
+        <code className="text-zinc-300">open()</code> would fight the parent&apos;s state and give
+        the component two sources of truth. Drive those from the prop instead.{' '}
+        <code className="text-zinc-300">Select</code> has a handle because it owns its open state
+        internally.
+      </p>
       <CodeBlock language="tsx" code={`import { useRef } from 'react'
 import { Input, type InputHandle } from '@/components/ui/input'
 
