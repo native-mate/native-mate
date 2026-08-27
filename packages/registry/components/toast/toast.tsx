@@ -100,7 +100,9 @@ export const Toast: React.FC<ToastProps> = ({
   }[variant]
 
   const iconColor = {
-    default: '#fff',
+    // No onMuted token exists; background is the correct inversion on the
+    // muted bg in both color schemes (white-on-gray light, near-black-on-gray dark).
+    default: theme.colors.background,
     success: theme.colors.onSuccess,
     destructive: theme.colors.onDestructive,
     warning: theme.colors.onWarning,

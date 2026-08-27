@@ -78,7 +78,7 @@ function Cell({
       borderColor: error
         ? theme.colors.destructive
         : success
-        ? '#22c55e'
+        ? theme.colors.success
         : isActive
         ? theme.colors.primary
         : isFilled
@@ -93,7 +93,7 @@ function Cell({
       borderBottomColor: error
         ? theme.colors.destructive
         : success
-        ? '#22c55e'
+        ? theme.colors.success
         : isActive
         ? theme.colors.primary
         : theme.colors.border,
