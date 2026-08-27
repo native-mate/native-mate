@@ -1,6 +1,6 @@
 {
   "name": "breadcrumb",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Navigation breadcrumb path with configurable separators, middle truncation, and icon support",
   "category": "navigation",
   "files": [

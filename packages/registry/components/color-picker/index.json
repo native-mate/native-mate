@@ -1,6 +1,6 @@
 {
   "name": "color-picker",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Color picker with preset swatches, hue/saturation/lightness sliders, and hex input",
   "category": "input",
   "files": [

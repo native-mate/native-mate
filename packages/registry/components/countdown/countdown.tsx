@@ -224,6 +224,11 @@ export const Countdown: React.FC<CountdownProps> = ({
   const [timeLeft, setTimeLeft] = useState<TimeLeft>(() => calcTimeLeft(targetDate))
   const prevTimeRef = useRef<TimeLeft>(timeLeft)
   const completedRef = useRef(false)
+  const timeLeftRef = useRef<TimeLeft>(timeLeft)
+
+  useEffect(() => {
+    timeLeftRef.current = timeLeft
+  }, [timeLeft])
 
   const digitColor = digitColorProp ?? theme.colors.foreground
   const cardColor = cardColorProp ?? (theme.colors.surfaceRaised ?? theme.colors.surface)
@@ -233,7 +238,8 @@ export const Countdown: React.FC<CountdownProps> = ({
 
     const tick = () => {
       const newTime = calcTimeLeft(targetDate)
-      prevTimeRef.current = timeLeft
+      prevTimeRef.current = timeLeftRef.current
+      timeLeftRef.current = newTime
       setTimeLeft(newTime)
 
       if (newTime.total <= 0 && !completedRef.current) {
@@ -245,7 +251,7 @@ export const Countdown: React.FC<CountdownProps> = ({
 
     const interval = setInterval(tick, 1000)
     return () => clearInterval(interval)
-  }, [targetDate, disabled, timeLeft])
+  }, [targetDate, disabled])
 
   useEffect(() => {
     completedRef.current = false

@@ -1,6 +1,6 @@
 {
   "name": "bottom-bar",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Bottom navigation bar with animated sliding indicator, badge support with pulse animation, and haptic feedback",
   "category": "navigation",
   "files": [

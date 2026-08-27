@@ -1,5 +1,5 @@
 // native-mate: review-card@0.1.0 | hash:PLACEHOLDER
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import { View, Image, Pressable } from 'react-native'
 import Animated, {
   useSharedValue,
@@ -166,6 +166,10 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
   const [needsExpand, setNeedsExpand] = useState(false)
   const helpfulScale = useSharedValue(1)
 
+  useEffect(() => {
+    setNeedsExpand(false)
+  }, [text, maxLines])
+
   const helpfulAnimStyle = useAnimatedStyle(() => ({
     transform: [{ scale: helpfulScale.value }],
   }))
@@ -189,7 +193,7 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
           key={i}
           name={i <= rating ? 'star' : i - 0.5 <= rating ? 'star-half' : 'star-outline'}
           size={16}
-          color={i <= rating || i - 0.5 <= rating ? '#F59E0B' : '#D1D5DB'}
+          color={i <= rating || i - 0.5 <= rating ? '#F59E0B' : theme.colors.muted + '60'}
         />,
       )
     }

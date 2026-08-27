@@ -89,9 +89,10 @@ const useStyles = makeStyles((theme) => ({
 
 // ── Status icon ──────────────────────────────────────────────────────────────
 
-const StatusIcon: React.FC<{ status: MessageStatus; color: string }> = ({
+const StatusIcon: React.FC<{ status: MessageStatus; color: string; readColor: string }> = ({
   status,
   color,
+  readColor,
 }) => {
   const size = 13
 
@@ -103,7 +104,7 @@ const StatusIcon: React.FC<{ status: MessageStatus; color: string }> = ({
     case 'delivered':
       return <Ionicons name="checkmark-done" size={size} color={color} />
     case 'read':
-      return <Ionicons name="checkmark-done" size={size} color="#3b82f6" />
+      return <Ionicons name="checkmark-done" size={size} color={readColor} />
     default:
       return null
   }
@@ -288,7 +289,7 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
                 </Text>
               )}
               {isSelf && status && (
-                <StatusIcon status={status} color={mutedTextColor} />
+                <StatusIcon status={status} color={mutedTextColor} readColor={theme.colors.info} />
               )}
             </View>
           )}

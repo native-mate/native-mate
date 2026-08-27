@@ -1,6 +1,6 @@
 {
   "name": "data-table",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Data table with sortable columns, horizontal scroll, sticky header, striped rows, and loading skeleton",
   "category": "display",
   "files": [

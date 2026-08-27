@@ -244,7 +244,7 @@ export const Input: React.FC<InputProps> = ({
         {clearable && currentValue ? (
           <Pressable onPress={handleClear} style={{ paddingRight: config.paddingH }}>
             <View style={styles.clearBtn}>
-              <Ionicons name="close" size={11} color={theme.colors.background} />
+              <Ionicons name="close" size={11} color={theme.colors.onSurface} />
             </View>
           </Pressable>
         ) : null}

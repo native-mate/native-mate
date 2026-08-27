@@ -1,6 +1,6 @@
 {
   "name": "draggable-list",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Reorderable list with long-press drag, shadow lift, and smooth 60fps reorder animations",
   "category": "input",
   "files": [

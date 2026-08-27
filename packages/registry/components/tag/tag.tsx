@@ -16,13 +16,15 @@ let Haptics: any = null
 try { Haptics = require('expo-haptics') } catch {}
 
 // Each variant: [activeColor, activeBg, activeText] - used when selected
-const variantPalette: Record<TagVariant, [string, string, string]> = {
-  default:     ['',        '',           ''],  // theme-driven
-  primary:     ['#6366f1', '#6366f118', '#6366f1'],
-  success:     ['#22c55e', '#22c55e18', '#22c55e'],
-  warning:     ['#f59e0b', '#f59e0b18', '#f59e0b'],
-  destructive: ['#ef4444', '#ef444418', '#ef4444'],
-  info:        ['#3b82f6', '#3b82f618', '#3b82f6'],
+function getVariantPalette(theme: any): Record<TagVariant, [string, string, string]> {
+  return {
+    default:     ['',                     '',                          ''],  // theme-driven
+    primary:     [theme.colors.primary,     theme.colors.primary + '18',     theme.colors.primary],
+    success:     [theme.colors.success,     theme.colors.success + '18',     theme.colors.success],
+    warning:     [theme.colors.warning,     theme.colors.warning + '18',     theme.colors.warning],
+    destructive: [theme.colors.destructive, theme.colors.destructive + '18', theme.colors.destructive],
+    info:        [theme.colors.info,        theme.colors.info + '18',        theme.colors.info],
+  }
 }
 
 const sizeMap = {
@@ -46,7 +48,7 @@ export const Tag: React.FC<TagProps> = ({
   const sz = sizeMap[size]
 
   // Resolve colors
-  const [activeColor, activeBg, activeText] = variantPalette[variant]
+  const [activeColor, activeBg, activeText] = getVariantPalette(theme)[variant]
   const resolvedActiveColor = variant === 'default' ? theme.colors.primary : activeColor
   const resolvedActiveBg    = variant === 'default' ? theme.colors.primary + '18' : activeBg
   const resolvedActiveText  = variant === 'default' ? theme.colors.primary : activeText

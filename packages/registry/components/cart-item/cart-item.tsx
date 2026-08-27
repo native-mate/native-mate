@@ -136,7 +136,7 @@ export const CartItem: React.FC<CartItemProps> = ({
     <View style={[styles.outerContainer, style]} {...rest}>
       {onRemove != null && (
         <View style={styles.deleteBackground}>
-          <Ionicons name="trash-outline" size={22} color="#FFFFFF" />
+          <Ionicons name="trash-outline" size={22} color={theme.colors.onDestructive} />
         </View>
       )}
       <View

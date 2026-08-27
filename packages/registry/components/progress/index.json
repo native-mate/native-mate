@@ -1,6 +1,6 @@
 {
   "name": "progress",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Animated progress bar with accessibility support",
   "category": "feedback",
   "files": [

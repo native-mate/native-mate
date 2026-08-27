@@ -1,5 +1,5 @@
 // native-mate: mention-input@0.1.0 | hash:PLACEHOLDER
-import React, { useState, useCallback, useMemo, useRef } from 'react'
+import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react'
 import { View, TextInput, Pressable, Image, FlatList, Platform } from 'react-native'
 import Animated, {
   useSharedValue,
@@ -125,6 +125,13 @@ export const MentionInput: React.FC<MentionInputProps> = ({
   const [mentionQuery, setMentionQuery] = useState<string | null>(null)
   const [cursorPosition, setCursorPosition] = useState(0)
   const inputRef = useRef<TextInput>(null)
+  const blurTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (blurTimeout.current) clearTimeout(blurTimeout.current)
+    }
+  }, [])
 
   const filteredMentions = useMemo(() => {
     if (mentionQuery == null) return []
@@ -254,10 +261,14 @@ export const MentionInput: React.FC<MentionInputProps> = ({
             styles.input,
             multiline && { textAlignVertical: 'top', maxHeight: 120 },
           ]}
-          onFocus={() => setFocused(true)}
+          onFocus={() => {
+            if (blurTimeout.current) clearTimeout(blurTimeout.current)
+            setFocused(true)
+          }}
           onBlur={() => {
             setFocused(false)
-            setTimeout(() => setMentionQuery(null), 200)
+            if (blurTimeout.current) clearTimeout(blurTimeout.current)
+            blurTimeout.current = setTimeout(() => setMentionQuery(null), 200)
           }}
           accessibilityLabel={placeholder}
         />

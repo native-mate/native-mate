@@ -1,6 +1,6 @@
 {
   "name": "accordion",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Collapsible accordion with animated height and chevron",
   "category": "layout",
   "files": [

@@ -1,6 +1,6 @@
 {
   "name": "pull-to-refresh",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Custom pull-to-refresh indicator with progress arc, spring animation, and haptic feedback",
   "category": "feedback",
   "files": [

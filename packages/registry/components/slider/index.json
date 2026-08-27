@@ -1,6 +1,6 @@
 {
   "name": "slider",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Gesture-based range slider with step and accessibility support",
   "category": "input",
   "files": [

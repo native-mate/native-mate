@@ -107,7 +107,7 @@ const Badge: React.FC<{ badge: BottomBarBadge; theme: any }> = ({ badge, theme }
       ]}
     >
       {hasValue && (
-        <Text style={{ color: '#fff', fontSize: 9, ...fontStyle(theme.typography, 'bold'), lineHeight: 12 }}>
+        <Text style={{ color: badge.color ? '#fff' : (theme.colors.onDestructive ?? '#fff'), fontSize: 9, ...fontStyle(theme.typography, 'bold'), lineHeight: 12 }}>
           {typeof badge.value === 'number' && badge.value > 99 ? '99+' : String(badge.value)}
         </Text>
       )}

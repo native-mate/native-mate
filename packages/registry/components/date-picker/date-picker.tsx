@@ -1,5 +1,5 @@
 // native-mate: date-picker@0.1.0 | hash:PLACEHOLDER
-import React, { useState, useMemo, useCallback } from 'react'
+import React, { useState, useMemo, useCallback, useEffect } from 'react'
 import { View, Pressable, ScrollView, Platform } from 'react-native'
 import Animated, {
   useSharedValue,
@@ -375,6 +375,15 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   const [viewMonth, setViewMonth] = useState(value.getMonth())
   const [pendingDate, setPendingDate] = useState(value)
 
+  useEffect(() => {
+    if (visible) {
+      setViewYear(value.getFullYear())
+      setViewMonth(value.getMonth())
+      setPendingDate(value)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value, visible])
+
   const navigateMonth = useCallback(
     (direction: -1 | 1) => {
       if (haptic && Haptics) Haptics.selectionAsync()
@@ -431,7 +440,10 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   const showTime = mode === 'time' || mode === 'datetime'
 
   return (
-    <View style={[styles.container, { opacity: disabled ? 0.5 : 1 }, style]}>
+    <View
+      style={[styles.container, { opacity: disabled ? 0.5 : 1 }, style]}
+      pointerEvents={disabled ? 'none' : 'auto'}
+    >
       {title && (
         <Text
           variant="heading"

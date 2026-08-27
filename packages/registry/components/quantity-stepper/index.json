@@ -1,6 +1,6 @@
 {
   "name": "quantity-stepper",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Plus/minus quantity control with animated press feedback and long-press rapid increment",
   "category": "input",
   "files": [

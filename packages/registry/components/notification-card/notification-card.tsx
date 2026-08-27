@@ -20,16 +20,17 @@ try { Haptics = require('expo-haptics') } catch {}
 const DISMISS_THRESHOLD = 120
 const SPRING = { damping: 18, stiffness: 200, mass: 0.7 }
 
-const categoryConfig: Record<
-  NotificationCategory,
-  { icon: keyof typeof Ionicons.glyphMap; color: string }
-> = {
-  info: { icon: 'information-circle', color: '#3b82f6' },
-  success: { icon: 'checkmark-circle', color: '#22c55e' },
-  warning: { icon: 'warning', color: '#f59e0b' },
-  error: { icon: 'close-circle', color: '#ef4444' },
-  social: { icon: 'people', color: '#8b5cf6' },
-  system: { icon: 'settings', color: '#6b7280' },
+function getCategoryConfig(
+  theme: any
+): Record<NotificationCategory, { icon: keyof typeof Ionicons.glyphMap; color: string }> {
+  return {
+    info: { icon: 'information-circle', color: theme.colors.info },
+    success: { icon: 'checkmark-circle', color: theme.colors.success },
+    warning: { icon: 'warning', color: theme.colors.warning },
+    error: { icon: 'close-circle', color: theme.colors.destructive },
+    social: { icon: 'people', color: '#8b5cf6' }, // no semantic token for social; intentional
+    system: { icon: 'settings', color: theme.colors.muted },
+  }
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -136,7 +137,7 @@ export const NotificationCard: React.FC<NotificationCardProps> = ({
   const rowHeight = useSharedValue<number | undefined>(undefined)
   const grantX = useRef(0)
 
-  const catConfig = categoryConfig[category]
+  const catConfig = getCategoryConfig(theme)[category]
   const timeStr = useMemo(
     () => relativeTime(typeof timestamp === 'string' ? new Date(timestamp) : timestamp),
     [timestamp]
@@ -211,7 +212,7 @@ export const NotificationCard: React.FC<NotificationCardProps> = ({
             dismissBgStyle,
           ]}
         >
-          <Ionicons name="trash-outline" size={22} color="#fff" />
+          <Ionicons name="trash-outline" size={22} color={theme.colors.onDestructive} />
         </Animated.View>
       )}
 

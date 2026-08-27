@@ -8,11 +8,13 @@ const sizes: Record<AvatarSize, number> = { xs: 24, sm: 32, md: 40, lg: 48, xl: 
 const fontSizes: Record<AvatarSize, number> = { xs: 9, sm: 11, md: 14, lg: 17, xl: 22 }
 const statusSizes: Record<AvatarSize, number> = { xs: 6, sm: 8, md: 10, lg: 12, xl: 14 }
 
-const statusColors: Record<AvatarStatus, string> = {
-  online:  '#22c55e',
-  offline: '#71717a',
-  busy:    '#ef4444',
-  away:    '#f59e0b',
+function getStatusColors(theme: any): Record<AvatarStatus, string> {
+  return {
+    online:  theme.colors.success,
+    offline: theme.colors.muted,
+    busy:    theme.colors.destructive,
+    away:    theme.colors.warning,
+  }
 }
 
 // Generate a consistent color from a name string
@@ -68,7 +70,7 @@ export const Avatar: React.FC<AvatarProps> = ({
             onError={() => setImgError(true)}
           />
         ) : (
-          <Text style={{ fontSize: fs, ...fontStyle(theme.typography, 'semibold'), color: '#fff', letterSpacing: 0.5 }}>
+          <Text style={{ fontSize: fs, ...fontStyle(theme.typography, 'semibold'), color: bgColor === theme.colors.surface ? theme.colors.onSurface : '#fff', letterSpacing: 0.5 }}>
             {initials}
           </Text>
         )}
@@ -81,7 +83,7 @@ export const Avatar: React.FC<AvatarProps> = ({
           width: statusSizes[size],
           height: statusSizes[size],
           borderRadius: theme.radius.full,
-          backgroundColor: statusColors[status],
+          backgroundColor: getStatusColors(theme)[status],
           borderWidth: 1.5,
           borderColor: theme.colors.background,
         }} />

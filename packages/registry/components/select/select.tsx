@@ -216,7 +216,7 @@ export const Select: React.FC<SelectProps> = ({
       {error && <Text variant="caption" style={styles.error}>{error}</Text>}
       {!error && hint && <Text variant="caption" style={styles.hint}>{hint}</Text>}
 
-      <Sheet visible={open} onClose={() => setOpen(false)} title={label}>
+      <Sheet visible={open} onClose={() => setOpen(false)} title={label} height={snapHeight}>
         {searchable && (
           <TextInput
             style={styles.searchBar}

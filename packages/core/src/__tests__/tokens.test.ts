@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { resolveTokens, normalizeOverrides, fontStyle, textLineHeight, zinc, slate, rose, midnight, presets } from '../tokens'
+import { resolveTokens, normalizeOverrides, fontStyle, textLineHeight, collapseMotion, zinc, slate, rose, midnight, presets } from '../tokens'
 
 const POPPINS = {
   regular: 'Poppins-Regular',
@@ -148,6 +148,18 @@ describe('textLineHeight', () => {
     for (const size of [20, 24, 30]) {
       expect(textLineHeight(theme.typography, size)).toBeGreaterThan(size)
     }
+  })
+})
+
+describe('collapseMotion', () => {
+  it('zeroes all animation speeds and leaves everything else untouched', () => {
+    const theme = resolveTokens(zinc, 'dark')
+    const collapsed = collapseMotion(theme)
+    expect(collapsed.animation.speed).toEqual({ fast: 0, normal: 0, slow: 0 })
+    expect(collapsed.animation.easing).toBe(theme.animation.easing)
+    expect(collapsed.colors).toBe(theme.colors)
+    expect(collapsed.typography).toBe(theme.typography)
+    expect(theme.animation.speed.fast).toBe(150) // original not mutated
   })
 })
 

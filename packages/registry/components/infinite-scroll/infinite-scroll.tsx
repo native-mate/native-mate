@@ -203,6 +203,7 @@ export function InfiniteScroll<T>({
   return (
     <View style={[styles.container, style]}>
       <FlatList
+        key={`cols-${numColumns}`}
         data={data}
         renderItem={renderFlatItem}
         keyExtractor={keyExtractor ?? defaultKeyExtractor}

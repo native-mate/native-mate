@@ -1,5 +1,5 @@
 // native-mate: accordion@0.2.0 | hash:PLACEHOLDER
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useRef } from 'react'
 import { View, Pressable, LayoutChangeEvent } from 'react-native'
 import Animated, {
   useSharedValue,
@@ -47,13 +47,19 @@ const AccordionItemComponent: React.FC<AccordionItemComponentProps> = ({
   const heightAnim = useSharedValue(isOpen ? 0 : 0)
   const opacityAnim = useSharedValue(isOpen ? 1 : 0)
   const [contentH, setContentH] = useState(0)
+  const hasMeasuredRef = useRef(false)
 
   const handleMeasure = useCallback((e: LayoutChangeEvent) => {
     const h = Math.ceil(e.nativeEvent.layout.height)
     if (h > 0 && h !== contentH) {
+      if (!hasMeasuredRef.current && isOpen) {
+        heightAnim.value = h
+        opacityAnim.value = 1
+      }
+      hasMeasuredRef.current = true
       setContentH(h)
     }
-  }, [contentH])
+  }, [contentH, isOpen])
 
   React.useEffect(() => {
     rotation.value = withTiming(isOpen ? 180 : 0, TIMING)

@@ -112,9 +112,12 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
     if (maxItems == null || items.length <= maxItems) {
       return items
     }
+    if (maxItems <= 1) {
+      return [items[items.length - 1]]
+    }
     // Show first, ellipsis, and last (maxItems - 1) items
     const firstCount = 1
-    const lastCount = maxItems - firstCount - 1
+    const lastCount = Math.max(0, maxItems - firstCount - 1)
     const result: (BreadcrumbItem | 'ellipsis')[] = [
       items[0],
       'ellipsis',

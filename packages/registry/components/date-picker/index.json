@@ -1,6 +1,6 @@
 {
   "name": "date-picker",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Custom calendar date picker with scroll wheel time selector and bottom sheet presentation",
   "category": "input",
   "files": [

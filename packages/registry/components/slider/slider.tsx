@@ -240,6 +240,8 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
   const grantOffsetRef = useRef(0)
   const lowRef = useRef(low)
   const highRef = useRef(high)
+  const lastHapticLow = useRef(low)
+  const lastHapticHigh = useRef(high)
   const onChangeRef = useRef(onChange)
   const onChangeEndRef = useRef(onChangeEnd)
   const hapticRef = useRef(haptic)
@@ -295,11 +297,20 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
         const px = clamp(grantOffsetRef.current + gestureState.dx, 0, tw)
         const newVal = resolveRef.current(px)
         if (activeThumb.current === 'low') {
-          onChangeRef.current?.(Math.min(newVal, highRef.current - step), highRef.current)
+          const l = Math.min(newVal, highRef.current - step)
+          onChangeRef.current?.(l, highRef.current)
+          if (hapticRef.current && Haptics && l !== lastHapticLow.current) {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+            lastHapticLow.current = l
+          }
         } else {
-          onChangeRef.current?.(lowRef.current, Math.max(newVal, lowRef.current + step))
+          const h = Math.max(newVal, lowRef.current + step)
+          onChangeRef.current?.(lowRef.current, h)
+          if (hapticRef.current && Haptics && h !== lastHapticHigh.current) {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+            lastHapticHigh.current = h
+          }
         }
-        if (hapticRef.current && Haptics) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
       },
       onPanResponderRelease: (_, gestureState) => {
         lowScale.value = withSpring(1, { mass: 0.3, damping: 10 })

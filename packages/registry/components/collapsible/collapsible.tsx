@@ -1,5 +1,5 @@
 // native-mate: collapsible@0.1.0 | hash:PLACEHOLDER
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useRef } from 'react'
 import { View, Pressable, LayoutChangeEvent } from 'react-native'
 import Animated, {
   useSharedValue,
@@ -68,14 +68,20 @@ export const Collapsible: React.FC<CollapsibleProps> = ({
 
   const timing = { duration: animationDuration, easing: Easing.out(Easing.cubic) }
 
+  const hasMeasuredRef = useRef(false)
+
   const handleMeasure = useCallback(
     (e: LayoutChangeEvent) => {
       const h = Math.ceil(e.nativeEvent.layout.height)
       if (h > 0 && h !== contentHeight) {
+        if (!hasMeasuredRef.current && isOpen) {
+          heightAnim.value = h
+        }
+        hasMeasuredRef.current = true
         setContentHeight(h)
       }
     },
-    [contentHeight]
+    [contentHeight, isOpen]
   )
 
   React.useEffect(() => {

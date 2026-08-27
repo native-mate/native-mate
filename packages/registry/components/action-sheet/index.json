@@ -1,6 +1,6 @@
 {
   "name": "action-sheet",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "iOS-style action sheet with animated slide-up, destructive variants, and cancel button",
   "category": "overlay",
   "files": [

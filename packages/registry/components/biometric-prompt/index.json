@@ -1,6 +1,6 @@
 {
   "name": "biometric-prompt",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Biometric authentication modal with pulse animation, success/error states, and fallback option",
   "category": "overlay",
   "files": [

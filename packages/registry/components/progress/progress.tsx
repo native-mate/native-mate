@@ -7,6 +7,7 @@ import Animated, {
   withRepeat,
   withSequence,
   useSharedValue,
+  cancelAnimation,
   Easing,
 } from 'react-native-reanimated'
 import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
@@ -162,6 +163,9 @@ export const Progress: React.FC<ProgressProps> = ({
         -1,
         false,
       )
+    } else {
+      cancelAnimation(shimmerX)
+      shimmerX.value = -1
     }
   }, [indeterminate])
 

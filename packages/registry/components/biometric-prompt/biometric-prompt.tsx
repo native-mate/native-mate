@@ -11,6 +11,7 @@ import Animated, {
   withDelay,
   interpolate,
   Easing,
+  cancelAnimation,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
 import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
@@ -164,6 +165,13 @@ export const BiometricPrompt: React.FC<BiometricPromptProps> = ({
         -1,
         false,
       )
+    } else {
+      cancelAnimation(pulseScale)
+      cancelAnimation(pulseOpacity)
+    }
+    return () => {
+      cancelAnimation(pulseScale)
+      cancelAnimation(pulseOpacity)
     }
   }, [visible, state])
 

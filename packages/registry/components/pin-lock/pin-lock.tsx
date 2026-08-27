@@ -130,6 +130,44 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
+// ── Dot ───────────────────────────────────────────────────────────
+
+function Dot({
+  filled,
+  error,
+}: {
+  filled: boolean
+  error: boolean
+}) {
+  const styles = useStyles()
+  const scale = useSharedValue(1)
+  const wasFilled = React.useRef(filled)
+
+  useEffect(() => {
+    if (filled && !wasFilled.current) {
+      scale.value = withSequence(
+        withSpring(1.3, { damping: 8, stiffness: 400 }),
+        withSpring(1, { damping: 12, stiffness: 300 }),
+      )
+    }
+    wasFilled.current = filled
+  }, [filled])
+
+  const dotAnimStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+  }))
+
+  return (
+    <Animated.View
+      style={[
+        styles.dot,
+        filled && (error ? styles.dotError : styles.dotFilled),
+        dotAnimStyle,
+      ]}
+    />
+  )
+}
+
 const keyLetters: Record<string, string> = {
   '2': 'ABC',
   '3': 'DEF',
@@ -163,9 +201,6 @@ export const PinLock: React.FC<PinLockProps> = ({
   const [pin, setPin] = useState('')
   const [lockTimer, setLockTimer] = useState(lockDuration)
   const shakeX = useSharedValue(0)
-
-  // Dot fill animations
-  const dotScales = Array.from({ length }, () => useSharedValue(1))
 
   const shakeAnimStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: shakeX.value }],
@@ -215,13 +250,6 @@ export const PinLock: React.FC<PinLockProps> = ({
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
       }
       const newPin = pin + digit
-      const idx = newPin.length - 1
-      if (idx < dotScales.length) {
-        dotScales[idx].value = withSequence(
-          withSpring(1.3, { damping: 8, stiffness: 400 }),
-          withSpring(1, { damping: 12, stiffness: 300 }),
-        )
-      }
       setPin(newPin)
       if (newPin.length === length) {
         setTimeout(() => onComplete?.(newPin), 200)
@@ -303,21 +331,9 @@ export const PinLock: React.FC<PinLockProps> = ({
       </View>
 
       <Animated.View style={[styles.dotsRow, shakeAnimStyle]}>
-        {Array.from({ length }).map((_, i) => {
-          const dotAnimStyle = useAnimatedStyle(() => ({
-            transform: [{ scale: dotScales[i].value }],
-          }))
-          return (
-            <Animated.View
-              key={i}
-              style={[
-                styles.dot,
-                i < pin.length && (error ? styles.dotError : styles.dotFilled),
-                dotAnimStyle,
-              ]}
-            />
-          )
-        })}
+        {Array.from({ length }).map((_, i) => (
+          <Dot key={i} filled={i < pin.length} error={error} />
+        ))}
       </Animated.View>
 
       <View style={styles.keypad}>

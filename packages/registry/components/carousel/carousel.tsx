@@ -104,9 +104,8 @@ export function Carousel<T>({
             scrollRef.current?.scrollTo({ x: 0, animated: true })
             return 0
           }
-          // Scroll back to start
-          scrollRef.current?.scrollTo({ x: 0, animated: true })
-          return 0
+          // Stop advancing at the last item
+          return prev
         }
         scrollRef.current?.scrollTo({ x: next * snapInterval, animated: true })
         return next

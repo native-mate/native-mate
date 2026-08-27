@@ -1,6 +1,6 @@
 {
   "name": "markdown",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Markdown renderer supporting headings, bold, italic, code, links, lists, blockquotes, images, and rules",
   "category": "display",
   "files": [

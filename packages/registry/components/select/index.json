@@ -1,6 +1,6 @@
 {
   "name": "select",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Select dropdown using Sheet with FlatList options",
   "category": "input",
   "files": [

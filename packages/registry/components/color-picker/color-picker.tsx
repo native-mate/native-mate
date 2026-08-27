@@ -190,18 +190,16 @@ function Slider({
   const theme = useTheme()
   const styles = useStyles()
   const progress = (value - min) / (max - min)
+  const [trackWidth, setTrackWidth] = useState(280)
 
   const handleTouch = useCallback(
     (e: any) => {
       if (disabled) return
       const { locationX } = e.nativeEvent
-      const layout = e.nativeEvent
-      // Approximate width from locationX and page calculations
-      const width = layout.layoutMeasurement?.width ?? 300
-      const ratio = Math.max(0, Math.min(1, locationX / width))
+      const ratio = Math.max(0, Math.min(1, locationX / trackWidth))
       onChange(Math.round(min + ratio * (max - min)))
     },
-    [disabled, min, max, onChange],
+    [disabled, min, max, onChange, trackWidth],
   )
 
   const gradientStyle = {
@@ -211,18 +209,15 @@ function Slider({
 
   return (
     <Pressable
-      onPress={(e) => {
-        if (disabled) return
-        const { locationX } = e.nativeEvent
-        // Use a rough estimate; in production the track width is measured
-        const ratio = Math.max(0, Math.min(1, locationX / 280))
-        onChange(Math.round(min + ratio * (max - min)))
-      }}
+      onPress={handleTouch}
       disabled={disabled}
       accessibilityRole="adjustable"
       accessibilityValue={{ min, max, now: value }}
     >
-      <View style={styles.sliderTrack}>
+      <View
+        style={styles.sliderTrack}
+        onLayout={(e) => setTrackWidth(e.nativeEvent.layout.width)}
+      >
         <View
           style={[
             {

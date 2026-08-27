@@ -1,6 +1,6 @@
 {
   "name": "stat-card",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "KPI metric card with animated counter, trend indicator, and skeleton loading",
   "category": "display",
   "files": [

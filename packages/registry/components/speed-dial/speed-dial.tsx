@@ -125,17 +125,17 @@ function ActionItem({
   }, [])
 
   const animStyle = useAnimatedStyle(() => {
-    const scale = interpolate(progress.value, [0, 1], [0.3, 1])
+    const scale = interpolate(itemScale.value, [0, 1], [0.3, 1])
     const translateY = direction === 'up'
-      ? interpolate(progress.value, [0, 1], [20, 0])
+      ? interpolate(itemScale.value, [0, 1], [20, 0])
       : 0
     const translateX = direction === 'left'
-      ? interpolate(progress.value, [0, 1], [20, 0])
+      ? interpolate(itemScale.value, [0, 1], [20, 0])
       : 0
 
     return {
       transform: [{ scale }, { translateY }, { translateX }],
-      opacity: progress.value,
+      opacity: itemOpacity.value,
     }
   })
 

@@ -1,6 +1,6 @@
 {
   "name": "textarea",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Multiline text input with label and error state",
   "category": "input",
   "files": [

@@ -135,7 +135,7 @@ export const Textarea: React.FC<TextareaProps> = ({
         [0, 1],
         [theme.colors.muted, focused ? theme.colors.primary : theme.colors.muted],
       ),
-      backgroundColor: theme.colors.background,
+      backgroundColor: (disabled || readOnly) ? theme.colors.surface : theme.colors.background,
       paddingHorizontal: 4,
       zIndex: 10,
     }
@@ -184,7 +184,7 @@ export const Textarea: React.FC<TextareaProps> = ({
   const countColor = isAtLimit
     ? theme.colors.destructive
     : isNearLimit
-    ? '#f59e0b'
+    ? theme.colors.warning
     : theme.colors.muted
 
   return (

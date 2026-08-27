@@ -70,7 +70,7 @@ const useStyles = makeStyles((theme) => ({
   inlineCode: {
     fontFamily: 'monospace',
     backgroundColor: theme.colors.background,
-    color: theme.colors.destructive,
+    color: theme.colors.foreground,
     paddingHorizontal: 5,
     paddingVertical: 1,
     borderRadius: 4,

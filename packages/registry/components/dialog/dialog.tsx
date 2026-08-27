@@ -156,10 +156,10 @@ export const Dialog: React.FC<DialogProps> = ({
           <Pressable onPress={() => {}}>
             <View style={styles.body}>
               {/* Icon */}
-              {icon !== undefined && (
+              {icon !== null && (
                 <View style={[styles.iconWrap, { backgroundColor: iconBg }]}>
                   <Ionicons
-                    name={(icon || defaultIcon) as any}
+                    name={(icon ?? defaultIcon) as any}
                     size={24}
                     color={accentColor}
                   />

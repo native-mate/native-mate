@@ -24,7 +24,7 @@ const triggerHaptic = (style: HapticStyle) => {
 type IconName = React.ComponentProps<typeof Ionicons>['name']
 
 const variantConfig: Record<BannerVariant, { icon: IconName; colorKey: string; hardColor?: string }> = {
-  info:    { icon: 'information-circle', colorKey: '',            hardColor: '#3b82f6' },
+  info:    { icon: 'information-circle', colorKey: 'info' },
   warning: { icon: 'warning',           colorKey: 'warning' },
   success: { icon: 'checkmark-circle',  colorKey: 'success' },
   error:   { icon: 'close-circle',      colorKey: 'destructive' },
@@ -75,7 +75,7 @@ export const Banner: React.FC<BannerProps> = ({
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const config = variantConfig[variant]
-  const accentColor = config.hardColor ?? (theme.colors[config.colorKey as keyof typeof theme.colors] as string)
+  const accentColor = config.hardColor ?? ((theme.colors[config.colorKey as keyof typeof theme.colors] as string) ?? '#3b82f6')
 
   const translateY = useSharedValue(visible ? 0 : (position === 'top' ? -100 : 100))
   const opacity = useSharedValue(visible ? 1 : 0)

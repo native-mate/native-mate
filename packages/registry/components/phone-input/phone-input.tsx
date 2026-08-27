@@ -301,7 +301,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
   const styles = useStyles()
   const inputRef = useRef<TextInput>(null)
 
-  const countryList = countries ?? DEFAULT_COUNTRIES
+  const countryList = countries && countries.length > 0 ? countries : DEFAULT_COUNTRIES
   const [selectedCountry, setSelectedCountry] = useState<Country>(
     () => countryList.find((c) => c.code === defaultCountry) ?? countryList[0]
   )

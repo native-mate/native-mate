@@ -1,6 +1,6 @@
 {
   "name": "input",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Feature-rich text input with 3 sizes, prefix/suffix, floating label, password toggle, clearable, character count, shake on error, haptic on focus",
   "category": "input",
   "files": [

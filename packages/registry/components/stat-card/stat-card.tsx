@@ -101,19 +101,7 @@ const AnimatedValue: React.FC<AnimatedValueProps> = ({
   color,
   typography,
 }) => {
-  const animValue = useSharedValue(animated ? 0 : targetValue)
   const [displayText, setDisplayText] = React.useState('')
-
-  useEffect(() => {
-    if (animated) {
-      animValue.value = withTiming(targetValue, {
-        duration: 1200,
-        easing: Easing.out(Easing.cubic),
-      })
-    } else {
-      animValue.value = targetValue
-    }
-  }, [targetValue, animated])
 
   // Poll the shared value on JS thread for display
   useEffect(() => {
@@ -228,9 +216,9 @@ export const StatCard: React.FC<StatCardProps> = ({
 
   const changeColor =
     changeType === 'increase'
-      ? '#22c55e'
+      ? theme.colors.success
       : changeType === 'decrease'
-        ? '#ef4444'
+        ? theme.colors.destructive
         : theme.colors.muted
 
   const changeIcon =

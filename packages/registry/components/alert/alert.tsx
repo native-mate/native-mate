@@ -9,7 +9,7 @@ type IconName = React.ComponentProps<typeof Ionicons>['name']
 
 const variantMeta: Record<AlertVariant, { colorKey: string; icon: IconName; hardColor?: string }> = {
   default:     { colorKey: 'primary',     icon: 'information-circle' },
-  info:        { colorKey: '',            icon: 'information-circle', hardColor: '#3b82f6' },
+  info:        { colorKey: 'info',        icon: 'information-circle' },
   success:     { colorKey: 'success',     icon: 'checkmark-circle' },
   warning:     { colorKey: 'warning',     icon: 'warning' },
   destructive: { colorKey: 'destructive', icon: 'close-circle' },
@@ -57,7 +57,7 @@ export const Alert: React.FC<AlertProps> = ({
   const theme = useTheme()
   const styles = useStyles()
   const meta = variantMeta[variant]
-  const accentColor = meta.hardColor ?? (theme.colors[meta.colorKey as keyof typeof theme.colors] as string)
+  const accentColor = meta.hardColor ?? ((theme.colors[meta.colorKey as keyof typeof theme.colors] as string) ?? '#3b82f6')
 
   return (
     <View

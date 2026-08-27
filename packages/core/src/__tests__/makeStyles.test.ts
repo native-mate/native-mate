@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { resolveTokens, zinc } from '../tokens'
-import { makeStyles } from '../theme/makeStyles'
+import { makeStyles, stylesForTheme } from '../theme/makeStyles'
 
 // makeStyles is a factory that returns a hook. We can't call hooks outside
 // React, but we CAN verify the factory itself and the styles it produces.
@@ -42,6 +42,32 @@ describe('makeStyles', () => {
     expect(styles.text.fontSize).toBe(15)
     expect(styles.text.fontWeight).toBe('700')
     expect(styles.animated.opacity).toBe(1)
+  })
+
+  it('caches styles per theme object — same identity across calls', () => {
+    const theme = resolveTokens(zinc, 'dark')
+    const cache = new WeakMap()
+    let factoryCalls = 0
+    const factory = (t: typeof theme) => {
+      factoryCalls++
+      return { box: { padding: t.spacing.md } }
+    }
+    const a = stylesForTheme(cache, factory, theme)
+    const b = stylesForTheme(cache, factory, theme)
+    expect(a).toBe(b) // shared across "instances"
+    expect(factoryCalls).toBe(1) // StyleSheet.create ran once per theme
+  })
+
+  it('re-creates styles for a new theme object', () => {
+    const cache = new WeakMap()
+    const factory = (t: ReturnType<typeof resolveTokens>) => ({
+      bg: { backgroundColor: t.colors.background },
+    })
+    const dark = stylesForTheme(cache, factory, resolveTokens(zinc, 'dark'))
+    const light = stylesForTheme(cache, factory, resolveTokens(zinc, 'light'))
+    expect(dark).not.toBe(light)
+    expect(dark.bg.backgroundColor).toBe('#070709')
+    expect(light.bg.backgroundColor).toBe('#ffffff')
   })
 
   it('produces different styles for different presets', () => {

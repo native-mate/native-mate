@@ -168,6 +168,12 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     }
   }, [isPlaying])
 
+  useEffect(() => {
+    return () => {
+      if (controlsTimeout.current) clearTimeout(controlsTimeout.current)
+    }
+  }, [])
+
   const handlePlayPause = useCallback(() => {
     if (Haptics) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
     playScale.value = withSpring(0.85, { damping: 15, stiffness: 400 })

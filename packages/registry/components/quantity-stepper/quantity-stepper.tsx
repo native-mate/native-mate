@@ -68,6 +68,11 @@ export const QuantityStepper: React.FC<QuantityStepperProps> = ({
   const longPressTimer = useRef<ReturnType<typeof setInterval> | null>(null)
   const longPressActive = useRef(false)
 
+  const valueRef = useRef(value)
+  valueRef.current = value
+  const propsRef = useRef({ min, max, step, onChange, disabled })
+  propsRef.current = { min, max, step, onChange, disabled }
+
   const valueAnimStyle = useAnimatedStyle(() => ({
     transform: [{ scale: valueScale.value }],
   }))
@@ -104,18 +109,40 @@ export const QuantityStepper: React.FC<QuantityStepperProps> = ({
     animateValue()
   }, [value, step, min, disabled, isMinDisabled, onChange, triggerHaptic, animateValue])
 
+  const repeatStep = useCallback((direction: 1 | -1): boolean => {
+    const { min, max, step, onChange, disabled } = propsRef.current
+    if (disabled) return false
+    const current = valueRef.current
+    let next: number
+    if (direction === 1) {
+      if (max != null && current >= max) return false
+      next = max != null ? Math.min(current + step, max) : current + step
+    } else {
+      if (current <= min) return false
+      next = Math.max(current - step, min)
+    }
+    valueRef.current = next
+    onChange(next)
+    triggerHaptic()
+    animateValue()
+    return true
+  }, [triggerHaptic, animateValue])
+
   const startLongPress = useCallback((action: 'increment' | 'decrement') => {
     longPressActive.current = true
     let delay = 200
     const run = () => {
       if (!longPressActive.current) return
-      if (action === 'increment') increment()
-      else decrement()
+      const advanced = repeatStep(action === 'increment' ? 1 : -1)
+      if (!advanced) {
+        stopLongPress()
+        return
+      }
       delay = Math.max(50, delay * 0.85)
       longPressTimer.current = setTimeout(run, delay)
     }
     longPressTimer.current = setTimeout(run, 400)
-  }, [increment, decrement])
+  }, [repeatStep])
 
   const stopLongPress = useCallback(() => {
     longPressActive.current = false

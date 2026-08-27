@@ -1,6 +1,6 @@
 {
   "name": "mention-input",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Text input with @mention autocomplete, user dropdown, and highlighted mention chips",
   "category": "input",
   "files": [

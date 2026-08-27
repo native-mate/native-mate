@@ -1,5 +1,5 @@
 // native-mate: pull-to-refresh@0.1.0 | hash:PLACEHOLDER
-import React, { useRef, useCallback, useEffect } from 'react'
+import React, { useRef, useState, useCallback, useEffect } from 'react'
 import { View, ScrollView, PanResponder, ActivityIndicator, Platform } from 'react-native'
 import Animated, {
   useSharedValue,
@@ -182,6 +182,7 @@ export const PullToRefresh: React.FC<PullToRefreshProps> = ({
   const indicatorColor = indicatorColorProp ?? theme.colors.primary
   const translateY = useSharedValue(0)
   const pullProgress = useSharedValue(0)
+  const [progress, setProgress] = useState(0)
   const isAtTop = useRef(true)
   const hasTriggered = useRef(false)
   const grantY = useRef(0)
@@ -196,6 +197,7 @@ export const PullToRefresh: React.FC<PullToRefreshProps> = ({
       translateY.value = withSpring(0, SPRING)
       pullProgress.value = withTiming(0, { duration: 200 })
       hasTriggered.current = false
+      setProgress(0)
     }
   }, [refreshing])
 
@@ -236,7 +238,10 @@ export const PullToRefresh: React.FC<PullToRefreshProps> = ({
           : dy
         const limited = Math.min(capped, MAX_PULL)
         translateY.value = limited
-        pullProgress.value = Math.min(limited / pullDistance, 1)
+        const nextProgress = Math.min(limited / pullDistance, 1)
+        pullProgress.value = nextProgress
+        const rounded = Math.round(nextProgress * 100) / 100
+        setProgress((prev) => (prev === rounded ? prev : rounded))
 
         // Trigger at threshold
         if (limited >= pullDistance && !hasTriggered.current) {
@@ -248,6 +253,7 @@ export const PullToRefresh: React.FC<PullToRefreshProps> = ({
         if (!hasTriggered.current) {
           translateY.value = withSpring(0, SPRING)
           pullProgress.value = withTiming(0, { duration: 200 })
+          setProgress(0)
         }
       },
     })
@@ -294,12 +300,12 @@ export const PullToRefresh: React.FC<PullToRefreshProps> = ({
       <Animated.View style={[styles.indicatorContainer, { top: 0 }, indicatorStyle]}>
         {renderIndicator ? (
           renderIndicator({
-            progress: pullProgress.value,
+            progress,
             refreshing,
           })
         ) : (
           <DefaultIndicator
-            progress={pullProgress.value}
+            progress={progress}
             refreshing={refreshing}
             color={indicatorColor}
             size={indicatorSize}

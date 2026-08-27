@@ -255,6 +255,7 @@ function DropdownMenuNative({
   const [anchor, setAnchor] = useState<AnchorRect>({ x: 0, y: 0, width: 0, height: 0 })
   const [internalOpen, setInternalOpen] = useState(false)
   const [modalVisible, setModalVisible] = useState(false)
+  const [menuWidth, setMenuWidth] = useState(0)
 
   const isOpen = controlledOpen ?? internalOpen
   const scale = useSharedValue(0.92)
@@ -314,7 +315,7 @@ function DropdownMenuNative({
   const menuStyle: any = { top: menuTop }
   if (align === 'right') {
     menuStyle.right = undefined
-    menuStyle.left = anchor.x + anchor.width - 180
+    menuStyle.left = anchor.x + anchor.width - (menuWidth || 180)
     // Clamp to screen
     if (menuStyle.left < 8) menuStyle.left = 8
   } else {
@@ -346,6 +347,7 @@ function DropdownMenuNative({
 
           <Animated.View
             style={[styles.menu, menuStyle, animStyle]}
+            onLayout={(e) => setMenuWidth(e.nativeEvent.layout.width)}
             accessibilityRole="menu"
           >
             <MenuItems items={items} theme={theme} haptic={haptic} onClose={closeMenu} />

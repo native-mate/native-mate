@@ -85,13 +85,25 @@ export function textLineHeight(
   return Math.max(typography.lineHeight.normal, Math.round(fontSize * 1.3))
 }
 
+// Reduced-motion convention: every timing-based animation reads a duration from
+// animation.speed, so zeroing the speeds makes the whole registry instant.
+export function collapseMotion(theme: ResolvedTheme): ResolvedTheme {
+  return {
+    ...theme,
+    animation: { ...theme.animation, speed: { fast: 0, normal: 0, slow: 0 } },
+  }
+}
+
 // When a font family is themed, Android needs the per-weight family name alone —
 // pairing it with fontWeight makes Android fall back to a synthetic weight.
+// fontWeight is typed to RN's literal union so the result spreads cleanly into
+// TextStyle objects; token values are '400'..'700' which satisfy it.
+type FontWeightValue = 'normal' | 'bold' | '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900'
 export function fontStyle(
   typography: ResolvedTheme['typography'],
   weight: FontWeightKey,
-): { fontFamily: string } | { fontWeight: string } {
+): { fontFamily: string; fontWeight?: undefined } | { fontWeight: FontWeightValue; fontFamily?: undefined } {
   return typography.family
     ? { fontFamily: typography.family[weight] }
-    : { fontWeight: typography.weight[weight] }
+    : { fontWeight: typography.weight[weight] as FontWeightValue }
 }

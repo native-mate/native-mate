@@ -119,25 +119,28 @@ function DraggableItem<T>({
 
   const grantY = useRef(0)
 
+  const latest = useRef({ disabled, index, onDragStart, onDragMove, onDragEnd, hapticOnDrag })
+  latest.current = { disabled, index, onDragStart, onDragMove, onDragEnd, hapticOnDrag }
+
   const panResponder = useRef(
     PanResponder.create({
-      onStartShouldSetPanResponder: () => !disabled,
-      onMoveShouldSetPanResponder: (_, gs) => !disabled && Math.abs(gs.dy) > 5,
+      onStartShouldSetPanResponder: () => !latest.current.disabled,
+      onMoveShouldSetPanResponder: (_, gs) => !latest.current.disabled && Math.abs(gs.dy) > 5,
       onPanResponderGrant: () => {
         grantY.current = 0
-        if (hapticOnDrag && Haptics) {
+        if (latest.current.hapticOnDrag && Haptics) {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
         }
-        onDragStart(index)
+        latest.current.onDragStart(latest.current.index)
       },
       onPanResponderMove: (_, gs) => {
-        onDragMove(gs.dy)
+        latest.current.onDragMove(gs.dy)
       },
       onPanResponderRelease: () => {
-        onDragEnd()
+        latest.current.onDragEnd()
       },
       onPanResponderTerminate: () => {
-        onDragEnd()
+        latest.current.onDragEnd()
       },
     })
   ).current

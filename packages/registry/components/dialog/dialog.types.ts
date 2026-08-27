@@ -16,7 +16,7 @@ export interface DialogProps {
   onCancel?: () => void
   variant?: DialogVariant
   /** Ionicons icon name displayed above the title */
-  icon?: string
+  icon?: string | null
   /** Dismiss by tapping the backdrop */
   dismissible?: boolean
   haptic?: HapticStyle

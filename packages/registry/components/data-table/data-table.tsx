@@ -327,13 +327,12 @@ export function DataTable<T extends Record<string, any>>({
         contentContainerStyle={styles.scrollContent}
       >
         <View style={{ minWidth: '100%' }}>
-          {stickyHeader ? header : null}
           <ScrollView
             showsVerticalScrollIndicator
             bounces
-            stickyHeaderIndices={stickyHeader ? undefined : [0]}
+            stickyHeaderIndices={stickyHeader ? [0] : undefined}
           >
-            {!stickyHeader && header}
+            {header}
             {loading ? (
               Array.from({ length: loadingRows }).map((_, i) => (
                 <SkeletonRow

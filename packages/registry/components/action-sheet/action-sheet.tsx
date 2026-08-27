@@ -123,14 +123,16 @@ export const ActionSheet: React.FC<ActionSheetProps> = ({
   const theme = useTheme()
   const styles = useStyles()
   const [modalOpen, setModalOpen] = useState(isOpen)
+  const [sheetHeight, setSheetHeight] = useState(0)
 
   const DISMISS_Y = 600
+  const dismissY = Math.max(DISMISS_Y, sheetHeight + 60)
   const translateY = useSharedValue(DISMISS_Y)
   const backdropOpacity = useSharedValue(0)
   const sheetScale = useSharedValue(animation === 'fade' ? 0.95 : 1)
 
   const { show, hide } = buildAnimations(
-    animation, translateY, backdropOpacity, sheetScale, DISMISS_Y,
+    animation, translateY, backdropOpacity, sheetScale, dismissY,
     () => setModalOpen(false)
   )
 
@@ -169,7 +171,10 @@ export const ActionSheet: React.FC<ActionSheetProps> = ({
         <Pressable style={StyleSheet.absoluteFill} onPress={handleClose} />
 
         <Animated.View style={sheetStyle}>
-          <View style={styles.sheetWrap}>
+          <View
+            style={styles.sheetWrap}
+            onLayout={(e) => setSheetHeight(e.nativeEvent.layout.height)}
+          >
             {/* Main action sheet */}
             <View style={styles.sheet}>
               <View style={styles.handle} />

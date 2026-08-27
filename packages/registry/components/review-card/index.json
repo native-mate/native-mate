@@ -1,6 +1,6 @@
 {
   "name": "review-card",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "User review card with star rating, author info, expandable text, images, and helpful voting",
   "category": "display",
   "files": [

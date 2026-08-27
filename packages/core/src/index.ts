@@ -4,7 +4,7 @@ export { useTheme } from './theme/useTheme'
 export { makeStyles } from './theme/makeStyles'
 
 // Tokens
-export { presets, resolveTokens, normalizeOverrides, fontStyle, textLineHeight, zinc, slate, rose, midnight } from './tokens'
+export { presets, resolveTokens, normalizeOverrides, fontStyle, textLineHeight, collapseMotion, zinc, slate, rose, midnight } from './tokens'
 export type {
   TokenSet, ResolvedTheme, ThemePreset,
   NativeMateConfig, NativeMateTokenOverrides, ThemeOverrides,
@@ -25,4 +25,5 @@ export type { SeparatorProps } from './primitives/Separator/Separator.types'
 // Utils
 export { shadow } from './utils/platform'
 export { useBreakpoint } from './utils/useBreakpoint'
+export { useReducedMotion } from './utils/useReducedMotion'
 export type { Breakpoint } from './utils/useBreakpoint'
