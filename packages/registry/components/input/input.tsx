@@ -140,10 +140,20 @@ export const Input = React.forwardRef<InputHandle, InputProps>(({
     focusAnim.value = withTiming(focused ? 1 : 0, { duration: 200 })
   }, [focused])
 
+  // Hoisted OUT of the worklets below: a `theme.…` read inside a worklet copies
+  // the whole theme object to the UI thread on every evaluation. Only these
+  // plain strings/arrays cross the boundary. They depend on `focused`/`hasError`
+  // and simply recompute on render, which is exactly what we want.
+  const destructiveColor = theme.colors.destructive
+  const backgroundColor = theme.colors.background
+  const mutedColor = theme.colors.muted
+  const borderRange = [theme.colors.border, theme.colors.primary]
+  const labelColorRange = [mutedColor, focused ? theme.colors.primary : mutedColor]
+
   const containerAnimStyle = useAnimatedStyle(() => ({
     borderColor: hasError
-      ? theme.colors.destructive
-      : interpolateColor(focusAnim.value, [0, 1], [theme.colors.border, theme.colors.primary]),
+      ? destructiveColor
+      : interpolateColor(focusAnim.value, [0, 1], borderRange),
     transform: [{ translateX: shakeAnim.value }],
   }))
 
@@ -151,19 +161,32 @@ export const Input = React.forwardRef<InputHandle, InputProps>(({
   // closure must never capture one. Only this plain number crosses threads.
   const labelLeft = config.paddingH - 6 + (prefixText || prefix ? 40 : 0)
 
+  // Resting values for the non-floating branch. The floating <Animated.Text> is
+  // only mounted when `floatingLabel` is true, so nothing on screen changes —
+  // but every branch has to return the SAME keys, because Reanimated never
+  // resets a key it stops receiving.
+  const restingLabelTop = config.minHeight / 2 - 8
+
   const floatingLabelStyle = useAnimatedStyle(() => {
-    if (!floatingLabel) return {}
+    if (!floatingLabel) {
+      return {
+        position: 'absolute' as const,
+        left: labelLeft,
+        top: restingLabelTop,
+        fontSize: config.fontSize,
+        color: mutedColor,
+        backgroundColor,
+        paddingHorizontal: 6,
+        zIndex: 10,
+      }
+    }
     return {
       position: 'absolute' as const,
       left: labelLeft,
-      top: interpolate(floatAnim.value, [0, 1], [config.minHeight / 2 - 8, -9]),
+      top: interpolate(floatAnim.value, [0, 1], [restingLabelTop, -9]),
       fontSize: interpolate(floatAnim.value, [0, 1], [config.fontSize, 11]),
-      color: interpolateColor(
-        floatAnim.value,
-        [0, 1],
-        [theme.colors.muted, focused ? theme.colors.primary : theme.colors.muted],
-      ),
-      backgroundColor: theme.colors.background,
+      color: interpolateColor(floatAnim.value, [0, 1], labelColorRange),
+      backgroundColor,
       paddingHorizontal: 6,
       zIndex: 10,
     }

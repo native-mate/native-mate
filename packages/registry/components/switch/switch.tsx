@@ -62,12 +62,13 @@ export const Switch: React.FC<SwitchProps> = ({
     transform: [{ translateX: sign * progress.value * (cfg.trackW - cfg.thumb - cfg.padding * 2) }],
   }))
 
+  // Hoisted out of the worklet: a `theme.…` read inside one copies the entire
+  // theme object to the UI thread on every evaluation. Only this plain string
+  // array crosses the boundary now.
+  const trackRange = [theme.colors.border, activeColor]
+
   const trackStyle = useAnimatedStyle(() => ({
-    backgroundColor: interpolateColor(
-      progress.value,
-      [0, 1],
-      [theme.colors.border, activeColor],
-    ),
+    backgroundColor: interpolateColor(progress.value, [0, 1], trackRange),
   }))
 
   const handlePress = useCallback(() => {

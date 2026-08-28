@@ -63,9 +63,18 @@ export const Checkbox: React.FC<CheckboxProps> = ({
     checkScale.value = withSpring(checked ? 1 : 0, { mass: 0.5, damping: 12, stiffness: 200 })
   }, [checked, indeterminate])
 
+  // Hoisted out of the worklet: reading `theme.…` inside one copies the WHOLE
+  // theme object to the UI thread on every frame. Only these two plain string
+  // arrays cross the boundary now.
+  const fillRange = ['transparent', hasError ? theme.colors.destructive : activeColor]
+  const borderRange = [
+    hasError ? theme.colors.destructive : theme.colors.border,
+    hasError ? theme.colors.destructive : activeColor,
+  ]
+
   const boxAnimStyle = useAnimatedStyle(() => ({
-    backgroundColor: interpolateColor(fill.value, [0, 1], ['transparent', hasError ? theme.colors.destructive : activeColor]),
-    borderColor: interpolateColor(fill.value, [0, 1], [hasError ? theme.colors.destructive : theme.colors.border, hasError ? theme.colors.destructive : activeColor]),
+    backgroundColor: interpolateColor(fill.value, [0, 1], fillRange),
+    borderColor: interpolateColor(fill.value, [0, 1], borderRange),
     transform: [{ scale: scale.value }],
   }))
 

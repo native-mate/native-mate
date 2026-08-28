@@ -61,12 +61,14 @@ export const Radio: React.FC<RadioProps> = ({
     borderAnim.value = withTiming(selected ? 1 : 0, { duration: 220, easing: Easing.out(Easing.quad) })
   }, [selected])
 
+  // Hoisted out of the worklets: a `theme.…` read inside one copies the whole
+  // theme object to the UI thread on every evaluation. Only these plain string
+  // arrays cross the boundary now.
+  const borderRange = [theme.colors.border, activeColor]
+  const cardBgRange = [theme.colors.background, activeColor + '12']
+
   const outerStyle = useAnimatedStyle(() => ({
-    borderColor: interpolateColor(
-      borderAnim.value,
-      [0, 1],
-      [theme.colors.border, activeColor],
-    ),
+    borderColor: interpolateColor(borderAnim.value, [0, 1], borderRange),
   }))
 
   const innerAnimStyle = useAnimatedStyle(() => ({
@@ -74,16 +76,8 @@ export const Radio: React.FC<RadioProps> = ({
   }))
 
   const cardStyle = useAnimatedStyle(() => ({
-    borderColor: interpolateColor(
-      borderAnim.value,
-      [0, 1],
-      [theme.colors.border, activeColor],
-    ),
-    backgroundColor: interpolateColor(
-      borderAnim.value,
-      [0, 1],
-      [theme.colors.background, activeColor + '12'],
-    ),
+    borderColor: interpolateColor(borderAnim.value, [0, 1], borderRange),
+    backgroundColor: interpolateColor(borderAnim.value, [0, 1], cardBgRange),
   }))
 
   const handlePress = useCallback(() => {

@@ -59,6 +59,19 @@ function auditComponent(name: string): string[] {
           findings.push(`${name}/${f}:${line} ${hook} worklet references element-typed prop "${prop}"`)
         }
       }
+
+      // A worklet that reads `theme.…` captures the ENTIRE theme object and
+      // copies it to the UI thread on every evaluation. Hoist the values you
+      // need to plain consts outside the worklet so only strings/numbers cross.
+      if (/\btheme\s*\./.test(body)) {
+        findings.push(`${name}/${f}:${line} ${hook} worklet reads theme.* — hoist the value outside the worklet`)
+      }
+
+      // Returning a different set of keys per branch leaves the props from the
+      // other branch stuck: Reanimated never resets a key it does not receive.
+      if (/return\s*\{\s*\}/.test(body)) {
+        findings.push(`${name}/${f}:${line} ${hook} worklet returns {} on one branch — return the same keys with neutral values`)
+      }
     }
   }
   return findings
@@ -71,11 +84,11 @@ function run(): number {
 
   const all = names.flatMap(auditComponent)
   if (all.length === 0) {
-    console.log(`✓ no worklet captures element-typed props (${names.length} components)`)
+    console.log(`✓ worklets are clean — no element captures, no theme reads, no branch-divergent keys (${names.length} components)`)
     return 0
   }
   for (const f of all) console.log(`✗ ${f}`)
-  console.log(`\n${all.length} worklet(s) capture element-typed props — compute plain values outside the worklet.`)
+  console.log(`\n${all.length} worklet issue(s). Compute plain values outside the worklet, and return the same keys from every branch.`)
   return 1
 }
 

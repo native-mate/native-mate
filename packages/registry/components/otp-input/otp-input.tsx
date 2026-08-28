@@ -89,34 +89,40 @@ function Cell({
     )
   }, [isActive, isFilled, error, success, motion])
 
+  // Hoisted out of the worklets below: a `theme.…` read inside a worklet copies
+  // the entire theme object to the UI thread on every evaluation. Only plain
+  // strings (and one string array) cross the boundary now.
+  const restingBorder = theme.colors.border
+  const borderColorRange = [
+    restingBorder,
+    theme.colors.onSurface ?? restingBorder,
+    theme.colors.primary,
+    theme.colors.destructive,
+    theme.colors.success,
+  ]
+  const underlineColor = error
+    ? theme.colors.destructive
+    : success
+    ? theme.colors.success
+    : isActive
+    ? theme.colors.primary
+    : restingBorder
+
+  // Both worklets return the same key from every branch — Reanimated never
+  // resets a key it stops receiving. Only one of the two styles is ever applied
+  // to the cell (see `isUnderline` below), so the unused branch's resting
+  // `theme.colors.border` — the very value the static container style already
+  // paints — is visually a no-op.
   const borderAnimStyle = useAnimatedStyle(() => {
-    if (variant === 'underline') return {}
+    if (variant === 'underline') return { borderColor: restingBorder }
     return {
-      borderColor: interpolateColor(
-        borderAnim.value,
-        [0, 0.5, 1, 2, 3],
-        [
-          theme.colors.border,
-          theme.colors.onSurface ?? theme.colors.border,
-          theme.colors.primary,
-          theme.colors.destructive,
-          theme.colors.success,
-        ],
-      ),
+      borderColor: interpolateColor(borderAnim.value, [0, 0.5, 1, 2, 3], borderColorRange),
     }
   })
 
   const underlineBorderStyle = useAnimatedStyle(() => {
-    if (variant !== 'underline') return {}
-    return {
-      borderBottomColor: error
-        ? theme.colors.destructive
-        : success
-        ? theme.colors.success
-        : isActive
-        ? theme.colors.primary
-        : theme.colors.border,
-    }
+    if (variant !== 'underline') return { borderBottomColor: restingBorder }
+    return { borderBottomColor: underlineColor }
   })
 
   const cursorStyle = useAnimatedStyle(() => ({ opacity: cursorOpacity.value }))

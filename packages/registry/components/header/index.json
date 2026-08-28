@@ -1,6 +1,6 @@
 {
   "name": "header",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Custom navigation header with large title mode, animated collapse on scroll, transparent/blur modes, and safe area awareness",
   "category": "navigation",
   "files": [

@@ -1,6 +1,6 @@
 {
   "name": "radio",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Radio button and RadioGroup with animated selection",
   "category": "input",
   "files": [

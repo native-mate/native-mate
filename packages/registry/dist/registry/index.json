@@ -98,13 +98,13 @@
     },
     {
       "name": "checkbox",
-      "version": "0.3.0",
+      "version": "0.3.1",
       "description": "Animated checkbox with label",
       "category": "input"
     },
     {
       "name": "chip",
-      "version": "0.5.0",
+      "version": "0.5.1",
       "description": "Selectable chip with animated selection state, icon/avatar support, closable mode, and ChipGroup layout helper",
       "category": "input"
     },
@@ -188,7 +188,7 @@
     },
     {
       "name": "header",
-      "version": "0.1.2",
+      "version": "0.1.3",
       "description": "Custom navigation header with large title mode, animated collapse on scroll, transparent/blur modes, and safe area awareness",
       "category": "navigation"
     },
@@ -212,7 +212,7 @@
     },
     {
       "name": "input",
-      "version": "0.6.0",
+      "version": "0.6.1",
       "description": "Feature-rich text input with 3 sizes, prefix/suffix, floating label, password toggle, clearable, character count, shake on error, haptic on focus",
       "category": "input"
     },
@@ -254,7 +254,7 @@
     },
     {
       "name": "otp-input",
-      "version": "0.5.0",
+      "version": "0.5.1",
       "description": "OTP/PIN code input with individual digit boxes",
       "category": "input"
     },
@@ -314,7 +314,7 @@
     },
     {
       "name": "radio",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "description": "Radio button and RadioGroup with animated selection",
       "category": "input"
     },
@@ -422,7 +422,7 @@
     },
     {
       "name": "switch",
-      "version": "0.4.0",
+      "version": "0.4.1",
       "description": "Animated toggle switch with interpolated track color",
       "category": "input"
     },
@@ -446,7 +446,7 @@
     },
     {
       "name": "textarea",
-      "version": "0.5.0",
+      "version": "0.5.1",
       "description": "Multiline text input with label and error state",
       "category": "input"
     },

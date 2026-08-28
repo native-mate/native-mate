@@ -127,26 +127,47 @@ export const Textarea = React.forwardRef<TextareaHandle, TextareaProps>(({
     }
   }, [hasError])
 
+  // Hoisted OUT of the worklets below: a `theme.…` read inside a worklet copies
+  // the whole theme object to the UI thread on every evaluation. Only these
+  // plain strings/arrays cross now. They depend on `focused`/`disabled`/
+  // `readOnly` and just recompute on render, which is what we want.
+  const destructiveColor = theme.colors.destructive
+  const mutedColor = theme.colors.muted
+  const borderRange = [theme.colors.border, theme.colors.primary]
+  const labelColorRange = [mutedColor, focused ? theme.colors.primary : mutedColor]
+  const labelBackground = (disabled || readOnly) ? theme.colors.surface : theme.colors.background
+
   const containerAnimStyle = useAnimatedStyle(() => ({
     borderColor: hasError
-      ? theme.colors.destructive
-      : interpolateColor(focusAnim.value, [0, 1], [theme.colors.border, theme.colors.primary]),
+      ? destructiveColor
+      : interpolateColor(focusAnim.value, [0, 1], borderRange),
     transform: [{ translateX: shakeAnim.value }],
   }))
 
   const floatingLabelStyle = useAnimatedStyle(() => {
-    if (!floatingLabel) return {}
+    // Same keys from both branches — Reanimated never resets a key it stops
+    // receiving. The floating <Animated.Text> is only mounted when
+    // `floatingLabel` is true, so these resting values (unfloated position,
+    // full-size muted text) are visually a no-op.
+    if (!floatingLabel) {
+      return {
+        position: 'absolute' as const,
+        left: -2,
+        top: 4,
+        fontSize: 15,
+        color: mutedColor,
+        backgroundColor: labelBackground,
+        paddingHorizontal: 4,
+        zIndex: 10,
+      }
+    }
     return {
       position: 'absolute' as const,
       left: -2,
       top: floatAnim.value === 1 ? -22 : 4,
       fontSize: floatAnim.value === 1 ? 11 : 15,
-      color: interpolateColor(
-        floatAnim.value,
-        [0, 1],
-        [theme.colors.muted, focused ? theme.colors.primary : theme.colors.muted],
-      ),
-      backgroundColor: (disabled || readOnly) ? theme.colors.surface : theme.colors.background,
+      color: interpolateColor(floatAnim.value, [0, 1], labelColorRange),
+      backgroundColor: labelBackground,
       paddingHorizontal: 4,
       zIndex: 10,
     }

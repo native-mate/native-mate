@@ -133,7 +133,12 @@ export const Header: React.FC<HeaderProps> = ({
   }, [scrollY])
 
   const largeTitleStyle = useAnimatedStyle(() => {
-    if (!largeTitle) return {}
+    // Every branch must hand back the same keys — Reanimated never resets a key
+    // it stops receiving, so a bare `{}` would strand the previous frame's
+    // height/opacity/translateY. The large-title wrapper is only mounted when
+    // `largeTitle` is true, so these resting values (full height, fully opaque,
+    // untranslated — the scrolled-to-top look) change nothing visually.
+    if (!largeTitle) return { height: LARGE_TITLE_HEIGHT, opacity: 1, transform: [{ translateY: 0 }] }
     const height = interpolate(
       scrollProgress.value,
       [0, 1],

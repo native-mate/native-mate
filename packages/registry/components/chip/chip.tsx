@@ -65,12 +65,19 @@ export const Chip = React.memo<ChipProps>(({
     })
   }, [selected])
 
+  // Hoisted out of the worklet: a `theme.…` read inside a worklet copies the
+  // entire theme object across the thread boundary on every evaluation. These
+  // plain string arrays are all that crosses now.
+  const filledBgRange = [theme.colors.surface, accentColor]
+  const outlinedBgRange = ['transparent', accentColor + '18']
+  const outlinedBorderRange = [theme.colors.border, accentColor]
+
   const filledAnimStyle = useAnimatedStyle(() => {
     if (variant === 'filled') {
       const backgroundColor = interpolateColor(
         selectionProgress.value,
         [0, 1],
-        [theme.colors.surface, accentColor],
+        filledBgRange,
       )
       return {
         backgroundColor,
@@ -81,12 +88,12 @@ export const Chip = React.memo<ChipProps>(({
     const backgroundColor = interpolateColor(
       selectionProgress.value,
       [0, 1],
-      ['transparent', accentColor + '18'],
+      outlinedBgRange,
     )
     const borderColor = interpolateColor(
       selectionProgress.value,
       [0, 1],
-      [theme.colors.border, accentColor],
+      outlinedBorderRange,
     )
     return {
       backgroundColor,

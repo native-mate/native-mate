@@ -1,6 +1,6 @@
 {
   "name": "otp-input",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "OTP/PIN code input with individual digit boxes",
   "category": "input",
   "files": [
