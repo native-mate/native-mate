@@ -165,7 +165,8 @@ function PopoverWeb({
   }, [])
 
   const animateOut = useCallback((cb?: () => void) => {
-    opacity.value = withTiming(0, { duration: 120 }, () => {
+    opacity.value = withTiming(0, { duration: 120 }, (finished) => {
+      if (!finished) return
       if (cb) runOnJS(cb)()
     })
     scale.value = withTiming(0.9, { duration: 120 })
@@ -187,11 +188,18 @@ function PopoverWeb({
     else openPopover()
   }, [isOpen, openPopover, closePopover])
 
-  // Keep animation in sync when visibility is controlled externally.
+  // Keep animation in sync when visibility is controlled externally. A popover
+  // that mounts closed has nothing to animate out: the exit callback would fire
+  // finishClose, moving screen-reader focus before anything was ever opened.
+  const hasOpened = useRef(false)
   useEffect(() => {
     if (controlledVisible === undefined) return
-    if (controlledVisible) animateIn()
-    else animateOut()
+    if (controlledVisible) {
+      hasOpened.current = true
+      animateIn()
+    } else if (hasOpened.current) {
+      animateOut()
+    }
   }, [controlledVisible, animateIn, animateOut])
 
   const bg = theme.colors.surfaceRaised ?? theme.colors.surface
@@ -329,7 +337,8 @@ function PopoverNative({
 
   const closePopover = useCallback(() => {
     opacity.value = withTiming(0, { duration: 120 })
-    scale.value = withTiming(0.9, { duration: 120 }, () => {
+    scale.value = withTiming(0.9, { duration: 120 }, (finished) => {
+      if (!finished) return
       runOnJS(finishClose)(true)
     })
     onOpenChange?.(false)
@@ -341,17 +350,20 @@ function PopoverNative({
   }, [isOpen, openPopover, closePopover])
 
   // Keep animation + anchor measurement in sync when visibility is controlled externally.
+  const hasOpened = useRef(false)
   useEffect(() => {
     if (controlledVisible === undefined) return
     if (controlledVisible) {
+      hasOpened.current = true
       anchorRef.current?.measureInWindow((x, y, width, height) => {
         setAnchor({ x, y, width, height })
         setModalVisible(true)
         opacity.value = withTiming(1, { duration: 160 })
         scale.value = withSpring(1, { damping: 16, stiffness: 260 })
       })
-    } else {
-      opacity.value = withTiming(0, { duration: 120 }, () => {
+    } else if (hasOpened.current) {
+      opacity.value = withTiming(0, { duration: 120 }, (finished) => {
+        if (!finished) return
         runOnJS(finishClose)(false)
       })
       scale.value = withTiming(0.9, { duration: 120 })

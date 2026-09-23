@@ -1,5 +1,5 @@
 // native-mate: dialog@0.1.0 | hash:PLACEHOLDER
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import {
   Modal, View, Pressable, StyleSheet, Platform, AccessibilityInfo, findNodeHandle,
 } from 'react-native'
@@ -124,16 +124,24 @@ export const Dialog: React.FC<DialogProps> = ({
     restoreAccessibilityFocus(returnFocusRefLatest.current)
   }, [])
 
+  // A dialog that mounts closed has nothing to hide: animating a shared value to
+  // the value it already holds still runs its completion callback, which fires
+  // onDismiss and moves screen-reader focus before anything was ever opened.
+  const hasOpened = useRef(false)
+
   useEffect(() => {
     if (visible) {
+      hasOpened.current = true
       setModalVisible(true)
       scale.value = withSpring(1, { damping: 18, stiffness: 260 })
       opacity.value = withTiming(1, motion.timing('normal'))
       backdropOpacity.value = withTiming(1, motion.timing('normal'))
     } else {
+      if (!hasOpened.current) return
       scale.value = withSpring(0.9, { damping: 18, stiffness: 260 })
       backdropOpacity.value = withTiming(0, motion.timing('fast'))
-      opacity.value = withTiming(0, motion.timing('fast'), () => {
+      opacity.value = withTiming(0, motion.timing('fast'), (finished) => {
+        if (!finished) return
         runOnJS(finishClose)()
       })
     }

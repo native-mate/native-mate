@@ -338,7 +338,8 @@ export const Toast: React.FC<ToastProps> = ({
       exitGenRef.current += 1
       const gen = exitGenRef.current
       cancelAnimation(opacity)
-      opacity.value = withTiming(0, fast, () => {
+      opacity.value = withTiming(0, fast, (finished) => {
+        if (!finished) return
         if (exitGenRef.current === gen) runOnJS(finishExit)()
       })
     }
@@ -395,7 +396,10 @@ export const Toast: React.FC<ToastProps> = ({
         if (axisLock.value === 1) {
           if (Math.abs(e.translationX) > DISMISS_X) {
             translateX.value = withTiming(e.translationX > 0 ? 500 : -500, t)
-            opacity.value = withTiming(0, t, () => { runOnJS(hide)() })
+            opacity.value = withTiming(0, t, (finished) => {
+              if (!finished) return
+              runOnJS(hide)()
+            })
           } else {
             translateX.value = withSpring(0, s)
           }
@@ -403,7 +407,10 @@ export const Toast: React.FC<ToastProps> = ({
           const dismissed = isBottom ? e.translationY > DISMISS_Y : e.translationY < -DISMISS_Y
           if (dismissed) {
             translateY.value = withTiming(isBottom ? 300 : -300, t)
-            opacity.value = withTiming(0, t, () => { runOnJS(hide)() })
+            opacity.value = withTiming(0, t, (finished) => {
+              if (!finished) return
+              runOnJS(hide)()
+            })
           } else {
             translateY.value = withSpring(0, s)
           }

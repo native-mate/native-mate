@@ -90,7 +90,8 @@ export const Banner: React.FC<BannerProps> = ({
     } else {
       const targetY = position === 'top' ? -100 : 100
       translateY.value = withSpring(targetY, { damping: 18, stiffness: 200 })
-      opacity.value = withTiming(0, { duration: 180 }, () => {
+      opacity.value = withTiming(0, { duration: 180 }, (finished) => {
+        if (!finished) return
         runOnJS(setMounted)(false)
       })
     }

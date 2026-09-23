@@ -8,7 +8,7 @@
     },
     {
       "name": "action-sheet",
-      "version": "0.4.0",
+      "version": "0.4.1",
       "description": "iOS-style action sheet with animated slide-up, destructive variants, and cancel button",
       "category": "overlay"
     },
@@ -38,7 +38,7 @@
     },
     {
       "name": "banner",
-      "version": "0.3.0",
+      "version": "0.3.1",
       "description": "App banner with slide in/out animation, four variants (info/warning/success/error), action button, and auto-dismiss",
       "category": "feedback"
     },
@@ -146,7 +146,7 @@
     },
     {
       "name": "dialog",
-      "version": "0.4.0",
+      "version": "0.4.1",
       "description": "Confirm/cancel dialog with scale + fade animation, destructive variant, icon support, and backdrop dismiss",
       "category": "overlay"
     },
@@ -164,7 +164,7 @@
     },
     {
       "name": "dropdown-menu",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "description": "Context menu anchored to a trigger with scale animation, icons, destructive items, and dividers",
       "category": "overlay"
     },
@@ -236,13 +236,13 @@
     },
     {
       "name": "modal",
-      "version": "0.4.0",
+      "version": "0.4.1",
       "description": "Centered dialog with scale animation and backdrop",
       "category": "overlay"
     },
     {
       "name": "notification-card",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "description": "Notification list item with category accent, unread indicator, relative time, and swipe dismiss",
       "category": "display"
     },
@@ -278,7 +278,7 @@
     },
     {
       "name": "popover",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "description": "Rich popover anchored to a trigger with arrow, auto-positioning, scale + fade animation, and interactive scrollable content",
       "category": "overlay"
     },
@@ -368,7 +368,7 @@
     },
     {
       "name": "sheet",
-      "version": "0.5.0",
+      "version": "0.5.1",
       "description": "Animated bottom sheet with snap points",
       "category": "overlay"
     },
@@ -416,7 +416,7 @@
     },
     {
       "name": "swipeable-row",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "description": "Swipe-to-reveal actions row with spring physics and destructive full-swipe",
       "category": "input"
     },
@@ -458,7 +458,7 @@
     },
     {
       "name": "toast",
-      "version": "0.5.0",
+      "version": "0.5.1",
       "description": "Floating toast notification with auto-dismiss and position",
       "category": "feedback"
     },
@@ -470,7 +470,7 @@
     },
     {
       "name": "tooltip",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "description": "Tooltip on long press (native) or hover (web) with arrow, auto-positioning, fade + scale animation, and controlled mode",
       "category": "overlay"
     },

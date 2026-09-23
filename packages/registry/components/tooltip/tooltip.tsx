@@ -135,7 +135,8 @@ function TooltipWeb({
 
   const hide = useCallback(() => {
     if (timerRef.current) clearTimeout(timerRef.current)
-    opacity.value = withTiming(0, { duration: 90 }, () => {
+    opacity.value = withTiming(0, { duration: 90 }, (finished) => {
+      if (!finished) return
       runOnJS(setOpen)(false)
     })
     scale.value = withTiming(0.9, { duration: 90 })
@@ -284,7 +285,8 @@ function TooltipNative({
 
   const hide = useCallback(() => {
     opacity.value = withTiming(0, { duration: 100 })
-    scale.value = withTiming(0.88, { duration: 100 }, () => {
+    scale.value = withTiming(0.88, { duration: 100 }, (finished) => {
+      if (!finished) return
       runOnJS(setInternalOpen)(false)
     })
     onOpenChange?.(false)

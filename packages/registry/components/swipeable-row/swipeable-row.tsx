@@ -150,14 +150,16 @@ export const SwipeableRow: React.FC<SwipeableRowProps> = ({
     (direction: 'left' | 'right') => {
       if (direction === 'left' && rightActions.length > 0) {
         const lastAction = rightActions[rightActions.length - 1]
-        translateX.value = withTiming(-rowWidth.current, { duration: 200 }, () => {
+        translateX.value = withTiming(-rowWidth.current, { duration: 200 }, (finished) => {
+          if (!finished) return
           runOnJS(lastAction.onPress)()
           if (onSwipeLeft) runOnJS(onSwipeLeft)()
           translateX.value = withSpring(0, SNAP_BACK_SPRING)
         })
       } else if (direction === 'right' && leftActions.length > 0) {
         const lastAction = leftActions[leftActions.length - 1]
-        translateX.value = withTiming(rowWidth.current, { duration: 200 }, () => {
+        translateX.value = withTiming(rowWidth.current, { duration: 200 }, (finished) => {
+          if (!finished) return
           runOnJS(lastAction.onPress)()
           if (onSwipeRight) runOnJS(onSwipeRight)()
           translateX.value = withSpring(0, SNAP_BACK_SPRING)

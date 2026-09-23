@@ -49,7 +49,10 @@ const VELOCITY_PROJECTION = 0.12
 const OVERDRAG_RESISTANCE = 0.2
 
 const useStyles = makeStyles((theme) => ({
-  fill: { ...StyleSheet.absoluteFillObject },
+  // GestureHandlerRootView ships flex: 1 and needs it. Absolutely positioned
+  // inside an RN Modal it measures zero height on Android, which collapses the
+  // sheet's `bottom: 0` to the top of the screen.
+  fill: { flex: 1 },
   backdrop: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0,0,0,0.5)',
@@ -163,7 +166,8 @@ export const Sheet: React.FC<SheetProps> = ({
     if (anim === 'fade') {
       sheetScale.value = withTiming(0.97, m.timing('normal'))
     }
-    translateY.value = withTiming(h, { ...m.timing('normal'), easing: Easing.in(Easing.cubic) }, () => {
+    translateY.value = withTiming(h, { ...m.timing('normal'), easing: Easing.in(Easing.cubic) }, (finished) => {
+      if (!finished) return
       runOnJS(setModalOpen)(false)
       runOnJS(notifyDismissed)()
     })
@@ -177,8 +181,14 @@ export const Sheet: React.FC<SheetProps> = ({
     runHide()
   }
 
+  // A sheet that mounts closed has nothing to hide: animating a shared value to
+  // the value it already holds still runs its completion callback, which fires
+  // onDismiss and moves screen-reader focus before anything was ever opened.
+  const hasOpened = React.useRef(false)
+
   useEffect(() => {
     if (visible) {
+      hasOpened.current = true
       setModalOpen(true)
       // Wait a frame so the Modal has mounted before animating in.
       let inner = 0
@@ -190,6 +200,7 @@ export const Sheet: React.FC<SheetProps> = ({
         if (inner) cancelAnimationFrame(inner)
       }
     }
+    if (!hasOpened.current) return undefined
     runHide()
     return undefined
   }, [visible])

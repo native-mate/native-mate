@@ -169,7 +169,8 @@ export const NotificationCard = React.memo<NotificationCardProps>(({
       onPanResponderRelease: (_, gs) => {
         if (Math.abs(translateX.value) > DISMISS_THRESHOLD) {
           translateX.value = withTiming(-500 * sign, motion.timing('normal'))
-          rowOpacity.value = withTiming(0, motion.timing('normal'), () => {
+          rowOpacity.value = withTiming(0, motion.timing('normal'), (finished) => {
+            if (!finished) return
             runOnJS(handleDismissRef.current)()
           })
         } else {

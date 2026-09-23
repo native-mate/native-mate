@@ -1,6 +1,6 @@
 {
   "name": "notification-card",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Notification list item with category accent, unread indicator, relative time, and swipe dismiss",
   "category": "display",
   "files": [

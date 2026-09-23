@@ -158,7 +158,8 @@ function DropdownMenuWeb({
 
   const animateOut = useCallback((cb?: () => void) => {
     scale.value = withSpring(0.92, { damping: 16, stiffness: 260 })
-    opacity.value = withTiming(0, { duration: 120 }, () => {
+    opacity.value = withTiming(0, { duration: 120 }, (finished) => {
+      if (!finished) return
       if (cb) runOnJS(cb)()
     })
   }, [])
@@ -280,7 +281,8 @@ function DropdownMenuNative({
 
   const closeMenu = useCallback(() => {
     scale.value = withSpring(0.92, { damping: 16, stiffness: 260 })
-    opacity.value = withTiming(0, { duration: 120 }, () => {
+    opacity.value = withTiming(0, { duration: 120 }, (finished) => {
+      if (!finished) return
       runOnJS(setModalVisible)(false)
       runOnJS(setInternalOpen)(false)
     })
@@ -304,7 +306,8 @@ function DropdownMenuNative({
       })
     } else {
       scale.value = withSpring(0.92, { damping: 16, stiffness: 260 })
-      opacity.value = withTiming(0, { duration: 120 }, () => {
+      opacity.value = withTiming(0, { duration: 120 }, (finished) => {
+        if (!finished) return
         runOnJS(setModalVisible)(false)
       })
     }

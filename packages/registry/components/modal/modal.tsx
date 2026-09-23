@@ -134,16 +134,24 @@ export const Modal: React.FC<ModalProps> = ({
     restoreAccessibilityFocus(returnFocusRefLatest.current)
   }, [])
 
+  // A modal that mounts closed has nothing to hide: animating a shared value to
+  // the value it already holds still runs its completion callback, which fires
+  // onDismiss and moves screen-reader focus before anything was ever opened.
+  const hasOpened = React.useRef(false)
+
   useEffect(() => {
     if (visible) {
+      hasOpened.current = true
       setModalOpen(true)
       scale.value = withSpring(1, theme.animation.easing.spring)
       opacity.value = withTiming(1, { duration: 180 })
       backdropOpacity.value = withTiming(1, { duration: 200 })
     } else {
+      if (!hasOpened.current) return
       scale.value = withSpring(0.94, theme.animation.easing.spring)
       backdropOpacity.value = withTiming(0, { duration: 180 })
-      opacity.value = withTiming(0, { duration: 150 }, () => {
+      opacity.value = withTiming(0, { duration: 150 }, (finished) => {
+        if (!finished) return
         runOnJS(finishClose)()
       })
     }

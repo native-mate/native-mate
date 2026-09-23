@@ -115,12 +115,14 @@ function buildAnimations(
     backdropOpacity.value = withTiming(0, motion.timing('normal'))
     if (animation === 'fade') {
       sheetScale.value = withTiming(0.95, motion.timing('normal'))
-      translateY.value = withTiming(dismissY, { ...motion.timing('normal'), easing: Easing.in(Easing.cubic) }, () => {
+      translateY.value = withTiming(dismissY, { ...motion.timing('normal'), easing: Easing.in(Easing.cubic) }, (finished) => {
+        if (!finished) return
         runOnJS(onDismiss)()
         if (cb) runOnJS(cb)()
       })
     } else {
-      translateY.value = withTiming(dismissY, { ...motion.timing('normal'), easing: Easing.in(Easing.cubic) }, () => {
+      translateY.value = withTiming(dismissY, { ...motion.timing('normal'), easing: Easing.in(Easing.cubic) }, (finished) => {
+        if (!finished) return
         runOnJS(onDismiss)()
         if (cb) runOnJS(cb)()
       })
@@ -170,11 +172,17 @@ export const ActionSheet: React.FC<ActionSheetProps> = ({
     motion,
   )
 
+  // A sheet that mounts closed has nothing to hide: animating a shared value to
+  // the value it already holds still runs its completion callback, which fires
+  // onDismiss and moves screen-reader focus before anything was ever opened.
+  const hasOpened = React.useRef(false)
+
   React.useEffect(() => {
     if (isOpen) {
+      hasOpened.current = true
       setModalOpen(true)
       show()
-    } else {
+    } else if (hasOpened.current) {
       hide()
     }
   }, [isOpen])

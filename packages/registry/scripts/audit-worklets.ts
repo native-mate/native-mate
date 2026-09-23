@@ -39,6 +39,49 @@ function workletBodies(source: string): Array<{ hook: string; body: string; line
   return out
 }
 
+// Reanimated invokes an animation's completion callback as (finished, current).
+// When a new animation starts on the same shared value the old one is CANCELLED
+// and its callback still fires, with finished === false. A callback that flips
+// state or fires onDismiss without checking will close the thing that just
+// opened — the cancelled hide runs after the show that cancelled it.
+const COMPLETION_CB = /with(?:Timing|Spring|Decay)\([^\n]*?,\s*\(([^)]*)\)\s*=>\s*\{([\s\S]{0,400}?)\n\s*\}\)/g
+
+function completionCallbacks(source: string, file: string): string[] {
+  const out: string[] = []
+  for (const m of source.matchAll(COMPLETION_CB)) {
+    const [, params, body] = m
+    if (!body.includes('runOnJS')) continue
+    const checksFinished = /finished/.test(params) && /if\s*\(!\s*finished\s*\)/.test(body)
+    if (!checksFinished) {
+      const line = source.slice(0, m.index!).split('\n').length
+      out.push(`${file}:${line} animation completion callback ignores \`finished\` — a cancelled animation still runs it`)
+    }
+  }
+  return out
+}
+
+// GestureHandlerRootView ships flex: 1 and RNGH requires it. Overriding that
+// with an absolute fill inside an RN Modal lets the root measure zero height on
+// Android, which collapses any `bottom: 0` child to the top of the screen. Jest
+// cannot catch this: HAS_RNGH is false there, so the root falls back to a plain
+// View and the bug is unreachable.
+const RNGH_ROOT_STYLE = /<Root\b[^>]*?style=\{(?:\[)?\s*styles\.(\w+)/g
+
+function rnghRootStyles(source: string, file: string): string[] {
+  if (!source.includes('GestureHandlerRootView')) return []
+  const out: string[] = []
+  for (const m of source.matchAll(RNGH_ROOT_STYLE)) {
+    const name = m[1]
+    const decl = source.match(new RegExp(`\\b${name}:\\s*\\{([^}]*)\\}`))
+    if (!decl) continue
+    if (/absoluteFill|position:\s*'absolute'/.test(decl[1])) {
+      const line = source.slice(0, m.index!).split('\n').length
+      out.push(`${file}:${line} RNGH root uses absolutely-positioned style \`${name}\` — it needs flex: 1`)
+    }
+  }
+  return out
+}
+
 function auditComponent(name: string): string[] {
   const dir = path.join(COMPONENTS_DIR, name)
   const files = fs.readdirSync(dir).filter((f) => f.endsWith('.tsx') || f.endsWith('.ts'))
@@ -53,6 +96,8 @@ function auditComponent(name: string): string[] {
   const findings: string[] = []
   for (const f of files.filter((f) => f.endsWith('.tsx') && !f.endsWith('.stories.tsx'))) {
     const src = fs.readFileSync(path.join(dir, f), 'utf-8')
+    findings.push(...completionCallbacks(src, `${name}/${f}`))
+    findings.push(...rnghRootStyles(src, `${name}/${f}`))
     for (const { hook, body, line } of workletBodies(src)) {
       for (const prop of elementProps) {
         if (new RegExp(`\\b${prop}\\b`).test(body)) {
