@@ -9,6 +9,7 @@ import Animated, {
   withSequence,
   withDelay,
   Easing,
+  cancelAnimation,
 } from 'react-native-reanimated'
 import { useTheme } from '@native-mate/core'
 import type { SpinnerProps, SpinnerSize, SpinnerColor, SpinnerSpeed } from './spinner.types'
@@ -135,6 +136,7 @@ function NativeCircle({ size, color, speed }: { size: number; color: string; spe
       withTiming(360, { duration: speed, easing: Easing.linear }),
       -1, false,
     )
+    return () => cancelAnimation(rotation)
   }, [speed])
   const animStyle = useAnimatedStyle(() => ({
     transform: [{ rotate: `${rotation.value}deg` }],
@@ -162,6 +164,7 @@ function NativeDot({ size, color, delay, speed }: { size: number; color: string;
         -1, false,
       )
     )
+    return () => cancelAnimation(scale)
   }, [delay, speed])
   const animStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
@@ -205,6 +208,10 @@ function NativePulse({ size, color, speed }: { size: number; color: string; spee
       ),
       -1, false,
     )
+    return () => {
+      cancelAnimation(scale)
+      cancelAnimation(opacity)
+    }
   }, [speed])
   const animStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],

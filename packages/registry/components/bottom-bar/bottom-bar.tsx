@@ -8,6 +8,7 @@ import Animated, {
   withTiming,
   withRepeat,
   withSequence,
+  cancelAnimation,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
 import { useTheme, Text, makeStyles, fontStyle, readableOn } from '@native-mate/core'
@@ -84,6 +85,7 @@ const Badge: React.FC<{ badge: BottomBarBadge; theme: any }> = ({ badge, theme }
         true,
       )
     }
+    return () => cancelAnimation(pulseScale)
   }, [badge.pulse])
 
   const animStyle = useAnimatedStyle(() => ({

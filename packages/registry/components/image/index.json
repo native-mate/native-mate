@@ -1,6 +1,6 @@
 {
   "name": "image",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Enhanced image with fade-in on load, shimmer/blur/color placeholders, fallback source, and error state with icon",
   "category": "display",
   "files": [

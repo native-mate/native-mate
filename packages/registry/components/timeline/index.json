@@ -1,6 +1,6 @@
 {
   "name": "timeline",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Vertical timeline with animated stagger entrance, status nodes, and connecting lines",
   "category": "display",
   "files": [

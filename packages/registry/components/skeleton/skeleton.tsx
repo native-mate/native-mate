@@ -8,6 +8,7 @@ import Animated, {
   withSequence,
   withTiming,
   Easing,
+  cancelAnimation,
 } from 'react-native-reanimated'
 import { useTheme, useMotion, withAlpha } from '@native-mate/core'
 import type { SkeletonProps, SkeletonTextProps, SkeletonAvatarProps, SkeletonCardProps } from './skeleton.types'
@@ -132,6 +133,10 @@ function NativeSkeleton({
         ),
         motion.loops(-1), false,
       )
+    }
+    return () => {
+      cancelAnimation(opacity)
+      cancelAnimation(shimmerX)
     }
   }, [variant, motion.reduced])
 

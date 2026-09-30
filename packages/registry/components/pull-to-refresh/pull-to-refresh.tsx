@@ -12,6 +12,7 @@ import Animated, {
   interpolate,
   Extrapolation,
   runOnJS,
+  cancelAnimation,
 } from 'react-native-reanimated'
 import { useTheme, makeStyles } from '@native-mate/core'
 import type { PullToRefreshProps } from './pull-to-refresh.types'
@@ -134,6 +135,7 @@ const DefaultIndicator: React.FC<DefaultIndicatorProps> = ({
     } else {
       spinRotation.value = withTiming(0, { duration: 200 })
     }
+    return () => cancelAnimation(spinRotation)
   }, [refreshing])
 
   const spinStyle = useAnimatedStyle(() => ({

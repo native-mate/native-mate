@@ -32,7 +32,7 @@
     },
     {
       "name": "badge",
-      "version": "0.5.0",
+      "version": "0.5.1",
       "description": "Inline status badge with 5 variants",
       "category": "display"
     },
@@ -50,7 +50,7 @@
     },
     {
       "name": "bottom-bar",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "description": "Bottom navigation bar with animated sliding indicator, badge support with pulse animation, and haptic feedback",
       "category": "navigation"
     },
@@ -200,7 +200,7 @@
     },
     {
       "name": "image",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "description": "Enhanced image with fade-in on load, shimmer/blur/color placeholders, fallback source, and error state with icon",
       "category": "display"
     },
@@ -254,7 +254,7 @@
     },
     {
       "name": "otp-input",
-      "version": "0.5.1",
+      "version": "0.5.2",
       "description": "OTP/PIN code input with individual digit boxes",
       "category": "input"
     },
@@ -302,7 +302,7 @@
     },
     {
       "name": "pull-to-refresh",
-      "version": "0.1.2",
+      "version": "0.1.3",
       "description": "Custom pull-to-refresh indicator with progress arc, spring animation, and haptic feedback",
       "category": "feedback"
     },
@@ -374,7 +374,7 @@
     },
     {
       "name": "skeleton",
-      "version": "0.3.0",
+      "version": "0.3.1",
       "description": "Pulsing skeleton loader placeholder",
       "category": "feedback"
     },
@@ -398,7 +398,7 @@
     },
     {
       "name": "spinner",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "description": "Animated loading spinner with theme-aware colors and sizes",
       "category": "feedback"
     },
@@ -410,7 +410,7 @@
     },
     {
       "name": "stepper",
-      "version": "0.4.0",
+      "version": "0.4.1",
       "description": "Multi-step progress indicator with animated transitions and connecting lines",
       "category": "navigation"
     },
@@ -452,7 +452,7 @@
     },
     {
       "name": "timeline",
-      "version": "0.3.0",
+      "version": "0.3.1",
       "description": "Vertical timeline with animated stagger entrance, status nodes, and connecting lines",
       "category": "display"
     },

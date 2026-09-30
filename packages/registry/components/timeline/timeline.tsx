@@ -10,6 +10,7 @@ import Animated, {
   withRepeat,
   withSequence,
   Easing,
+  cancelAnimation,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
 import { useTheme, Text, makeStyles, fontStyle } from '@native-mate/core'
@@ -105,6 +106,10 @@ const TimelineNode = React.memo<TimelineNodeProps>(({
     } else {
       pulseScale.value = 1
       pulseOpacity.value = 0
+    }
+    return () => {
+      cancelAnimation(pulseScale)
+      cancelAnimation(pulseOpacity)
     }
   }, [status])
 

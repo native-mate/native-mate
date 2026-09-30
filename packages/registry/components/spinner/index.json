@@ -1,6 +1,6 @@
 {
   "name": "spinner",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Animated loading spinner with theme-aware colors and sizes",
   "category": "feedback",
   "files": [

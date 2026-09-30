@@ -8,6 +8,7 @@ import Animated, {
   withSequence,
   withRepeat,
   interpolateColor,
+  cancelAnimation,
 } from 'react-native-reanimated'
 import {
   useTheme,
@@ -78,6 +79,7 @@ function Cell({
     } else {
       cursorOpacity.value = withTiming(0, motion.timing('fast'))
     }
+    return () => cancelAnimation(cursorOpacity)
   }, [isActive, motion])
 
   // Border/bg color animation

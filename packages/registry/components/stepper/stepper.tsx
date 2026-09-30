@@ -9,6 +9,7 @@ import Animated, {
   withSequence,
   withTiming,
   Easing,
+  cancelAnimation,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
 import { useTheme, useDirection, Text, makeStyles, fontStyle } from '@native-mate/core'
@@ -224,6 +225,7 @@ const StepNode = React.memo<StepNodeProps>(({
     } else {
       pulseScale.value = withSpring(1, SPRING)
     }
+    return () => cancelAnimation(pulseScale)
   }, [status])
 
   const animatedNodeStyle = useAnimatedStyle(() => ({

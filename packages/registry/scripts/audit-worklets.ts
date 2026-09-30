@@ -82,6 +82,37 @@ function rnghRootStyles(source: string, file: string): string[] {
   return out
 }
 
+// An infinite withRepeat keeps running on the UI thread after the component
+// unmounts — nothing stops it, because the else-branch that would only runs on a
+// re-render. Under Jest it also keeps the process alive: a bare `npx jest` hangs
+// until --forceExit. Every looped shared value needs cancelAnimation on cleanup.
+// Matches the assignment only; the argument list is read as a window after it,
+// because these calls are formatted every which way — one line, or spread over
+// six — and requiring a particular shape is how a gate ends up missing the very
+// bug it was written for.
+const INFINITE_REPEAT = /(\w+)\.value\s*=\s*withRepeat\(/g
+
+function uncancelledLoops(source: string, file: string): string[] {
+  const out: string[] = []
+  for (const m of source.matchAll(INFINITE_REPEAT)) {
+    const target = m[1]
+    // Window, not a balanced parse: an over-wide window only risks flagging a
+    // finite loop as infinite, which is the safe direction to be wrong in.
+    const args = source.slice(m.index! + m[0].length, m.index! + m[0].length + 400).split('\n\n')[0]
+    // Only infinite loops leak; a finite repeat count ends on its own.
+    if (!/-1|loops\(/.test(args)) continue
+    // ponytail: matches the cancel by value NAME anywhere in the file, not by
+    // component scope. Two sub-components that both animate a value called
+    // `scale` can therefore mask each other — spinner's NativeDot and
+    // NativePulse very nearly did. Upgrade to a scope-aware walk (find the
+    // enclosing function of the useSharedValue declaration) if that bites.
+    if (source.includes(`cancelAnimation(${target})`)) continue
+    const line = source.slice(0, m.index!).split('\n').length
+    out.push(`${file}:${line} infinite withRepeat on \`${target}\` is never cancelled — add cancelAnimation(${target}) on unmount`)
+  }
+  return out
+}
+
 function auditComponent(name: string): string[] {
   const dir = path.join(COMPONENTS_DIR, name)
   const files = fs.readdirSync(dir).filter((f) => f.endsWith('.tsx') || f.endsWith('.ts'))
@@ -98,6 +129,7 @@ function auditComponent(name: string): string[] {
     const src = fs.readFileSync(path.join(dir, f), 'utf-8')
     findings.push(...completionCallbacks(src, `${name}/${f}`))
     findings.push(...rnghRootStyles(src, `${name}/${f}`))
+    findings.push(...uncancelledLoops(src, `${name}/${f}`))
     for (const { hook, body, line } of workletBodies(src)) {
       for (const prop of elementProps) {
         if (new RegExp(`\\b${prop}\\b`).test(body)) {

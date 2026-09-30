@@ -7,6 +7,7 @@ import Animated, {
   withTiming,
   withRepeat,
   withSequence,
+  cancelAnimation,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
 import { useTheme, makeStyles } from '@native-mate/core'
@@ -49,6 +50,7 @@ const ShimmerPlaceholder: React.FC<{ color: string }> = ({ color }) => {
       -1,
       true,
     )
+    return () => cancelAnimation(shimmerOpacity)
   }, [])
 
   const animStyle = useAnimatedStyle(() => ({

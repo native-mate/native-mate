@@ -3,6 +3,7 @@ import React, { useEffect } from 'react'
 import { View, Pressable } from 'react-native'
 import Animated, {
   useSharedValue, useAnimatedStyle, withRepeat, withSequence, withTiming,
+  cancelAnimation,
 } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
 import { useTheme, Text, makeStyles, fontStyle, useStrings } from '@native-mate/core'
@@ -62,6 +63,10 @@ function PulseDot({ color, size }: { color: string; size: number }) {
       withSequence(withTiming(0.3, { duration: 700 }), withTiming(1, { duration: 700 })),
       -1, false,
     )
+    return () => {
+      cancelAnimation(scale)
+      cancelAnimation(opacity)
+    }
   }, [])
   const outerStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
